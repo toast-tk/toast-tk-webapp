@@ -1,0 +1,9 @@
+This is your new Play application
+=====================================
+
+This file will be packaged with your application, when using `play dist`.
+
+
+0. add a new - web page
+
+1. add a new scenario, type 'service, selenium'
