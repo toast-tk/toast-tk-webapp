@@ -1,0 +1,11 @@
+<div data-ng-cloak>
+  <div data-ng-switch="loggedIn">
+    <div data-ng-switch-when="false">
+      <form>
+        <input type="text" data-ng-model="credentials.user" placeholder="Username" /><br />
+        <input type="text" data-ng-model="credentials.password" placeholder="Password" /><br />
+        <button data-ng-click="login(credentials)">Log In</button>
+      </form>
+    </div>
+  </div>
+</div>
