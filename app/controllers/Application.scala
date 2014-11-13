@@ -119,17 +119,17 @@ object Application extends Controller {
   def loadCtxSentences(confType:String, context:String) = Action.async{
     MongoConnector.loadConfigurationSentences(confType, context).map{
       configurations =>{
-    	  val res = configurations.filterNot(conf => {
+        /*val res = configurations.filterNot(conf => {
           conf.rows.filterNot(row => row.group.equals(confType) && row.name.equals(context)).length > 0
-        })
-        /*var res = List[ConfigurationSyntax]();
-    	  for(configuration <- configurations){
-    		  for(row <- configuration.rows){
-    		    if(row.group.equals(confType) && row.name.equals(context)) {
-    		      res = res ++ row.syntax
-    		    }
-    		  } 
-    	  }*/
+        })*/
+        var res = List[ConfigurationSyntax]();
+        for(configuration <- configurations){
+          for(row <- configuration.rows){
+            if(row.group.equals(confType) && row.name.equals(context)) {
+              res = res ++ row.syntax
+            }
+          }
+        }
     	  Ok(Json.toJson(res))
       } 
     }
