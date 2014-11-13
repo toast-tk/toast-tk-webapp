@@ -18,13 +18,13 @@ case class Configuration(id: Option[String], cType: String, rows: List[Configura
 case class AutoSetupConfig(id: Option[String], name: String, cType: String, columns: String, rows: String)
 
 object AutoSetupConfig{
-  implicit val autoSetupConfigReader: Reads[AutoSetupConfig]= (
-    (__ \ "id").readNullable[String] and 
-    (__ \ "name").read[String] and 
-    (__ \ "type").read[String] and
-    (__ \ "columns").read[String]
-    and (__ \ "rows").read[String])(AutoSetupConfig.apply(_,_ , _,_, _)
-  )
+    implicit val autoSetupConfigReader: Reads[AutoSetupConfig]= (
+      (__ \ "id").readNullable[String] and
+      (__ \ "name").read[String] and
+      (__ \ "type").read[String] and
+      (__ \ "columns").read[String]
+      and (__ \ "rows").read[String])(AutoSetupConfig.apply(_,_ , _,_, _)
+    )
   
     implicit val autoSetupConfigWriter: Writes[AutoSetupConfig] = (
     (__ \ "id").writeNullable[String] and  

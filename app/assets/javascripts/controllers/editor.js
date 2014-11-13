@@ -11,6 +11,7 @@ define(["angular"], function(angular) {
       	$scope.scenario_types = []; 	      	
 		$scope.selectedType = "";
 		$scope.selectedConfigGroupType = "";
+		$scope.selectedConfigType = "";
 		$scope.scenarii = [];
 		$scope.configurations = [];
 		$scope.autosetups = [];
@@ -39,53 +40,53 @@ define(["angular"], function(angular) {
 		
 		$scope.addNewSentence = function(newSentence, sentenceWithTypes){
 			$scope.selectedConfig.syntax.push({sentence: newSentence, typed_sentence: sentenceWithTypes});
-		}
+		};
 		
 		$scope.deleteSentenceLine = function(newSentence){
 			$scope.selectedConfig.syntax.splice($scope.selectedConfig.syntax.indexOf(newSentence),1);
-		}
+		};
 		
 		$scope.addConfigBlock = function(){
 			pushNewConfig();
-		}
+		};
 		
 		$scope.addAutoSetupConfig = function(){
 			playRoutes.controllers.Application.loadAutoSetupCtx($scope.selectedAutoSetupConfigType).get().then(function(response){
 	      		var info = response.data;
 	      		pushNewAutoSetupConfig(info);
 	      	});
-		}
+		};
 		
 		function pushNewAutoSetupConfig(autoSetupDescriptor){
 			$scope.autosetups.push({type: $scope.selectedAutoSetupConfigType, 
 									columns: autoSetupDescriptor.columns,
 									rows: []});
-		}
+		};
 		
 		function pushNewConfig(){
 			//1. need a column descriptor 
 			//2. column names & validator & datasource if there's an auto-complete
-			$scope.configurations.push({type: $scope.selectedConfigType, rows: []});
-		}
+			$scope.configurations.push({type: $scope.selectedConfigGroupType, rows: []});
+		};
 		
 		$scope.editConfigLine = function(config, item){
 			$scope.selectedConfig = config;
-		}
+		};
 		
 		$scope.deleteConfigLine = function(config, item){
 			config.rows.splice(config.rows.indexOf(item), 1);
-		}
+		};
 		
 		$scope.addConfigLine = function(config, item){
-			config.rows.push({name: item, syntax: []});
-		}
+			config.rows.push({type: $scope.selectedConfigType, name: item, syntax: []});
+		};
 		
       	$scope.add = function(){
 	      	playRoutes.controllers.Application.loadScenarioCtx($scope.selectedType.type).get().then(function(response){
 	      		var info = response.data;
 	      		pushNewScenario(info);
 	      	});
-      	}
+      	};
       	
       	function pushNewScenario(scenarioDescriptor){
 			$scope.scenarii.push({	
@@ -94,29 +95,29 @@ define(["angular"], function(angular) {
 									  columns: scenarioDescriptor.columns,
 									  rows: []
 								  });
-		}
+		};
 		
 		
 		$scope.addAutoSetupRow = function(autosetup, newRow){
 			autosetup.rows.push(newRow);
 			$scope.newAutoSetupRow = {};
-		}
+		};
 		
 		$scope.addRow = function(scenario, newRow){
 			scenario.rows.push(newRow);
 			$scope.newRow = {};
-		}
+		};
 		
 		$scope.deleteRow = function(scenario, row){
 			//ajax call directly, if not new !
 			scenario.rows.splice(scenario.rows.indexOf(row), 1);
-		}
+		};
 		
 		$scope.saveConfig = function(){
 			playRoutes.controllers.Application.saveConfiguration().post($scope.configurations).then(function(response){
 	      		window.alert("Saved : " + response.data);
 	      	});
-		}
+		};
 		
 		$scope.saveAutoConfig = function(){
 			var deepCopy = angular.copy($scope.autosetups);

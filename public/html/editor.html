@@ -25,8 +25,8 @@
 	  		<div>
 				<span>
 					<input type="text" ng-model="newConfig" placeholder="{{config.name}} name"/> 
-					<!-- and an ng-show only if it's a service -->
-					<select ng-model="config.type" data-ng-options="type for type in service_config_types"></select>
+					<!-- add an ng-show only if it's a service -->
+					<select ng-model="selectedConfigType" data-ng-options="type for type in service_config_types"></select>
 					<button class="btn btn-primary btn-xs" data-ng-click="addConfigLine(config, newConfig)">+</button>
 				</span>
 			</div>
