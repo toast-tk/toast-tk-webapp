@@ -1,0 +1,1012 @@
+h1. Données
+
+Imports Greenpepper
+  
+|| import ||
+| fr.gefco.tli.psc.fixture.ref.setup |
+| fr.gefco.tli.psc.fixture.bop.setup |
+| fr.gefco.tli.psc.fixture.bop.test |
+
+h3. Setup config
+
+{greenpepper-info}
+
+|| setup || service ||
+| name 				            | class 													            |
+| bop	 			            | fr.gefco.tli.psc.fixture.bop.test.BopRedPepperFixture		            |
+| Workflow	 		            | fr.gefco.tli.psc.fixture.bop.test.BopRedPepperFixture		            |
+| trademark	 		            | fr.gefco.tli.psc.fixture.ref.setup.TrademarkFixture		            |
+| State	 			            | fr.gefco.tli.psc.fixture.ref.setup.StateFixture			            |
+| Zip	 			            | fr.gefco.tli.psc.fixture.ref.setup.ZipFixture				            |
+| OfferXCode		            | fr.gefco.tli.psc.fixture.ref.setup.OfferXCodeFixture				    |
+| GM transport request criteria | fr.gefco.tli.psc.fixture.ref.setup.GmTransportRequestCriteriaFixture  |
+| CenterCriteria	            | fr.gefco.tli.psc.fixture.bop.setup.CenterCriteriaFixture	            |
+| TransportRequest 	            | fr.gefco.tli.psc.fixture.bop.setup.TransportRequestFixture            |
+| Routing plan Oxt 	            | fr.gefco.tli.psc.fixture.bop.setup.RoutingPlanOxtFixture	            |
+| Routing plan Opt 	            | fr.gefco.tli.psc.fixture.bop.setup.RoutingPlanOptFixture	            |
+| Oplus Reservation	            | fr.gefco.tli.psc.fixture.bop.setup.OplusReservationFixture            |
+| Oplus Travel		            | fr.gefco.tli.psc.fixture.bop.setup.OplusTravelFixture		            |
+| task chain                    | fr.gefco.tli.psc.fixture.taskmanager.setup.TaskChainFixture           |
+| co task chain criteria        | fr.gefco.tli.psc.fixture.taskmanager.setup.COTaskChainCriteriaFixture |
+| tr task chain criteria        | fr.gefco.tli.psc.fixture.taskmanager.setup.TRTaskChainCriteriaFixture |
+| eo task chain criteria        | fr.gefco.tli.psc.fixture.taskmanager.setup.EOTaskChainCriteriaFixture |
+
+			
+{greenpepper-info}
+
+h5. Ref domains
+
+|| setup || domain ||
+| name | class name | table name |
+| supplier invoice status | fr.gefco.tli.psc.bbo.model.domains.IEnumSupplierInvoiceStatus | T_TYPE_SUPPLIER_INVOICE_STATUS |
+| routing mode | fr.gefco.tli.psc.ref.model.domains.IEnumRoutingMode | T_TYPE_ROUTING_MODE |
+| transport mode | fr.gefco.tli.psc.ref.model.domains.IEnumTransportMode |T_TYPE_TRANSPORT_MODE |
+| execution order type | fr.gefco.tli.psc.ref.model.domains.IEnumExecutionOrderType |T_TYPE_EXECUTION_ORDER |
+| operation type | fr.gefco.tli.psc.ref.model.domains.IEnumOperationType |T_TYPE_OPERATION |
+| operation nature | fr.gefco.tli.psc.ref.model.domains.IEnumOperationNature |T_TYPE_OPERATION_NATURE |
+| delivery type | fr.gefco.tli.psc.ref.model.domains.IEnumDeliveryType |T_TYPE_DELIVERY |
+| pickup type | fr.gefco.tli.psc.ref.model.domains.IEnumPickupType |T_TYPE_PICKUP |
+| routing type | fr.gefco.tli.psc.ref.model.domains.IEnumRoutingType |T_TYPE_ROUTING |
+| execution order update mode | fr.gefco.tli.psc.ref.model.domains.IEnumExecutionOrderUpdateMode |T_TYPE_EXEC_ORDER_UPDATE_MODE |
+| event type | fr.gefco.tli.psc.ref.model.domains.IEnumEventType |T_TYPE_EVENT |
+| milestone status | fr.gefco.tli.psc.ref.model.domains.IEnumMilestoneStatus |T_TYPE_MILESTONE_STATUS |
+| transport means | fr.gefco.tli.psc.ref.model.domains.IEnumTransportMeansKind |T_TYPE_TRANSPORT_MEANS |
+| transmission mode | fr.gefco.tli.psc.ref.model.domains.IEnumTransmissionMode |T_TYPE_TRANSMISSION_MODE |
+| member role type | fr.gefco.tli.psc.ref.model.domains.IEnumMemberRoleType |T_TYPE_MEMBER_ROLE |
+| language | fr.gefco.tli.psc.ref.model.domains.IEnumLanguage |T_TYPE_LANGUAGE |
+|priority|fr.gefco.tli.psc.ref.model.domains.IEnumPriorityLevel|T_TYPE_PRIORITY_LEVEL |
+|limit option status|fr.gefco.tli.psc.ref.model.domains.IEnumLimitOptionStatus|T_TYPE_LIMIT_OPTION_STATUS |
+|trip file type|fr.gefco.tli.psc.ref.model.domains.IEnumTripFileType|T_TYPE_TRIP_FILE |
+|commodity kind|fr.gefco.tli.psc.ref.model.domains.IEnumCommodityKind|T_COMMODITY_KIND|
+|service nature|fr.gefco.tli.psc.taskmanager.model.domains.IEnumServiceNature|T_TYPE_SERVICE_NATURE|
+|task status|fr.gefco.tli.psc.taskmanager.model.domains.IEnumTaskStatus|T_TYPE_TASK_STATUS|
+|transport business kind|fr.gefco.tli.psc.ref.model.domains.IEnumTransportBusinessKind|T_TYPE_TRSP_BUSINESS|
+|creation mode|fr.gefco.tli.psc.ref.model.domains.IEnumCreationMode|T_TYPE_CREATION_MODE|
+|type trsp reason|fr.gefco.tli.psc.ref.model.domains.IEnumTransportReason|T_TYPE_TRSP_REASON|
+|enum action impact|fr.gefco.tli.psc.ref.model.domains.IEnumActionImpact|T_TYPE_EVENT_IMPACT_ACTION|
+|link type|fr.gefco.tli.psc.ref.model.domains.IEnumLinkType|T_TYPE_LINK|
+|todo owner|fr.gefco.tli.psc.common.model.domains.IEnumTodoOwner|T_TYPE_TODO_OWNER|
+
+h5. Entities configuration
+
+|| setup || entity ||
+| name | class name | search by |
+| country | fr.gefco.tli.psc.ref.model.ICountry | country code |
+| state | fr.gefco.tli.psc.ref.model.IState | id |
+| zip | fr.gefco.tli.psc.ref.model.IZip | id |
+| platform | fr.gefco.tli.psc.ref.model.IPlatform | platform code |
+| center | fr.gefco.tli.psc.ref.model.ICenter | code |
+| return type | fr.gefco.tli.psc.ref.model.IReturnType | code |
+| third party | fr.gefco.tli.psc.ref.model.IThirdParty | third party code |
+| currency | fr.gefco.tli.psc.ref.model.ICurrency | currency code |
+| community | fr.gefco.tli.psc.ref.model.ICommunity | code |
+| asso community | fr.gefco.tli.psc.droits.model.IAssoUserCommunity | id |
+| user | fr.gefco.tli.psc.droits.model.IUser | login |
+| user password | fr.gefco.tli.psc.droits.model.IUserPassword | id |
+| packing kind | fr.gefco.tli.psc.ref.model.IPackingKind | code |
+| incoterm | fr.gefco.tli.psc.ref.model.IIncoterm | code |
+| sub incoterm | fr.gefco.tli.psc.ref.model.ISubIncoterm | subIncotermCode |
+| exploitation mode | fr.gefco.tli.psc.ref.model.IExploitMode | exploitModeCode |
+| transport means type | fr.gefco.tli.psc.ref.model.ITransportMeansType | code |
+| vat | fr.gefco.tli.psc.ref.model.IVat | code |
+| tax item | fr.gefco.tli.psc.ref.model.ITaxItem | code |
+| option type | fr.gefco.tli.psc.ref.model.IOptionType | code |
+| offer | fr.gefco.tli.psc.ref.model.IOffer | code |
+| offer x code|fr.gefco.tli.psc.ref.model.IOfferXCode |id|
+| offer option type | fr.gefco.tli.psc.ref.model.IOfferOptionType | code |
+| community criteria|fr.gefco.tli.psc.ref.model.ICommunityCriteria|id|
+| transport request enrichment|fr.gefco.tli.psc.bop.model.ITransportRequestEnrichment|id|
+|center criteria|fr.gefco.tli.psc.bop.model.ICenterCriteria|id|
+| software|fr.gefco.tli.psc.ref.model.ISoftware|code|
+| task type|fr.gefco.tli.psc.taskmanager.model.ITaskType|code|
+| task chain|fr.gefco.tli.psc.taskmanager.model.ITaskChain|code|
+| asso task chain type|fr.gefco.tli.psc.taskmanager.model.IAssoTaskChainType|id|
+| status graph|fr.gefco.tli.psc.taskmanager.model.IStatusGraph|id|
+| asso tr task chain criteria chain|fr.gefco.tli.psc.taskmanager.model.IAssoTaskChainCriteriaChain|id|
+| tr task chain criteria|fr.gefco.tli.psc.bop.model.ITransportRequestTaskChainCriteria|id|
+| asso co task chain criteria chain|fr.gefco.tli.psc.taskmanager.model.IAssoTaskChainCriteriaChain|id|
+| co task chain criteria|fr.gefco.tli.psc.bop.model.ICustomerOrderTaskChainCriteria|id|
+| asso eo task chain criteria chain|fr.gefco.tli.psc.taskmanager.model.IAssoTaskChainCriteriaChain|id|
+| eo task chain criteria|fr.gefco.tli.psc.bop.model.IExecutionOrderTaskChainCriteria|id|
+| data rule criteria|fr.gefco.tli.psc.bop.model.IDataRuleCriteria|id|
+| data rule|fr.gefco.tli.psc.bop.model.IDataRule|id|
+| trademark|fr.gefco.tli.psc.ref.model.ITrademark|code|
+| mark country return|fr.gefco.tli.psc.ref.model.IMarkCountryReturn|id|
+| return pr rule|fr.gefco.tli.psc.bop.model.IReturnPrRule|id|
+| supplierProduct|fr.gefco.tli.psc.ref.model.ISupplierProduct|id|
+| transportBusiness|fr.gefco.tli.psc.ref.model.ITransportBusiness|id|
+| deliveryWindow|fr.gefco.tli.psc.bop.model.IDeliveryWindow|id|
+|mm message type|fr.gefco.tli.psc.mm.model.IMMMessageType|message code|
+|type commodity|fr.gefco.tli.psc.ref.model.ITypeCommodity|code|
+|type commodity x code|fr.gefco.tli.psc.ref.model.ITypeCommodityXCode|id|
+|codif|fr.gefco.tli.psc.ref.model.ICodif|code|
+|third party xcode|fr.gefco.tli.psc.ref.model.IThirdPartyXcode|id|
+|param|fr.gefco.tli.psc.core.model.IParam|key|
+|event type xcode|fr.gefco.tli.psc.ref.model.IEventTypeXcode|id|
+|event action type|fr.gefco.tli.psc.ref.model.IEventActionType|id|
+|itinerary|fr.gefco.tli.psc.bop.model.IItinerary|id|
+|dealer type|fr.gefco.tli.psc.ref.model.IDealerType|code|
+
+
+||auto setup||
+|configure entity|dealerType|
+|greenpepper name|name|
+| code | code|
+| meaning| meaning|
+
+||auto setup||
+|configure entity|deliveryWindow|
+|greenpepper name|name|
+| plantCode | plantCode |
+| deliveryWindow | deliveryWindow |
+| startTime | startTime |
+| endTime | endTime |
+
+||auto setup||
+|configure entity|data rule|
+|greenpepper name|name|
+| check freeze | checkFreeze |
+| check mandatory | checkMandatory |
+| data kind | dataKind |
+| id | id |
+| id data rule criteria | idDataRuleCriteria | data rule criteria |
+
+||auto setup||
+|configure entity|data rule criteria|
+|greenpepper name|name|
+| id | id |
+| object kind | objectKind |
+| object status | objectStatus |
+| offer | offer |
+
+
+h5. User configuration
+
+||auto setup||
+|configure entity|user|
+|greenpepper name|name|
+| id | id |
+| login | login |
+| email | email |
+| checkGefco | checkGefco |
+| active | active |
+
+h5. user password configuration
+||auto setup||
+|configure entity|user password|
+|greenpepper name|name|
+| id | id |
+| idUser | idUser | user |
+| password | password |
+| salt | salt |
+
+h5. Asso User configuration
+
+||auto setup||
+|configure entity|asso community|
+|greenpepper name|name|
+| id | id |
+| user login 		| idUser 		| user 		|
+| community code 	| idCommunity 	| community |
+
+h5. Asso Task Chain Criteria
+
+||auto setup||
+|configure entity|asso tr task chain criteria chain|
+|greenpepper name|name|
+| id | id |
+| task chain code | idTaskChain | task chain |
+| id task chain criteria | idTaskChainCriteria | tr task chain criteria |
+
+||auto setup||
+|configure entity|asso co task chain criteria chain|
+|greenpepper name|name|
+| id | id |
+| task chain code | idTaskChain | task chain |
+| id task chain criteria | idTaskChainCriteria | co task chain criteria |
+
+||auto setup||
+|configure entity|asso eo task chain criteria chain|
+|greenpepper name|name|
+| id | id |
+| task chain code | idTaskChain | task chain |
+| id task chain criteria | idTaskChainCriteria | eo task chain criteria |
+
+||auto setup||
+|configure entity|status graph|
+|greenpepper name|name|
+| current status | currentStatus |
+| id | id |
+| task type code | idTaskType | taskType |
+| next status | nextStatus |
+| object type | objectType |
+
+||auto setup||
+|configure entity|asso task chain type|
+|greenpepper name|name|
+| id | id |
+| task chain code | idTaskChain | taskChain |
+| task type code | idTaskType | taskType |
+
+||auto setup||
+|configure entity|task type|
+|greenpepper name|name|
+| check skippable | checkSkippable |
+| code | code |
+| description | description |
+| executant role | executantRole |
+| id | id |
+| manager role | managerRole |
+| nature | nature |
+| object type | objectType |
+| service code | serviceCode |
+| todo manager duration | todoManagerDuration |
+
+|| auto setup ||
+| configure entity | country |
+| greenpepper name | name |
+| country code | country |
+| iso country no | isoCountryNo |
+| iso country code | isoCountryCode |
+| meaning | meaning |
+
+|| auto setup ||
+| configure entity 	| platform     |
+| greenpepper name	| name         |
+| id				| id           |
+| platform code 	| platformCode |
+| address 			| address      |
+| id zip 			| zip          | zip |
+| meaning 			| meaning      |
+
+|| auto setup ||
+| configure entity | center |
+| greenpepper name | name |
+| code | centerCode |
+| meaning | meaning |
+| name | name |
+| address1 | address1 |
+| address2 | address2 |
+| id zip | zip | zip |
+| phone | phone |
+| fax | fax |
+| type | type |
+| software | idSoftware | software |
+
+|| auto setup ||
+| configure entity | return type |
+| greenpepper name | name |
+| code | code |
+| meaning | meaning |
+
+|| auto setup ||
+| configure entity | third party |
+| greenpepper name | name |
+| third party code | thirdPartyCode |
+| check consignee | checkConsignee |
+| check sender | checkSender |
+| check principal | checkPrincipal |
+| name | name |
+| address | address |
+| language | language |
+| short description | shortDescription |
+| id zip | idZip | zip |
+| check plant | checkPlant |
+| check supplier | checkSupplier |
+| check princ is rc | checkPrincIsRc |
+| check princ is do | checkPrincIsDo |
+| proximity platform | proximityPlatform | platform |
+| management center | centerManage | center |
+| exploitation center | exploitCenter | center |
+| software | idSoftware | software |
+| xzip | xzip | 
+| xcity | xcity | 
+| xcountry | xcountry | 
+| xstate | xstate | 
+| dealer type | idDealerType | dealer type |
+
+|| auto setup ||
+| configure entity | currency |
+| greenpepper name | name |
+| currency code | currencyCode |
+| meaning | meaning |
+| gep percent rate | gapPercentRate |
+| currency rounding | currencyRounding |
+
+|| auto setup ||
+| configure entity | community |
+| greenpepper name 		| name 					|
+| id					| id 					|
+| code 					| code 					|
+| label 				| label 				|
+| client portal version | clientPortalVersion 	|
+| codif 				| idCodif	 			| codif		|
+
+|| auto setup ||
+| configure entity | packing kind |
+| greenpepper name | name |
+| code | code |
+| meaning | meaning |
+| check returnable | checkReturnable |
+| check covered | checkCovered |
+| check support no | checkSupportNo |
+| packing xcode | XCode |
+| description | description |
+| dim width | dimWidth |
+| dim length | dimLength |
+| dim height | dimHeight |
+
+|| auto setup ||
+| configure entity | incoterm |
+| greenpepper name | name |
+|id|id|
+| code | incotermCode |
+| meaning | meaning |
+| id owner | idOwner |
+
+|| auto setup ||
+| configure entity | sub incoterm |
+| greenpepper name | name |
+|id|id|
+| code | subIncotermCode |
+| meaning | meaning |
+| incoterm | idIncoterm | incoterm |
+| transport mode | transportMode |
+| ines transport mode | inesTransportMode |
+
+|| auto setup ||
+| configure entity | exploitation mode |
+| greenpepper name | name |
+| code | exploitModeCode |
+| meaning | meaning |
+| community | idCommunity | community |
+
+|| auto setup ||
+| configure entity | transport means type |
+| greenpepper name | name |
+| code | code |
+| meaning | meaning |
+| transport mode | transportMode | transport mode |
+| transport means | transportMeansKind | transport means |
+
+|| auto setup ||
+| configure entity | vat |
+| greenpepper name | name |
+| code | tvaCode |
+| meaning | meaning |
+| check taxable | checkTaxable |
+| check vat default | checkVatDefault |
+| taxtn kind | taxtnKind |
+| expiration date | expirationDate |
+
+|| auto setup ||
+| configure entity | tax item |
+| greenpepper name | name |
+| code | taxItemCode |
+| meaning | meaning |
+| tax item key | taxItemKey |
+| check vat | checkVat |
+| vat | idVat | vat |
+| check gross margin | checkGrossMargin |
+
+|| auto setup ||
+| configure entity | option type |
+| greenpepper name | name |
+| code | optionTypeCode |
+| meaning | meaning |
+| priority | priorityLevel | priority |
+| check organize | checkOrganize |
+| check direct | checkDirect |
+| check no routing | checkNoRouting |
+| check authorization | checkAuthorization |
+| check taxed option | checkTaxedOption |
+| tax item | idTaxItem | tax item |
+| check responsible | checkResponsible |
+| check means type | checkMeansType |
+| check supplier | checkSupplier |
+
+|| auto setup ||
+| configure entity | offer |
+| greenpepper name | name |
+| code | offerCode |
+| meaning | meaning |
+| community | idCommunity | community |
+| check direct | checkDirect |
+| check no routing | checkNoRouting |
+| check 4PL | check4pl |
+| check exp op | checkExpOperations |
+| check adm op | checkAdmOperations |
+| check compute adm op at creation | checkComputeAdmOpeCre |
+| check compute adm op at execution | checkComputeAdmOpeExe |
+| routing mode | routingMode | routing mode |
+| priority | priorityLevel | priority |
+|checkHidePrincipal|checkHidePrincipal|
+|defaultCommodityKind|defaultCommodityKind|
+|checkHideIncoterm|checkHideIncoterm|
+|checkHidePkpKind|checkHidePkpKind|
+|checkHideDlvKind|checkHideDlvKind|
+|main offer|idMainOffer|offer|
+|object kind|objectKind|
+
+|| auto setup ||
+| configure entity | offer option type |
+| greenpepper name | name |
+| offer | idOffer | offer |
+| option type | idOptionType | option type |
+| xcode | xcode |
+| meaning | meaning |
+| limit status | limitStatus |
+| check authorization | checkAuthorization |
+| check taxed option | checkTaxedOption |
+| tax item | idTaxItem | tax item |
+| check responsible | checkResponsible |
+| check means type | checkMeansType |
+| check supplier | checkSupplier |
+
+||auto setup||
+|configure entity|transport request enrichment|
+|greenpepper name|name|
+| id | id |
+| crit community | idCritCommunity | community |
+| crit offer | idCritOffer | offer |
+| incoterm | idIncoterm | incoterm |
+| principal | idPrincipal | third party |
+| sub incoterm | idSubIncoterm | sub incoterm |
+
+||auto setup||
+|configure entity|center criteria|
+|greenpepper name|name|
+| id | id |
+| community | community | community |
+| contact center | contactCenter | center |
+| exploit center | exploitCenter | center |
+| manage center | centerManage | center |
+| principal | principal | third party |
+
+||auto setup||
+|configure entity|community criteria|
+|greenpepper name|name|
+| id | id |
+| community | idCommunity | community |
+| crit community | idCritCommunity | community |
+| crit offer | idCritOffer | offer |
+| crit tp principal | idCritTpPrincipal | third party |
+
+||auto setup||
+|configure entity|software|
+|greenpepper name|name|
+| code | code |
+| exec order trsm mode | execOrderTrsmMode |
+| id | id |
+| update mode | updateMode |
+
+|| auto setup ||
+| configure entity | trademark |
+| greenpepper name | name |
+| idTradeMark | idTrademark |
+| code | code |
+
+|| auto setup ||
+|configure entity | mark country return |
+|greenpepper name | name |
+|idTradeMark | idTradeMark | trademark |
+|idReturnType | idReturnType | return type |
+|idCountry | idCountry | country |
+|dealerType|idDealerType|dealer type|
+|minPkpContractPeriodDelay | minPkpContractPeriodDelay |
+|maxPkpContractPeriodDelay | maxPkpContractPeriodDelay |
+|minDlvContractPeriodDelay | minDlvContractPeriodDelay |
+|maxDlvContractPeriodDelay | maxDlvContractPeriodDelay |
+|offer|idOffer|offer|
+
+|| auto setup ||
+| configure entity | return pr rule |
+| greenpepper name | name |
+| exploitCenter		| idPkpExploitCenter | center |
+| pkpCountry 		| idPkpCountry 	| country |
+| tradeMark 		| idTrademark 	| trademark |
+| returnType 		| idReturnType 	| return type |
+| dealerType 		| idDealerType 	| dealer type |
+| incoterm			| idIncoterm	| incoterm |
+| consignee			| idConsignee	| third party |
+| commodityKind		| commodityKind	|
+| principal		    | idPrincIsDo	| third party |
+ 
+||auto setup||
+|configure entity|transportBusiness|
+|greenpepper name|name|
+| idPrincipal | idPrincipal | third party |
+| idConsignee | idConsignee | third party |
+| pkpCtrCountry | pkpCtrCountry |
+| pkpCountry | pkpCountry |
+| pkpState | pkpState |
+| pkpCity | pkpCity |
+| pkpZip | pkpZip |
+| dlvCountry | dlvCountry |
+| dlvState | dlvState |
+| dlvCity | dlvCity |
+| dlvZip | dlvZip |
+| aboveTrspBusinessKind | aboveTrspBusinessKind |
+| belowTrspBusinessKind | belowTrspBusinessKind |
+
+_________________________________________________________
+________________________ BOP ____________________________
+
+h1. Bop domains
+
+|| setup || domain ||
+| name | class name | table name |
+| transport request status | fr.gefco.tli.psc.bop.model.domains.IEnumTransportRequestStatus |T_TYPE_TRSP_REQUEST_STATUS |
+| customer order status | fr.gefco.tli.psc.bop.model.domains.IEnumCustomerOrderStatus |T_TYPE_CUST_ORDER_STATUS |
+| execution order status | fr.gefco.tli.psc.bop.model.domains.IEnumExecutionOrderStatus |T_TYPE_EXEC_ORDER_STATUS |
+| operation status | fr.gefco.tli.psc.bop.model.domains.IEnumOperationStatus |T_TYPE_OPERATION_STATUS |
+|segment type|fr.gefco.tli.psc.bop.model.domains.IEnumSegmentType|T_TYPE_SEGMENT |
+|segment nature|fr.gefco.tli.psc.bop.model.domains.IEnumSegmentKind|T_TYPE_SEGMENT_NATURE |
+
+h1. Entities configuration
+
+|| setup || entity ||
+| name | class name | search by |
+| transport request | fr.gefco.tli.psc.bop.model.ITransportRequest | trspRqtNo |
+|member role|fr.gefco.tli.psc.bop.model.IMemberRole|id|
+|commodity|fr.gefco.tli.psc.bop.model.ICommodity|id|
+|packing element|fr.gefco.tli.psc.bop.model.IPackingElement|id|
+|packing line|fr.gefco.tli.psc.bop.model.IPackingLine|id|
+|parcel|fr.gefco.tli.psc.bop.model.IParcel|id|
+|step point|fr.gefco.tli.psc.bop.model.IStepPoint|id|
+|routing plan|fr.gefco.tli.psc.bop.model.IRoutingPlan|id|
+|trip file|fr.gefco.tli.psc.bop.model.ITripFile|id|
+|trip file means|fr.gefco.tli.psc.bop.model.ITripFileMeans|id|
+|segment|fr.gefco.tli.psc.bop.model.ISegment|id|
+|oper group|fr.gefco.tli.psc.bop.model.IOperGroup|id|
+|operation|fr.gefco.tli.psc.bop.model.IOperation|id|
+|milestone|fr.gefco.tli.psc.bop.model.IMilestone|id|
+|customerOrder|fr.gefco.tli.psc.bop.model.ICustomerOrder|id|
+|executionOrder|fr.gefco.tli.psc.bop.model.IExecutionOrder|execOrderNo|
+|operation|fr.gefco.tli.psc.bop.model.IOperation|id|
+|incoming event|fr.gefco.tli.psc.bop.model.IIncomingEvent1|id|
+
+h3. Transport request
+
+|| auto setup ||
+| configure entity 		| transport request |
+| greenpepper name 		| name 				|
+| id					|id					|
+| transportRequestNo	| trspRqtNo 		|
+| transportRequestXNo	| transportRqtXNo 	|
+| communityCode 		| idCommunity 		| community 				|
+| idSenderMemberRole	| idSender 			| member role 				|
+| idPickupMemberRole 	| idPkp 			| member role 				|
+| idConsigneeMemberRole | idConsignee 		| member role 				|
+| idDeliveryMemberRole 	| idDlv 			| member role 				|
+| idPrincipalMemberRole | idPrincipal		| member role 				|
+| idCommodity 			| idCommodity 		| commodity 				|
+| trademarkCode 		| idTradeMark 		| trademark 				|
+| status 				| status 			| transport request status 	|
+| returnTypeCode 		| idReturn 			| return type 				|
+| checkCustoms 			| checkCustoms 		|
+| customer offer 		| idCustOffer 		| offer 					|
+| exploit center        | idPkpExploitCenter| center 					|
+| contact center        | idContactCenter 	| center 					|
+| dep management center | idDepManageCenter	| center 					|
+| idCustOrder           | idCustOrder  		| customerOrder 			|
+| nextStatus         	| nextStatus		|
+| idCluster				| idCluster			|
+| custReservation		| custReservation	|
+| originSystem			| originSystem		|
+| nextStatus			| nextStatus		|
+| dnOnGoing				| dnOnGoing			|
+| endOfOnGoingDate		| endOfOnGoingDate	|
+
+h3. Member role
+
+|| auto setup ||
+| configure entity | member role |
+| greenpepper name | name |
+| id | id |
+| memberRoleKind |memberRoleKind|member role type |
+| xCode |XCode|
+| name |name|
+| thirdPartyCode |idThirdParty|third party|
+| platformCode |idPlatform|platform|
+| address |address|
+| id zip | idZip |zip|
+| phone |phone|
+| checkImperative |checkImperative|
+| checkRdv |checkRdv|
+| checkFloor |checkFloor|
+| trip xcode |tripXCode|
+| route xno | routeXno |
+| idSupplier | idSupplier | third party |
+| supplier | idSupplier | third party |
+| xzip | xzip | 
+| xcity | xcity | 
+| xcountry | xcountry | 
+| xstate | xstate | 
+| plannedDate | plannedDate|
+| plannedTimeStart| plannedTimeStart|
+| plannedTimeEnd | plannedTimeEnd |
+| plannedDate | plannedDate |
+| plannedTimeStart| plannedTimeStart|
+| plannedTimeEnd| plannedTimeEnd|
+
+h3. Commodity
+
+|| auto setup ||
+| configure entity | commodity |
+| greenpepper name | name |
+|id | id |
+|packingUnits |packingUnits|
+|grossWeight|grossWeight|
+|calcGrossWeight|calcGrossWeight|
+|volume|volume|
+|calcVolume|calcVolume|
+|meters|linearMeters|
+|checkHighValueParcel|checkHighvalueParcel|
+|checkFragile|checkFragile|
+|checkFreightSecured|checkFreightSecured|
+|checkDangerous|checkDangerous|
+|commodityKind|commodityKind|commodityKind|
+
+h3. Routing Plan
+
+|| auto setup ||
+| configure entity 			| routing plan 			|
+| greenpepper name 			| name 					|
+| plantype					| planType				|
+| situation third party 	| idSitThirdParty		| third party 		|
+| situation platform 		| idSitPlatform			| platform 			|
+| situation zip 			| idSitZip				| zip 				|
+| situation country			| idSitCountry			| country 			|
+| situation state 			| idSitState			| state 			|
+| arrival third party		| idArrThirdParty		| third party 		|
+| arrival platform 			| idArrPlatform			| platform 			|
+| arrival zip				| idArrZip				| zip 				|
+| arrival country			| idArrCountry			| country 			|
+| arrival state 			| idArrState			| state 			|
+| next platform				| idNextPlatform		| platform			|
+| next supplier				| idNextSupplier		| third party 		|
+| start date				| startDate				|
+| end date					| endDate				|
+| community					| idCommunity			| community 		|
+| next execution order kind	| nextExecOrderKind		|
+| next transport mode		| nextTransportMode		|
+| next supplier product		| idNextSupplierProduct | supplier product  | 
+| next duration				| nextDuration			|
+| next transmission mode	| nextTransmissionMode 	|
+| cust reservation			| custReservation		|
+| next dep time 			| nextDepTime			|
+
+h3. Step point
+
+|| auto setup ||
+| configure entity 		| step point 			|
+| greenpepper name 		| name 					|
+| id			 		| id 					|
+| transport request no	| idTransportRequest	| transport request	|
+| platform code			| idPlatform			| platform 			|
+| dep trip xcode 		| depTripXCode			|	
+| dep route xno			| depRouteXno			|
+
+h3. Trip file
+
+|| auto setup ||
+|configure entity|trip file|
+|greenpepper name|name|
+|id|id|
+|xid|tripFileXid|
+|code|tripFileCode|
+|exploit center|idExploitCenter|center|
+|status|status|
+|transport mode|transportMode|
+|trip supplier|idTripSupplier|member role|
+|dep address|idDepAddress|member role|
+|dep platform|idDepPlatform|platform|
+|arr address|idArrAddress|member role|
+|arr platform|idArrPlatform|platform|
+|dep planned date|depPlannedDate|
+|arr planned date|arrPlannedDate|
+|dep real date|depRealDate|
+|arr real date|arrRealDate|
+|trip xcode|tripXcode|
+|route xno|routeXno|
+
+h3. Trip file mean
+
+|| auto setup ||
+| configure entity 		| trip file means |
+| greenpepper name 		| name 			|
+| id			 		| id 			|
+|xid|tripFileMeansXid|
+|trip file|idTripFile|trip file|
+|start segment|idStartSegment|segment|
+|end segment|idEndSegment|segment|
+|transport means kind|transportMeansKind|
+|means type|transportMeansType|
+|road|idTransportMeans|transport means|
+|registration no|registrationNo|
+|means supplier|idMeanSupplier|third party|
+|cost center|idCostCenter|center|
+
+h3. Segment
+
+|| auto setup ||
+| configure entity 		| segment |
+| greenpepper name 		| name 			|
+| id| id |
+|xid|segmentXid|
+|trip file|idTripFile|trip file|
+|sequence no|sequenceNo|
+|segment kind|segmentKind|
+|segment mode|segmentMode|
+|dep platform|idDepPlatform|platform|
+|dep planned date|depPlannedDate|
+|arr platform|idArrPlatform|platform|
+|arr planned date|arrPlannedDate|
+
+h3. Operation
+
+|| auto setup ||
+| configure entity | operation |
+| greenpepper name | name |
+|id|id|
+|execution order|idExecOrder|execution order|
+|status|status|
+|nature|operationNature|
+|sequence no|sequenceNo|
+|transport mode|transportMode|
+|operation kind|operationKind|
+|operation no|operationNo|
+|xid|operationXid|
+|pkp member role|idPkp|member role|
+|dlv member role|idDlv|member role|
+|dep third party xcode|depTpXcode|
+|dep planned date|depPlannedDate|
+|dep real date|depRealDate|
+|dep platform|idDepPlatform|platform|
+|arr third party xcode|arrTpXcode|
+|arr platform|idArrPlatform|platform|
+|arr planned date|arrPlannedDate|
+|arr real date|arrRealDate|
+|exec center|idExecCenter|center|
+|trip xcode|tripXcode|
+|trucker|idTrucker|third party|
+|route xno|routeXno|
+|oper group|idOperGroup|oper group|
+|pos no|posNo|
+
+h3. Operation group
+
+|| auto setup ||
+| configure entity | oper group|
+| greenpepper name | name |
+|id|id|
+|oper group xno|operGroupXno|
+|trip file|idTripFile|trip file|
+|exploit center|idExploitCenter|center|
+|dep planned date|depPlannedDate|
+|arr planned date|arrPlannedDate|
+|start segment|idStartSegment|segment|
+|end segment|idEndSegment|segment|
+
+h3. Packing line
+
+||auto setup||
+|configure entity|packing line|
+|greenpepper name|name|
+|id|id|
+|idCommodity|idCommodity|commodity|
+|packingUnits|packingUnits|
+|sequence|sequence|
+|packingKindCode|idPackingKind|packing kind|
+|checkEmpty|checkEmpty|
+|checkFold|checkFold|
+|checkCovered|checkCovered|
+|grossWeight|grossWeight|
+
+h3. Parcel
+
+||auto setup||
+|configure entity|parcel|
+|greenpepper name|name|
+|id|id|
+|parcelNo|parcelNo|
+|idCommodity|idCommodity|commodity|
+|idPackingLine|idPackingLine|packing line|
+|packingKindCode|idPackingKind|packing kind|
+|grossWeight|grossWeight|
+|checkDanger|checkDanger|
+|checkLabelled|checkLabelled|
+
+h3. Customer order
+
+||auto setup||
+| configure entity|customerOrder|
+| greenpepper name|name|
+| id|id|
+| status|status|customerOrderStatus|
+| nextStatus|nextStatus|
+| idCluster|idCluster|
+| custOrderNo	|custOrderNo|
+| custOrderXno	|custOrderXno|
+| idCommodity	|idCommodity|commodity|
+| exploit center	|idPkpExploitCenter| center |
+| idSenderMemberRole| idSender| member role |
+| idConsigneeMemberRole| idConsignee| member role |
+| idPickupMemberRole 	| idPkp 			| member role |
+| idPrincipalMemberRole | idPrincipal 		| member role |
+| idDeliveryMemberRole 	| idDlv 			| member role |
+| dnOnGoing				| dnOnGoing			|
+| endOfOnGoingDate		| endOfOnGoingDate	|
+
+h3. Execution order
+
+||auto setup||
+|configure entity|executionOrder|
+|greenpepper name|name|
+|id|id|
+|status|status|executionOrderStatus|
+|idCustOrder|idCustOrder|customerOrder|
+|sequenceNo|sequenceNo|
+|execOrderNo|execOrderNo|
+|execOrderXno|execOrderXno|
+|sequenceNo|sequenceNo|
+|nextStatus|nextStatus|
+|idCluster|idCluster|
+| idPickupMemberRole 	| idPkp 			| member role |
+| idDeliveryMemberRole 	| idDlv 			| member role |
+|checkFirstExecOrder|checkFirstExecOrder|
+|checkLastExecOrder|checkLastExecOrder|
+
+h3. Milestone
+
+||auto setup||
+|configure entity|milestone|
+|greenpepper name|name|
+|meaning|meaning|
+|xcode|xcode|
+|execOrder|idExecOrder|execution order|
+|thirdParty|idThirdParty|third party|
+|customerOrder|idCustOrder|customer order|
+
+h3. Incoming event
+
+||auto setup||
+|configure entity|incoming event|
+|greenpepper name|name|
+| check kind | checkKind |
+| check value | checkValue |
+| codif | codif |
+| comments | comments |
+| consignee code | consigneeCode |
+| consignee xcode | consigneeXcode |
+| delivery note | deliveryNote |
+| event action code | eventActionCode |
+| event type code | eventTypeCode |
+| event xid | eventXid |
+| exec center code | execCenterCode |
+| exec center xcode | execCenterXcode |
+| id | id |
+| manage center code | manageCenterCode |
+| manage center xcode | manageCenterXcode |
+| meaning | meaning |
+| means no | meansNo |
+| object kind | objectKind |
+| object no | objectNo |
+| object xid | objectXid |
+| object xno | objectXno |
+| origin | origin |
+| origin soft code | originSoftCode |
+| origin type code | originTypeCode |
+| origin type xcode | originTypeXcode |
+| parcel anomaly code | parcelAnomalyCode |
+| parcel anomaly xcode | parcelAnomalyXcode |
+| parcel evt anomaly code | parcelEvtAnomalyCode |
+| parcel evt anomaly xcode | parcelEvtAnomalyXcode |
+| parcel evt status code | parcelEvtStatusCode |
+| parcel evt status xcode | parcelEvtStatusXcode |
+| parcel status code | parcelStatusCode |
+| parcel status xcode | parcelStatusXcode |
+| planned date | plannedDate |
+| platform code | platformCode |
+| platform xcode | platformXcode |
+| pos no | posNo |
+| principal code | principalCode |
+| principal xcode | principalXcode |
+| real date | realDate |
+| sender code | senderCode |
+| sender xcode | senderXcode |
+| third party code | thirdPartyCode |
+| third party xcode | thirdPartyXcode |
+| tracking reference | trackingReference |
+| xaction | xaction |
+| xcode | xcode |
+| xcreated date | xcreatedDate |
+| xreal date | xrealDate |
+
+||auto setup||
+|configure entity|type commodity|
+|greenpepper name|name|
+| code | code |
+| id | id |
+| meaning | meaning |
+
+||auto setup||
+|configure entity|codif|
+|greenpepper name|name|
+| code | code |
+| id | id |
+| meaning | meaning |
+
+||auto setup||
+|configure entity|type commodity x code|
+|greenpepper name|name|
+| codif | idCodif | codif |
+| id | id |
+| type commodity | idTypeCommodity | type commodity |
+| xcode | xcode |
+
+||auto setup||
+|configure entity|third party xcode|
+|greenpepper name|name|
+|idCodif | idCodif | codif |
+|codif| codif |
+|thirdParty | idThirdParty | third party |
+|xcode | thirdPartyXcode |
+
+
+||auto setup||
+|configure entity|param|
+|greenpepper name|name|
+| db name | dbName |
+| id | id |
+| key | key |
+| meaning | meaning |
+| value | value |
+| version | version |
+
+||auto setup||
+|configure entity|event type xcode|
+|greenpepper name|name|
+| event type | eventType |
+| id | id |
+| codif | idCodif | codif |
+| event action type | idEventActionType | eventActionType |
+| meaning | meaning |
+| xaction | xaction |
+| xcode | xcode |
+
+||auto setup||
+|configure entity|event action type|
+|greenpepper name|name|
+| adm impact | admImpact |
+| check anomaly | checkAnomaly |
+| check imperative comments | checkImperativeComments |
+| check imperative planned date | checkImperativePlannedDate |
+| check missing | checkMissing |
+| check portal display | checkPortalDisplay |
+| check stop date | checkStopDate |
+| code | code |
+| dam impact | damImpact |
+| dlv impact | dlvImpact |
+| dly impact | dlyImpact |
+| event impact action | eventImpactAction |
+| event location type | eventLocationType |
+| event type | eventType |
+| id | id |
+| meaning | meaning |
+| mis impact | misImpact |
+| pkp impact | pkpImpact |
+| portal meaning | portalMeaning |
+| sequence inside location | sequenceInsideLocation |
+| tra impact | traImpact |
+
+|| auto setup ||
+| configure entity | itinerary |
+| greenpepper name | name |
+| id | id |
+| customer order | idCustOrder |
+| platform | idPlatform |
+| third party | idThirdParty |
+| sequence no | sequenceNo|
+
