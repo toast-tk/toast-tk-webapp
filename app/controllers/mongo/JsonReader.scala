@@ -1,9 +1,8 @@
 package controllers.mongo
 
-import play.api._
+import controllers.parsers.WebPageElement
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import play.api.libs.json.util._
 import play.api.libs.json.Writes._
 import play.api.libs.json.Reads._
 import reactivemongo.bson.BSONDocumentReader
@@ -15,31 +14,28 @@ case class ConfigurationSyntax(sentence: String, typed_sentence: String)
 case class ConfigurationRow(group: String, name: String, syntax: List[ConfigurationSyntax])
 case class Configuration(id: Option[String], cType: String, rows: List[ConfigurationRow])
 
-case class AutoSetupConfig(id: Option[String], name: String, cType: String, columns: String, rows: String)
+case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: List[WebPageElement])
 
 object AutoSetupConfig{
     implicit val autoSetupConfigReader: Reads[AutoSetupConfig]= (
       (__ \ "id").readNullable[String] and
       (__ \ "name").read[String] and
       (__ \ "type").read[String] and
-      (__ \ "columns").read[String]
-      and (__ \ "rows").read[String])(AutoSetupConfig.apply(_,_ , _,_, _)
+      (__ \ "rows").read[List[WebPageElement]])(AutoSetupConfig.apply(_,_ , _,_)
     )
-  
+
     implicit val autoSetupConfigWriter: Writes[AutoSetupConfig] = (
     (__ \ "id").writeNullable[String] and  
     (__ \ "name").write[String] and
     (__ \ "type").write[String] and
-    (__ \ "columns").write[String] and
-    (__ \ "rows").write[String])(unlift(AutoSetupConfig.unapply))
+    (__ \ "rows").write[List[WebPageElement]])(unlift(AutoSetupConfig.unapply))
   
   implicit object AutoSetupConfigurationWriter extends BSONDocumentWriter[AutoSetupConfig] {
     def write(configuration: AutoSetupConfig): BSONDocument = 
       configuration.id match {
-      	case None =>  BSONDocument("name"-> configuration.name, "type" -> configuration.cType, "columns" -> configuration.columns ,  "rows" -> configuration.rows)
-      	case  value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> configuration.name,  "type" -> configuration.cType, "columns" -> configuration.columns , "rows" -> configuration.rows)
+      	case None =>  BSONDocument("name"-> configuration.name, "type" -> configuration.cType,  "rows" -> configuration.rows)
+      	case  value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> configuration.name,  "type" -> configuration.cType,  "rows" -> configuration.rows)
       }
-     
   }
 
   implicit object AutoSetupConfigurationReader extends BSONDocumentReader[AutoSetupConfig] {
@@ -47,9 +43,8 @@ object AutoSetupConfig{
       val id = doc.getAs[BSONObjectID]("_id").get.stringify
       val name = doc.getAs[String]("name").get
       val ctype = doc.getAs[String]("type").get
-      val columns = doc.getAs[String]("columns").get
-      val rows = doc.getAs[String]("rows").get
-      AutoSetupConfig(Option[String](id), name, ctype, columns, rows)
+      val rows = doc.getAs[List[WebPageElement]]("rows").get
+      AutoSetupConfig(Option[String](id), name, ctype, rows)
     }
   }
 }
@@ -94,7 +89,7 @@ object ConfigurationRow {
 
   implicit object ConfigurationRowWriter extends BSONDocumentWriter[ConfigurationRow] {
     def write(configurationRow: ConfigurationRow): BSONDocument = BSONDocument(
-       "type" -> configurationRow.group,
+      "type" -> configurationRow.group,
       "name" -> configurationRow.name,
       "syntax" -> configurationRow.syntax)
   }

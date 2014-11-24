@@ -1,24 +1,25 @@
 package controllers.mongo
-
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.Failure
-import scala.util.Success
-import reactivemongo.api.MongoDriver
+import reactivemongo.api.{MongoDriver, _}
 import reactivemongo.bson.BSONDocument
 import reactivemongo.bson.Producer.nameValue2Producer
-import reactivemongo.bson.BSONDocumentWriter
-import reactivemongo.bson.BSONDocumentReader
+import reactivemongo.api.collections.default.BSONCollection
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import reactivemongo.bson.BSONObjectID
+import scala.util.{Failure, Success}
 
 object MongoConnector extends App {
-  import reactivemongo.api._
-  import scala.concurrent.ExecutionContext.Implicits.global
+
   lazy val driver = new MongoDriver
   val mongo_db_addr = "localhost";
   val db_name = "play_db";
   val config_collection_name = "configuration";
-  
+
+  def getRepositoryCollection: BSONCollection = {
+    val connection = driver.connection(List("localhost"))
+    val db = connection("play_db")
+    db("repository")
+  }
+
   def saveConfiguration(conf: Configuration) {
     val connection = driver.connection(List("localhost"))
     val db = connection("play_db")
@@ -34,7 +35,6 @@ object MongoConnector extends App {
 	      case Success(_) => println("successfully saved configuration !")
 	    }
     }
-    
   }
   
   def saveAutoConfiguration(conf: AutoSetupConfig) {

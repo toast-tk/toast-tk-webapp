@@ -1,0 +1,44 @@
+<div class="container">
+  
+  Welcome to redplay, {{user.firstName}} {{user.lastName}}!
+  <br>
+  <hr>
+  <h1> Run blocks  <button class="btn" data-ng-click="">Save</button></h1>
+  <div class="row">
+  	<div class="col-md-12">
+  		  Add a new <select ng-model="selectedType" ng-options="type.name for type in scenario_types"></select> scenario
+ 		  <button class="btn btn-primary btn-xs" data-ng-click="add()">+</button>
+  	</div>
+  </div>
+
+  <br>
+  <div>
+  	<div ng-repeat="scenario in scenarii">
+  		Type: <label>{{ scenario.type }}</label>
+  		<table class="table" width="200px;">
+  			<tr>
+  				<td ng-repeat="c in scenario.columns"></span>{{c.name}}</td>
+  				<td></td>
+  			</tr>
+  			<tr ng-repeat="r in scenario.rows">
+  				<td ng-repeat="c in scenario.columns" pattern pattern-value="{{r[c.name]}}" pattern-post="{{c.post}}" pattern-model="r" pattern-column="{{c.name}}"></td>
+  				<td>
+  					<button class="btn btn-xs" data-ng-click="deleteRow(scenario, r)">-</button>
+				</td>
+			</tr>
+  			<tr ng-model="newRow">
+  				<td ng-repeat="c in scenario.columns">
+  					<span template ng-model="newRow[c.name]" template-value="{{c.reference}}"
+  						template-post="{{c.post}}" template-config-type="{{ scenario.type }}"
+  						template-context="{{ scenario.driver }}">
+	  					<input type="text" ng-model="newRow[c.name]" style="width: 100%;" placeholder="{{c.name}}"/>
+  					</span>
+  				</td>
+  				<td>
+  					<button class="btn btn-primary btn-xs" data-ng-click="addRow(scenario, newRow)">+</button>
+  				</td>
+  			</tr>
+  		</table>
+  	</div>
+  </div>
+</div>

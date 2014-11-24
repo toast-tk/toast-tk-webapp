@@ -1,0 +1,46 @@
+<div class="container">
+
+	Welcome to redplay, {{user.firstName}} {{user.lastName}}!
+	<br>
+	<hr>
+
+	<h1> Dictionnary blocks  <button class="btn" data-ng-click="saveAutoConfig()">Save</button></h1>
+	<div class="row">
+		<div class="col-md-12">
+			Add a new <select ng-model="selectedAutoSetupConfigType" ng-options="type for type in run_config_types"></select> auto setup
+			<button class="btn btn-primary btn-xs	" data-ng-click="addAutoSetupConfig()">+</button>
+		</div>
+	</div>
+
+	<br>
+	<div>
+		<div ng-repeat="autosetup in autosetups">
+			Type: <label>{{ autosetup.type }}</label> Name: <input type="text" placeholder="name" ng-model="autosetup.name"/>
+			<table class="table" width="200px;">
+				<tr>
+					<td ng-repeat="c in autosetup.columns">
+						<span>{{c.name}}</span>
+					</td>
+					<td></td>
+				</tr>
+				<tr ng-repeat="r in autosetup.rows">
+					<td ng-repeat="c in autosetup.columns">{{r[c.name]}}</td>
+					<td>
+						<button class="btn btn-xs" data-ng-click="">-</button>
+					</td>
+				</tr>
+				<tr ng-model="newAutoSetupRow">
+					<td ng-repeat="c in autosetup.columns">
+  					<span ng-model="newAutoSetupRow[c.name]">
+	  					<input type="text" ng-model="newAutoSetupRow[c.name]" style="width: 100%;" placeholder="{{c.name}}"/>
+  					</span>
+					</td>
+					<td>
+						<button class="btn btn-primary btn-xs" data-ng-click="addAutoSetupRow(autosetup,newAutoSetupRow)">+</button>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+</div>

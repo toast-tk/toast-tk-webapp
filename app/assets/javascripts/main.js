@@ -40,11 +40,17 @@
     var app = angular.module("app", ["play.routing", "red.components"]);
     
     app.controller("LoginCtrl", login.LoginCtrl);
-    app.controller("EditorCtrl", editor.MainCtrl);
+    app.controller("MainCtrl", editor.MainCtrl);
+    app.controller("ConfigurationCtrl", editor.ConfigurationCtrl);
+    app.controller("ScenarioCtrl", editor.ScenarioCtrl);
+    app.controller("RepositoryCtrl", editor.RepositoryCtrl);
     
     app.config(["$routeProvider", function($routeProvider){
 	  $routeProvider.when("/",{ templateUrl: "assets/html/login.html", controller: "LoginCtrl"});
-	  $routeProvider.when("/editor",{ templateUrl: "assets/html/editor.html", controller: "EditorCtrl"});
+	  $routeProvider.when("/main",{ templateUrl: "assets/html/editor.html", controller: "MainCtrl"});
+      $routeProvider.when("/configuration",{ templateUrl: "assets/html/configuration.html", controller: "ConfigurationCtrl"});
+      $routeProvider.when("/scenario",{ templateUrl: "assets/html/scenario.html", controller: "ScenarioCtrl"});
+      $routeProvider.when("/repository",{ templateUrl: "assets/html/repository.html", controller: "RepositoryCtrl"});
 	}]);
 	
     angular.bootstrap(document, ["app"]);

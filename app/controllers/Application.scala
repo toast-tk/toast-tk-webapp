@@ -37,6 +37,13 @@ object Application extends Controller {
         		  				Json.obj("name"-> "method", "descriptor" -> Json.obj("type" -> Json.arr("CSS", "XPATH", "ID"))),
         		  				Json.obj("name"-> "position", "descriptor" -> Json.obj())))
     	);
+      case "swing container" => Ok(
+        Json.obj(
+          "columns" -> Json.arr(Json.obj("name"->"name", "descriptor" -> Json.obj()),
+            Json.obj("name"->"type","descriptor" -> Json.obj("type" -> Json.arr("button", "link", "input"))),
+            Json.obj("name"-> "locator", "descriptor" -> Json.obj())
+            ))
+      );
       case "configure entity" => Ok(
         Json.obj(
           "columns" -> Json.arr(Json.obj("name"->"entity", "descriptor" -> Json.obj()), 
@@ -148,13 +155,21 @@ object Application extends Controller {
         MongoConnector.loadWebPagesFromRepository().map{
           pageConfigurations => {
             for(page <- pageConfigurations){
-              val rows = Json.parse(page.rows);
-              val names = (rows \\ "name")
-              res = res ++ (names.map{ name => JsString(page.name + "." + name)});
+              val pageElements = page.rows;
+              res = res ++ (pageElements.map{ element => JsString(page.name + "." + element.name)});
             }
           } 
           Ok(Json.toJson(res));
         }
+      }
+    }
+  }
+
+  def main (args: Array[String]) {
+    MongoConnector.loadAutoConfiguration.map{
+      repository => {
+        println(repository)
+        println(Json.toJson(repository))
       }
     }
   }
