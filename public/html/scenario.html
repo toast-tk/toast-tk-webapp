@@ -3,7 +3,7 @@
   Welcome to redplay, {{user.firstName}} {{user.lastName}}!
   <br>
   <hr>
-  <h1> Run blocks  <button class="btn" data-ng-click="">Save</button></h1>
+  <h1> Scenario blocks  <button class="btn" data-ng-click="save()">Save</button></h1>
 
   <div class="row">
   	<div class="col-md-12">
@@ -22,7 +22,10 @@
   				<td></td>
   			</tr>
   			<tr ng-repeat="r in scenario.rows">
-  				<td ng-repeat="c in scenario.columns" pattern pattern-value="{{r[c.name]}}" pattern-post="{{c.post}}" pattern-model="r" pattern-column="{{c.name}}"></td>
+  				<td ng-repeat="c in scenario.columns"
+					pattern pattern-value="{{r[c.name]}}" pattern-post="{{c.post}}"
+					pattern-model="r" pattern-column="{{c.name}}"
+					pattern-context="{{scenario.type}}"></td>
   				<td>
   					<button class="btn btn-xs" data-ng-click="deleteRow(scenario, r)">-</button>
 				</td>

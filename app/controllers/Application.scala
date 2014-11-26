@@ -1,17 +1,11 @@
 package controllers
 
-import controllers.mongo.Configuration
-import controllers.mongo.ConfigurationRow
-import controllers.mongo.ConfigurationSyntax
-import controllers.mongo.MongoConnector
-import play.api._
+import controllers.mongo._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
 import play.api.libs.json.Reads._
 import play.api.libs.json.Writes._
+import play.api.libs.json._
 import play.api.mvc._
-import controllers.mongo.AutoSetupConfig
 
 object Application extends Controller {
   def index = Action {
@@ -28,29 +22,23 @@ object Application extends Controller {
    *
    */
   def loadAutoSetupCtx(setupType: String) = Action {
+     Ok(autoSetupCtxProvider(setupType))
+  }
+
+  def autoSetupCtxProvider(setupType: String): JsArray = {
     setupType match {
-      case "web page" => Ok(
-        Json.obj(
-          "columns" -> Json.arr(Json.obj("name"->"name", "descriptor" -> Json.obj()), 
-        		  				Json.obj("name"->"type","descriptor" -> Json.obj("type" -> Json.arr("button", "link"))), 
-        		  				Json.obj("name"-> "locator", "descriptor" -> Json.obj()), 
-        		  				Json.obj("name"-> "method", "descriptor" -> Json.obj("type" -> Json.arr("CSS", "XPATH", "ID"))),
-        		  				Json.obj("name"-> "position", "descriptor" -> Json.obj())))
-    	);
-      case "swing container" => Ok(
-        Json.obj(
-          "columns" -> Json.arr(Json.obj("name"->"name", "descriptor" -> Json.obj()),
+      case "web page" => Json.arr(Json.obj("name"->"name", "descriptor" -> Json.obj()),
+            Json.obj("name"->"type","descriptor" -> Json.obj("type" -> Json.arr("button", "link"))),
+            Json.obj("name"-> "locator", "descriptor" -> Json.obj()),
+            Json.obj("name"-> "method", "descriptor" -> Json.obj("type" -> Json.arr("CSS", "XPATH", "ID"))),
+            Json.obj("name"-> "position", "descriptor" -> Json.obj()))
+      case "swing page" => Json.arr(Json.obj("name"->"name", "descriptor" -> Json.obj()),
             Json.obj("name"->"type","descriptor" -> Json.obj("type" -> Json.arr("button", "link", "input"))),
-            Json.obj("name"-> "locator", "descriptor" -> Json.obj())
-            ))
-      );
-      case "configure entity" => Ok(
-        Json.obj(
-          "columns" -> Json.arr(Json.obj("name"->"entity", "descriptor" -> Json.obj()), 
-        		  				Json.obj("name"->"alias", "descriptor" -> Json.obj()), 
-        		  				Json.obj("name"->"search by", "descriptor" -> Json.obj())))
-		  );
-      case _ => Ok(Json.obj());
+            Json.obj("name"-> "locator", "descriptor" -> Json.obj()))
+      case "configure entity" => Json.arr(Json.obj("name"->"entity", "descriptor" -> Json.obj()),
+            Json.obj("name"->"alias", "descriptor" -> Json.obj()),
+            Json.obj("name"->"search by", "descriptor" -> Json.obj()))
+      case _ => Json.arr();
     }
   }
   
@@ -59,14 +47,18 @@ object Application extends Controller {
    *
    */
   def loadScenarioCtx(scenarioType: String) = Action {
+    Ok(scenarioDescriptorProvider(scenarioType))
+  }
+
+  def scenarioDescriptorProvider(scenarioType: String): JsArray = {
     scenarioType match {
-      case "web" => Ok(
-    		  Json.obj("columns" -> Json.arr(Json.obj("name" -> "patterns", "reference" -> true, "post" -> false), 
-    				  						 Json.obj("name" -> "comment", "reference" -> false, "post" -> true))
-    				  )
-      );
-      
-      case _ => Ok(Json.obj());
+      case "web" => Json.arr(Json.obj("name" -> "patterns", "reference" -> true, "post" -> false),
+          Json.obj("name" -> "comment", "reference" -> false, "post" -> true))
+      case "swing" =>  Json.arr(Json.obj("name" -> "patterns", "reference" -> true, "post" -> false),
+          Json.obj("name" -> "comment", "reference" -> false, "post" -> true))
+      case "backend" => Json.arr(Json.obj("name" -> "patterns", "reference" -> true, "post" -> false),
+          Json.obj("name" -> "comment", "reference" -> false, "post" -> true))
+      case _ => Json.arr();
     }
   }
 
@@ -74,8 +66,8 @@ object Application extends Controller {
    *   Save Meta config
    */
   def saveConfiguration() = Action(parse.json) { implicit request =>
-    request.body.validate[Seq[Configuration]].map {
-      case configs: Seq[Configuration] =>
+    request.body.validate[Seq[MacroConfiguration]].map {
+      case configs: Seq[MacroConfiguration] =>
         for {
           conf <- configs
         } yield MongoConnector.saveConfiguration(conf)
@@ -101,12 +93,43 @@ object Application extends Controller {
   }
 
   /**
+   *   Save scenarii
+   */
+  def saveScenarii() = Action(parse.json) { implicit request =>
+    request.body.validate[Seq[Scenario]].map {
+      case scenarii: Seq[Scenario] =>
+        for {
+          scenario <- scenarii
+        } yield MongoConnector.saveScenario(scenario)
+        Ok("scenario saved !")
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
+  }
+
+  /**
    * load to init configuration
    */
   def loadConfiguration() = Action.async {
-    MongoConnector.loadConfiguration.map{
-      configurations => {
-        Ok(Json.toJson(configurations))
+      MongoConnector.loadConfiguration.map{
+        configurations => {
+          Ok(Json.toJson(configurations))
+        }
+      }
+    }
+
+  /**
+   * load to init scenarii
+   */
+  def loadScenarii() = Action.async {
+    MongoConnector.loadScenarii.map{
+      scenarii => {
+        val input = Json.toJson(scenarii).as[JsArray]
+        def extendedObject(obj: JsObject) = {
+          obj + ("columns" -> scenarioDescriptorProvider((obj \ "type").as[String]))
+        }
+        val response = for(i <- input.value) yield extendedObject(i.as[JsObject])
+        Ok(Json.toJson(response))
       }
     }
   }
@@ -116,7 +139,14 @@ object Application extends Controller {
    */
   def loadAutoConfiguration() = Action.async {
     MongoConnector.loadAutoConfiguration.map{
-      repository => Ok(Json.toJson(repository))
+      repository => {
+        val input = Json.toJson(repository).as[JsArray]
+        def extendedObject(obj: JsObject) = {
+          obj + ("columns" -> autoSetupCtxProvider((obj \ "type").as[String]))
+        }
+        val response = for(i <- input.value) yield extendedObject(i.as[JsObject])
+        Ok(Json.toJson(response))
+      }
     }
   }
   
@@ -160,6 +190,18 @@ object Application extends Controller {
             }
           } 
           Ok(Json.toJson(res));
+        }
+      }
+      case "SwingComponent" => {
+        var res = List[JsValue]();
+        MongoConnector.loadSwingPagesFromRepository().map{
+          pageConfigurations => {
+            for(page <- pageConfigurations){
+              val pageElements = page.rows;
+              res = res ++ (pageElements.map{ element => JsString(page.name + "." + element.name)});
+            }
+          }
+            Ok(Json.toJson(res));
         }
       }
     }

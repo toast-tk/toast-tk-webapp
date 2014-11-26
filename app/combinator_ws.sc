@@ -1,5 +1,19 @@
-import controllers.parsers.SetupEntityWikiParserTest
+import controllers.Application._
+import play.api.libs.json._
 
-val output = SetupEntityWikiParserTest.getListOfUnparsedPages("D:\\redplay\\redplay\\app\\config.txt")
+val input = Json.arr(
+    Json.obj("name" -> JsString("Watherhsip down"),
+      "type" -> JsString("web page"),
+      "rows" -> JsArray()),
+    Json.obj("name" -> JsString("Youga down"),
+      "type" -> JsString("swing page"),
+      "rows" -> JsArray())
+)
 
-output.mkString("\n")
+def extendedObject(obj: JsObject) = {
+  obj + ("columns" -> autoSetupCtxProvider((obj \ "type").as[String]))
+}
+
+val out = for(i <- input.value) yield extendedObject(i.as[JsObject])
+
+

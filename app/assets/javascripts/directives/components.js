@@ -28,8 +28,9 @@ define(["angular", "qTags"], function (angular, qTags) {
 			                { id:2, name:'Date', 'type':'date'},
 			                { id:3, name:'Int', 'type':'int'},
 			                { id:4, name:'WebPageItem', 'type':'reference', description: ''},
-			                { id:5, name:'Entity', 'type':'reference'}
-			            ];
+			                { id:5, name:'Entity', 'type':'reference'},
+							{ id:6, name:'SwingComponent', 'type':'reference', description: ''}
+						];
 			            query = query.toLowerCase();
 			            var found = _.filter(data, function(item) { return item.name.toLowerCase().indexOf(query) > -1; });
 			
@@ -63,6 +64,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 					   patternValue: "@",
 					   patternPost: "@",
 					   patternColumn: "@",
+				       patternContext: "@",
 					   patternModel: "="
 					},   	
 	        link: function ($scope, element, attrs) { 
@@ -70,24 +72,29 @@ define(["angular", "qTags"], function (angular, qTags) {
 				var match = "";
 				var tags = [];
 				var init = false;
-	        	$scope.$watch('patternValue + patternPost + patternColumn + patternModel', function(){
+	        	$scope.$watch('patternValue + patternPost + patternColumn + patternModel + patternContext', function(){
 		        	if(!init){
 		        		if($scope.patternPost == "true"){
 		        			var e = $compile('<input type="text" ng-model="patternModel[patternColumn]" placeholder="{{patternColumn}}" style="width: 100%;"/>')($scope);
 		        			element.append(e);
 		        		}else{
 		        			var patternValue = $scope.patternValue;
-			        		while (match != null) {
-								if(match != ""){
-									tags.push(match);
+							if(patternValue == "" || !angular.isObject(patternValue) || angular.isUndefined(patternValue)){
+								var e = $compile('<input type="text" ng-model="patternModel[patternColumn]" placeholder="{{patternColumn}}" style="width: 100%;"/>')($scope);
+								element.append(e);
+							}else{
+								while (match != null) {
+									if(match != ""){
+										tags.push(match);
+									}
+									match = regex.exec(patternValue);
 								}
-							    match = regex.exec(patternValue);
+
+								for(var i=0; i<tags.length; i++){
+									patternValue = replaceIndex(patternValue, tags[i][0],  tags[i].index , getTagForType(i ,tags[i][3], tags[i][4]));
+								}
+								element.append($("<span>" + patternValue + "</span>"));
 							}
-							
-							for(var i=0; i<tags.length; i++){
-				        		patternValue = replaceIndex(patternValue, tags[i][0],  tags[i].index , getTagForType(i ,tags[i][3], tags[i][4])); 
-				        	}
-				        	element.append($("<span>" + patternValue + "</span>"));
 		        		}
 		        		init = true;
 	        		}
@@ -105,12 +112,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 	        		if(varType == "string"){
 	        			return '<input type="text"/>';
 	        		} else if (varType == "reference"){
-	        			updateOptionsForReference(tagPosition, varDescriptor, "selenium"); //get context from model
-	        			/* static fashion
-	        			options = options.map(function(option){
-	        				return "<option>"+option+"</option>";
-	        			});
-	        			return '<select class="'+varDescriptor+ '_' + tagPosition +'">'+options.join('')+'</select>';*/
+	        			updateOptionsForReference(tagPosition, varDescriptor, $scope.patternContext); //get context from model, add related service name
 	        			return '<select class="'+varDescriptor+ '_' + tagPosition +'"></select>';
 	        		} else {
 	        			return '<select></select>';
@@ -119,7 +121,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 	        	
 	        	function updateOptionsForReference(tagPosition, descriptor, ctx){
 	        		if(descriptor == 'WebPageItem'){
-	        			if(ctx == "selenium"){
+	        			if(ctx == "web"){
 	        				//call play service
 	        				playRoutes.controllers.Application.loadCtxTagData(descriptor).get().then(function(response){
 	        					var select = element.find('.'+descriptor+'_'+tagPosition);
@@ -128,7 +130,19 @@ define(["angular", "qTags"], function (angular, qTags) {
 								});
 	        				});
 	        			}
-	        		}else if(descriptor == 'Entity'){
+	        		}
+					else if(descriptor == 'SwingComponent'){
+						if(ctx == "swing"){
+							//call play service
+							playRoutes.controllers.Application.loadCtxTagData(descriptor).get().then(function(response){
+								var select = element.find('.'+descriptor+'_'+tagPosition);
+								$.each(response.data, function(key, value) {
+									select.append($('<option>', { value : key }).text(value));
+								});
+							});
+						}
+					}
+					else if(descriptor == 'Entity'){
 	        		
 	        		}
 	        	}
@@ -157,12 +171,13 @@ define(["angular", "qTags"], function (angular, qTags) {
 		        		var templateModel = $scope.templateModel;
 		        		
 		        		playRoutes.controllers.Application.loadCtxSentences($scope.templateConfigType, $scope.templateContext).get().then(function(response){
-		        			$scope.values = response.data;
+		        			$scope.values = response.data || [];
+							$scope.values.unshift({sentence: "free text", typed_sentence : ""});
 							if($scope.templatePost == "true"){
 								element.replaceWith($("<span></span>"))
 							}
 							else if(templateValue == "true"){
-								var el =  $compile('<select ng-model="ngModel" ng-options="value.typed_sentence as value.sentence for value in values"></select>')($scope);
+								var el = $compile('<select ng-model="ngModel" ng-options="value.typed_sentence as value.sentence for value in values"></select>')($scope);
 					        	element.replaceWith(el);
 							}
 							init = true;

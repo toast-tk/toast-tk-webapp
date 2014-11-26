@@ -40,29 +40,27 @@ define(["angular"], function(angular) {
 		  };
 
 		  $scope.addConfigLine = function(config, item){
+			  //TODO: check which type is used here, type isn't persisted, it's probably an issue on server side
 			  config.rows.push({type: $scope.selectedConfigType, name: item, syntax: []});
 		  };
 
 	  },
 	  RepositoryCtrl: function($rootScope, $scope, playRoutes){
-		  $scope.run_config_types = ["web page", "configure entity", "swing container"];
+		  $scope.run_config_types = ["web page", "configure entity", "swing page"];
 		  $scope.autosetups = [];
 		  $scope.newAutoSetupRow = {};
 		  $scope.selectedAutoSetupConfigType = "";
-
-		  playRoutes.controllers.Application.loadAutoSetupCtx("web page").get().then(function(response){
-			  $scope.web_page_column_descriptor = response.data.columns;
-		  });
+		  $scope.autosetups = [];
 
 		  playRoutes.controllers.Application.loadAutoConfiguration().get().then(function(response){
 			  //convert autosetup rows into json
-			  $scope.autosetups = response.data.map(function(obj){
+			  var autosetups = response.data.map(function(obj){
 				  obj.rows = angular.isObject(obj.rows) ? obj.rows : JSON.parse(obj.rows);
-				  obj.columns = $scope.web_page_column_descriptor;//JSON.parse(obj.columns);
 				  return obj;
 			  });
-			  $scope.autosetups = $scope.autosetups || [];
+			  $scope.autosetups = autosetups || [];
 		  });
+
 
 		  $scope.addAutoSetupConfig = function(){
 			  playRoutes.controllers.Application.loadAutoSetupCtx($scope.selectedAutoSetupConfigType).get().then(function(response){
@@ -72,6 +70,10 @@ define(["angular"], function(angular) {
 					  rows: []});
 			  });
 		  };
+
+		  $scope.isArray = function(arr){
+			  return angular.isArray(arr) ? "array" : "";
+		  }
 
 		  $scope.saveAutoConfig = function(){
 			  var deepCopy = angular.copy($scope.autosetups);
@@ -83,13 +85,12 @@ define(["angular"], function(angular) {
 			  playRoutes.controllers.Application.saveAutoConfig().post(deepCopy).then(function(response){
 				  window.alert("Saved : " + response.data);
 			  });
-		  }
+		  };
 
 		  $scope.addAutoSetupRow = function(autosetup, newRow){
 			  autosetup.rows.push(newRow);
 			  $scope.newAutoSetupRow = {};
 		  };
-
 	  },
 	  ScenarioCtrl: function($rootScope, $scope, playRoutes){
 		  $scope.newRow = {};
@@ -97,11 +98,21 @@ define(["angular"], function(angular) {
 		  $scope.selectedType = "";
 		  $scope.scenarii = [];
 
+		  playRoutes.controllers.Application.loadScenarii().get().then(function(response) {
+			  var data = response.data || [];
+			  data.map(function(scenario){
+				  scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
+				  return scenario;
+			  });
+			  $scope.scenarii = data;
+		  });
+
 		  playRoutes.controllers.Application.loadConfiguration().get().then(function(response){
 			  $scope.configurations = response.data || [];
 			  for(var i =0; i< $scope.configurations.length; i++){
 				  for(var j=0; j< $scope.configurations[i].rows.length; j++){
-					  $scope.scenario_types.push({name: $scope.configurations[i].rows[j].name, type: $scope.configurations[i].rows[j].type});
+					  $scope.scenario_types.push({name: $scope.configurations[i].rows[j].name,
+						  type: $scope.configurations[i].rows[j].type});
 				  }
 			  }
 		  });
@@ -112,12 +123,11 @@ define(["angular"], function(angular) {
 				  $scope.scenarii.push({
 					  type: $scope.selectedType.type,
 					  driver: $scope.selectedType.name, //related service
-					  columns: scenarioDescriptor.columns,
+					  columns: scenarioDescriptor,
 					  rows: []
 				  });
 			  });
 		  };
-
 
 		  $scope.addRow = function(scenario, newRow){
 			  scenario.rows.push(newRow);
@@ -129,6 +139,18 @@ define(["angular"], function(angular) {
 			  scenario.rows.splice(scenario.rows.indexOf(row), 1);
 		  };
 
+		  $scope.save = function(){
+			  var copy = angular.copy($scope.scenarii);
+			  var transformed_copy = copy.map(function(obj){
+				  obj.rows = JSON.stringify(obj.rows);
+				  delete obj.columns;
+				  return obj;
+			  });
+			  playRoutes.controllers.Application.saveScenarii().post(transformed_copy).then(function(){
+				  //time to refresh :)
+				  console.log("it's saved !");
+			  });
+		  }
 	  },
 	  MainCtrl: function($rootScope, $scope, playRoutes) {
 			$scope.user = $rootScope.user;

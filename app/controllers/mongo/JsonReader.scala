@@ -10,11 +10,46 @@ import reactivemongo.bson.BSONDocument
 import reactivemongo.bson.BSONDocumentWriter
 import reactivemongo.bson.BSONObjectID
 
+
 case class ConfigurationSyntax(sentence: String, typed_sentence: String)
 case class ConfigurationRow(group: String, name: String, syntax: List[ConfigurationSyntax])
-case class Configuration(id: Option[String], cType: String, rows: List[ConfigurationRow])
-
+case class MacroConfiguration(id: Option[String], cType: String, rows: List[ConfigurationRow])
 case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: List[WebPageElement])
+case class Scenario(id: Option[String], cType: String, driver: String,rows: String)
+
+
+object Scenario{
+  implicit val reader: Reads[Scenario]= (
+      (__ \ "id").readNullable[String] and
+      (__ \ "type").read[String] and
+      (__ \ "driver").read[String] and
+      (__ \ "rows").read[String])(Scenario.apply(_,_,_,_))
+
+  implicit val writer: Writes[Scenario] = (
+      (__ \ "id").writeNullable[String] and
+      (__ \ "type").write[String] and
+      (__ \ "driver").write[String] and
+      (__ \ "rows").write[String])(unlift(Scenario.unapply))
+
+  implicit object BSONWriter extends BSONDocumentWriter[Scenario] {
+    def write(scenario: Scenario): BSONDocument =
+      scenario.id match {
+        case None =>  BSONDocument("type"-> scenario.cType, "driver" -> scenario.driver,  "rows" -> scenario.rows)
+        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "type"-> scenario.cType,
+                                                  "driver" -> scenario.driver,  "rows" -> scenario.rows)
+      }
+  }
+
+  implicit object BSONReader extends BSONDocumentReader[Scenario] {
+    def read(doc: BSONDocument): Scenario = {
+      val id = doc.getAs[BSONObjectID]("_id").get.stringify
+      val scenarioType = doc.getAs[String]("type").get
+      val driver = doc.getAs[String]("driver").get
+      val rows = doc.getAs[String]("rows").get
+      Scenario(Option[String](id), scenarioType, driver, rows)
+    }
+  }
+}
 
 object AutoSetupConfig{
     implicit val autoSetupConfigReader: Reads[AutoSetupConfig]= (
@@ -25,11 +60,11 @@ object AutoSetupConfig{
     )
 
     implicit val autoSetupConfigWriter: Writes[AutoSetupConfig] = (
-    (__ \ "id").writeNullable[String] and  
+    (__ \ "id").writeNullable[String] and
     (__ \ "name").write[String] and
     (__ \ "type").write[String] and
     (__ \ "rows").write[List[WebPageElement]])(unlift(AutoSetupConfig.unapply))
-  
+
   implicit object AutoSetupConfigurationWriter extends BSONDocumentWriter[AutoSetupConfig] {
     def write(configuration: AutoSetupConfig): BSONDocument = 
       configuration.id match {
@@ -105,32 +140,32 @@ object ConfigurationRow {
 
 }
 
-object Configuration {
+object MacroConfiguration {
 
-  implicit val configReader: Reads[Configuration] = (
+  implicit val configReader: Reads[MacroConfiguration] = (
     (__ \ "id").readNullable[String] and  
     (__ \ "type").read[String]
-    and (__ \ "rows").read[List[ConfigurationRow]])(Configuration.apply(_, _, _))
+    and (__ \ "rows").read[List[ConfigurationRow]])(MacroConfiguration.apply(_, _, _))
 
-  implicit val configWriter: Writes[Configuration] = (
+  implicit val configWriter: Writes[MacroConfiguration] = (
     (__ \ "id").writeNullable[String] and  
     (__ \ "type").write[String] and
-    (__ \ "rows").write[List[ConfigurationRow]])(unlift(Configuration.unapply))
+    (__ \ "rows").write[List[ConfigurationRow]])(unlift(MacroConfiguration.unapply))
 
-  implicit object ConfigurationWriter extends BSONDocumentWriter[Configuration] {
-    def write(configuration: Configuration): BSONDocument = 
+  implicit object ConfigurationWriter extends BSONDocumentWriter[MacroConfiguration] {
+    def write(configuration: MacroConfiguration): BSONDocument = 
       configuration.id match {
       	case None =>  BSONDocument("type" -> configuration.cType, "rows" -> configuration.rows)
       	case  value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "type" -> configuration.cType, "rows" -> configuration.rows)
       }
   }
 
-  implicit object ConfigurationReader extends BSONDocumentReader[Configuration] {
-    def read(doc: BSONDocument): Configuration = {
+  implicit object ConfigurationReader extends BSONDocumentReader[MacroConfiguration] {
+    def read(doc: BSONDocument): MacroConfiguration = {
       val id = doc.getAs[BSONObjectID]("_id").get.stringify
       val ctype = doc.getAs[String]("type").get
       val rows = doc.getAs[List[ConfigurationRow]]("rows").get
-      Configuration(Option[String](id), ctype, rows)
+      MacroConfiguration(Option[String](id), ctype, rows)
     }
   }
 }

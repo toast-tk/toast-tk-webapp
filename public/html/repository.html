@@ -24,16 +24,27 @@
 					<td></td>
 				</tr>
 				<tr ng-repeat="r in autosetup.rows">
-					<td ng-repeat="c in autosetup.columns">{{r[c.name]}}</td>
+					<!--td ng-repeat="c in autosetup.columns">{{r[c.name]}}</td-->
+					<td ng-repeat="c in autosetup.columns">
+						<span ng-model="r[c.name]">
+							<ng-switch on="isArray(c.descriptor.type)">
+								<select ng-switch-when="array" ng-model="r[c.name]" ng-options="type for type in c.descriptor.type" style="width: 100%;" placeholder="{{c.name}}"/>
+								<input ng-switch-default type="text" ng-model="r[c.name]" style="width: 100%;" placeholder="{{c.name}}"/>
+							</ng-switch>
+						</span>
+					</td>
 					<td>
 						<button class="btn btn-xs" data-ng-click="">-</button>
 					</td>
 				</tr>
 				<tr ng-model="newAutoSetupRow">
 					<td ng-repeat="c in autosetup.columns">
-  					<span ng-model="newAutoSetupRow[c.name]">
-	  					<input type="text" ng-model="newAutoSetupRow[c.name]" style="width: 100%;" placeholder="{{c.name}}"/>
-  					</span>
+						<span ng-model="newAutoSetupRow[c.name]">
+							<ng-switch on="isArray(c.descriptor.type)">
+								<select ng-switch-when="array" ng-model="newAutoSetupRow[c.name]" ng-options="type for type in c.descriptor.type" style="width: 100%;" placeholder="{{c.name}}"/>
+								<input ng-switch-default type="text" ng-model="newAutoSetupRow[c.name]" style="width: 100%;" placeholder="{{c.name}}"/>
+							</ng-switch>
+						</span>
 					</td>
 					<td>
 						<button class="btn btn-primary btn-xs" data-ng-click="addAutoSetupRow(autosetup,newAutoSetupRow)">+</button>
