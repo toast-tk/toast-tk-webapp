@@ -68,7 +68,6 @@ object MongoConnector extends App {
         case Success(_) => println("successfully saved scanario !")
       }
     }
-
   }
   
   def loadConfiguration(): Future[List[MacroConfiguration]] = {
@@ -92,12 +91,21 @@ object MongoConnector extends App {
      configurations
   }
   
+  def loadConfStaticSentences(scenarioType: String, driver: String): Future[List[String]] = {
+	 val collection = open_collection("scenarii")
+     val query = BSONDocument("type" -> scenarioType, "driver" -> driver)
+	 val filter = BSONDocument("_id" -> 0, "rows" -> 1)
+	 collection.find(query, filter).cursor[BSONDocument].collect[List]().map{ 
+		documents => for(document <- documents) yield document.getAs[String]("rows").get 
+	 }
+  }
+  
+  
   def loadWebPagesFromRepository(): Future[List[AutoSetupConfig]] = {
     val collection = open_collection("repository")
     val query = BSONDocument("type" -> "web page");
     val configurations = collection.find(query).cursor[AutoSetupConfig].collect[List]()
     configurations
-    
   }
 
   def loadSwingPagesFromRepository(): Future[List[AutoSetupConfig]] = {
@@ -105,7 +113,6 @@ object MongoConnector extends App {
     val query = BSONDocument("type" -> "swing page");
     val configurations = collection.find(query).cursor[AutoSetupConfig].collect[List]()
     configurations
-
   }
   
   def loadConfigurationSentences(confType:String, context:String): Future[List[MacroConfiguration]] = {

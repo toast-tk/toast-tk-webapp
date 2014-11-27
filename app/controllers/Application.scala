@@ -1,6 +1,7 @@
 package controllers
 
 import controllers.mongo._
+import reactivemongo.bson.BSONString
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Reads._
 import play.api.libs.json.Writes._
@@ -133,6 +134,29 @@ object Application extends Controller {
       }
     }
   }
+ 
+  
+   /**
+   * load to wiki scenarii
+   * Scenario: (id: Option[String], cType: String, driver: String,rows: String)
+	|| scenario || swing ||
+	|Type *toto* in *LoginDialog.loginTextField*|
+   */
+   def loadWikifiedScenarii() = Action.async {
+    MongoConnector.loadScenarii.map{
+      scenarii => {
+		def wikifiedObject(scenario:Scenario): JsValue = {
+			var res = "scenario id:" + scenario.id.get + "\n"
+			res = res + "scenario driver:" + scenario.driver + "\n"
+			res = res + "|| scenario || " + scenario.cType + " ||\n"
+			res = res + ((Json.parse(scenario.rows) \\ "patterns").map{ s => "| " + s.as[String] + " |\n" }).mkString("") + "\n" 
+			JsString(res)
+		}
+        val response = for(scenario <- scenarii) yield wikifiedObject(scenario)
+        Ok(Json.toJson(response))
+      }
+    }
+  }
   
   /**
    * load to init configuration
@@ -148,6 +172,21 @@ object Application extends Controller {
         Ok(Json.toJson(response))
       }
     }
+  }
+  
+  
+   
+   /**
+   * load services json descriptors
+   */
+  def loadServiceDescriptors(serviceType: String, driverName: String) = Action.async {
+	MongoConnector.loadConfStaticSentences(serviceType, driverName).map{
+		sentences => {
+			val out = for (s <- sentences) yield (Json.parse(s) \\ "patterns")
+			val outSentences = out.flatMap{x=>x}	
+			Ok(Json.toJson(outSentences))
+		}
+	}
   }
   
   /**

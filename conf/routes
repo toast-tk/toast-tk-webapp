@@ -16,6 +16,8 @@ GET         /loadAutoSetupCtx/:setupType                controllers.Application.
 GET         /loadConfiguration                          controllers.Application.loadConfiguration()
 GET         /loadAutoConfiguration                      controllers.Application.loadAutoConfiguration()
 GET         /loadScenarii                               controllers.Application.loadScenarii()
+GET 		/wikiScenarii								controllers.Application.loadWikifiedScenarii()
+GET			/loadServiceDescriptors/:sType/:driver		controllers.Application.loadServiceDescriptors(sType:String, driver: String)
 GET         /loadCtxTagData/:itemName                   controllers.Application.loadCtxTagData(itemName: String)
 GET         /users/:id                                  controllers.Users.user(id: Long)
 GET         /loadCtxSentences/:confType/:context        controllers.Application.loadCtxSentences(confType:String, context:String)
