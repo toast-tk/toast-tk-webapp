@@ -78,8 +78,7 @@ define(["angular"], function(angular) {
 		  $scope.saveAutoConfig = function(){
 			  var deepCopy = angular.copy($scope.autosetups);
 			  deepCopy = deepCopy.map(function(autoSetup){
-				  autoSetup.rows = JSON.stringify(autoSetup.rows);
-				  autoSetup.columns = JSON.stringify(autoSetup.columns);
+				  delete autoSetup.columns;
 				  return autoSetup;
 			  });
 			  playRoutes.controllers.Application.saveAutoConfig().post(deepCopy).then(function(response){
@@ -150,6 +149,27 @@ define(["angular"], function(angular) {
 				  //time to refresh :)
 				  console.log("it's saved !");
 			  });
+		  }
+		  
+		  $scope.OnPatternValueChange = function(row, position, value){
+			//var index = $scope.scenarii[0].rows.indexOf(row);
+			var newVal = {val: value, pos: position};
+			if(angular.isUndefined(row.mappings)){
+				row.mappings = [];
+				row.mappings.push({val: value, pos: position});
+			}else{
+				var found = false;
+				for(var i=0; i < row.mappings.length; i++){
+					if(row.mappings[i].pos == position){
+						row.mappings[i] = newVal;
+						found = true;
+					}
+				}
+				if(!found){
+					row.mappings.push({val: value, pos: position})
+				}
+			}
+			
 		  }
 	  },
 	  MainCtrl: function($rootScope, $scope, playRoutes) {

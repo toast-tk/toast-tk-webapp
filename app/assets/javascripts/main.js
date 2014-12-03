@@ -16,7 +16,7 @@
       'qTags': {
         deps: ['jquery', 'underscore'],
         exports: 'qTags'
-      }, 
+      },
       'jquery': {
       	deps: [],
       	exports: '$'
@@ -30,14 +30,16 @@
       'requirejs': ['../lib/requirejs/require'],
       'jsRoutes': ['/jsroutes'],
       "jquery": "//code.jquery.com/jquery-1.7.2.min",
+	  "jquery-ui" : "//code.jquery.com/ui/1.9.2/jquery-ui.min",
    	  "angular": "//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min",
+	  "ui-sortable" : ['./libs/sortable'],
    	  "underscore" : "//underscorejs.org/underscore",
    	  "qTags": ['./libs/jquery-textntags']
     }
   });
 
-  require(["angular", "./services/playRoutes", "./controllers/login", "./controllers/editor", "./directives/components"], function(a, b, login, editor) {
-    var app = angular.module("app", ["play.routing", "red.components"]);
+  require(["angular", "./services/playRoutes", "./controllers/login", "./controllers/editor", "./directives/components", "./libs/sortable"], function(a, b, login, editor) {
+    var app = angular.module("app", ["play.routing", "red.components", "ui.sortable"]);
     
     app.controller("LoginCtrl", login.LoginCtrl);
     app.controller("MainCtrl", editor.MainCtrl);

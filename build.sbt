@@ -11,7 +11,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "angularjs" % "1.3.0",
   "org.webjars" % "requirejs" % "2.1.1",
   "org.webjars" % "webjars-play" % "2.1.0-1",
-  "org.webjars" % "bootstrap" % "3.2.0-1"
+  "org.webjars" % "bootstrap" % "3.2.0-1",
+  "org.webjars" % "angular-ui-sortable" % "0.12.11-1"
 )     
 
 

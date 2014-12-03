@@ -40,7 +40,7 @@ object MongoConnector extends App {
   }
   
   def saveAutoConfiguration(conf: AutoSetupConfig) {
-    val collection = open_collection("repository")
+	val collection = open_collection("repository")
     if(conf.id == null){
 	    collection.insert(conf).onComplete {
 	      case Failure(e) => throw e

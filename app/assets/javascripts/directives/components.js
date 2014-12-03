@@ -65,11 +65,12 @@ define(["angular", "qTags"], function (angular, qTags) {
 					   patternPost: "@",
 					   patternColumn: "@",
 				       patternContext: "@",
-					   patternModel: "="
+					   patternModel: "=",
+					   callback: '&onPatternChange'
 					},   	
 	        link: function ($scope, element, attrs) { 
 	        	var regex = /(@)\[\[(\d+):([\w\s\.\-]+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+)\]\]/gi
-				var match = "";
+				var tag = "";
 				var tags = [];
 				var init = false;
 	        	$scope.$watch('patternValue + patternPost + patternColumn + patternModel + patternContext', function(){
@@ -79,21 +80,34 @@ define(["angular", "qTags"], function (angular, qTags) {
 		        			element.append(e);
 		        		}else{
 		        			var patternValue = $scope.patternValue;
-							if(patternValue == "" || !angular.isObject(patternValue) || angular.isUndefined(patternValue)){
+							if(patternValue == "" || angular.isUndefined(patternValue)){
 								var e = $compile('<input type="text" ng-model="patternModel[patternColumn]" placeholder="{{patternColumn}}" style="width: 100%;"/>')($scope);
 								element.append(e);
 							}else{
-								while (match != null) {
-									if(match != ""){
-										tags.push(match);
+								//round I: element creation
+								tags = [];
+								var tagPosition = 0;
+								while (tag != null) {
+									if(tag != ""){
+										tags.push(tag);
+										var varType = tags[tagPosition][3];
+										var varDescriptor = tags[tagPosition][4];
+										var replacementTag = getTagForType(tagPosition , varType, varDescriptor);
+										patternValue = replaceIndex(patternValue, tags[tagPosition][0],  tags[tagPosition].index , replacementTag);
+										tagPosition = tagPosition + 1;
 									}
-									match = regex.exec(patternValue);
+									tag = regex.exec(patternValue);
 								}
-
-								for(var i=0; i<tags.length; i++){
-									patternValue = replaceIndex(patternValue, tags[i][0],  tags[i].index , getTagForType(i ,tags[i][3], tags[i][4]));
-								}
+								
 								element.append($("<span>" + patternValue + "</span>"));
+								
+								//round II: element binding
+								for(var i=0; i<tags.length; i++){
+									var tagPosition = i;
+									var varType = tags[i][3];
+									var varDescriptor = tags[i][4];
+									updateOptionsForReference(tagPosition, varDescriptor, $scope.patternContext);
+								}
 							}
 		        		}
 		        		init = true;
@@ -110,12 +124,11 @@ define(["angular", "qTags"], function (angular, qTags) {
 					        	
 	        	function getTagForType(tagPosition, varType, varDescriptor){
 	        		if(varType == "string"){
-	        			return '<input type="text"/>';
+	        			return '<input type="text" class="'+varDescriptor+ '_' + tagPosition +'"/>';
 	        		} else if (varType == "reference"){
-	        			updateOptionsForReference(tagPosition, varDescriptor, $scope.patternContext); //get context from model, add related service name
 	        			return '<select class="'+varDescriptor+ '_' + tagPosition +'"></select>';
 	        		} else {
-	        			return '<select></select>';
+	        			return '<input type="text" class="'+varDescriptor+ '_' + tagPosition +'" placeholder="'+varType+'"/>';
 	        		}
 	        	}
 	        	
@@ -125,8 +138,25 @@ define(["angular", "qTags"], function (angular, qTags) {
 	        				//call play service
 	        				playRoutes.controllers.Application.loadCtxTagData(descriptor).get().then(function(response){
 	        					var select = element.find('.'+descriptor+'_'+tagPosition);
-	        					$.each(response.data, function(key, value) {   
-								     select.append($('<option>', { value : key }).text(value)); 
+	        					$.each(response.data, function(key, value) { 
+									select.append($('<option>', { value : key }).text(value)); 
+								});
+								
+								if($scope.patternModel.mappings){
+									var mappings = $scope.patternModel.mappings;
+									for(var i=0; i < mappings.length; i++){
+										if(mappings[i].pos == tagPosition){
+											select.val(mappings[i].val)
+										}
+									}
+								}
+								
+								select.change(function(){
+									$scope.$apply(
+										function(){
+											$scope.callback({row: $scope.patternModel, position: tagPosition, value: select.find("option:selected").text()});
+										}
+									);
 								});
 	        				});
 	        			}
@@ -139,11 +169,48 @@ define(["angular", "qTags"], function (angular, qTags) {
 								$.each(response.data, function(key, value) {
 									select.append($('<option>', { value : key }).text(value));
 								});
+								
+								if($scope.patternModel.mappings){
+									var mappings = $scope.patternModel.mappings;
+									for(var i=0; i < mappings.length; i++){
+										if(mappings[i].pos == tagPosition){
+											select.find("option").filter(function() {
+												return $(this).text() == mappings[i].val; 
+											}).prop('selected', true);
+										}
+									}
+								}
+								
+								select.change(function(){
+									$scope.$apply(function(){
+											$scope.callback({row: $scope.patternModel, position: tagPosition, value: select.find("option:selected").text()});
+										}
+									);
+								});
 							});
 						}
 					}
 					else if(descriptor == 'Entity'){
 	        		
+	        		}
+					else if(descriptor == 'String'){
+						var input = element.find('.'+descriptor+'_'+tagPosition);
+						
+						if($scope.patternModel.mappings){
+							var mappings = $scope.patternModel.mappings;
+							for(var i=0; i < mappings.length; i++){
+								if(mappings[i].pos == tagPosition){
+									input.val(mappings[i].val);
+								}
+							}
+						}
+						
+						input.change(function(){
+							$scope.$apply(function(){
+									$scope.callback({row: $scope.patternModel, position: tagPosition, value: input.val()});
+								}
+							);
+						});
 	        		}
 	        	}
 	        	

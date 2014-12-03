@@ -17,19 +17,24 @@
   	<div ng-repeat="scenario in scenarii">
   		Type: <label>{{ scenario.type }}</label>
   		<table class="table" width="200px;">
-  			<tr>
-  				<td ng-repeat="c in scenario.columns"></span>{{c.name}}</td>
-  				<td></td>
-  			</tr>
-  			<tr ng-repeat="r in scenario.rows">
-  				<td ng-repeat="c in scenario.columns"
-					pattern pattern-value="{{r[c.name]}}" pattern-post="{{c.post}}"
-					pattern-model="r" pattern-column="{{c.name}}"
-					pattern-context="{{scenario.type}}"></td>
-  				<td>
-  					<button class="btn btn-xs" data-ng-click="deleteRow(scenario, r)">-</button>
-				</td>
-			</tr>
+			<thead>
+				<tr>
+					<th ng-repeat="c in scenario.columns"></span>{{c.name}}</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody ui-sortable ng-model="scenario.rows">
+				<tr ng-repeat="r in scenario.rows">
+					<td ng-repeat="c in scenario.columns"
+						pattern pattern-value="{{r[c.name]}}" pattern-post="{{c.post}}"
+						pattern-model="r" pattern-column="{{c.name}}"
+						pattern-context="{{scenario.type}}" on-pattern-change="OnPatternValueChange(row, position, value)"></td>
+					<td>
+						<button class="btn btn-xs" data-ng-click="deleteRow(scenario, r)">-</button>
+					</td>
+				</tr>
+			</tbody>
+  			
   			<tr ng-model="newRow">
   				<td ng-repeat="c in scenario.columns">
   					<span template ng-model="newRow[c.name]" template-value="{{c.reference}}"

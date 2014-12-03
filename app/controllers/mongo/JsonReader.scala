@@ -15,8 +15,18 @@ case class ConfigurationSyntax(sentence: String, typed_sentence: String)
 case class ConfigurationRow(group: String, name: String, syntax: List[ConfigurationSyntax])
 case class MacroConfiguration(id: Option[String], cType: String, rows: List[ConfigurationRow])
 case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: List[WebPageElement])
-case class Scenario(id: Option[String], cType: String, driver: String,rows: String)
+case class InspectedPage(name: String, items: List[String])
+case class Scenario(id: Option[String], cType: String, driver: String, rows: String)
 
+object InspectedPage{
+	implicit val reader: Reads[InspectedPage]= (
+      (__ \ "name").read[String] and
+      (__ \ "items").read[List[String]])(InspectedPage.apply(_,_))
+
+	implicit val writer: Writes[InspectedPage] = (
+      (__ \ "type").write[String] and
+      (__ \ "items").write[List[String]])(unlift(InspectedPage.unapply))
+}
 
 object Scenario{
   implicit val reader: Reads[Scenario]= (
