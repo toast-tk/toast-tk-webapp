@@ -13,14 +13,14 @@ object MongoConnector extends App {
   lazy val servers = List("localhost")
   val db_name = "play_db";
   val config_collection_name = "configuration";
-
-  def play_db_connection = driver.connection(servers)("play_db")
-  def open_collection(collection: String) = {
-    val db = driver.connection(servers)("play_db")
+   
+  def open_collection(collection: String) = {  
+	val db = driver.connection(servers)("play_db")
     db(collection)
   }
 
   def getRepositoryCollection: BSONCollection = {
+	def play_db_connection = driver.connection(servers)("play_db")
     play_db_connection("repository")
   }
 

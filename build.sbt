@@ -2,6 +2,8 @@ name := "redplay"
 
 version := "1.0-SNAPSHOT"
 
+resolvers += "Local Maven Repository" at "file:///D:/Apps/m2/repository"
+
 libraryDependencies ++= Seq(
   jdbc,
   anorm,
@@ -12,9 +14,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "requirejs" % "2.1.1",
   "org.webjars" % "webjars-play" % "2.1.0-1",
   "org.webjars" % "bootstrap" % "3.2.0-1",
-  "org.webjars" % "angular-ui-sortable" % "0.12.11-1"
+  "com.synaptix.redpepper" % "redpepper-dao" % "1.3-SNAPSHOT"
 )     
-
 
 // Run r.js (RequireJS optimizer) when building the app for production
 //pipelineStages := Seq(rjs)

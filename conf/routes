@@ -26,6 +26,9 @@ POST        /saveAutoSetupConfiguration                 controllers.Application.
 POST		/saveNewInspectedPage						controllers.Application.saveNewInspectedPage()
 POST        /saveScenarii                               controllers.Application.saveScenarii()
 GET			/loadWikifiedRepository						controllers.Application.loadWikifiedRepository()
+POST		/saveProject								controllers.Application.saveProject()
+GET			/loadProject								controllers.Application.loadProject()
+
 
 
 

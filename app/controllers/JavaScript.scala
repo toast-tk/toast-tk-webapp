@@ -20,6 +20,8 @@ object JavaScript extends Controller {
           controllers.routes.javascript.Application.loadCtxSentences,
           controllers.routes.javascript.Application.loadScenarii,
           controllers.routes.javascript.Application.saveScenarii,
+          controllers.routes.javascript.Application.saveProject,
+          controllers.routes.javascript.Application.loadProject,
           controllers.routes.javascript.Users.user)
     ).as(JAVASCRIPT)
   }

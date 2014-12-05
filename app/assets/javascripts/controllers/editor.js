@@ -172,6 +172,46 @@ define(["angular"], function(angular) {
 			
 		  }
 	  },
+	  ProjectCtrl: function($rootScope, $scope, playRoutes){
+			$scope.projects = [];
+
+			playRoutes.controllers.Application.loadScenarii().get().then(function(response) {
+			  var data = response.data || [];
+			  $scope.scenarii = data;
+			});
+			
+			$scope.addProjectBlock = function(){
+				$scope.projects.push({ 
+									name: "project", 
+									campaigns: []
+								});
+			}
+			
+			$scope.addCampaignToProject = function(project){
+				project.campaigns.push({
+									name:"new campaign",
+									scenarii: []
+								});
+			}
+			
+			$scope.addScenarioToCampaign = function(campaign){
+				campaign.scenarii.push("new scenario");
+			}
+			
+			$scope.deleteCampaign = function(campaign, project){
+				project.campaigns.splice(project.campaigns.indexOf(campaign),1);
+			}
+			
+			$scope.deleteScenario = function(scenario, campaign){
+				campaign.scenarii.splice(campaign.scenarii.indexOf(scenario),1);
+			}
+			
+			$scope.saveProject = function(project){
+				playRoutes.controllers.Application.saveProject().post(project).then(function(response) {
+					console.log("project saved !");
+				});
+			}
+	  },
 	  MainCtrl: function($rootScope, $scope, playRoutes) {
 			$scope.user = $rootScope.user;
 	  }

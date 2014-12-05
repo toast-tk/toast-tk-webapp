@@ -1,0 +1,60 @@
+<style>
+	
+	.project {
+		margin-bottom: 10px;
+	}
+	
+	.campaign{
+		border: 1px solid black;
+		padding: 10px;
+		left: 10px;
+		margin-top: 10px;
+		position: relative;
+	}
+	
+	.scenario {
+	
+	}
+</style>
+
+<div class="container">
+	Welcome to redplay, {{user.firstName}} {{user.lastName}}!
+	<br>
+	<hr>
+	<h1> Project blocks</h1>
+	<div class="row">
+		<div class="col-md-12">
+			  <button class="btn btn-primary btn-xs" data-ng-click="addProjectBlock()">+ Add a new project </button>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+	  	<div ng-repeat="project in projects">
+			<div class="project">
+				<span class="project-title"> Project name: <input type="text" ng-model="project.name"></span>
+				<span class="project-title"> Start date: <input type="text"></span>
+				<span class="project-title"> End date: <input type="text"></span>
+				<span class="pull-right">
+					<button class="btn btn-primary btn-xs" data-ng-click="addCampaignToProject(project)">+ Add a new campaign</button>
+					<button class="btn btn-xs" data-ng-click="saveProject(project)">Save</button>
+				</span>
+				<div >
+					<div ng-repeat="campaign in project.campaigns" class="campaign">
+						<button class="btn btn-xs" data-ng-click="deleteCampaign(campaign, project)">- retirer</button> Campaign name: <input type="text" ng-model="campaign.name"> 
+						<span>
+							 <button class="btn btn-primary btn-xs" data-ng-click="addScenarioToCampaign(campaign)">+ Add a new scenario</button>
+						</span>
+						<span ui-sortable ng-model="campaign.scenarii">
+							<ul>
+								<li ng-repeat="scenario in campaign.scenarii">
+									Scenario Name: <select ng-model="scenario.name" ng-options="reference.driver for reference in scenarii"> 
+									<button class="btn btn-xs" data-ng-click="deleteScenario(scenario, campaign)">-</button>
+								</li>
+							</ul>
+						</span>
+					</div>
+				</div>
+			</div>
+	  	</div>
+	</div>
+</div>

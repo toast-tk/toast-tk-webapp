@@ -1,5 +1,8 @@
 package controllers
 
+import com.mongo.test.service.dao.access.project._
+import com.mongo.test.domain.impl.report._
+
 import controllers.mongo._
 import reactivemongo.bson.BSONString
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -9,9 +12,19 @@ import play.api.libs.json._
 import play.api.mvc._
 import controllers.parsers.WebPageElement
 
+import boot.Global
+
+case class Prj(id:Option[String], name: String, campaigns: List[Cpgn])
+case class Cpgn(id:Option[String], name: String, scenarii: List[String])
+
 object Application extends Controller {
+  implicit val campaignFormat = Json.format[Cpgn]
+  implicit val projectFormat = Json.format[Prj]
+  
+  val projectJavaDaoService = Global.projectService
+  
   def index = Action {
-    Ok(views.html.index())
+	Ok(views.html.index())
   }
 
   def login() = Action(parse.json) { implicit request =>
@@ -108,99 +121,132 @@ object Application extends Controller {
     }
   }
   
-
   /**
-   *   Save scenarii
-   */
-  def saveScenarii() = Action(parse.json) { implicit request =>
-    request.body.validate[Seq[Scenario]].map {
-      case scenarii: Seq[Scenario] =>
-        for {
-          scenario <- scenarii
-        } yield MongoConnector.saveScenario(scenario)
-        Ok("scenario saved !")
+    *   Save project
+    */
+  def saveProject() = Action(parse.json) { implicit request =>
+	def transformCampaign(c: List[Cpgn]): java.util.ArrayList[Campaign] = {
+		val c = new Campaign()
+		val list = new java.util.ArrayList[Campaign]()
+		list.add(c)
+		list
+	}	
+	def tranformProject(p: Prj): Project = {
+		val pr = new Project()
+		pr.setCampaigns(transformCampaign(p.campaigns))
+		pr
+	}
+	request.body.validate[Prj].map {
+      case project: Prj =>
+		println(project)
+		projectJavaDaoService.saveNewIteration(tranformProject(project))
+		Ok("project saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
+  
+  /**
+   * load to init projects
+  */
+	def loadProject() = Action {
+		//val projects = projectJavaDaoService.find()
+		//Ok(Json.toJson(projects))
+		Ok("")
+	}
 
   /**
-   * load to init configuration
-   */
-  def loadConfiguration() = Action.async {
-      MongoConnector.loadConfiguration.map{
-        configurations => {
-          Ok(Json.toJson(configurations))
-        }
-      }
-    }
+    *   Save scenarii
+    */
+	def saveScenarii() = Action(parse.json) { implicit request =>
+		request.body.validate[Seq[Scenario]].map {
+		  case scenarii: Seq[Scenario] =>
+			for {
+			  scenario <- scenarii
+			} yield MongoConnector.saveScenario(scenario)
+			Ok("scenario saved !")
+		}.recoverTotal {
+		  e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+		}
+	}
 
   /**
-   * load to init scenarii
-   */
-  def loadScenarii() = Action.async {
-    MongoConnector.loadScenarii.map{
-      scenarii => {
-        val input = Json.toJson(scenarii).as[JsArray]
-        def extendedObject(obj: JsObject) = {
-          obj + ("columns" -> scenarioDescriptorProvider((obj \ "type").as[String]))
-        }
-        val response = for(i <- input.value) yield extendedObject(i.as[JsObject])
-        Ok(Json.toJson(response))
-      }
-    }
-  }
+    * load to init configuration
+    */
+	def loadConfiguration() = Action.async {
+	  MongoConnector.loadConfiguration.map{
+		configurations => {
+		  Ok(Json.toJson(configurations))
+		}
+	  }
+	}
+
+  /**
+    * load to init scenarii
+    */
+	def loadScenarii() = Action.async {
+		MongoConnector.loadScenarii.map{
+			scenarii => {
+				val input = Json.toJson(scenarii).as[JsArray]
+				def extendedObject(obj: JsObject) = {
+				  obj + ("columns" -> scenarioDescriptorProvider((obj \ "type").as[String]))
+				}
+				val response = for(i <- input.value) yield extendedObject(i.as[JsObject])
+				Ok(Json.toJson(response))
+			}
+		}
+	}
  
   
    /**
-   * load to wiki scenarii
-   * Scenario: (id: Option[String], cType: String, driver: String,rows: String)
-	|| scenario || swing ||
-	|Type *toto* in *LoginDialog.loginTextField*|
-   */
-   def loadWikifiedScenarii() = Action.async {
-    MongoConnector.loadScenarii.map{
-      scenarii => {
-		lazy val regex = """@\[\[\d+:[\w\s\.\-]+:[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+\]\]""".r
+	* load to wiki scenarii
+	* Scenario: (id: Option[String], cType: String, driver: String,rows: String)
+	*	|| scenario || swing ||
+	*	|Type *toto* in *LoginDialog.loginTextField*|
+	*/
+	def loadWikifiedScenarii() = Action.async {
+		MongoConnector.loadScenarii.map{
+			scenarii => {
+				lazy val regex = """@\[\[\d+:[\w\s\.\-]+:[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+\]\]""".r
 		
-		def replacePatterns(pattern: String, mapping: List[JsValue]): String = {
-			var outputArray = List[String]()
-			var mappingPosition = 0
-			val splittedPattern = pattern.split("\\s+")
-			splittedPattern.foreach{ word => 
-				word match {
-					case regex() => 
-						var replacementWord = "";
-						for(jsonMapping <- mapping){
-							val pos = (jsonMapping \ "pos").as[Int]
-							if(pos.equals(mappingPosition)) replacementWord = (jsonMapping \ "val").as[String]
+				def replacePatterns(pattern: String, mapping: List[JsValue]): String = {
+					var outputArray = List[String]()
+					var mappingPosition = 0
+					val splittedPattern = pattern.split("\\s+")
+					splittedPattern.foreach{ word => 
+						word match {
+							case regex() => 
+								var replacementWord = "";
+								for(jsonMapping <- mapping){
+									val pos = (jsonMapping \ "pos").as[Int]
+									if(pos.equals(mappingPosition)) replacementWord = (jsonMapping \ "val").as[String]
+								}
+								outputArray = ("*" + replacementWord + "*") :: outputArray
+								mappingPosition = mappingPosition + 1
+							case x => outputArray = x :: outputArray
 						}
-						outputArray = ("*" + replacementWord + "*") :: outputArray
-						mappingPosition = mappingPosition + 1
-					case x => outputArray = x :: outputArray
+					}
+					outputArray.reverse.mkString(" ")
 				}
+		
+			def populatePatterns(rows: String): List[String] = {
+				val patterns = Json.parse(rows) \\ "patterns"
+				val mappings = Json.parse(rows) \\ "mappings"			
+				val modifiedPatterns = for (i <- 0 until patterns.length) yield replacePatterns(patterns(i).as[String], mappings(i).as[List[JsValue]])
+				modifiedPatterns.toList
 			}
-			outputArray.reverse.mkString(" ")
-		}
 		
-		def populatePatterns(rows: String): List[String] = {
-			val patterns = Json.parse(rows) \\ "patterns"
-			val mappings = Json.parse(rows) \\ "mappings"			
-			val modifiedPatterns = for (i <- 0 until patterns.length) yield replacePatterns(patterns(i).as[String], mappings(i).as[List[JsValue]])
-			modifiedPatterns.toList
+			def wikifiedObject(scenario:Scenario): JsValue = {
+				var res = "scenario id:" + scenario.id.get + "\n"
+				res = res + "scenario driver:" + scenario.driver + "\n"
+				res = res + "|| scenario || " + scenario.cType + " ||\n"
+				res = res + populatePatterns(scenario.rows).map{ sentence => "| " + sentence + " |\n" }.mkString("") + "\n"
+				JsString(res)
+			}
+			val response = for(scenario <- scenarii) yield wikifiedObject(scenario)
+			Ok(Json.toJson(response))
 		}
-		
-		def wikifiedObject(scenario:Scenario): JsValue = {
-			var res = "scenario id:" + scenario.id.get + "\n"
-			res = res + "scenario driver:" + scenario.driver + "\n"
-			res = res + "|| scenario || " + scenario.cType + " ||\n"
-			res = res + populatePatterns(scenario.rows).map{ sentence => "| " + sentence + " |\n" }.mkString("") + "\n"
-			JsString(res)
-		}
-        val response = for(scenario <- scenarii) yield wikifiedObject(scenario)
-        Ok(Json.toJson(response))
-      }
-    }
+	}
   }
   
   /**
@@ -274,7 +320,7 @@ object Application extends Controller {
             }
           }
         }
-    	  Ok(Json.toJson(res))
+    	Ok(Json.toJson(res))
       } 
     }
     

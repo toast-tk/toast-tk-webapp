@@ -46,6 +46,7 @@
     app.controller("ConfigurationCtrl", editor.ConfigurationCtrl);
     app.controller("ScenarioCtrl", editor.ScenarioCtrl);
     app.controller("RepositoryCtrl", editor.RepositoryCtrl);
+    app.controller("ProjectCtrl", editor.ProjectCtrl);
     
     app.config(["$routeProvider", function($routeProvider){
 	  $routeProvider.when("/",{ templateUrl: "assets/html/login.html", controller: "LoginCtrl"});
@@ -53,6 +54,7 @@
       $routeProvider.when("/configuration",{ templateUrl: "assets/html/configuration.html", controller: "ConfigurationCtrl"});
       $routeProvider.when("/scenario",{ templateUrl: "assets/html/scenario.html", controller: "ScenarioCtrl"});
       $routeProvider.when("/repository",{ templateUrl: "assets/html/repository.html", controller: "RepositoryCtrl"});
+      $routeProvider.when("/project",{ templateUrl: "assets/html/project.html", controller: "ProjectCtrl"});
 	}]);
 	
     angular.bootstrap(document, ["app"]);
