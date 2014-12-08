@@ -1,5 +1,7 @@
 package controllers
 
+import com.synpatix.redpepper.backend.core.parse._
+import com.mongo.test.domain.impl.test.TestPage
 import com.mongo.test.service.dao.access.project._
 import com.mongo.test.domain.impl.report._
 
@@ -15,9 +17,11 @@ import controllers.parsers.WebPageElement
 import boot.Global
 
 case class Prj(id:Option[String], name: String, campaigns: List[Cpgn])
-case class Cpgn(id:Option[String], name: String, scenarii: List[String])
+case class Cpgn(id:Option[String], name: String, scenarii: List[ScenarioWrapper])
+case class ScenarioWrapper(name: Option[String], scenario: Scenario)
 
 object Application extends Controller {
+  implicit val sFormat = Json.format[ScenarioWrapper]
   implicit val campaignFormat = Json.format[Cpgn]
   implicit val projectFormat = Json.format[Prj]
   
@@ -125,10 +129,22 @@ object Application extends Controller {
     *   Save project
     */
   def saveProject() = Action(parse.json) { implicit request =>
-	def transformCampaign(c: List[Cpgn]): java.util.ArrayList[Campaign] = {
-		val c = new Campaign()
+	val parser = new TestParser()
+	
+	def parseTestPage(scenario: String): TestPage = {
+		parser.parseString(scenario)
+	}
+	
+	def transformCampaign(campaigns: List[Cpgn]): java.util.ArrayList[Campaign] = {
+		val campaign = new Campaign()
 		val list = new java.util.ArrayList[Campaign]()
-		list.add(c)
+		val testPagelist = new java.util.ArrayList[TestPage]()
+		val testPages = (for(c <- campaigns; wrapper <- c.scenarii) yield parseTestPage(wikifiedScenario(wrapper.scenario).as[String]))
+		for(tPage <- testPages){
+			testPagelist.add(tPage)
+		}
+		campaign.setTestCases(testPagelist)
+		list.add(campaign)
 		list
 	}	
 	def tranformProject(p: Prj): Project = {
@@ -136,9 +152,9 @@ object Application extends Controller {
 		pr.setCampaigns(transformCampaign(p.campaigns))
 		pr
 	}
+	
 	request.body.validate[Prj].map {
       case project: Prj =>
-		println(project)
 		projectJavaDaoService.saveNewIteration(tranformProject(project))
 		Ok("project saved !")
     }.recoverTotal {
@@ -197,6 +213,42 @@ object Application extends Controller {
 		}
 	}
  
+	def wikifiedScenario(scenario:Scenario): JsValue = {
+		lazy val regex = """@\[\[\d+:[\w\s\.\-]+:[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+\]\]""".r
+		def populatePatterns(rows: String): List[String] = {
+			def replacePatterns(pattern: String, mapping: List[JsValue]): String = {
+				var outputArray = List[String]()
+				var mappingPosition = 0
+				val splittedPattern = pattern.split("\\s+")
+				splittedPattern.foreach{ word => 
+					word match {
+						case regex() => 
+							var replacementWord = "";
+							for(jsonMapping <- mapping){
+								val pos = (jsonMapping \ "pos").as[Int]
+								if(pos.equals(mappingPosition)) replacementWord = (jsonMapping \ "val").as[String]
+							}
+							outputArray = ("*" + replacementWord + "*") :: outputArray
+							mappingPosition = mappingPosition + 1
+						case x => outputArray = x :: outputArray
+					}
+				}
+				outputArray.reverse.mkString(" ")
+			}
+			
+			val patterns = Json.parse(rows) \\ "patterns"
+			val mappings = Json.parse(rows) \\ "mappings"			
+			val modifiedPatterns = for (i <- 0 until patterns.length) yield replacePatterns(patterns(i).as[String], mappings(i).as[List[JsValue]])
+			modifiedPatterns.toList
+		}
+		var res = "h1. Name:" + scenario.name + "\n"
+		res = res + "#scenario id:" + scenario.id.get + "\n"
+		res = res + "#scenario driver:" + scenario.driver + "\n"
+		res = res + "|| scenario || " + scenario.cType + " ||\n"
+		res = res + populatePatterns(scenario.rows).map{ sentence => "| " + sentence + " |\n" }.mkString("") + "\n"
+		JsString(res)
+	}
+				
   
    /**
 	* load to wiki scenarii
@@ -207,47 +259,11 @@ object Application extends Controller {
 	def loadWikifiedScenarii() = Action.async {
 		MongoConnector.loadScenarii.map{
 			scenarii => {
-				lazy val regex = """@\[\[\d+:[\w\s\.\-]+:[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+\]\]""".r
-		
-				def replacePatterns(pattern: String, mapping: List[JsValue]): String = {
-					var outputArray = List[String]()
-					var mappingPosition = 0
-					val splittedPattern = pattern.split("\\s+")
-					splittedPattern.foreach{ word => 
-						word match {
-							case regex() => 
-								var replacementWord = "";
-								for(jsonMapping <- mapping){
-									val pos = (jsonMapping \ "pos").as[Int]
-									if(pos.equals(mappingPosition)) replacementWord = (jsonMapping \ "val").as[String]
-								}
-								outputArray = ("*" + replacementWord + "*") :: outputArray
-								mappingPosition = mappingPosition + 1
-							case x => outputArray = x :: outputArray
-						}
-					}
-					outputArray.reverse.mkString(" ")
-				}
-		
-			def populatePatterns(rows: String): List[String] = {
-				val patterns = Json.parse(rows) \\ "patterns"
-				val mappings = Json.parse(rows) \\ "mappings"			
-				val modifiedPatterns = for (i <- 0 until patterns.length) yield replacePatterns(patterns(i).as[String], mappings(i).as[List[JsValue]])
-				modifiedPatterns.toList
+				val response = for(scenario <- scenarii) yield wikifiedScenario(scenario)
+				Ok(Json.toJson(response))
 			}
-		
-			def wikifiedObject(scenario:Scenario): JsValue = {
-				var res = "scenario id:" + scenario.id.get + "\n"
-				res = res + "scenario driver:" + scenario.driver + "\n"
-				res = res + "|| scenario || " + scenario.cType + " ||\n"
-				res = res + populatePatterns(scenario.rows).map{ sentence => "| " + sentence + " |\n" }.mkString("") + "\n"
-				JsString(res)
-			}
-			val response = for(scenario <- scenarii) yield wikifiedObject(scenario)
-			Ok(Json.toJson(response))
 		}
 	}
-  }
   
   /**
    * load to init configuration
@@ -265,11 +281,10 @@ object Application extends Controller {
     }
   }
   
-     /**
+   /**
    * load to wiki repository configuration
    * case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: List[WebPageElement])
-   WebPageElement(name: String, elementType: String, locator: String, method: String, position: Int)
-   
+   * WebPageElement(name: String, elementType: String, locator: String, method: String, position: Int)
    */
    def loadWikifiedRepository() = Action.async {
     MongoConnector.loadAutoConfiguration.map{
@@ -277,7 +292,7 @@ object Application extends Controller {
 		def wikifiedObject(page:AutoSetupConfig): JsValue = {
 			var res = "page id:" + page.id.get + "\n"
 			res = res + "|| auto setup || " + page.name + " ||\n"
-			res = res +  "| name | type | locator |\n"
+			res = res + "| name | type | locator |\n"
 			for(row <- page.rows){
 				res = res + "|" + row.name + "|" + row.elementType + "|" + row.locator + "|\n" 
 			}

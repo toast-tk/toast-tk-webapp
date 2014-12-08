@@ -16,7 +16,7 @@ case class ConfigurationRow(group: String, name: String, syntax: List[Configurat
 case class MacroConfiguration(id: Option[String], cType: String, rows: List[ConfigurationRow])
 case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: List[WebPageElement])
 case class InspectedPage(name: String, items: List[String])
-case class Scenario(id: Option[String], cType: String, driver: String, rows: String)
+case class Scenario(id: Option[String], name: String, cType: String, driver: String, rows: String)
 
 object InspectedPage{
 	implicit val reader: Reads[InspectedPage]= (
@@ -31,12 +31,14 @@ object InspectedPage{
 object Scenario{
   implicit val reader: Reads[Scenario]= (
       (__ \ "id").readNullable[String] and
+	  (__ \ "name").read[String] and
       (__ \ "type").read[String] and
       (__ \ "driver").read[String] and
-      (__ \ "rows").read[String])(Scenario.apply(_,_,_,_))
+      (__ \ "rows").read[String])(Scenario.apply(_,_,_,_,_))
 
   implicit val writer: Writes[Scenario] = (
       (__ \ "id").writeNullable[String] and
+      (__ \ "name").write[String] and
       (__ \ "type").write[String] and
       (__ \ "driver").write[String] and
       (__ \ "rows").write[String])(unlift(Scenario.unapply))
@@ -44,8 +46,8 @@ object Scenario{
   implicit object BSONWriter extends BSONDocumentWriter[Scenario] {
     def write(scenario: Scenario): BSONDocument =
       scenario.id match {
-        case None =>  BSONDocument("type"-> scenario.cType, "driver" -> scenario.driver,  "rows" -> scenario.rows)
-        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "type"-> scenario.cType,
+        case None =>  BSONDocument("name"-> scenario.name, "type"-> scenario.cType, "driver" -> scenario.driver,  "rows" -> scenario.rows)
+        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name" -> scenario.name, "type"-> scenario.cType,
                                                   "driver" -> scenario.driver,  "rows" -> scenario.rows)
       }
   }
@@ -53,10 +55,11 @@ object Scenario{
   implicit object BSONReader extends BSONDocumentReader[Scenario] {
     def read(doc: BSONDocument): Scenario = {
       val id = doc.getAs[BSONObjectID]("_id").get.stringify
+      val name = doc.getAs[String]("name").get
       val scenarioType = doc.getAs[String]("type").get
       val driver = doc.getAs[String]("driver").get
       val rows = doc.getAs[String]("rows").get
-      Scenario(Option[String](id), scenarioType, driver, rows)
+      Scenario(Option[String](id), name ,scenarioType, driver, rows)
     }
   }
 }

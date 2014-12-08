@@ -44,10 +44,10 @@
 						<span>
 							 <button class="btn btn-primary btn-xs" data-ng-click="addScenarioToCampaign(campaign)">+ Add a new scenario</button>
 						</span>
-						<span ui-sortable ng-model="campaign.scenarii">
-							<ul>
+						<span>
+							<ul ui-sortable ng-model="campaign.scenarii">
 								<li ng-repeat="scenario in campaign.scenarii">
-									Scenario Name: <select ng-model="scenario.name" ng-options="reference.driver for reference in scenarii"> 
+									Scenario Name: <select ng-model="scenario.scenario" ng-options="reference as reference.name for reference in scenarii"/> 
 									<button class="btn btn-xs" data-ng-click="deleteScenario(scenario, campaign)">-</button>
 								</li>
 							</ul>

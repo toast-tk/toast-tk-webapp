@@ -195,7 +195,7 @@ define(["angular"], function(angular) {
 			}
 			
 			$scope.addScenarioToCampaign = function(campaign){
-				campaign.scenarii.push("new scenario");
+				campaign.scenarii.push({});
 			}
 			
 			$scope.deleteCampaign = function(campaign, project){

@@ -52,7 +52,6 @@ object MongoConnector extends App {
 	      case Success(_) => println("successfully saved configuration !")
 	    }
     }
-    
   }
 
   def saveScenario(scenario: Scenario) {
