@@ -166,7 +166,7 @@ object Application extends Controller {
    * load to init projects
   */
 	def loadProject() = Action {
-		//val projects = projectJavaDaoService.find()
+		val projects = projectJavaDaoService.find()
 		//Ok(Json.toJson(projects))
 		Ok("")
 	}
@@ -238,7 +238,8 @@ object Application extends Controller {
 			
 			val patterns = Json.parse(rows) \\ "patterns"
 			val mappings = Json.parse(rows) \\ "mappings"			
-			val modifiedPatterns = for (i <- 0 until patterns.length) yield replacePatterns(patterns(i).as[String], mappings(i).as[List[JsValue]])
+			val modifiedPatterns = for (i <- 0 until patterns.length) yield
+        replacePatterns(patterns(i).as[String], if (mappings.isDefinedAt(i)) mappings(i).as[List[JsValue]] else List())
 			modifiedPatterns.toList
 		}
 		var res = "h1. Name:" + scenario.name + "\n"
