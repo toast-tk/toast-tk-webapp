@@ -16,7 +16,7 @@ import scala.util.parsing.input.CharArrayReader
 
 abstract trait Page
 case class WebPage(name: String, cType: String,  elements: List[WebPageElement]) extends Page
-case class WebPageElement(name: String, elementType: String, locator: String, method: String, position: Int)
+case class WebPageElement(name: String, elementType: String, locator: String, method: Option[String], position: Option[Int])
 
 object WebPageElement{
 
@@ -24,15 +24,15 @@ object WebPageElement{
       (__ \ "name").read[String] and
       (__ \ "type").read[String] and
       (__ \ "locator").read[String] and
-      (__ \ "method").read[String] and
-      (__ \ "position").read[Int])(WebPageElement.apply(_,_,_,_,_))
+      (__ \ "method").readNullable[String] and
+      (__ \ "position").readNullable[Int])(WebPageElement.apply(_,_,_,_,_))
 
   implicit val webPageElementJsonWriter: Writes[WebPageElement] = (
       (__ \ "name").write[String] and
       (__ \ "type").write[String] and
       (__ \ "locator").write[String] and
-      (__ \ "method").write[String] and
-      (__ \ "position").write[Int]
+      (__ \ "method").writeNullable[String] and
+      (__ \ "position").writeNullable[Int]
     )(unlift(WebPageElement.unapply))
 
   implicit object WebPageElementReader extends BSONDocumentReader[WebPageElement] {
@@ -40,9 +40,9 @@ object WebPageElement{
       val name = doc.getAs[String]("name").get
       val cType = doc.getAs[String]("type").get
       val locator = doc.getAs[String]("locator").get
-      val method = doc.getAs[String]("method").get
-      val position = doc.getAs[Int]("position").get
-      WebPageElement(name, cType, locator, method ,position)
+      val method = doc.getAs[String]("method").getOrElse("")
+      val position = doc.getAs[Int]("position").getOrElse(0)
+      WebPageElement(name, cType, locator, Some(method) ,Some(position))
     }
   }
 
@@ -85,7 +85,7 @@ class WebPageWikiParser extends RegexParsers {
   def header: Parser[String] = "| name | type | locator | method | position |"
   def line: Parser[WebPageElement] = "|" ~ str ~ "|" ~ str ~ "|" ~ str ~ "|" ~ str ~ "|" ~ str ~ "|" ^^ {
     case sp0 ~ pName ~ sp1 ~ cType ~ sp2 ~ locator ~ sp3 ~ method ~ sp4 ~ position ~ sp5 =>
-      WebPageElement(pName.trim, cType.trim, locator.trim, method.trim, position.trim.toInt)
+      WebPageElement(pName.trim, cType.trim, locator.trim, Some(method.trim), Some(position.trim.toInt))
   }
   def lines = line *
   def page: Parser[WebPage] = pageName ~ header ~ lines ^^ {
@@ -132,7 +132,7 @@ object WebPageWikiParserTest extends WebPageWikiParser with App {
         println("saving => " + page)
 
         import scala.concurrent.ExecutionContext.Implicits.global
-        MongoConnector.getRepositoryCollection.save(page).onComplete {
+        MongoConnector().getRepositoryCollection.save(page).onComplete {
           case scala.util.Failure(e) => throw e
           case scala.util.Success(_) => println("successfully saved !")
         }

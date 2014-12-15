@@ -66,7 +66,7 @@ define(["angular"], function(angular) {
 			  playRoutes.controllers.Application.loadAutoSetupCtx($scope.selectedAutoSetupConfigType).get().then(function(response){
 				  var autoSetupDescriptor = response.data;
 				  $scope.autosetups.push({type: $scope.selectedAutoSetupConfigType,
-					  columns: autoSetupDescriptor.columns,
+					  columns: autoSetupDescriptor,
 					  rows: []});
 			  });
 		  };
@@ -74,6 +74,8 @@ define(["angular"], function(angular) {
 		  $scope.isArray = function(arr){
 			  return angular.isArray(arr) ? "array" : "";
 		  }
+
+		  //
 
 		  $scope.saveAutoConfig = function(){
 			  var deepCopy = angular.copy($scope.autosetups);
@@ -85,6 +87,10 @@ define(["angular"], function(angular) {
 				  window.alert("Saved : " + response.data);
 			  });
 		  };
+
+		  $scope.deleteRow = function(row, autosetup){
+			  autosetup.rows.splice(autosetup.rows.indexOf(row), 1);
+		  }
 
 		  $scope.addAutoSetupRow = function(autosetup, newRow){
 			  autosetup.rows.push(newRow);
@@ -175,6 +181,9 @@ define(["angular"], function(angular) {
 	  ProjectCtrl: function($rootScope, $scope, playRoutes){
 			$scope.projects = [];
 
+		    playRoutes.controllers.Application.loadProject().get().then(function(response) {
+			  var data = response.data || [];
+		    });
 			playRoutes.controllers.Application.loadScenarii().get().then(function(response) {
 			  var data = response.data || [];
 			  $scope.scenarii = data;

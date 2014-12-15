@@ -18,17 +18,19 @@ import boot.Global
 
 case class Prj(id:Option[String], name: String, campaigns: List[Cpgn])
 case class Cpgn(id:Option[String], name: String, scenarii: List[ScenarioWrapper])
-case class ScenarioWrapper(name: Option[String], scenario: Scenario)
+case class ScenarioWrapper(name: Option[String], scenario: Option[Scenario])
 
 object Application extends Controller {
   implicit val sFormat = Json.format[ScenarioWrapper]
   implicit val campaignFormat = Json.format[Cpgn]
   implicit val projectFormat = Json.format[Prj]
+  val conn = Global.conn
+
   
   val projectJavaDaoService = Global.projectService
   
   def index = Action {
-	Ok(views.html.index())
+	  Ok(views.html.index())
   }
 
   def login() = Action(parse.json) { implicit request =>
@@ -52,7 +54,7 @@ object Application extends Controller {
             Json.obj("name"-> "method", "descriptor" -> Json.obj("type" -> Json.arr("CSS", "XPATH", "ID"))),
             Json.obj("name"-> "position", "descriptor" -> Json.obj()))
       case "swing page" => Json.arr(Json.obj("name"->"name", "descriptor" -> Json.obj()),
-            Json.obj("name"->"type","descriptor" -> Json.obj("type" -> Json.arr("button", "link", "input"))),
+            Json.obj("name"->"type","descriptor" -> Json.obj("type" -> Json.arr("button", "input", "menu", "table", "timeline", "date", "list"))),
             Json.obj("name"-> "locator", "descriptor" -> Json.obj()))
       case "configure entity" => Json.arr(Json.obj("name"->"entity", "descriptor" -> Json.obj()),
             Json.obj("name"->"alias", "descriptor" -> Json.obj()),
@@ -89,7 +91,7 @@ object Application extends Controller {
       case configs: Seq[MacroConfiguration] =>
         for {
           conf <- configs
-        } yield MongoConnector.saveConfiguration(conf)
+        } yield conn.saveConfiguration(conf)
         Ok("configuration saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -104,7 +106,7 @@ object Application extends Controller {
       case configs: Seq[AutoSetupConfig] =>
         for {
           conf <- configs
-        } yield MongoConnector.saveAutoConfiguration(conf)
+        } yield conn.saveAutoConfiguration(conf)
         Ok("auto configuration saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -117,8 +119,8 @@ object Application extends Controller {
   def saveNewInspectedPage() = Action(parse.json) { implicit request =>
     request.body.validate[InspectedPage].map {
       case page: InspectedPage =>
-		val pageElements = for(itemLocator <- page.items) yield WebPageElement("", "", itemLocator, "", 0)
-		MongoConnector.saveAutoConfiguration(AutoSetupConfig(None, page.name, "swing page", pageElements))
+		val pageElements = for(itemLocator <- page.items) yield WebPageElement("", "", itemLocator, Some(""), Some(0))
+		conn.saveAutoConfiguration(AutoSetupConfig(None, page.name, "swing page", pageElements))
         Ok("received inspected page...")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -129,26 +131,33 @@ object Application extends Controller {
     *   Save project
     */
   def saveProject() = Action(parse.json) { implicit request =>
-	val parser = new TestParser()
+	  val parser = new TestParser()
 	
-	def parseTestPage(scenario: String): TestPage = {
-		parser.parseString(scenario)
-	}
+    def parseTestPage(scenario: Scenario, wikiScenario: String): TestPage = {
+      val testPage = parser.parseString(wikiScenario)
+      testPage.setName(scenario.name)
+      testPage
+    }
 	
 	def transformCampaign(campaigns: List[Cpgn]): java.util.ArrayList[Campaign] = {
-		val campaign = new Campaign()
-		val list = new java.util.ArrayList[Campaign]()
-		val testPagelist = new java.util.ArrayList[TestPage]()
-		val testPages = (for(c <- campaigns; wrapper <- c.scenarii) yield parseTestPage(wikifiedScenario(wrapper.scenario).as[String]))
-		for(tPage <- testPages){
-			testPagelist.add(tPage)
-		}
-		campaign.setTestCases(testPagelist)
-		list.add(campaign)
+    val list = new java.util.ArrayList[Campaign]()
+    for(cpgn <- campaigns){
+      val campaign = new Campaign()
+      campaign.setName(cpgn.name)
+      val testPagelist = new java.util.ArrayList[TestPage]()
+      val testPages = (for(c <- campaigns; wrapper <- c.scenarii) yield parseTestPage(wrapper.scenario.get, wikifiedScenario(wrapper.scenario.get).as[String]))
+      for(tPage <- testPages){
+        testPagelist.add(tPage)
+      }
+      campaign.setTestCases(testPagelist)
+      list.add(campaign)
+    }
+
 		list
 	}	
 	def tranformProject(p: Prj): Project = {
 		val pr = new Project()
+    pr.setName(p.name)
 		pr.setCampaigns(transformCampaign(p.campaigns))
 		pr
 	}
@@ -156,7 +165,7 @@ object Application extends Controller {
 	request.body.validate[Prj].map {
       case project: Prj =>
 		projectJavaDaoService.saveNewIteration(tranformProject(project))
-		Ok("project saved !")
+		  Ok("project saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -166,9 +175,26 @@ object Application extends Controller {
    * load to init projects
   */
 	def loadProject() = Action {
-		val projects = projectJavaDaoService.find()
-		//Ok(Json.toJson(projects))
-		Ok("")
+		val projects = projectJavaDaoService.find().asList().iterator
+    var prjs = List[Prj]()
+    while(projects.hasNext()){
+      val project = projects.next()
+      var cmpgs = List[Cpgn]()
+      val campaigns =  project.getCampaigns().iterator
+      while(campaigns.hasNext()){
+        val campaign = campaigns.next()
+        var scns = List[ScenarioWrapper]()
+        val scenarii = campaign.getTestCases().iterator
+        while(scenarii.hasNext()){
+          val scenario = scenarii.next()
+          scns = ScenarioWrapper(Some(scenario.getPageName()), None) :: scns
+        }
+        cmpgs = Cpgn(Some(campaign.getId().toString()), campaign.getName(), scns) :: cmpgs
+      }
+      prjs = Prj(Some(project.getId().toString()), project.getName() , cmpgs) :: prjs
+    }
+
+		Ok(Json.toJson(prjs))
 	}
 
   /**
@@ -179,7 +205,7 @@ object Application extends Controller {
 		  case scenarii: Seq[Scenario] =>
 			for {
 			  scenario <- scenarii
-			} yield MongoConnector.saveScenario(scenario)
+			} yield conn.saveScenario(scenario)
 			Ok("scenario saved !")
 		}.recoverTotal {
 		  e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -190,7 +216,7 @@ object Application extends Controller {
     * load to init configuration
     */
 	def loadConfiguration() = Action.async {
-	  MongoConnector.loadConfiguration.map{
+	  conn.loadConfiguration.map{
 		configurations => {
 		  Ok(Json.toJson(configurations))
 		}
@@ -201,7 +227,7 @@ object Application extends Controller {
     * load to init scenarii
     */
 	def loadScenarii() = Action.async {
-		MongoConnector.loadScenarii.map{
+		conn.loadScenarii.map{
 			scenarii => {
 				val input = Json.toJson(scenarii).as[JsArray]
 				def extendedObject(obj: JsObject) = {
@@ -258,7 +284,7 @@ object Application extends Controller {
 	*	|Type *toto* in *LoginDialog.loginTextField*|
 	*/
 	def loadWikifiedScenarii() = Action.async {
-		MongoConnector.loadScenarii.map{
+		conn.loadScenarii.map{
 			scenarii => {
 				val response = for(scenario <- scenarii) yield wikifiedScenario(scenario)
 				Ok(Json.toJson(response))
@@ -270,7 +296,7 @@ object Application extends Controller {
    * load to init configuration
    */
   def loadAutoConfiguration() = Action.async {
-    MongoConnector.loadAutoConfiguration.map{
+    conn.loadAutoConfiguration.map{
       repository => {
         val input = Json.toJson(repository).as[JsArray]
         def extendedObject(obj: JsObject) = {
@@ -288,7 +314,7 @@ object Application extends Controller {
    * WebPageElement(name: String, elementType: String, locator: String, method: String, position: Int)
    */
    def loadWikifiedRepository() = Action.async {
-    MongoConnector.loadAutoConfiguration.map{
+    conn.loadAutoConfiguration.map{
       repository => {
 		def wikifiedObject(page:AutoSetupConfig): JsValue = {
 			var res = "page id:" + page.id.get + "\n"
@@ -310,7 +336,7 @@ object Application extends Controller {
    * load services json descriptors
    */
   def loadServiceDescriptors(serviceType: String, driverName: String) = Action.async {
-	MongoConnector.loadConfStaticSentences(serviceType, driverName).map{
+	conn.loadConfStaticSentences(serviceType, driverName).map{
 		sentences => {
 			val out = for (s <- sentences) yield (Json.parse(s) \\ "patterns")
 			val outSentences = out.flatMap{x=>x}	
@@ -323,7 +349,7 @@ object Application extends Controller {
    * get all possible pattern sentences for a given scenario type
    */
   def loadCtxSentences(confType:String, context:String) = Action.async{
-    MongoConnector.loadConfigurationSentences(confType, context).map{
+    conn.loadConfigurationSentences(confType, context).map{
       configurations =>{
         /*val res = configurations.filterNot(conf => {
           conf.rows.filterNot(row => row.group.equals(confType) && row.name.equals(context)).length > 0
@@ -351,7 +377,7 @@ object Application extends Controller {
     itemName match {
       case "WebPageItem" => {
         var res = List[JsValue]();
-        MongoConnector.loadWebPagesFromRepository().map{
+        conn.loadWebPagesFromRepository().map{
           pageConfigurations => {
             for(page <- pageConfigurations){
               val pageElements = page.rows;
@@ -363,7 +389,7 @@ object Application extends Controller {
       }
       case "SwingComponent" => {
         var res = List[JsValue]();
-        MongoConnector.loadSwingPagesFromRepository().map{
+        conn.loadSwingPagesFromRepository().map{
           pageConfigurations => {
             for(page <- pageConfigurations){
               val pageElements = page.rows;
@@ -377,7 +403,7 @@ object Application extends Controller {
   }
 
   def main (args: Array[String]) {
-    MongoConnector.loadAutoConfiguration.map{
+    conn.loadAutoConfiguration.map{
       repository => {
         println(repository)
         println(Json.toJson(repository))
