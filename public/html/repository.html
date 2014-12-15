@@ -8,13 +8,17 @@
 	<div class="row">
 		<div class="col-md-12">
 			Add a new <select ng-model="selectedAutoSetupConfigType" ng-options="type for type in run_config_types"></select> auto setup
-			<button class="btn btn-primary btn-xs	" data-ng-click="addAutoSetupConfig()">+</button>
+			<button class="btn btn-primary btn-xs" data-ng-click="addAutoSetupConfig()">+</button>
+
+			<span class="pull-right">
+				Filter: <select ng-model="autoSetupConfigFilter" data-ng-options="type for type in run_config_types"></select>
+			</span>
 		</div>
 	</div>
 
 	<br>
 	<div>
-		<div ng-repeat="autosetup in autosetups">
+		<div ng-repeat="autosetup in autosetups | filter:autoSetupConfigFilter">
 			Type: <label>{{ autosetup.type }}</label> Name: <input type="text" placeholder="name" ng-model="autosetup.name"/>
 			<table class="table" width="200px;">
 				<tr>

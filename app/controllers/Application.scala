@@ -54,7 +54,7 @@ object Application extends Controller {
             Json.obj("name"-> "method", "descriptor" -> Json.obj("type" -> Json.arr("CSS", "XPATH", "ID"))),
             Json.obj("name"-> "position", "descriptor" -> Json.obj()))
       case "swing page" => Json.arr(Json.obj("name"->"name", "descriptor" -> Json.obj()),
-            Json.obj("name"->"type","descriptor" -> Json.obj("type" -> Json.arr("button", "input", "menu", "table", "timeline", "date", "list"))),
+            Json.obj("name"->"type","descriptor" -> Json.obj("type" -> Json.arr("button", "input", "menu", "table", "timeline", "date", "list", "other"))),
             Json.obj("name"-> "locator", "descriptor" -> Json.obj()))
       case "configure entity" => Json.arr(Json.obj("name"->"entity", "descriptor" -> Json.obj()),
             Json.obj("name"->"alias", "descriptor" -> Json.obj()),

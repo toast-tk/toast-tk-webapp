@@ -13,3 +13,8 @@ dist
 /.project
 /RUNNING_PID
 /.settings
+.cache
+bin/*
+project/*
+.target/*
+.worksheet/*

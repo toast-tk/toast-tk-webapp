@@ -50,6 +50,7 @@ define(["angular"], function(angular) {
 		  $scope.autosetups = [];
 		  $scope.newAutoSetupRow = {};
 		  $scope.selectedAutoSetupConfigType = "";
+		  $scope.autoSetupConfigFilter = "";
 		  $scope.autosetups = [];
 
 		  playRoutes.controllers.Application.loadAutoConfiguration().get().then(function(response){
