@@ -24,9 +24,9 @@ define(["angular", "qTags"], function (angular, qTags) {
 			        triggers: {'@': {uniqueTags: false}},
 			        onDataRequest:function (mode, query, triggerChar, callback) {
 			            var data = [
-			                { id:1, name:'String', 'type':'string'},
-			                { id:2, name:'Date', 'type':'date'},
-			                { id:3, name:'Int', 'type':'int'},
+			                { id:1, name:'Value', 'type':'string'},
+			                { id:2, name:'Variable', 'type':'variable ($name)'},
+			                { id:3, name:'Service', 'type':'reference'},
 			                { id:4, name:'WebPageItem', 'type':'reference', description: ''},
 			                { id:5, name:'Entity', 'type':'reference'},
 							{ id:6, name:'SwingComponent', 'type':'reference', description: ''}
@@ -69,7 +69,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 					   callback: '&onPatternChange'
 					},   	
 	        link: function ($scope, element, attrs) { 
-	        	var regex = /(@)\[\[(\d+):([\w\s\.\-]+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+)\]\]/gi
+	        	var regex = /(@)\[\[(\d+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+)\]\]/gi
 				var tag = "";
 				var tags = [];
 				var init = false;
@@ -132,68 +132,62 @@ define(["angular", "qTags"], function (angular, qTags) {
 	        		}
 	        	}
 	        	
-	        	function updateOptionsForReference(tagPosition, descriptor, ctx){
-	        		if(descriptor == 'WebPageItem'){
-	        			if(ctx == "web"){
-	        				//call play service
-	        				playRoutes.controllers.Application.loadCtxTagData(descriptor).get().then(function(response){
-	        					var select = element.find('.'+descriptor+'_'+tagPosition);
-	        					$.each(response.data, function(key, value) { 
-									select.append($('<option>', { value : key }).text(value)); 
-								});
-								
-								if($scope.patternModel.mappings){
-									var mappings = $scope.patternModel.mappings;
-									for(var i=0; i < mappings.length; i++){
-										if(mappings[i].pos == tagPosition){
-											select.val(mappings[i].val)
-										}
-									}
-								}
-								
-								select.change(function(){
-									$scope.$apply(
-										function(){
-											$scope.callback({row: $scope.patternModel, position: tagPosition, value: select.find("option:selected").text()});
-										}
-									);
-								});
-	        				});
-	        			}
-	        		}
-					else if(descriptor == 'SwingComponent'){
-						if(ctx == "swing"){
-							//call play service
-							playRoutes.controllers.Application.loadCtxTagData(descriptor).get().then(function(response){
-								var select = element.find('.'+descriptor+'_'+tagPosition);
-								$.each(response.data, function(key, value) {
-									select.append($('<option>', { value : key }).text(value));
-								});
-								
-								if($scope.patternModel.mappings){
-									var mappings = $scope.patternModel.mappings;
-									for(var i=0; i < mappings.length; i++){
-										if(mappings[i].pos == tagPosition){
-											select.find("option").filter(function() {
-												return $(this).text() == mappings[i].val; 
-											}).prop('selected', true);
-										}
-									}
-								}
-								
-								select.change(function(){
-									$scope.$apply(function(){
-											$scope.callback({row: $scope.patternModel, position: tagPosition, value: select.find("option:selected").text()});
-										}
-									);
-								});
+	        	function updateOptionsForReference(tagPosition, descriptor, patternContext){
+	        		if(descriptor == 'WebPageItem' && patternContext == "web" ){
+	        			playRoutes.controllers.Application.loadCtxTagData(descriptor).get().then(function(response){
+							var select = element.find('.'+descriptor+'_'+tagPosition);
+							$.each(response.data, function(key, value) {
+								select.append($('<option>', { value : key }).text(value));
 							});
-						}
+
+							if($scope.patternModel.mappings){
+								var mappings = $scope.patternModel.mappings;
+								for(var i=0; i < mappings.length; i++){
+									if(mappings[i].pos == tagPosition){
+										select.val(mappings[i].val)
+									}
+								}
+							}
+
+							select.change(function(){
+								$scope.$apply(
+									function(){
+										$scope.callback({row: $scope.patternModel, position: tagPosition, value: select.find("option:selected").text()});
+									}
+								);
+							});
+						});
+	        		}
+					else if(descriptor == 'SwingComponent' && patternContext == "swing"){
+						playRoutes.controllers.Application.loadCtxTagData(descriptor).get().then(function(response){
+							var select = element.find('.'+descriptor+'_'+tagPosition);
+							$.each(response.data, function(key, value) {
+								select.append($('<option>', { value : key }).text(value));
+							});
+
+							if($scope.patternModel.mappings){
+								var mappings = $scope.patternModel.mappings;
+								for(var i=0; i < mappings.length; i++){
+									if(mappings[i].pos == tagPosition){
+										select.find("option").filter(function() {
+											return $(this).text() == mappings[i].val;
+										}).prop('selected', true);
+									}
+								}
+							}
+
+							select.change(function(){
+								$scope.$apply(function(){
+										$scope.callback({row: $scope.patternModel, position: tagPosition, value: select.find("option:selected").text()});
+									}
+								);
+							});
+						});
 					}
 					else if(descriptor == 'Entity'){
 	        		
 	        		}
-					else if(descriptor == 'String'){
+					else if(descriptor == 'Value'){
 						var input = element.find('.'+descriptor+'_'+tagPosition);
 						
 						if($scope.patternModel.mappings){

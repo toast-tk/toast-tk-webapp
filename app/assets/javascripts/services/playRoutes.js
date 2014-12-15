@@ -12,14 +12,14 @@
  * }}}
  * @author Marius Soutier, 2013
  */
-define(["angular", "jsRoutes"], function (angular, jsRoutes) {
+define(["angular", "jsRoutes", "../libs/ngProgress.min"], function (angular, jsRoutes) {
   "use strict";
 
   // The module - will be referenced by other modules
-  var module = angular.module("play.routing", []);
+  var module = angular.module("play.routing", ["ngProgress"]);
 
   // The service - will be used by controllers or other services, filters, etc.
-  module.service("playRoutes", ["$http", function ($http) {
+  module.service("playRoutes", ["$http", "ngProgress", function ($http, ngProgress) {
 
     /**
      * Wrap a Play JS function with a new function that adds the appropriate $http method.
@@ -41,6 +41,7 @@ define(["angular", "jsRoutes"], function (angular, jsRoutes) {
           webSocketUrl: routeObject.webSocketURL
         };
         res[httpMethod] = function (obj) {
+          ngProgress.start();
           return $http[httpMethod](url, obj);
         };
         return res;

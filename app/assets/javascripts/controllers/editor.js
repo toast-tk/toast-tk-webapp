@@ -1,7 +1,7 @@
 define(["angular"], function(angular) {
   "use strict";
   return {
-	  ConfigurationCtrl: function($rootScope, $scope, playRoutes){
+	  ConfigurationCtrl: function($rootScope, $scope, playRoutes, ngProgress){
 		  $scope.config_group_types = ["service", "entity"];
 		  $scope.service_config_types = ["web", "swing", "backend"];
 		  $scope.selectedConfig = undefined;
@@ -11,6 +11,7 @@ define(["angular"], function(angular) {
 
 		  playRoutes.controllers.Application.loadConfiguration().get().then(function(response){
 			  $scope.configurations = response.data || [];
+			  ngProgress.complete();
 		  });
 
 		  $scope.addNewSentence = function(newSentence, sentenceWithTypes){
@@ -24,6 +25,7 @@ define(["angular"], function(angular) {
 		  $scope.saveConfig = function(){
 			  playRoutes.controllers.Application.saveConfiguration().post($scope.configurations).then(function(response){
 				  window.alert("Saved : " + response.data);
+				  ngProgress.complete();
 			  });
 		  };
 
@@ -45,7 +47,7 @@ define(["angular"], function(angular) {
 		  };
 
 	  },
-	  RepositoryCtrl: function($rootScope, $scope, playRoutes){
+	  RepositoryCtrl: function($rootScope, $scope, playRoutes, ngProgress){
 		  $scope.run_config_types = ["web page", "configure entity", "swing page"];
 		  $scope.autosetups = [];
 		  $scope.newAutoSetupRow = {};
@@ -60,6 +62,7 @@ define(["angular"], function(angular) {
 				  return obj;
 			  });
 			  $scope.autosetups = autosetups || [];
+			  ngProgress.complete();
 		  });
 
 
@@ -69,6 +72,7 @@ define(["angular"], function(angular) {
 				  $scope.autosetups.push({type: $scope.selectedAutoSetupConfigType,
 					  columns: autoSetupDescriptor,
 					  rows: []});
+				  ngProgress.complete();
 			  });
 		  };
 
@@ -86,6 +90,7 @@ define(["angular"], function(angular) {
 			  });
 			  playRoutes.controllers.Application.saveAutoConfig().post(deepCopy).then(function(response){
 				  window.alert("Saved : " + response.data);
+				  ngProgress.complete();
 			  });
 		  };
 
@@ -98,7 +103,7 @@ define(["angular"], function(angular) {
 			  $scope.newAutoSetupRow = {};
 		  };
 	  },
-	  ScenarioCtrl: function($rootScope, $scope, playRoutes){
+	  ScenarioCtrl: function($rootScope, $scope, playRoutes, ngProgress){
 		  $scope.newRow = {};
 		  $scope.scenario_types = [];
 		  $scope.selectedType = "";
@@ -111,6 +116,7 @@ define(["angular"], function(angular) {
 				  return scenario;
 			  });
 			  $scope.scenarii = data;
+			  ngProgress.complete();
 		  });
 
 		  playRoutes.controllers.Application.loadConfiguration().get().then(function(response){
@@ -121,6 +127,7 @@ define(["angular"], function(angular) {
 						  type: $scope.configurations[i].rows[j].type});
 				  }
 			  }
+			  ngProgress.complete();
 		  });
 
 		  $scope.add = function(){
@@ -153,8 +160,7 @@ define(["angular"], function(angular) {
 				  return obj;
 			  });
 			  playRoutes.controllers.Application.saveScenarii().post(transformed_copy).then(function(){
-				  //time to refresh :)
-				  console.log("it's saved !");
+				  ngProgress.complete();
 			  });
 		  }
 		  
@@ -179,15 +185,17 @@ define(["angular"], function(angular) {
 			
 		  }
 	  },
-	  ProjectCtrl: function($rootScope, $scope, playRoutes){
+	  ProjectCtrl: function($rootScope, $scope, playRoutes, ngProgress){
 			$scope.projects = [];
 
 		    playRoutes.controllers.Application.loadProject().get().then(function(response) {
-			  var data = response.data || [];
+			  	var data = response.data || [];
+				ngProgress.complete();
 		    });
 			playRoutes.controllers.Application.loadScenarii().get().then(function(response) {
-			  var data = response.data || [];
-			  $scope.scenarii = data;
+			  	var data = response.data || [];
+			  	$scope.scenarii = data;
+				ngProgress.complete();
 			});
 			
 			$scope.addProjectBlock = function(){
@@ -218,7 +226,7 @@ define(["angular"], function(angular) {
 			
 			$scope.saveProject = function(project){
 				playRoutes.controllers.Application.saveProject().post(project).then(function(response) {
-					console.log("project saved !");
+					ngProgress.complete();
 				});
 			}
 	  },

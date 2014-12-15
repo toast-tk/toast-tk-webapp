@@ -38,8 +38,9 @@
     }
   });
 
-  require(["angular", "./services/playRoutes", "./controllers/login", "./controllers/editor", "./directives/components", "./libs/sortable"], function(a, b, login, editor) {
-    var app = angular.module("app", ["play.routing", "red.components", "ui.sortable"]);
+  require(["angular", "./services/playRoutes", "./controllers/login", "./controllers/editor",
+          "./directives/components", "./libs/sortable", "./libs/ngProgress.min"], function(a, b, login, editor) {
+    var app = angular.module("app", ["play.routing", "red.components", "ui.sortable", "ngProgress"]);
     
     app.controller("LoginCtrl", login.LoginCtrl);
     app.controller("MainCtrl", editor.MainCtrl);
