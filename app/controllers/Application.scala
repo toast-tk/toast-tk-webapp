@@ -240,7 +240,7 @@ object Application extends Controller {
 	}
  
 	def wikifiedScenario(scenario:Scenario): JsValue = {
-		lazy val regex = """@\[\[\d+:[\w\s\.\-]+:[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+\]\]""".r
+		lazy val regex = """@\[\[\d+:[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+:[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+\]\]""".r
 		def populatePatterns(rows: String): List[String] = {
 			def replacePatterns(pattern: String, mapping: List[JsValue]): String = {
 				var outputArray = List[String]()
@@ -319,6 +319,7 @@ object Application extends Controller {
 		def wikifiedObject(page:AutoSetupConfig): JsValue = {
 			var res = "page id:" + page.id.get + "\n"
 			res = res + "|| auto setup || " + page.name + " ||\n"
+      res = res + "| " + page.cType + " | " + page.name + " |\n"
 			res = res + "| name | type | locator |\n"
 			for(row <- page.rows){
 				res = res + "|" + row.name + "|" + row.elementType + "|" + row.locator + "|\n" 
