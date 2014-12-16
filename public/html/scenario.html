@@ -1,53 +1,75 @@
 <div class="container">
-  
-  Welcome to redplay, {{user.firstName}} {{user.lastName}}!
-  <br>
-  <hr>
-  <h1> Scenario blocks  <button class="btn" data-ng-click="save()">Save</button></h1>
 
-  <div class="row">
-  	<div class="col-md-12">
-  		  Add a new <select ng-model="selectedType" ng-options="type.name for type in scenario_types"></select> scenario
- 		  <button class="btn btn-primary btn-xs" data-ng-click="add()">+</button>
-  	</div>
-  </div>
+    Welcome to redplay, {{user.firstName}} {{user.lastName}}!
+    <br>
+    <hr>
+    <h1> Scenario blocks
+        <button class="btn" data-ng-click="save()">Save</button>
+        <!-- TODO: reload page after save -->
+    </h1>
 
-  <br>
-  <div>
-  	<div ng-repeat="scenario in scenarii">
-  		Name: <input type="text" ng-model="scenario.name"> of type: <label>{{ scenario.type }}</label>
-  		<table class="table" width="200px;">
-			<thead>
-				<tr>
-					<th ng-repeat="c in scenario.columns"></span>{{c.name}}</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody ui-sortable ng-model="scenario.rows">
-				<tr ng-repeat="r in scenario.rows">
-					<td ng-repeat="c in scenario.columns"
-						pattern pattern-value="{{r[c.name]}}" pattern-post="{{c.post}}"
-						pattern-model="r" pattern-column="{{c.name}}"
-						pattern-context="{{scenario.type}}" on-pattern-change="OnPatternValueChange(row, position, value)"></td>
-					<td>
-						<button class="btn btn-xs" data-ng-click="deleteRow(scenario, r)">-</button>
-					</td>
-				</tr>
-			</tbody>
-  			
-  			<tr ng-model="newRow">
-  				<td ng-repeat="c in scenario.columns">
+    <div class="row">
+        <div class="col-md-6" style="text-align:left;">
+            Filter: <input type="text" ng-model="query"/>
+        </div>
+        <div class="col-md-6" style="text-align:right;">
+            Add a new <select ng-model="selectedType" ng-options="type.name for type in scenario_types"></select>
+            scenario <button class="btn btn-primary btn-xs" data-ng-click="add()">+</button>
+        </div>
+    </div>
+    <br>
+    <div>
+        <div ng-repeat="scenario in scenarii | filter:query" class="scenario">
+            Name: <input type="text" ng-model="scenario.name" style="width: 300px;"> of type: <label>{{ scenario.type
+            }}</label>
+            <span class="pull-right">
+                <button class="btn btn-xs btn-primary" data-ng-click="importScenario(scenario)">Import</button>
+                <select ng-model="scenario.selectedImportMode" ng-options="mode for mode in importModes"></select>
+                from <select ng-model="scenario.imp" ng-options="reference as reference.name for reference in scenarii" ></select>
+                <input type="checkbox" ng-model="scenario.edit">show</input>
+            </span>
+            <table class="table table-striped" width="200px;" ng-show="scenario.edit">
+                <thead>
+                <tr>
+                    <th ng-repeat="c in scenario.columns"></span>{{c.name}}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody ui-sortable ng-model="scenario.rows">
+                <tr ng-repeat="r in scenario.rows">
+                    <td ng-repeat="c in scenario.columns"
+                        pattern pattern-value="{{r[c.name]}}" pattern-post="{{c.post}}"
+                        pattern-model="r" pattern-column="{{c.name}}"
+                        pattern-context="{{scenario.type}}"
+                        on-pattern-change="OnPatternValueChange(row, position, value)"></td>
+                    <td>
+                        <button class="btn btn-xs" data-ng-click="deleteRow(scenario, r)">-</button>
+                    </td>
+                </tr>
+                </tbody>
+
+                <tr ng-model="newRow">
+                    <td ng-repeat="c in scenario.columns">
   					<span template ng-model="newRow[c.name]" template-value="{{c.reference}}"
-  						template-post="{{c.post}}" template-config-type="{{ scenario.type }}"
-  						template-context="{{ scenario.driver }}">
+                          template-post="{{c.post}}" template-config-type="{{ scenario.type }}"
+                          template-context="{{ scenario.driver }}">
 	  					<input type="text" ng-model="newRow[c.name]" style="width: 100%;" placeholder="{{c.name}}"/>
   					</span>
-  				</td>
-  				<td>
-  					<button class="btn btn-primary btn-xs" data-ng-click="addRow(scenario, newRow)">+</button>
-  				</td>
-  			</tr>
-  		</table>
-  	</div>
-  </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-xs" data-ng-click="addRow(scenario, newRow)">+</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <br>
+
+    <div class="row">
+        <div class="col-md-12" style="text-align:right;">
+            Add a new <select ng-model="selectedType" ng-options="type.name for type in scenario_types"></select>
+            scenario
+            <button class="btn btn-primary btn-xs" data-ng-click="add()">+</button>
+        </div>
+    </div>
 </div>

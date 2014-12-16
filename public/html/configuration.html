@@ -25,9 +25,9 @@
 	  		</div>
 	  		<div>
 				<span>
-					<input type="text" ng-model="newConfig" placeholder="{{config.name}} name"/> 
+					<input type="text" ng-model="newConfig" placeholder="{{config.type}} name"/>
 					<!-- add an ng-show only if it's a service -->
-					<select ng-model="selectedConfigType" data-ng-options="type for type in service_config_types"></select>
+					<select ng-model="selectedConfigType" data-ng-options="type for type in service_config_types" placeholder="context"></select>
 					<button class="btn btn-primary btn-xs" data-ng-click="addConfigLine(config, newConfig)">+</button>
 				</span>
 			</div>
@@ -37,10 +37,10 @@
 	  	<h4> Sentences </h4>
 	  	<div ng-repeat="syntax in selectedConfig.syntax">
   			<span>
-  				{{syntax.sentence}} <a href="javascript:void(0);" data-ng-click="deleteSentenceLine(syntax, sentence)">x</a>
+  				{{syntax.sentence}} <button class="btn btn-xs" data-ng-click="deleteSentenceLine(syntax, sentence)">-</button>
   			</span>
-  			<hr>
 	  	</div>
+		  <hr/>
 	  	<div ng-show="selectedConfig != undefined">
 			<div class="row">
 				<div class="col-md-10">

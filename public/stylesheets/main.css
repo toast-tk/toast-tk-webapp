@@ -1,8 +1,3 @@
-
-input[type="text"]{
-  height: 20px;
-}
-
 .textntags-wrapper {
   position: relative;
   background: #fff;
@@ -142,4 +137,17 @@ input[type="text"]{
 	top: -36px;
 	right: -40px;
 	float: right;
+}
+
+.table-striped>tbody>tr:nth-child(odd)>td, .table-striped>tbody>tr:nth-child(odd)>th{
+  background-color: #DDDDDD;
+}
+
+.scenario{
+  border: 1px solid black;
+  padding: 10px;
+}
+
+.table-striped > tbody > tr:hover > td {
+  background-color: #efefef;
 }

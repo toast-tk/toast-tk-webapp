@@ -11,7 +11,7 @@ define(["angular"], function(angular) {
 
 		  playRoutes.controllers.Application.loadConfiguration().get().then(function(response){
 			  $scope.configurations = response.data || [];
-			  ngProgress.complete();
+			  //ngProgress.complete();
 		  });
 
 		  $scope.addNewSentence = function(newSentence, sentenceWithTypes){
@@ -24,8 +24,7 @@ define(["angular"], function(angular) {
 
 		  $scope.saveConfig = function(){
 			  playRoutes.controllers.Application.saveConfiguration().post($scope.configurations).then(function(response){
-				  window.alert("Saved : " + response.data);
-				  ngProgress.complete();
+				  //ngProgress.complete();
 			  });
 		  };
 
@@ -62,7 +61,7 @@ define(["angular"], function(angular) {
 				  return obj;
 			  });
 			  $scope.autosetups = autosetups || [];
-			  ngProgress.complete();
+			  //ngProgress.complete();
 		  });
 
 
@@ -72,7 +71,6 @@ define(["angular"], function(angular) {
 				  $scope.autosetups.push({type: $scope.selectedAutoSetupConfigType,
 					  columns: autoSetupDescriptor,
 					  rows: []});
-				  ngProgress.complete();
 			  });
 		  };
 
@@ -89,8 +87,7 @@ define(["angular"], function(angular) {
 				  return autoSetup;
 			  });
 			  playRoutes.controllers.Application.saveAutoConfig().post(deepCopy).then(function(response){
-				  window.alert("Saved : " + response.data);
-				  ngProgress.complete();
+				  //ngProgress.complete();
 			  });
 		  };
 
@@ -107,6 +104,7 @@ define(["angular"], function(angular) {
 		  $scope.newRow = {};
 		  $scope.scenario_types = [];
 		  $scope.selectedType = "";
+		  $scope.importModes = ["prepend", "append"];
 		  $scope.scenarii = [];
 
 		  playRoutes.controllers.Application.loadScenarii().get().then(function(response) {
@@ -116,7 +114,7 @@ define(["angular"], function(angular) {
 				  return scenario;
 			  });
 			  $scope.scenarii = data;
-			  ngProgress.complete();
+			  //ngProgress.complete();
 		  });
 
 		  playRoutes.controllers.Application.loadConfiguration().get().then(function(response){
@@ -127,7 +125,7 @@ define(["angular"], function(angular) {
 						  type: $scope.configurations[i].rows[j].type});
 				  }
 			  }
-			  ngProgress.complete();
+			  //ngProgress.complete();
 		  });
 
 		  $scope.add = function(){
@@ -160,9 +158,21 @@ define(["angular"], function(angular) {
 				  return obj;
 			  });
 			  playRoutes.controllers.Application.saveScenarii().post(transformed_copy).then(function(){
-				  ngProgress.complete();
+				  //ngProgress.complete();
 			  });
-		  }
+		  };
+
+		  $scope.importScenario = function(scenario){
+			  var mode = scenario.selectedImportMode;
+			  var toImport = scenario.imp;
+			  if(mode == "prepend"){
+				  scenario.rows = angular.copy(toImport.rows).concat(scenario.rows);
+			  }else if(mode == "append"){
+				  scenario.rows = scenario.rows.concat(angular.copy(toImport.rows));
+			  }
+			  delete scenario.imp;
+			  delete scenario.selectedImportMode;
+		  };
 		  
 		  $scope.OnPatternValueChange = function(row, position, value){
 			//var index = $scope.scenarii[0].rows.indexOf(row);
@@ -190,14 +200,19 @@ define(["angular"], function(angular) {
 
 		    playRoutes.controllers.Application.loadProject().get().then(function(response) {
 			  	var data = response.data || [];
-				ngProgress.complete();
+				$scope.projects = data;
+				//ngProgress.complete();
 		    });
 			playRoutes.controllers.Application.loadScenarii().get().then(function(response) {
 			  	var data = response.data || [];
 			  	$scope.scenarii = data;
-				ngProgress.complete();
+				//ngProgress.complete();
 			});
-			
+
+		  	$scope.isNotSaved = function(scenario){
+				return !angular.isDefined(scenario.name);
+		    }
+
 			$scope.addProjectBlock = function(){
 				$scope.projects.push({ 
 									name: "project", 
@@ -226,7 +241,7 @@ define(["angular"], function(angular) {
 			
 			$scope.saveProject = function(project){
 				playRoutes.controllers.Application.saveProject().post(project).then(function(response) {
-					ngProgress.complete();
+					//ngProgress.complete();
 				});
 			}
 	  },

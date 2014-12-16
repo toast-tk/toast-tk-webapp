@@ -5,7 +5,8 @@ define(["angular"], function(angular) {
     LoginCtrl: function($rootScope, $scope, playRoutes, $location) {
       $scope.credentials = {};
       $scope.user = {};
-      $scope.loggedIn = false;
+      $scope.loggedIn = true;
+      $location.path("/main");
 
       $scope.login = function(credentials) {
         playRoutes.controllers.Application.login().post(credentials).then(function(response) {
@@ -16,7 +17,7 @@ define(["angular"], function(angular) {
           $scope.loggedIn = true;
           $scope.user = response.data;
           $rootScope.user = $scope.user;
-          $location.path("/main");
+
         });
       };
     }

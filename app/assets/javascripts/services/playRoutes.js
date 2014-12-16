@@ -42,7 +42,12 @@ define(["angular", "jsRoutes", "../libs/ngProgress.min"], function (angular, jsR
         };
         res[httpMethod] = function (obj) {
           ngProgress.start();
-          return $http[httpMethod](url, obj);
+          var promise = $http[httpMethod](url, obj);
+          promise.then(function(){
+            ngProgress.complete();
+            return arguments;
+          })
+          return promise;
         };
         return res;
       };
