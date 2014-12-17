@@ -189,7 +189,7 @@ object Application extends Controller {
    * load to init projects
    */
   def loadProject() = Action {
-    val projects = projectJavaDaoService.find().asList().iterator
+    val projects = projectJavaDaoService.findAllLastProjects().iterator
     var prjs = List[Prj]()
     while (projects.hasNext()) {
       val project = projects.next()

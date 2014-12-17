@@ -19,7 +19,7 @@ define(["angular", "jsRoutes", "../libs/ngProgress.min"], function (angular, jsR
   var module = angular.module("play.routing", ["ngProgress"]);
 
   // The service - will be used by controllers or other services, filters, etc.
-  module.service("playRoutes", ["$http", "ngProgress", function ($http, ngProgress) {
+  module.service("playRoutes", ["$http", "ngProgress", "$location", function ($http, ngProgress, $location) {
 
     /**
      * Wrap a Play JS function with a new function that adds the appropriate $http method.
@@ -46,6 +46,10 @@ define(["angular", "jsRoutes", "../libs/ngProgress.min"], function (angular, jsR
           promise.then(function(){
             ngProgress.complete();
             return arguments;
+          }, function(reponse){
+            ngProgress.complete();
+            console.log(reponse.status);
+            $location.path("/error");
           })
           return promise;
         };
