@@ -34,14 +34,19 @@ object Application extends Controller {
 
   val projectJavaDaoService = Global.projectService
 
-  def index = Action {
-    Ok(views.html.parallax_login_form())
+  def index = Action {  request =>
+    request.session.get("connected").map { user =>
+      Ok(views.html.index())
+    }.getOrElse {
+      Ok(views.html.parallax_login_form())
+    }
   }
 
   def login() = Action(parse.json) { implicit request =>
     //Check credentials and so on...
-    //Ok(Json.obj("token" -> java.util.UUID.randomUUID().toString))
-    Ok(views.html.index())
+    Ok(views.html.index()).withSession(
+      session + ("connected" -> "user goes here !")
+    )
   }
 
   /**
