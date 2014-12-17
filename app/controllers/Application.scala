@@ -4,9 +4,11 @@ import com.synpatix.redpepper.backend.core.parse._
 import com.mongo.test.domain.impl.test.TestPage
 import com.mongo.test.service.dao.access.project._
 import com.mongo.test.domain.impl.report._
+import com.mongo.test.ProjectHtmlReportGenerator
 
 import controllers.mongo._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.iteratee.Enumerator
 import play.api.libs.json.Reads._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
@@ -15,7 +17,9 @@ import controllers.parsers.WebPageElement
 
 import boot.Global
 
-case class Prj(id: Option[String], name: String, campaigns: List[Cpgn])
+import scala.collection.immutable.StringOps
+
+case class Prj(id: Option[String], name: String, iterations: Option[Short], campaigns: List[Cpgn])
 
 case class Cpgn(id: Option[String], name: String, scenarii: List[ScenarioWrapper])
 
@@ -139,6 +143,7 @@ object Application extends Controller {
     def parseTestPage(scenario: Scenario, wikiScenario: String): TestPage = {
       val testPage = parser.parseString(wikiScenario)
       testPage.setName(scenario.name)
+      testPage.setPageName(scenario.name)
       testPage
     }
 
@@ -167,7 +172,13 @@ object Application extends Controller {
 
     request.body.validate[Prj].map {
       case project: Prj =>
-        projectJavaDaoService.saveNewIteration(tranformProject(project))
+        if(project.id.isDefined) {
+          val javaProject = projectJavaDaoService.getLastByName(project.name)
+
+        }
+        else{
+          projectJavaDaoService.saveNewIteration(tranformProject(project))
+        }
         Ok("project saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -194,10 +205,38 @@ object Application extends Controller {
         }
         cmpgs = Cpgn(Some(campaign.getId().toString()), campaign.getName(), scns) :: cmpgs
       }
-      prjs = Prj(Some(project.getId().toString()), project.getName(), cmpgs) :: prjs
+      prjs = Prj(Some(project.getId().toString()), project.getName(), Some(project.getIteration()) , cmpgs) :: prjs
     }
 
     Ok(Json.toJson(prjs))
+  }
+
+  def loadProjectReport(name: String) = Action {
+    val report = projectJavaDaoService.getProjectHTMLReport(name)
+    SimpleResult( header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
+      body = Enumerator(new StringOps(report).getBytes()))
+  }
+
+  def loadTestReport() = Action {
+    implicit request => {
+      val pName = request.queryString("project")(0);
+      val iter = request.queryString("iteration")(0);
+      val tName = request.queryString("test")(0);
+      var p = projectJavaDaoService.getByNameAndIteration(pName, iter);
+      var pageReport = ""
+      val iteratorCampaign = p.getCampaigns().iterator
+      while (iteratorCampaign.hasNext()) {
+        val iteratorTestPage = iteratorCampaign.next().getTestCases().iterator
+        while(iteratorTestPage.hasNext()){
+          val testPage =iteratorTestPage.next()
+          if (testPage.getName().equals(tName)) {
+            pageReport = ProjectHtmlReportGenerator.generatePageReport(null, testPage);
+          }
+        }
+      }
+      SimpleResult( header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
+        body = Enumerator(new StringOps(pageReport).getBytes()))
+    }
   }
 
   /**

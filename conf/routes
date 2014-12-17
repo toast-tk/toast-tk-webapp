@@ -4,37 +4,38 @@
 
 
 # Home page
-GET         /                                           controllers.Application.index
+GET         /                                             controllers.Application.index
 
 # JavaScript routes
-GET         /jsroutes.js                                controllers.JavaScript.jsRoutes()
+GET         /jsroutes.js                                  controllers.JavaScript.jsRoutes()
 
 # AJAX routes
-POST        /login                                      controllers.Application.login()
-GET         /loadScenarioCtx/:scenarioType              controllers.Application.loadScenarioCtx(scenarioType: String)
-GET         /loadAutoSetupCtx/:setupType                controllers.Application.loadAutoSetupCtx(setupType: String)
-GET         /loadConfiguration                          controllers.Application.loadConfiguration()
-GET         /loadAutoConfiguration                      controllers.Application.loadAutoConfiguration()
-GET         /loadScenarii                               controllers.Application.loadScenarii()
-GET 		/wikiScenarii								controllers.Application.loadWikifiedScenarii()
-GET			/loadServiceDescriptors/:sType/:driver		controllers.Application.loadServiceDescriptors(sType:String, driver: String)
-GET         /loadCtxTagData/:itemName                   controllers.Application.loadCtxTagData(itemName: String)
-GET         /users/:id                                  controllers.Users.user(id: Long)
-GET         /loadCtxSentences/:confType/:context        controllers.Application.loadCtxSentences(confType:String, context:String)
-POST        /saveConfiguration                          controllers.Application.saveConfiguration()
-POST        /saveAutoSetupConfiguration                 controllers.Application.saveAutoConfig()
-POST		/saveNewInspectedPage						controllers.Application.saveNewInspectedPage()
-POST        /saveScenarii                               controllers.Application.saveScenarii()
-GET			/loadWikifiedRepository						controllers.Application.loadWikifiedRepository()
-POST		/saveProject								controllers.Application.saveProject()
-GET			/loadProject								controllers.Application.loadProject()
-
+POST        /login                                        controllers.Application.login()
+GET         /loadScenarioCtx/:scenarioType                controllers.Application.loadScenarioCtx(scenarioType: String)
+GET         /loadAutoSetupCtx/:setupType                  controllers.Application.loadAutoSetupCtx(setupType: String)
+GET         /loadConfiguration                            controllers.Application.loadConfiguration()
+GET         /loadAutoConfiguration                        controllers.Application.loadAutoConfiguration()
+GET         /loadScenarii                                 controllers.Application.loadScenarii()
+GET         /wikiScenarii                                 controllers.Application.loadWikifiedScenarii()
+GET         /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
+GET         /loadCtxTagData/:itemName                     controllers.Application.loadCtxTagData(itemName: String)
+GET         /users/:id                                    controllers.Users.user(id: Long)
+GET         /loadCtxSentences/:confType/:context          controllers.Application.loadCtxSentences(confType:String, context:String)
+POST        /saveConfiguration                            controllers.Application.saveConfiguration()
+POST        /saveAutoSetupConfiguration                   controllers.Application.saveAutoConfig()
+POST        /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
+POST        /saveScenarii                                 controllers.Application.saveScenarii()
+GET         /loadWikifiedRepository                       controllers.Application.loadWikifiedRepository()
+POST        /saveProject                                  controllers.Application.saveProject()
+GET         /loadProject                                  controllers.Application.loadProject()
+GET         /loadProjectReport/:projectName               controllers.Application.loadProjectReport(projectName:String)
+GET         /test                                     controllers.Application.loadTestReport()
 
 
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                               controllers.Assets.at(path="/public", file)
+GET         /assets/*file                                 controllers.Assets.at(path="/public", file)
 
 # Map the webjar static assets to the /webjars URL
-GET         /webjars/*file                              controllers.WebJarAssets.at(file)
+GET         /webjars/*file                                controllers.WebJarAssets.at(file)
 

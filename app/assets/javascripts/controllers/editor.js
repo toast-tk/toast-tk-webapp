@@ -195,36 +195,28 @@ define(["angular"], function(angular) {
 			
 		  }
 	  },
-	  ProjectCtrl: function($rootScope, $scope, playRoutes, ngProgress){
+	  ProjectCtrl: function($rootScope, $scope, playRoutes, ngProgress, $window){
 			$scope.projects = [];
 
 		    playRoutes.controllers.Application.loadProject().get().then(function(response) {
 			  	var data = response.data || [];
 				$scope.projects = data;
-				//ngProgress.complete();
 		    });
 			playRoutes.controllers.Application.loadScenarii().get().then(function(response) {
 			  	var data = response.data || [];
 			  	$scope.scenarii = data;
-				//ngProgress.complete();
 			});
 
-		  	$scope.isNotSaved = function(scenario){
-				return !angular.isDefined(scenario.name);
+		  	$scope.isNotSaved = function(project){
+				return !angular.isDefined(project.id);
 		    }
 
 			$scope.addProjectBlock = function(){
-				$scope.projects.push({ 
-									name: "project", 
-									campaigns: []
-								});
+				$scope.projects.push({name: "project", campaigns: []});
 			}
 			
 			$scope.addCampaignToProject = function(project){
-				project.campaigns.push({
-									name:"new campaign",
-									scenarii: []
-								});
+				project.campaigns.push({name:"new campaign", scenarii: []});
 			}
 			
 			$scope.addScenarioToCampaign = function(campaign){
@@ -241,7 +233,21 @@ define(["angular"], function(angular) {
 			
 			$scope.saveProject = function(project){
 				playRoutes.controllers.Application.saveProject().post(project).then(function(response) {
-					//ngProgress.complete();
+				});
+			}
+
+		  	$scope.showDetails = function(scenario){
+				alert("TODO: Implement details display !")
+			}
+
+		    $scope.disableProject = function(project){
+				alert("TODO: Implement disabling projects !")
+			}
+
+		  	$scope.displayReport = function(project){
+				$window.open("/loadProjectReport/"+project.name)
+				playRoutes.controllers.Application.loadProjectReport(project.name).get().then(function(response) {
+					console.log(response)
 				});
 			}
 	  },

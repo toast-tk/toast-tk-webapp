@@ -30,8 +30,35 @@
 	<br>
 	<div class="row">
 	  	<div ng-repeat="project in projects">
-			<div class="project">
-				<span class="project-title"> Project name: <input type="text" ng-model="project.name"></span>
+			<div class="project" ng-hide="isNotSaved(project)">
+				<span class="project-title">
+					Project name: <b>{{project.name}}</b>
+				</span>
+				<span class="pull-right">
+					Run {{ project.iterations-1 }} times |
+					<button class="btn btn-primary btn-xs" data-ng-click="displayReport(project)">See Report</button>
+					<button class="btn btn-warning btn-xs" data-ng-click="disableProject(project)">Disable</button>
+				</span>
+				<div >
+					<div ng-repeat="campaign in project.campaigns" class="campaign">
+						Campaign name: <b>{{campaign.name}}</b>
+						<span>
+							<ul ui-sortable ng-model="campaign.scenarii">
+								<li ng-repeat="scenario in campaign.scenarii">
+									Scenario Name:
+									<b>{{scenario.name}}</b>
+									<button class="btn btn-xs" data-ng-click="showDetails(scenario)">details</button>
+								</li>
+							</ul>
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="project" ng-show="isNotSaved(project)">
+				<span class="project-title">
+					Project name: <input type="text" ng-model="project.name">
+				</span>
 				<span class="project-title"> Start date: <input type="text"></span>
 				<span class="project-title"> End date: <input type="text"></span>
 				<span class="pull-right">
@@ -48,8 +75,7 @@
 							<ul ui-sortable ng-model="campaign.scenarii">
 								<li ng-repeat="scenario in campaign.scenarii">
 									Scenario Name:
-									<select ng-show="isNotSaved(scenario)" ng-model="scenario.scenario" ng-options="reference as reference.name for reference in scenarii"/>
-									<span ng-hide="isNotSaved(scenario)">{{scenario.name}}</span>
+									<select ng-model="scenario.scenario" ng-options="reference as reference.name for reference in scenarii"/>
 									<button class="btn btn-xs" data-ng-click="deleteScenario(scenario, campaign)">-</button>
 								</li>
 							</ul>
