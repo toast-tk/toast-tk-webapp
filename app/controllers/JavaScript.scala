@@ -23,6 +23,7 @@ object JavaScript extends Controller {
           controllers.routes.javascript.Application.saveProject,
           controllers.routes.javascript.Application.loadProject,
           controllers.routes.javascript.Application.loadProjectReport,
+          controllers.routes.javascript.Application.logout,
           controllers.routes.javascript.Users.user)
     ).as(JAVASCRIPT)
   }

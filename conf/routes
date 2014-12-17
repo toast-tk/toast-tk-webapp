@@ -29,8 +29,8 @@ GET         /loadWikifiedRepository                       controllers.Applicatio
 POST        /saveProject                                  controllers.Application.saveProject()
 GET         /loadProject                                  controllers.Application.loadProject()
 GET         /loadProjectReport/:projectName               controllers.Application.loadProjectReport(projectName:String)
-GET         /test                                     controllers.Application.loadTestReport()
-
+GET         /test                                         controllers.Application.loadTestReport()
+GET         /logout                                       controllers.Application.logout()
 
 
 # Map static resources from the /public folder to the /assets URL path

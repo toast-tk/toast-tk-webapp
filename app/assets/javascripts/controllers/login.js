@@ -6,6 +6,7 @@ define(["angular"], function(angular) {
       $scope.credentials = {};
       $scope.user = {};
       $scope.loggedIn = true;
+      $rootScope.user = {};
       $location.path("/main");
 
       $scope.login = function(credentials) {

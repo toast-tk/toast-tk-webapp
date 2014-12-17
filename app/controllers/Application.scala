@@ -48,7 +48,9 @@ object Application extends Controller {
       session + ("connected" -> "user goes here !")
     )
   }
-
+  def logout() = Action {
+    Ok("").withNewSession
+  }
   /**
    * auto setup - run config
    *

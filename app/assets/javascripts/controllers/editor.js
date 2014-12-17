@@ -251,8 +251,14 @@ define(["angular"], function(angular) {
 				});
 			}
 	  },
-	  MainCtrl: function($rootScope, $scope, playRoutes) {
-			$scope.user = $rootScope.user;
+	  MainCtrl: function($rootScope, $scope, playRoutes, $location) {
+
+		  $scope.logout = function(){
+			  playRoutes.controllers.Application.logout().get().then(function(response){
+				  $rootScope.user = "";
+				  window.location.href = "/";
+			  });
+		  }
 	  }
   };
 });
