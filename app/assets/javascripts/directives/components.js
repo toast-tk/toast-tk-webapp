@@ -19,7 +19,9 @@ define(["angular", "qTags"], function (angular, qTags) {
             	content.append(e);
             	content.append(addHtml);
             	element.replaceWith(content);	
-            	
+
+
+				//TODO: move data list on server side
 				$(e).textntags({
 			        triggers: {'@': {uniqueTags: false}},
 			        onDataRequest:function (mode, query, triggerChar, callback) {
@@ -231,9 +233,9 @@ define(["angular", "qTags"], function (angular, qTags) {
 		        		var templateValue = $scope.templateValue;
 		        		var templateModel = $scope.templateModel;
 		        		
-		        		playRoutes.controllers.Application.loadCtxSentences($scope.templateConfigType, $scope.templateContext).get().then(function(response){
+		        		playRoutes.controllers.Application.loadSentences($scope.templateConfigType, $scope.templateContext).get().then(function(response){
 		        			$scope.values = response.data || [];
-							$scope.values.unshift({sentence: "free text", typed_sentence : ""});
+							$scope.values.unshift({sentence: "Free Text Step", typed_sentence : ""});
 							if($scope.templatePost == "true"){
 								element.replaceWith($("<span></span>"))
 							}

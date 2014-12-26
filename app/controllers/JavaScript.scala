@@ -18,6 +18,7 @@ object JavaScript extends Controller {
           controllers.routes.javascript.Application.loadCtxTagData,
           controllers.routes.javascript.Application.loadAutoSetupCtx,
           controllers.routes.javascript.Application.loadCtxSentences,
+          controllers.routes.javascript.Application.loadSentences,
           controllers.routes.javascript.Application.loadScenarii,
           controllers.routes.javascript.Application.saveScenarii,
           controllers.routes.javascript.Application.saveProject,

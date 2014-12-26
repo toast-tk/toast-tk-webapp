@@ -18,6 +18,7 @@ import controllers.parsers.WebPageElement
 import boot.Global
 
 import scala.collection.immutable.StringOps
+import scala.util.matching.Regex
 
 case class Prj(id: Option[String], name: String, iterations: Option[Short], campaigns: List[Cpgn])
 
@@ -58,6 +59,8 @@ object Application extends Controller {
   def loadAutoSetupCtx(setupType: String) = Action {
     Ok(autoSetupCtxProvider(setupType))
   }
+
+
 
   def autoSetupCtxProvider(setupType: String): JsArray = {
     setupType match {
@@ -140,6 +143,16 @@ object Application extends Controller {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
+
+  def saveNewInspectedScenario() = Action(parse.json) { implicit request =>
+    request.body.validate[String].map {
+      case scenario: String =>
+        Ok(scenario)
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
+  }
+
 
   /**
    * Save project
@@ -396,14 +409,64 @@ object Application extends Controller {
   }
 
   /**
+   * Return the regex value for a type in an automation sentence
+   *
+   * @param tagType
+   */
+  def sentenceChunkReplacement(tagType:String) = {
+    tagType match {
+      case "Value" => """([\\w\\W]+)"""
+      case "Variable" => """\\$(\\w+)"""
+      case "WebPageItem" => """(\\w+).(\\w+)"""
+      case "SwingComponent" => """(\\w+).(\\w+)"""
+      case _ => tagType
+    }
+  }
+
+  def replacePatternByRegex(syntaxes: List[ConfigurationSyntax]): List[ConfigurationSyntax] = {
+    lazy val regex = """@\[\[(\d+):[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+:([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+)\]\]"""
+    def replacePatterns(sentence: String): String = {
+      var outputArray = List[String]()
+      val replacedSentence = sentence.replaceAll(regex, "@[[$1:_:$2]]")
+      val splittedSentence = replacedSentence.split("\\s+")
+      splittedSentence.foreach { word => outputArray = sentenceChunkReplacement(word.replaceAll(regex, "$2")) :: outputArray}
+      outputArray.reverse.mkString(" ")
+    }
+    def replaceConfigurationSyntax(syntax: ConfigurationSyntax): ConfigurationSyntax = {
+      ConfigurationSyntax(syntax.typed_sentence,replacePatterns(syntax.typed_sentence))
+    }
+    for (syntax <- syntaxes) yield replaceConfigurationSyntax(syntax)
+  }
+
+  /**
    * get all possible pattern sentences for a given scenario type
    */
   def loadCtxSentences(confType: String, context: String) = Action.async {
     conn.loadConfigurationSentences(confType, context).map {
       configurations => {
-        /*val res = configurations.filterNot(conf => {
-          conf.rows.filterNot(row => row.group.equals(confType) && row.name.equals(context)).length > 0
-        })*/
+        var res = List[ConfigurationSyntax]();
+        for (configuration <- configurations) {
+          for (row <- configuration.rows) {
+            if (row.group.equals(confType) && row.name.equals(context)) {
+              res = res ++ replacePatternByRegex(row.syntax)
+            }
+          }
+        }
+        Ok(Json.toJson(res))
+      }
+    }
+
+  }
+
+  /**
+   *
+   * @param confType
+   * @param context
+   * @return
+   */
+  def loadSentences(confType: String, context: String) = Action.async {
+    conn.loadConfigurationSentences(confType, context).map {
+      configurations => {
         var res = List[ConfigurationSyntax]();
         for (configuration <- configurations) {
           for (row <- configuration.rows) {

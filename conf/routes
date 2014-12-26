@@ -21,6 +21,7 @@ GET         /loadServiceDescriptors/:sType/:driver        controllers.Applicatio
 GET         /loadCtxTagData/:itemName                     controllers.Application.loadCtxTagData(itemName: String)
 GET         /users/:id                                    controllers.Users.user(id: Long)
 GET         /loadCtxSentences/:confType/:context          controllers.Application.loadCtxSentences(confType:String, context:String)
+GET         /loadSentences/:confType/:context             controllers.Application.loadSentences(confType:String, context:String)
 POST        /saveConfiguration                            controllers.Application.saveConfiguration()
 POST        /saveAutoSetupConfiguration                   controllers.Application.saveAutoConfig()
 POST        /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
@@ -31,6 +32,7 @@ GET         /loadProject                                  controllers.Applicatio
 GET         /loadProjectReport/:projectName               controllers.Application.loadProjectReport(projectName:String)
 GET         /test                                         controllers.Application.loadTestReport()
 GET         /logout                                       controllers.Application.logout()
+POST        /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
 
 
 # Map static resources from the /public folder to the /assets URL path

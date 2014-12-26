@@ -1,19 +1,16 @@
-import controllers.Application._
-import play.api.libs.json._
+val s = "value"
+val b = s.equals("value")
 
-val input = Json.arr(
-    Json.obj("name" -> JsString("Watherhsip down"),
-      "type" -> JsString("web page"),
-      "rows" -> JsArray()),
-    Json.obj("name" -> JsString("Youga down"),
-      "type" -> JsString("swing page"),
-      "rows" -> JsArray())
-)
-
-def extendedObject(obj: JsObject) = {
-  obj + ("columns" -> autoSetupCtxProvider((obj \ "type").as[String]))
+def sentenceChunkReplacement(tagType:String) = {
+  tagType match {
+    case "Value" => "([\\w\\W]+)"
+    case "Variable" => "\\$(\\w+)"
+    case "WebPageItem" => "(\\w+).(\\w+)"
+    case "SwingComponent" => "(\\w+).(\\w+)"
+    case _ => "*Regex undefined for ("+tagType+")*"
+  }
 }
 
-val out = for(i <- input.value) yield extendedObject(i.as[JsObject])
-
+"""@[[1:value:string]]""".
+  replaceAll("""@\[\[\d+:[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+:([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+)\]\]""", sentenceChunkReplacement("$1"))
 
