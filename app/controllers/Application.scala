@@ -145,9 +145,11 @@ object Application extends Controller {
   }
 
   def saveNewInspectedScenario() = Action(parse.json) { implicit request =>
-    request.body.validate[String].map {
-      case scenario: String =>
-        Ok(scenario)
+    request.body.validate[InspectedScenario].map {
+      case scenario: InspectedScenario =>
+        val logInstance = Scenario(id = None, name = scenario.name, cType = "swing", driver = "connecteurSwing", rows = scenario.steps)
+        conn.saveScenario(logInstance)
+        Ok("scenario saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }

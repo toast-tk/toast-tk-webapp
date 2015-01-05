@@ -194,7 +194,18 @@ define(["angular"], function (angular) {
                 playRoutes.controllers.Application.loadScenarii().get().then(function (response) {
                     var data = response.data || [];
                     data.map(function (scenario) {
-                        scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
+                        try{
+                            scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
+                        }catch(e){
+                            if(!angular.isObject(scenario.rows)){
+                                //convert it into rows
+                                var lines = scenario.rows.split( "\n" );
+                                scenario.rows = [];
+                                for(var i = 0; i< lines.length; i++){
+                                    scenario.rows.push({"patterns" : lines[i], "mappings" : []});
+                                }
+                            }
+                        }
                         return scenario;
                     });
                     $scope.scenarii = data;

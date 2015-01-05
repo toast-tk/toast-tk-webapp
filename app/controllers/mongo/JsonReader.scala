@@ -16,28 +16,19 @@ case class ConfigurationRow(group: String, name: String, syntax: List[Configurat
 case class MacroConfiguration(id: Option[String], cType: String, rows: List[ConfigurationRow])
 case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: List[WebPageElement])
 case class InspectedPage(name: String, items: List[String])
+case class InspectedScenario(name: String, steps: String)
 case class Scenario(id: Option[String], name: String, cType: String, driver: String, rows: String)
 case class TestScript(id: Option[String], name: String, scenarii: List[Scenario])
 
-object TestScript{
-  implicit val format = Json.format[TestScript]
-  implicit object BSONWriter extends BSONDocumentWriter[TestScript] {
-    def write(testScript: TestScript): BSONDocument =
-      testScript.id match {
-        case None =>  BSONDocument("name"-> testScript.name, "scenarii" -> testScript.scenarii)
-        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> testScript.name,
-          "scenarii" -> testScript.scenarii)
-      }
-  }
 
-  implicit object BSONReader extends BSONDocumentReader[TestScript] {
-    def read(doc: BSONDocument): TestScript = {
-      val id = doc.getAs[BSONObjectID]("_id").get.stringify
-      val name = doc.getAs[String]("name").get
-      val scenarii = doc.getAs[List[Scenario]]("scenarii").get
-      TestScript(Option[String](id), name ,scenarii)
-    }
-  }
+object InspectedScenario{
+  implicit val reader: Reads[InspectedScenario]= (
+      (__ \ "name").read[String] and
+      (__ \ "steps").read[String])(InspectedScenario.apply(_,_))
+
+  implicit val writer: Writes[InspectedScenario] = (
+      (__ \ "name").write[String] and
+      (__ \ "steps").write[String])(unlift(InspectedScenario.unapply))
 }
 
 object InspectedPage{
@@ -85,6 +76,29 @@ object Scenario{
     }
   }
 }
+
+
+object TestScript{
+  implicit val format = Json.format[TestScript]
+  implicit object BSONWriter extends BSONDocumentWriter[TestScript] {
+    def write(testScript: TestScript): BSONDocument =
+      testScript.id match {
+        case None =>  BSONDocument("name"-> testScript.name, "scenarii" -> testScript.scenarii)
+        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> testScript.name,
+          "scenarii" -> testScript.scenarii)
+      }
+  }
+
+  implicit object BSONReader extends BSONDocumentReader[TestScript] {
+    def read(doc: BSONDocument): TestScript = {
+      val id = doc.getAs[BSONObjectID]("_id").get.stringify
+      val name = doc.getAs[String]("name").get
+      val scenarii = doc.getAs[List[Scenario]]("scenarii").get
+      TestScript(Option[String](id), name ,scenarii)
+    }
+  }
+}
+
 
 object AutoSetupConfig{
     implicit val autoSetupConfigReader: Reads[AutoSetupConfig]= (
