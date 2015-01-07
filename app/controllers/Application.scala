@@ -326,17 +326,26 @@ object Application extends Controller {
         outputArray.reverse.mkString(" ")
       }
 
+
       val patterns = Json.parse(rows) \\ "patterns"
       val mappings = Json.parse(rows) \\ "mappings"
       val modifiedPatterns = for (i <- 0 until patterns.length) yield
         replacePatterns(patterns(i).as[String], if (mappings.isDefinedAt(i)) mappings(i).as[List[JsValue]] else List())
       modifiedPatterns.toList
     }
+
+    val lines = if (scenario.rows.startsWith("[")){
+        populatePatterns(scenario.rows).map { sentence => "| " + sentence + " |\n"}.mkString("") + "\n"
+      } else {
+        scenario.rows.split("\n").toList.map(row => "|" + row +"|").mkString("\n")
+      }
+
+
     var res = "h1. Name:" + scenario.name + "\n"
     res = res + "#scenario id:" + scenario.id.get + "\n"
     res = res + "#scenario driver:" + scenario.driver + "\n"
     res = res + "|| scenario || " + scenario.cType + " ||\n"
-    res = res + populatePatterns(scenario.rows).map { sentence => "| " + sentence + " |\n"}.mkString("") + "\n"
+    res = res + lines
     JsString(res)
   }
 
