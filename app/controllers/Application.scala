@@ -1,5 +1,7 @@
 package controllers
 
+import boot.Global
+
 import com.synpatix.redpepper.backend.core.parse._
 import com.mongo.test.domain.impl.test.TestPage
 import com.mongo.test.service.dao.access.project._
@@ -15,7 +17,6 @@ import play.api.libs.json._
 import play.api.mvc._
 import controllers.parsers.WebPageElement
 
-import boot.Global
 
 import scala.collection.immutable.StringOps
 import scala.util.matching.Regex

@@ -15,7 +15,9 @@ libraryDependencies ++= Seq(
   "org.webjars" % "webjars-play" % "2.1.0-1",
   "org.webjars" % "bootstrap" % "3.2.0-1",
   "com.synaptix.redpepper" % "redpepper-dao" % "1.3-SNAPSHOT",
-  "com.synaptix.redpepper" % "redpepper-backend-automation" % "1.3-SNAPSHOT"
+  "com.synaptix.redpepper" % "redpepper-automation" % "1.3-SNAPSHOT",
+  "com.synaptix.redpepper" % "redpepper-runtime" % "1.3-SNAPSHOT",
+  "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.46.4"
 )     
 
 // Run r.js (RequireJS optimizer) when building the app for production
