@@ -13,7 +13,7 @@ RedPlay - Web App d0.1
 ```xml
 	<dependency>
 		<groupId>com.synaptix.redpepper</groupId>
-		<artifactId>redpepper-backend-automation</artifactId>
+		<artifactId>redpepper-automation</artifactId>
 		<version>${redpepper.version}</version>
 	</dependency>
 ```
