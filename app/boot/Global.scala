@@ -69,7 +69,7 @@ object Global extends play.api.GlobalSettings {
 	}
 
  	def stopMongo() {
-  	Logger("play-embed-mongo").info(s"Stopping MongoDB.")
+  	Logger.info(s"Stopping MongoDB.")
   	try {
     		if (mongoExe != null) mongoExe.stop()
   	} finally {

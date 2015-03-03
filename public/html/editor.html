@@ -1,22 +1,31 @@
+
+<link rel="stylesheet" media="screen" href="assets/stylesheets/default.css">
+<link rel="stylesheet" media="screen" href="assets/stylesheets/component.css">
 <div class="container">
-
-
-  Welcome to redplay, {{user.firstName}} {{user.lastName}}!
-	<span class="pull-right"><button class="btn" ng-click="logout()">Get Out</button></span>
-  <br>
-  <hr>
-	<ul>
-		<li>
-			<a href="#/configuration">1. Configuration</a>
-		</li>
-		<li>
-			<a href="#/repository">2. Repository</a>
-		</li>
-		<li>
-			<a href="#/scenario">3. Scenario</a>
-		</li>
-		<li>
-			<a href="#/project">4. Projects</a>
-		</li>
-	</ul>
+	<br>
+  	Toast Tk Webapp {{user.firstName}} {{user.lastName}}
+	<span class="pull-right"><a class="" href="http://10.106.184.115:8080/redpepper/app.jnlp" target="_blank">Open Swing Client</a></span>
+	<!-- <span class="pull-right"><a class="" ng-click="logout()">Log Out</button></span> -->
+  	<br>
+	<br>
+  	<div style="margin: 0 auto;text-align: center; ">
+		<a class="btn btn-5 btn-5a icon-cog" style="width: 500px;" href="#/configuration">
+			<span>Settings</span>
+		</a>
+	</div>
+	<div style="margin: 0 auto;text-align: center;">
+		<a class="btn btn-5 btn-5a icon-cart-2" style="width: 500px;" href="#/repository">
+			<span>Object Repository</span>
+		</a>
+	</div>
+	<div style="margin: 0 auto;text-align: center;">
+		<a class="btn btn-5 btn-5a icon-file" style="width: 500px;" href="#/scenario">
+			<span>Scenarii Edition</span>
+		</a>
+	</div>
+	<div style="margin: 0 auto;text-align: center;">
+		<a class="btn btn-5 btn-5a icon-envelope" style="width: 500px;" href="#/project">
+			<span>Test Campaign Reports</span>
+		</a>
+	</div>
 </div>

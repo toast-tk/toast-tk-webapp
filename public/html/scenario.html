@@ -1,8 +1,12 @@
 <div class="container">
 
-    Welcome to redplay, {{user.firstName}} {{user.lastName}}!
     <br>
-    <hr>
+    Toast Tk Webapp {{user.firstName}} {{user.lastName}}
+    <span class="pull-right"><a class="" href="http://10.106.184.115:8080/redpepper/app.jnlp" target="_blank">Open Swing Client</a></span>
+    <!-- <span class="pull-right"><a class="" ng-click="logout()">Log Out</button></span> -->
+    <br>
+    <br>
+
     <h1> Scenario blocks
         <button class="btn" data-ng-click="save()">Save</button>
         <!-- TODO: reload page after save -->
@@ -23,6 +27,7 @@
             Name: <input type="text" ng-model="scenario.name" style="width: 300px;"> of type: <label>{{ scenario.type
             }}</label>
             <span class="pull-right">
+                <button class="btn btn-xs btn-success" ng-show="scenario.template" ng-click="convertToTemplate(scenario)">T</button>
                 <button class="btn btn-xs btn-primary" data-ng-click="importScenario(scenario)">Import</button>
                 <select ng-model="scenario.selectedImportMode" ng-options="mode for mode in importModes"></select>
                 from <select ng-model="scenario.imp" ng-options="reference as reference.name for reference in scenarii" ></select>

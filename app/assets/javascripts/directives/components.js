@@ -72,11 +72,13 @@ define(["angular", "qTags"], function (angular, qTags) {
 					},   	
 	        link: function ($scope, element, attrs) { 
 	        	var regex = /(@)\[\[(\d+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+)\]\]/gi
-				var tag = "";
-				var tags = [];
+
 				var init = false;
 	        	$scope.$watch('patternValue + patternPost + patternColumn + patternModel + patternContext', function(){
 		        	if(!init){
+		        		var tag = "";
+						var tags = [];
+		        		element.empty();
 		        		if($scope.patternPost == "true"){
 		        			var e = $compile('<input type="text" ng-model="patternModel[patternColumn]" placeholder="{{patternColumn}}" style="width: 100%;"/>')($scope);
 		        			element.append(e);

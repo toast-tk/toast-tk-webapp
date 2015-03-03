@@ -5,9 +5,6 @@ version := "1.0-SNAPSHOT"
 resolvers += "Local Maven Repository" at "file:///D:/Apps/m2/repository"
 
 libraryDependencies ++= Seq(
-  jdbc,
-  anorm,
-  cache,
   "org.reactivemongo" %% "reactivemongo" % "0.10.0",
   "org.webjars" % "jquery" % "1.7.2",
   "org.webjars" % "angularjs" % "1.3.0",

@@ -112,6 +112,10 @@ define(["angular"], function (angular) {
             $scope.importModes = ["prepend", "append"];
             $scope.scenarii = [];
 
+            playRoutes.controllers.Application.loadCtxSentences("swing", "connecteurSwing").get().then(function(response){
+                $scope.regexList = response.data || [];
+            });
+
             playRoutes.controllers.Application.loadConfiguration().get().then(function (response) {
                 $scope.configurations = response.data || [];
                 for (var i = 0; i < $scope.configurations.length; i++) {
@@ -190,16 +194,46 @@ define(["angular"], function (angular) {
                 }
             }
 
+            $scope.convertToTemplate = function (scenario){
+                var newScenarioTemplate = angular.copy(scenario);
+                var regexList = $scope.regexList;
+                for(var i = 0 ; i < newScenarioTemplate.rows.length ; i++){
+                    var sentence = newScenarioTemplate.rows[i].patterns;
+                    for(var j=0; j < regexList.length; j++){
+                        var modifiedRegex = regexList[j].typed_sentence.replace(/\\\\+/g, '\\');
+                        var checkSentence = sentence.replace(/\*/g, "");
+                        var regex = new RegExp(modifiedRegex, 'i');
+                        var pattern = regexList[j].sentence;
+                        if(regex.test(checkSentence)){
+                            newScenarioTemplate.rows[i].patterns = pattern;
+                            break;
+                        }
+                    } 
+                }
+                newScenarioTemplate.id = null;
+                newScenarioTemplate.template = false;
+                $scope.scenarii.push(newScenarioTemplate);
+            }
+
             function load() {
                 playRoutes.controllers.Application.loadScenarii().get().then(function (response) {
                     var data = response.data || [];
                     data.map(function (scenario) {
                         try{
                             scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
+                            var isTemplate = true;
+                            for(var i = 0 ; i < scenario.rows.length ; i++){
+                                if(scenario.rows[i].mappings.length > 0){
+                                    isTemplate = false;
+                                    break;
+                                }
+                            }
+                            scenario.template = isTemplate;
                         }catch(e){
                             if(!angular.isObject(scenario.rows)){
                                 //convert it into rows
                                 var lines = scenario.rows.split( "\n" );
+                                scenario.template = false;
                                 scenario.rows = [];
                                 for(var i = 0; i< lines.length; i++){
                                     scenario.rows.push({"patterns" : lines[i], "mappings" : []});
