@@ -138,7 +138,7 @@ object Application extends Controller {
     request.body.validate[InspectedPage].map {
       case page: InspectedPage =>
         val pageElements = for (itemLocator <- page.items) yield WebPageElement("", "", itemLocator, Some(""), Some(0))
-        conn.saveAutoConfiguration(AutoSetupConfig(None, page.name, "swing page", pageElements))
+        conn.saveAutoConfiguration(AutoSetupConfig(None, page.name, "swing page", Some(pageElements)))
         Ok("received inspected page...")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -148,7 +148,7 @@ object Application extends Controller {
   def saveNewInspectedScenario() = Action(parse.json) { implicit request =>
     request.body.validate[InspectedScenario].map {
       case scenario: InspectedScenario =>
-        val logInstance = Scenario(id = None, name = scenario.name, cType = "swing", driver = "connecteurSwing", rows = scenario.steps)
+        val logInstance = Scenario(id = None, name = scenario.name, cType = "swing", driver = "connecteurSwing", rows = Some(scenario.steps))
         conn.saveScenario(logInstance)
         Ok("scenario saved !")
     }.recoverTotal {
@@ -335,10 +335,10 @@ object Application extends Controller {
       modifiedPatterns.toList
     }
 
-    val lines = if (scenario.rows.startsWith("[")){
-        populatePatterns(scenario.rows).map { sentence => "| " + sentence + " |\n"}.mkString("") + "\n"
+    val lines = if (scenario.rows.getOrElse("").startsWith("[")){
+        populatePatterns(scenario.rows.getOrElse("")).map { sentence => "| " + sentence + " |\n"}.mkString("") + "\n"
       } else {
-        scenario.rows.split("\n").toList.map(row => "|" + row +"|").mkString("\n")
+        scenario.rows.getOrElse("").split("\n").toList.map(row => "|" + row +"|").mkString("\n")
       }
 
 
@@ -395,7 +395,7 @@ object Application extends Controller {
           res = res + "|| auto setup || " + page.name + " ||\n"
           res = res + "| " + page.cType + " | " + page.name + " |\n"
           res = res + "| name | type | locator |\n"
-          for (row <- page.rows) {
+          for (row <- page.rows.getOrElse(List())) {
             res = res + "|" + row.name + "|" + row.elementType + "|" + row.locator + "|\n"
           }
           res = res + "\n"
@@ -505,7 +505,7 @@ object Application extends Controller {
         conn.loadWebPagesFromRepository().map {
           pageConfigurations => {
             for (page <- pageConfigurations) {
-              val pageElements = page.rows;
+              val pageElements = page.rows.getOrElse(List());
               res = res ++ (pageElements.map { element => JsString(page.name + "." + element.name)});
             }
           }
@@ -517,7 +517,7 @@ object Application extends Controller {
         conn.loadSwingPagesFromRepository().map {
           pageConfigurations => {
             for (page <- pageConfigurations) {
-              val pageElements = page.rows;
+              val pageElements = page.rows.getOrElse(List());
               res = res ++ (pageElements.map { element => JsString(page.name + "." + element.name)});
             }
           }

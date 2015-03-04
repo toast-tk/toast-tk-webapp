@@ -14,10 +14,10 @@ import reactivemongo.bson.BSONObjectID
 case class ConfigurationSyntax(sentence: String, typed_sentence: String)
 case class ConfigurationRow(group: String, name: String, syntax: List[ConfigurationSyntax])
 case class MacroConfiguration(id: Option[String], cType: String, rows: List[ConfigurationRow])
-case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: List[WebPageElement])
+case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: Option[List[WebPageElement]])
 case class InspectedPage(name: String, items: List[String])
 case class InspectedScenario(name: String, steps: String)
-case class Scenario(id: Option[String], name: String, cType: String, driver: String, rows: String)
+case class Scenario(id: Option[String], name: String, cType: String, driver: String, rows: Option[String])
 case class TestScript(id: Option[String], name: String, scenarii: List[Scenario])
 
 
@@ -47,21 +47,21 @@ object Scenario{
 	  (__ \ "name").read[String] and
       (__ \ "type").read[String] and
       (__ \ "driver").read[String] and
-      (__ \ "rows").read[String])(Scenario.apply(_,_,_,_,_))
+      (__ \ "rows").readNullable[String])(Scenario.apply(_,_,_,_,_))
 
   implicit val writer: Writes[Scenario] = (
       (__ \ "id").writeNullable[String] and
       (__ \ "name").write[String] and
       (__ \ "type").write[String] and
       (__ \ "driver").write[String] and
-      (__ \ "rows").write[String])(unlift(Scenario.unapply))
+      (__ \ "rows").writeNullable[String])(unlift(Scenario.unapply))
 
   implicit object BSONWriter extends BSONDocumentWriter[Scenario] {
     def write(scenario: Scenario): BSONDocument =
       scenario.id match {
-        case None =>  BSONDocument("name"-> scenario.name, "type"-> scenario.cType, "driver" -> scenario.driver,  "rows" -> scenario.rows)
+        case None =>  BSONDocument("name"-> scenario.name, "type"-> scenario.cType, "driver" -> scenario.driver,  "rows" -> scenario.rows.getOrElse(""))
         case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name" -> scenario.name, "type"-> scenario.cType,
-                                                  "driver" -> scenario.driver,  "rows" -> scenario.rows)
+                                                  "driver" -> scenario.driver,  "rows" -> scenario.rows.getOrElse(""))
       }
   }
 
@@ -71,8 +71,8 @@ object Scenario{
       val name = doc.getAs[String]("name").get
       val scenarioType = doc.getAs[String]("type").get
       val driver = doc.getAs[String]("driver").get
-      val rows = doc.getAs[String]("rows").get
-      Scenario(Option[String](id), name ,scenarioType, driver, rows)
+      val rows = doc.getAs[String]("rows").getOrElse("")
+      Scenario(Option[String](id), name ,scenarioType, driver, Option[String](rows))
     }
   }
 }
@@ -105,20 +105,20 @@ object AutoSetupConfig{
       (__ \ "id").readNullable[String] and
       (__ \ "name").read[String] and
       (__ \ "type").read[String] and
-      (__ \ "rows").read[List[WebPageElement]])(AutoSetupConfig.apply(_,_ , _,_)
+      (__ \ "rows").readNullable[List[WebPageElement]])(AutoSetupConfig.apply(_,_ , _,_)
     )
 
     implicit val autoSetupConfigWriter: Writes[AutoSetupConfig] = (
     (__ \ "id").writeNullable[String] and
     (__ \ "name").write[String] and
     (__ \ "type").write[String] and
-    (__ \ "rows").write[List[WebPageElement]])(unlift(AutoSetupConfig.unapply))
+    (__ \ "rows").writeNullable[List[WebPageElement]])(unlift(AutoSetupConfig.unapply))
 
   implicit object AutoSetupConfigurationWriter extends BSONDocumentWriter[AutoSetupConfig] {
     def write(configuration: AutoSetupConfig): BSONDocument = 
       configuration.id match {
-      	case None =>  BSONDocument("name"-> configuration.name, "type" -> configuration.cType,  "rows" -> configuration.rows)
-      	case  value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> configuration.name,  "type" -> configuration.cType,  "rows" -> configuration.rows)
+      	case None =>  BSONDocument("name"-> configuration.name, "type" -> configuration.cType,  "rows" -> configuration.rows.getOrElse(List()))
+      	case  value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> configuration.name,  "type" -> configuration.cType,  "rows" -> configuration.rows.getOrElse(List()))
       }
   }
 
@@ -127,8 +127,8 @@ object AutoSetupConfig{
       val id = doc.getAs[BSONObjectID]("_id").get.stringify
       val name = doc.getAs[String]("name").get
       val ctype = doc.getAs[String]("type").get
-      val rows = doc.getAs[List[WebPageElement]]("rows").get
-      AutoSetupConfig(Option[String](id), name, ctype, rows)
+      val rows = doc.getAs[List[WebPageElement]]("rows").getOrElse(List())
+      AutoSetupConfig(Option[String](id), name, ctype, Option[List[WebPageElement]](rows))
     }
   }
 }
