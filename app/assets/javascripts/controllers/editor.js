@@ -223,7 +223,7 @@ define(["angular"], function (angular) {
                             scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
                             var isTemplate = true;
                             for(var i = 0 ; i < scenario.rows.length ; i++){
-                                if(scenario.rows[i].mappings.length > 0){
+                                if(angular.isDefined(scenario.rows[i].mappings)){
                                     isTemplate = false;
                                     break;
                                 }
@@ -233,10 +233,10 @@ define(["angular"], function (angular) {
                             if(!angular.isObject(scenario.rows)){
                                 //convert it into rows
                                 var lines = scenario.rows.split( "\n" );
-                                scenario.template = false;
+                                scenario.template = true;
                                 scenario.rows = [];
                                 for(var i = 0; i< lines.length; i++){
-                                    scenario.rows.push({"patterns" : lines[i], "mappings" : []});
+                                    scenario.rows.push({"patterns" : lines[i]});
                                 }
                             }
                         }
