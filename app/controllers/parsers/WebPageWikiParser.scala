@@ -47,9 +47,13 @@ object WebPageElement{
   }
 
   implicit object WebPageElementBSONWriter extends BSONDocumentWriter[WebPageElement] {
+
+    def formatName(name: String): String = {
+      name.trim.replace(" ", "_").replace("'", "_").replace("°", "_")
+    }
     def write(wpe: WebPageElement): BSONDocument =
       BSONDocument(
-        "name"-> wpe.name,
+        "name"-> formatName(wpe.name),
         "type" -> wpe.elementType,
         "locator" -> wpe.locator,
         "method" -> wpe.method,

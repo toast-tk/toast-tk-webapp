@@ -51,13 +51,8 @@ object Global extends play.api.GlobalSettings {
   val KeyMongoDbVersion = "embed.mongo.dbversion"
 
 	override def beforeStart(app: play.api.Application): Unit = {
-    startLocalMongoInstance(app)
 		if (app.mode.equals(play.api.Mode.Dev)) {
-            /*
-             * here you can setup mongodb for dev,
-             * e.g. connect to local mongodb instance
-             */
-             //startLocalMongoInstance(app)
+             startLocalMongoInstance(app)
         } else {
              /*
              * here you can setup mongodb for production,
@@ -65,7 +60,7 @@ object Global extends play.api.GlobalSettings {
              */
              val enabled = app.configuration.getBoolean("embed.mongo.enabled").getOrElse(false);
              if(enabled){
-                //startLocalMongoInstance(app)
+                startLocalMongoInstance(app)
              }
         }
 	}

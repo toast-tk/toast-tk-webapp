@@ -312,7 +312,6 @@ define(["angular"], function (angular) {
             load();
         },
         MainCtrl: function ($rootScope, $scope, playRoutes, $location) {
-
             $scope.logout = function () {
                 playRoutes.controllers.Application.logout().get().then(function (response) {
                     $rootScope.user = "";
