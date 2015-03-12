@@ -29,6 +29,8 @@ POST        /saveScenarii                                 controllers.Applicatio
 GET         /loadWikifiedRepository                       controllers.Application.loadWikifiedRepository()
 POST        /saveProject                                  controllers.Application.saveProject()
 GET         /loadProject                                  controllers.Application.loadProject()
+GET			/loadRepository 							  controllers.Application.loadRepository()
+POST		/saveRepository								  controllers.Application.saveRepository()
 GET         /loadProjectReport/:projectName               controllers.Application.loadProjectReport(projectName:String)
 GET         /test                                         controllers.Application.loadTestReport()
 GET         /logout                                       controllers.Application.logout()

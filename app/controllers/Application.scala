@@ -2,11 +2,11 @@ package controllers
 
 import boot.Global
 
-import com.synpatix.redpepper.backend.core.parse._
-import com.mongo.test.domain.impl.test.TestPage
-import com.mongo.test.service.dao.access.project._
-import com.mongo.test.domain.impl.report._
-import com.mongo.test.ProjectHtmlReportGenerator
+import com.synpatix.toast.runtime.core.parse._
+import com.synaptix.toast.dao.domain.impl.test.TestPage
+import com.synaptix.toast.dao.service.dao.access.project._
+import com.synaptix.toast.dao.domain.impl.report._
+import com.synaptix.toast.dao.report.ProjectHtmlReportGenerator
 
 import controllers.mongo._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -33,8 +33,8 @@ object Application extends Controller {
   implicit val projectFormat = Json.format[Prj]
   val conn = Global.conn
 
-
   val projectJavaDaoService = Global.projectService
+  val repositoryJavaDaoService = Global.repositoryDaoService
 
   def index = Action {  request =>
     request.session.get("connected").map { user =>
@@ -71,7 +71,7 @@ object Application extends Controller {
         Json.obj("name" -> "method", "descriptor" -> Json.obj("type" -> Json.arr("CSS", "XPATH", "ID"))),
         Json.obj("name" -> "position", "descriptor" -> Json.obj()))
       case "swing page" => Json.arr(Json.obj("name" -> "name", "descriptor" -> Json.obj()),
-        Json.obj("name" -> "type", "descriptor" -> Json.obj("type" -> Json.arr("button", "input", "menu", "table", "timeline", "date", "list", "other"))),
+        Json.obj("name" -> "type", "descriptor" -> Json.obj("type" -> Json.arr("button", "input", "menu", "table", "timeline", "date", "list", "checkbox", "other"))),
         Json.obj("name" -> "locator", "descriptor" -> Json.obj()))
       case "configure entity" => Json.arr(Json.obj("name" -> "entity", "descriptor" -> Json.obj()),
         Json.obj("name" -> "alias", "descriptor" -> Json.obj()),
@@ -526,6 +526,21 @@ object Application extends Controller {
       }
     }
   }
+
+  /**
+   * Load repository
+  */
+  def loadRepository() = Action {
+    Ok(repositoryJavaDaoService.getRepoAsJson())
+  }
+
+  def saveRepository() =  Action(parse.json)  {
+    implicit request => {
+      val res = repositoryJavaDaoService.saveRepoAsJson(request.body.as[String])
+      Ok("Repos")
+    }
+  }
+
 
   def main(args: Array[String]) {
     conn.loadAutoConfiguration.map {

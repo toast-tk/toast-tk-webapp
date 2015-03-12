@@ -1,7 +1,8 @@
 package boot
 
-import com.mongo.test.service.dao.access.project._
-import com.mongo.test.guice._
+import com.synaptix.toast.dao.service.dao.access.project._
+import com.synaptix.toast.dao.service.dao.access.repository._
+import com.synaptix.toast.dao.guice._
 import controllers.mongo.MongoConnector
 import com.mongodb.Mongo
 import java.util.logging.{ Logger => JLogger }
@@ -41,6 +42,7 @@ object Global extends play.api.GlobalSettings {
 
 	private lazy val injector = com.google.inject.Guice.createInjector(new MongoModule());
 	lazy val projectService = injector.getInstance(classOf[ProjectDaoService.Factory])create("test_project_db");
+  lazy val repositoryDaoService = injector.getInstance(classOf[RepositoryDaoService.Factory])create("play_db");
 	lazy val conn = MongoConnector()
 
 	private var _mongoExe: MongodExecutable = _
