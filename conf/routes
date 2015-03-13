@@ -11,6 +11,7 @@ GET         /jsroutes.js                                  controllers.JavaScript
 
 # AJAX routes
 POST        /login                                        controllers.Application.login()
+GET			/loadEnvConfiguration						  controllers.Application.loadEnvConfiguration()
 GET         /loadScenarioCtx/:scenarioType                controllers.Application.loadScenarioCtx(scenarioType: String)
 GET         /loadAutoSetupCtx/:setupType                  controllers.Application.loadAutoSetupCtx(setupType: String)
 GET         /loadConfiguration                            controllers.Application.loadConfiguration()

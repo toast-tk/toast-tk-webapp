@@ -44,15 +44,18 @@ object Global extends play.api.GlobalSettings {
 	lazy val projectService = injector.getInstance(classOf[ProjectDaoService.Factory])create("test_project_db");
   lazy val repositoryDaoService = injector.getInstance(classOf[RepositoryDaoService.Factory])create("play_db");
 	lazy val conn = MongoConnector()
-
+  
+  var jnlpHost: String = "" 
 	private var _mongoExe: MongodExecutable = _
   //private var exePath: java.io.File = _
   private var process: MongodProcess = _
 
   val KeyPort = "embed.mongo.port"
   val KeyMongoDbVersion = "embed.mongo.dbversion"
-
+  val KeyJnlpAddr= "jnlp.host"
 	override def beforeStart(app: play.api.Application): Unit = {
+    val conf: play.api.Configuration = app.configuration
+    jnlpHost = conf.getString(KeyJnlpAddr).getOrElse(throw new RuntimeException(s"$KeyJnlpAddr is missing in your configuration"))
 		if (app.mode.equals(play.api.Mode.Dev)) {
              startLocalMongoInstance(app)
         } else {

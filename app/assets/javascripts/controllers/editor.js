@@ -312,6 +312,9 @@ define(["angular"], function (angular) {
             load();
         },
         MainCtrl: function ($rootScope, $scope, playRoutes, $location) {
+            playRoutes.controllers.Application.loadEnvConfiguration().get().then(function(response){
+                $rootScope.jnlpHost = response.data || ""; 
+            })
             $scope.logout = function () {
                 playRoutes.controllers.Application.logout().get().then(function (response) {
                     $rootScope.user = "";

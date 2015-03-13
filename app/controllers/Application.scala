@@ -35,6 +35,7 @@ object Application extends Controller {
 
   val projectJavaDaoService = Global.projectService
   val repositoryJavaDaoService = Global.repositoryDaoService
+  val jnlpHost = Global.jnlpHost
 
   def index = Action {  request =>
     request.session.get("connected").map { user =>
@@ -42,6 +43,10 @@ object Application extends Controller {
     }.getOrElse {
       Ok(views.html.parallax_login_form())
     }
+  }
+
+  def loadEnvConfiguration() = Action{
+    Ok(jnlpHost)
   }
 
   def login() = Action(parse.json) { implicit request =>
