@@ -55,9 +55,11 @@ object Application extends Controller {
       session + ("connected" -> "user goes here !")
     )
   }
+
   def logout() = Action {
     Ok("").withNewSession
   }
+  
   /**
    * auto setup - run config
    *
@@ -65,7 +67,6 @@ object Application extends Controller {
   def loadAutoSetupCtx(setupType: String) = Action {
     Ok(autoSetupCtxProvider(setupType))
   }
-
 
 
   def autoSetupCtxProvider(setupType: String): JsArray = {
@@ -137,12 +138,26 @@ object Application extends Controller {
   }
 
   /**
+   * Save Auto config
+   */
+  def saveAutoConfigBlock() = Action(parse.json) { implicit request =>
+    request.body.validate[AutoSetupConfig].map {
+      case config: AutoSetupConfig =>
+        conn.saveAutoConfiguration(config)
+        conn.refactorScenarii(config)
+        Ok("auto configuration saved !")
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
+  }
+
+  /**
    * Save new page
    */
   def saveNewInspectedPage() = Action(parse.json) { implicit request =>
     request.body.validate[InspectedPage].map {
       case page: InspectedPage =>
-        val pageElements = for (itemLocator <- page.items) yield WebPageElement("", "", itemLocator, Some(""), Some(0))
+        val pageElements = for (itemLocator <- page.items) yield WebPageElement(None, "", "", itemLocator, Some(""), Some(0))
         conn.saveAutoConfiguration(AutoSetupConfig(None, page.name, "swing page", Some(pageElements)))
         Ok("received inspected page...")
     }.recoverTotal {
@@ -511,7 +526,14 @@ object Application extends Controller {
           pageConfigurations => {
             for (page <- pageConfigurations) {
               val pageElements = page.rows.getOrElse(List());
-              res = res ++ (pageElements.map { element => JsString(page.name + "." + element.name)});
+              res = res ++ (pageElements.map { element => 
+                  JsObject(
+                    "label" -> JsString(page.name + "." + element.name) ::
+                    "id" -> JsString(element.id.getOrElse(throw new RuntimeException(s"Page $element.name -> $element.id has no Id set !"))) ::
+                    Nil
+                  );
+                }
+              )
             }
           }
             Ok(Json.toJson(res));
@@ -523,7 +545,14 @@ object Application extends Controller {
           pageConfigurations => {
             for (page <- pageConfigurations) {
               val pageElements = page.rows.getOrElse(List());
-              res = res ++ (pageElements.map { element => JsString(page.name + "." + element.name)});
+              res = res ++ (pageElements.map { element => 
+                  JsObject(
+                    "label" -> JsString(page.name + "." + element.name) ::
+                    "id" -> JsString(element.id.getOrElse(throw new RuntimeException(s"Page $element.name -> $element.id has no Id set !"))) ::
+                    Nil
+                  );
+                }
+              )
             }
           }
             Ok(Json.toJson(res));

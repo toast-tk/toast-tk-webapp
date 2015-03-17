@@ -13,6 +13,7 @@ object JavaScript extends Controller {
           controllers.routes.javascript.Application.loadScenarioCtx,
           controllers.routes.javascript.Application.saveConfiguration,
           controllers.routes.javascript.Application.saveAutoConfig,
+          controllers.routes.javascript.Application.saveAutoConfigBlock,
           controllers.routes.javascript.Application.loadConfiguration,
           controllers.routes.javascript.Application.loadAutoConfiguration,
           controllers.routes.javascript.Application.loadCtxTagData,

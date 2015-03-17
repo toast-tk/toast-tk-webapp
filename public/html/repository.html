@@ -7,12 +7,11 @@
   	<br>
   	<br>
 
-	<h1> Dictionnary blocks  <button class="btn" data-ng-click="saveAutoConfig()">Save</button></h1>
+	<h1> Dictionnary  <button class="btn pull-right" data-ng-click="saveAutoConfig()">Save All</button></h1>
 	<div class="row">
 		<div class="col-md-12">
 			Add a new <select ng-model="selectedAutoSetupConfigType" ng-options="type for type in run_config_types"></select> auto setup
 			<button class="btn btn-primary btn-xs" data-ng-click="addAutoSetupConfig()">+</button>
-
 			<span class="pull-right">
 				Filter: <select ng-model="autoSetupConfigFilter" data-ng-options="type for type in run_config_types"></select>
 			</span>
@@ -21,8 +20,9 @@
 
 	<br>
 	<div>
-		<div ng-repeat="autosetup in autosetups | filter:autoSetupConfigFilter">
+		<div class="dictionnary-block" ng-repeat="autosetup in autosetups | filter:autoSetupConfigFilter">
 			Type: <label>{{ autosetup.type }}</label> Name: <input type="text" placeholder="name" ng-model="autosetup.name"/>
+			<button class="btn btn-mini pull-right" data-ng-click="saveAutoConfigBlock(autosetup)">Save</button>
 			<table class="table" width="200px;">
 				<tr>
 					<td ng-repeat="c in autosetup.columns">

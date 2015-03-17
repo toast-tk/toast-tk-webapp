@@ -146,8 +146,16 @@
 .scenario{
   border: 1px solid black;
   padding: 10px;
+  margin-bottom: 10px;
 }
 
 .table-striped > tbody > tr:hover > td {
   background-color: #efefef;
+}
+
+.dictionnary-block{
+  border: 1px solid black;
+  border-radius: 5px; 
+  padding: 5px;
+  margin-bottom: 10px;
 }

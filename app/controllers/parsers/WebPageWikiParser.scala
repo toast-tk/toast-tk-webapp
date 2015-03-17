@@ -10,24 +10,28 @@ import scala.util.{Success, Failure}
 import scala.util.parsing.combinator._
 import scala.util.parsing.input.CharArrayReader
 
+import reactivemongo.bson.BSONObjectID
+
 /**
  * Created by Sallah Kokaina on 20/11/2014.
  */
 
 abstract trait Page
-case class WebPage(name: String, cType: String,  elements: List[WebPageElement]) extends Page
-case class WebPageElement(name: String, elementType: String, locator: String, method: Option[String], position: Option[Int])
+case class WebPage(id: Option[String], name: String, cType: String,  elements: List[WebPageElement]) extends Page
+case class WebPageElement(id: Option[String], name: String, elementType: String, locator: String, method: Option[String], position: Option[Int])
 
 object WebPageElement{
 
   implicit val webPageElementJsonReader: Reads[WebPageElement] = (
+      (__ \ "id").readNullable[String] and
       (__ \ "name").read[String] and
       (__ \ "type").read[String] and
       (__ \ "locator").read[String] and
       (__ \ "method").readNullable[String] and
-      (__ \ "position").readNullable[Int])(WebPageElement.apply(_,_,_,_,_))
+      (__ \ "position").readNullable[Int])(WebPageElement.apply(_,_,_,_,_,_))
 
   implicit val webPageElementJsonWriter: Writes[WebPageElement] = (
+      (__ \ "id").writeNullable[String] and
       (__ \ "name").write[String] and
       (__ \ "type").write[String] and
       (__ \ "locator").write[String] and
@@ -37,47 +41,65 @@ object WebPageElement{
 
   implicit object WebPageElementReader extends BSONDocumentReader[WebPageElement] {
     def read(doc: BSONDocument): WebPageElement = {
+      val id = doc.getAs[BSONObjectID]("_id").get.stringify
       val name = doc.getAs[String]("name").get
       val cType = doc.getAs[String]("type").get
       val locator = doc.getAs[String]("locator").get
       val method = doc.getAs[String]("method").getOrElse("")
       val position = doc.getAs[Int]("position").getOrElse(0)
-      WebPageElement(name, cType, locator, Some(method) ,Some(position))
+      WebPageElement(Some(id), name, cType, locator, Some(method) ,Some(position))
     }
   }
 
-  implicit object WebPageElementBSONWriter extends BSONDocumentWriter[WebPageElement] {
+  implicit object WebPageElementImplicitBSONWriter extends BSONDocumentWriter[WebPageElement] {
+    def write(wpe: WebPageElement): BSONDocument = {
+      WebPageElementBSONWriter.write(wpe)
+    }
+  }
+}
+
+object WebPageElementBSONWriter extends BSONDocumentWriter[WebPageElement] {
 
     def formatName(name: String): String = {
       name.trim.replace(" ", "_").replace("'", "_").replace("°", "_")
     }
-    def write(wpe: WebPageElement): BSONDocument =
-      BSONDocument(
-        "name"-> formatName(wpe.name),
-        "type" -> wpe.elementType,
-        "locator" -> wpe.locator,
-        "method" -> wpe.method,
-        "position" -> wpe.position)
+    def write(wpe: WebPageElement): BSONDocument = {
+      wpe.id match {
+        case None => BSONDocument(
+                "_id" -> BSONObjectID.generate,
+                "name"-> formatName(wpe.name),
+                "type" -> wpe.elementType,
+                "locator" -> wpe.locator,
+                "method" -> wpe.method,
+                "position" -> wpe.position)
+        case value:Option[String] => BSONDocument(
+                "_id" -> BSONObjectID(wpe.id.get),
+                "name"-> formatName(wpe.name),
+                "type" -> wpe.elementType,
+                "locator" -> wpe.locator,
+                "method" -> wpe.method,
+                "position" -> wpe.position)
+      }
+      
+    }
   }
-}
 
 object WebPage{
 
-  /*implicit object WebPageReader extends BSONDocumentReader[WebPageElement] {
-    def read(doc: BSONDocument): WebPageElement = {
-      val name = doc.getAs[String]("name").get
-      val cType = doc.getAs[String]("type").get
-      val rows = doc.getAs[List[WebPageElement]]("rows").get
-      WebPageElement(name, cType, rows)
-    }
-  }*/
-
   implicit object WebPageBSONWriter extends BSONDocumentWriter[WebPage] {
-    def write(configuration: WebPage): BSONDocument =
-      BSONDocument(
-        "name"-> configuration.name,
-        "type" -> configuration.cType,
-        "rows" -> configuration.elements)
+    def write(configuration: WebPage): BSONDocument = {
+
+      configuration.id match {
+        case None =>  BSONDocument("name"-> configuration.name,
+                      "type" -> configuration.cType,
+                      "rows" -> configuration.elements)
+        case value:Option[String] => BSONDocument(
+                      "_id" -> BSONObjectID(configuration.id.get),
+                      "name"-> configuration.name,
+                      "type" -> configuration.cType,
+                      "rows" -> configuration.elements)
+      }
+    }     
   }
 }
 
@@ -89,17 +111,17 @@ class WebPageWikiParser extends RegexParsers {
   def header: Parser[String] = "| name | type | locator | method | position |"
   def line: Parser[WebPageElement] = "|" ~ str ~ "|" ~ str ~ "|" ~ str ~ "|" ~ str ~ "|" ~ str ~ "|" ^^ {
     case sp0 ~ pName ~ sp1 ~ cType ~ sp2 ~ locator ~ sp3 ~ method ~ sp4 ~ position ~ sp5 =>
-      WebPageElement(pName.trim, cType.trim, locator.trim, Some(method.trim), Some(position.trim.toInt))
+      WebPageElement(None, pName.trim, cType.trim, locator.trim, Some(method.trim), Some(position.trim.toInt))
   }
   def lines = line *
   def page: Parser[WebPage] = pageName ~ header ~ lines ^^ {
-    case pageName ~ header ~ lines => WebPage(pageName.trim, "web page" , lines)
+    case pageName ~ header ~ lines => WebPage(None, pageName.trim, "web page" , lines)
   }
 
   def parse(text: String) = List[WebPage] {
     parseAll(page, new CharArrayReader(text.toCharArray)) match {
       case Success(p, _) => p
-      case _ => WebPage("", "", List())
+      case _ => WebPage(None, "", "", List())
       /*case x => {
         //error case, print x to know what happened, println(x)
         println(x)
@@ -131,7 +153,7 @@ object WebPageWikiParserTest extends WebPageWikiParser with App {
   val res = (for {item <- output} yield parse(item.mkString("\n"))).map{l => l.head}
   res.map {
     item => item match {
-      case WebPage(_, _,List()) => {}
+      case WebPage(_,_, _,List()) => {}
       case page => {
         println("saving => " + page)
 

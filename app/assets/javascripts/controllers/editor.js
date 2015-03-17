@@ -2,13 +2,10 @@ define(["angular"], function (angular) {
     "use strict";
     return {
         ConfigurationCtrl: function ($rootScope, $scope, playRoutes, ngProgress) {
-            $scope.config_group_types = ["service", "entity"];
+            var vm = $scope;
             $scope.service_config_types = ["web", "swing", "backend"];
             $scope.selectedConfig = undefined;
-            $scope.selectedConfigGroupType = "";
-            $scope.selectedConfigType = "";
             $scope.configurations = [];
-
 
             $scope.addNewSentence = function (newSentence, sentenceWithTypes) {
                 $scope.selectedConfig.syntax.push({sentence: newSentence, typed_sentence: sentenceWithTypes});
@@ -25,7 +22,7 @@ define(["angular"], function (angular) {
             };
 
             $scope.addConfigBlock = function () {
-                $scope.configurations.push({type: $scope.selectedConfigGroupType, rows: []});
+                $scope.configurations.push({type: "service", rows: []});
             };
 
             $scope.editConfigLine = function (config, item) {
@@ -36,9 +33,8 @@ define(["angular"], function (angular) {
                 config.rows.splice(config.rows.indexOf(item), 1);
             };
 
-            $scope.addConfigLine = function (config, item) {
-                //TODO: check which type is used here, type isn't persisted, it's probably an issue on server side
-                config.rows.push({type: $scope.selectedConfigType, name: item, syntax: []});
+            $scope.addConfigLine = function (config, configName, configType) {
+                config.rows.push({type: configType, name: configName, syntax: []});
             };
 
             function load() {
@@ -83,6 +79,14 @@ define(["angular"], function (angular) {
                 });
             };
 
+            $scope.saveAutoConfigBlock = function (autosetup) {
+                var deepCopy = angular.copy(autosetup);
+                delete deepCopy.columns;
+                playRoutes.controllers.Application.saveAutoConfigBlock().post(deepCopy).then(function (response) {
+                    load();
+                });
+            };
+
             $scope.deleteRow = function (row, autosetup) {
                 autosetup.rows.splice(autosetup.rows.indexOf(row), 1);
             }
@@ -112,9 +116,20 @@ define(["angular"], function (angular) {
             $scope.importModes = ["prepend", "append"];
             $scope.scenarii = [];
 
-            playRoutes.controllers.Application.loadCtxSentences("swing", "connecteurSwing").get().then(function(response){
-                $scope.regexList = response.data || [];
-            });
+            $scope.$watch("scenario_types", function(oldVal, newVale){
+                if(angular.isDefined($scope.scenario_types) && angular.isArray( $scope.scenario_types)){
+                    for(var i =0 ; i < $scope.scenario_types.length; i++){
+                        var scenariiDef = $scope.scenario_types[i];
+                        playRoutes.controllers.Application.loadCtxSentences(scenariiDef.type, scenariiDef.name).get().then(function(response){
+                            if(!angular.isDefined($scope.regexList)){
+                                $scope.regexList = response.data || [];
+                            }else{
+                                $scope.regexList = $scope.regexList.concat(response.data || []);
+                            }
+                        });
+                    }   
+                }
+            }, true);
 
             playRoutes.controllers.Application.loadConfiguration().get().then(function (response) {
                 $scope.configurations = response.data || [];
@@ -174,12 +189,11 @@ define(["angular"], function (angular) {
                 delete scenario.selectedImportMode;
             };
 
-            $scope.OnPatternValueChange = function (row, position, value) {
-                //var index = $scope.scenarii[0].rows.indexOf(row);
-                var newVal = {val: value, pos: position};
+            $scope.onPatternValueChange = function (row, position, identifier, value) {
+                var newVal = {id: identifier, pos: position, val: value};
                 if (angular.isUndefined(row.mappings)) {
                     row.mappings = [];
-                    row.mappings.push({val: value, pos: position});
+                    row.mappings.push(newVal);
                 } else {
                     var found = false;
                     for (var i = 0; i < row.mappings.length; i++) {
@@ -189,7 +203,7 @@ define(["angular"], function (angular) {
                         }
                     }
                     if (!found) {
-                        row.mappings.push({val: value, pos: position})
+                        row.mappings.push(newVal)
                     }
                 }
             }

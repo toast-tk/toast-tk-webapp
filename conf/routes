@@ -25,6 +25,7 @@ GET         /loadCtxSentences/:confType/:context          controllers.Applicatio
 GET         /loadSentences/:confType/:context             controllers.Application.loadSentences(confType:String, context:String)
 POST        /saveConfiguration                            controllers.Application.saveConfiguration()
 POST        /saveAutoSetupConfiguration                   controllers.Application.saveAutoConfig()
+POST		/saveAutoConfigBlock						  controllers.Application.saveAutoConfigBlock()
 POST        /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
 POST        /saveScenarii                                 controllers.Application.saveScenarii()
 GET         /loadWikifiedRepository                       controllers.Application.loadWikifiedRepository()

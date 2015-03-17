@@ -156,7 +156,11 @@ define(["angular", "qTags"], function (angular, qTags) {
 							select.change(function(){
 								$scope.$apply(
 									function(){
-										$scope.callback({row: $scope.patternModel, position: tagPosition, value: select.find("option:selected").text()});
+										var elementLabel = select.find("option:selected").text();
+										var elementId = select.find("option:selected").attr("value");
+										$scope.callback({row: $scope.patternModel, 
+												position: tagPosition,  identifier: elementId, 
+												value: elementLabel});
 									}
 								);
 							});
@@ -165,8 +169,8 @@ define(["angular", "qTags"], function (angular, qTags) {
 					else if(descriptor == 'SwingComponent' && patternContext == "swing"){
 						playRoutes.controllers.Application.loadCtxTagData(descriptor).get().then(function(response){
 							var select = element.find('.'+descriptor+'_'+tagPosition);
-							$.each(response.data, function(key, value) {
-								select.append($('<option>', { value : key }).text(value));
+							$.each(response.data, function(key, component) {
+								select.append($('<option>', { value : component.id }).text(component.label));
 							});
 
 							if($scope.patternModel.mappings){
@@ -182,14 +186,18 @@ define(["angular", "qTags"], function (angular, qTags) {
 
 							select.change(function(){
 								$scope.$apply(function(){
-										$scope.callback({row: $scope.patternModel, position: tagPosition, value: select.find("option:selected").text()});
+										var elementLabel = select.find("option:selected").text();
+										var elementId = select.find("option:selected").attr("value");
+										$scope.callback({row: $scope.patternModel, 
+												position: tagPosition,  identifier: elementId, 
+												value: elementLabel});
 									}
 								);
 							});
 						});
 					}
 					else if(descriptor == 'Entity'){
-	        		
+	        			alert("Entity Descriptor not implemented yet !");
 	        		}
 					else if(descriptor == 'Value'){
 						var input = element.find('.'+descriptor+'_'+tagPosition);
@@ -205,7 +213,9 @@ define(["angular", "qTags"], function (angular, qTags) {
 						
 						input.change(function(){
 							$scope.$apply(function(){
-									$scope.callback({row: $scope.patternModel, position: tagPosition, value: input.val()});
+									$scope.callback({row: $scope.patternModel, 
+										position: tagPosition, identifier: tagPosition.toString(),
+										value: input.val()});
 								}
 							);
 						});
@@ -237,7 +247,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 		        		
 		        		playRoutes.controllers.Application.loadSentences($scope.templateConfigType, $scope.templateContext).get().then(function(response){
 		        			$scope.values = response.data || [];
-							$scope.values.unshift({sentence: "Free Text Step", typed_sentence : ""});
+							$scope.values.unshift({sentence: "Plain Text Step", typed_sentence : ""});
 							if($scope.templatePost == "true"){
 								element.replaceWith($("<span></span>"))
 							}

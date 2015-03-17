@@ -11,18 +11,31 @@ import java.io.IOException
 import de.flapdoodle.embed.mongo.{ Command, MongodStarter, MongodProcess, MongodExecutable }
 import de.flapdoodle.embed.process.distribution.GenericVersion
 import de.flapdoodle.embed.process.distribution.Distribution
-import de.flapdoodle.embed.mongo.config.{ Net, MongodConfigBuilder, RuntimeConfigBuilder, Storage }
+import de.flapdoodle.embed.mongo.config.{ ArtifactStoreBuilder, DownloadConfigBuilder,  Net, MongodConfigBuilder, RuntimeConfigBuilder, Storage }
+import de.flapdoodle.embed.process.config.store.HttpProxyFactory
 import de.flapdoodle.embed.mongo.runtime.Mongod
 import de.flapdoodle.embed.process.runtime.Network
 import de.flapdoodle.embed.mongo.distribution.Versions
 import de.flapdoodle.embed.process.config.io.ProcessOutput
 import de.flapdoodle.embed.process.store.IArtifactStore
 import de.flapdoodle.embed.process.extract.IExtractedFileSet
+import de.flapdoodle.embed.process.io.directories.UserTempDirInPlatformTempDir
+import de.flapdoodle.embed.process.extract.UserTempNaming
 
 object MongoExeFactory {
 	def apply(port: Int, versionNumber: String, dataPath:String) = {
+      val command = Command.MongoD
     	val runtimeConfig = new RuntimeConfigBuilder()
-      		.defaultsWithLogger(Command.MongoD, JLogger.getLogger("embed.mongo"))
+      		.defaultsWithLogger(command, JLogger.getLogger("embed.mongo"))
+          .artifactStore(new ArtifactStoreBuilder()
+                              .defaults(command)
+                              .tempDir(new UserTempDirInPlatformTempDir())
+                              .executableNaming(new UserTempNaming())
+                              .download(new DownloadConfigBuilder()
+                                        .defaultsForCommand(command)
+                                        .proxyFactory(new HttpProxyFactory("octant.fret.scnf.fr", 3128))
+                                       )
+                        )
       		.processOutput(ProcessOutput.getDefaultInstanceSilent())
       		.build()
     	val runtime = MongodStarter.getInstance(runtimeConfig)
@@ -40,34 +53,41 @@ object MongoExeFactory {
 
 object Global extends play.api.GlobalSettings {
 
-	private lazy val injector = com.google.inject.Guice.createInjector(new MongoModule());
-	lazy val projectService = injector.getInstance(classOf[ProjectDaoService.Factory])create("test_project_db");
-  lazy val repositoryDaoService = injector.getInstance(classOf[RepositoryDaoService.Factory])create("play_db");
-	lazy val conn = MongoConnector()
-  
-  var jnlpHost: String = "" 
-	private var _mongoExe: MongodExecutable = _
-  //private var exePath: java.io.File = _
-  private var process: MongodProcess = _
-
+  val KeyMongoDbUrl = "mongo.db.url"
   val KeyPort = "embed.mongo.port"
   val KeyMongoDbVersion = "embed.mongo.dbversion"
   val KeyJnlpAddr= "jnlp.host"
+	private lazy val injector = com.google.inject.Guice.createInjector(new MongoModule());
+	lazy val projectService = injector.getInstance(classOf[ProjectDaoService.Factory])create("test_project_db");
+  lazy val repositoryDaoService = injector.getInstance(classOf[RepositoryDaoService.Factory])create("play_db");
+	
+  var conn: MongoConnector = _
+  var jnlpHost: String = "" 
+	private var _mongoExe: MongodExecutable = _
+  private var process: MongodProcess = _
+
+  
 	override def beforeStart(app: play.api.Application): Unit = {
     val conf: play.api.Configuration = app.configuration
     jnlpHost = conf.getString(KeyJnlpAddr).getOrElse(throw new RuntimeException(s"$KeyJnlpAddr is missing in your configuration"))
 		if (app.mode.equals(play.api.Mode.Dev)) {
-             startLocalMongoInstance(app)
-        } else {
-             /*
-             * here you can setup mongodb for production,
-             * e.g. connect to remote mongodb instance
-             */
-             val enabled = app.configuration.getBoolean("embed.mongo.enabled").getOrElse(false);
-             if(enabled){
-                startLocalMongoInstance(app)
-             }
-        }
+      val enabled = conf.getBoolean("embed.mongo.enabled").getOrElse(false);
+       if(enabled){
+          startLocalMongoInstance(app) 
+          conn = MongoConnector()
+       }else{
+          conn = MongoConnector(conf.getString(KeyMongoDbUrl).getOrElse("localhost"))
+       }
+    } else {
+       val enabled = conf.getBoolean("embed.mongo.enabled").getOrElse(false);
+       if(enabled){
+          startLocalMongoInstance(app)
+          conn = MongoConnector()
+       }else {
+          val mongoUrl = conf.getString(KeyMongoDbUrl).getOrElse(throw new RuntimeException(s"$KeyMongoDbUrl is missing in your configuration"))
+          conn = MongoConnector(mongoUrl)
+       }
+    }
 	}
 
 	override def onStop(app: play.api.Application): Unit = {

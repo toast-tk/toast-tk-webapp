@@ -7,7 +7,7 @@
     <br>
     <br>
 
-    <h1> Scenario blocks
+    <h1> Test Scripts
         <button class="btn" data-ng-click="save()">Save</button>
         <!-- TODO: reload page after save -->
     </h1>
@@ -46,7 +46,7 @@
                         pattern pattern-value="{{r[c.name]}}" pattern-post="{{c.post}}"
                         pattern-model="r" pattern-column="{{c.name}}"
                         pattern-context="{{scenario.type}}"
-                        on-pattern-change="OnPatternValueChange(row, position, value)"></td>
+                        on-pattern-change="onPatternValueChange(row, position, identifier, value)"></td>
                     <td>
                         <button class="btn btn-xs" data-ng-click="deleteRow(scenario, r)">-</button>
                     </td>

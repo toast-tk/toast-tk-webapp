@@ -15,11 +15,54 @@ case class ConfigurationSyntax(sentence: String, typed_sentence: String)
 case class ConfigurationRow(group: String, name: String, syntax: List[ConfigurationSyntax])
 case class MacroConfiguration(id: Option[String], cType: String, rows: List[ConfigurationRow])
 case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: Option[List[WebPageElement]])
+case class AutoSetupConfigWithRefs(id: Option[String], name: String, cType: String, rows: Option[List[DBRef]])
 case class InspectedPage(name: String, items: List[String])
 case class InspectedScenario(name: String, steps: String)
 case class Scenario(id: Option[String], name: String, cType: String, driver: String, rows: Option[String])
 case class TestScript(id: Option[String], name: String, scenarii: List[Scenario])
+case class ScenarioRows(patterns: String, mappings: List[ScenarioRowMapping])
+case class ScenarioRowMapping(id: String, value: String, pos: Int)
+case class DBRef(collection: String, id: BSONObjectID, db: Option[String] = None)
 
+object DBRef {
+  implicit object DBRefReader extends BSONDocumentReader[DBRef] {
+    def read(bson: BSONDocument) =
+      DBRef(
+        bson.getAs[String]("$ref").get,
+        bson.getAs[BSONObjectID]("$id").get,
+        bson.getAs[String]("$db"))
+  }
+
+  implicit object DBRefWriter extends BSONDocumentWriter[DBRef] {
+    def write(ref: DBRef) =
+      BSONDocument(
+        "$ref" -> ref.collection,
+        "$id" -> ref.id,
+        "$db" -> ref.db)
+  }
+} 
+
+object ScenarioRowMapping{
+  implicit val reader: Reads[ScenarioRowMapping]= (
+      (__ \ "id").read[String] and
+      (__ \ "val").read[String] and
+      (__ \ "pos").read[Int])(ScenarioRowMapping.apply(_,_,_))
+
+  implicit val writer: Writes[ScenarioRowMapping] = (
+      (__ \ "id").write[String] and
+      (__ \ "val").write[String] and
+      (__ \ "pos").write[Int])(unlift(ScenarioRowMapping.unapply))
+}
+
+object ScenarioRows{
+  implicit val reader: Reads[ScenarioRows]= (
+      (__ \ "patterns").read[String] and
+      (__ \ "mappings").read[List[ScenarioRowMapping]])(ScenarioRows.apply(_,_))
+
+  implicit val writer: Writes[ScenarioRows] = (
+      (__ \ "patterns").write[String] and
+      (__ \ "mappings").write[List[ScenarioRowMapping]])(unlift(ScenarioRows.unapply))
+}
 
 object InspectedScenario{
   implicit val reader: Reads[InspectedScenario]= (
@@ -84,7 +127,9 @@ object TestScript{
     def write(testScript: TestScript): BSONDocument =
       testScript.id match {
         case None =>  BSONDocument("name"-> testScript.name, "scenarii" -> testScript.scenarii)
-        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> testScript.name,
+        case value:Option[String] => BSONDocument(
+          "_id" -> BSONObjectID(value.get), 
+          "name"-> testScript.name,
           "scenarii" -> testScript.scenarii)
       }
   }
@@ -99,6 +144,26 @@ object TestScript{
   }
 }
 
+object AutoSetupConfigWithRefs{
+
+  implicit object AutoSetupConfigurationWriter extends BSONDocumentWriter[AutoSetupConfigWithRefs] {
+    def write(configuration: AutoSetupConfigWithRefs): BSONDocument = 
+      configuration.id match {
+        case None => BSONDocument("name"-> configuration.name, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
+        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> configuration.name, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
+      }
+  }
+
+  implicit object AutoSetupConfigurationReader extends BSONDocumentReader[AutoSetupConfigWithRefs] {
+    def read(doc: BSONDocument): AutoSetupConfigWithRefs = {
+      val id = doc.getAs[BSONObjectID]("_id").get.stringify
+      val name = doc.getAs[String]("name").get
+      val ctype = doc.getAs[String]("type").get
+      val rows = doc.getAs[List[DBRef]]("rows").getOrElse(List())
+      AutoSetupConfigWithRefs(Option[String](id), name, ctype, Option[List[DBRef]](rows))
+    }
+  }
+}
 
 object AutoSetupConfig{
     implicit val autoSetupConfigReader: Reads[AutoSetupConfig]= (
@@ -115,11 +180,16 @@ object AutoSetupConfig{
     (__ \ "rows").writeNullable[List[WebPageElement]])(unlift(AutoSetupConfig.unapply))
 
   implicit object AutoSetupConfigurationWriter extends BSONDocumentWriter[AutoSetupConfig] {
-    def write(configuration: AutoSetupConfig): BSONDocument = 
+    def formatName(name: String): String = {
+      name.trim.replace(" ", "_").replace("'", "_").replace("°", "_")
+    }
+    def write(configuration: AutoSetupConfig): BSONDocument = {
+      val formatedName = formatName(configuration.name)
       configuration.id match {
-      	case None =>  BSONDocument("name"-> configuration.name, "type" -> configuration.cType,  "rows" -> configuration.rows.getOrElse(List()))
-      	case  value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> configuration.name,  "type" -> configuration.cType,  "rows" -> configuration.rows.getOrElse(List()))
+      	case None => BSONDocument("name"-> formatedName, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
+      	case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> formatedName, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
       }
+    }
   }
 
   implicit object AutoSetupConfigurationReader extends BSONDocumentReader[AutoSetupConfig] {
