@@ -223,6 +223,8 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     convertedListFuture
   }
 
+
+
   def loadElement(objectId: BSONObjectID): Future[Option[WebPageElement]] = {
     val collection = open_collection("elements")
     val query = BSONDocument("_id" -> objectId)
@@ -247,9 +249,16 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     loadAutoConfiguration(BSONDocument("type" -> "swing page"))
   }
 
+  def loadDefaultConfiguration(): Future[Option[MacroConfiguration]] = {
+    val collection = open_collection("cType")
+    val query = BSONDocument("type" -> "default")
+    val macroConfiguration = collection.find(query).one[MacroConfiguration]
+    macroConfiguration
+  }
+
   def loadConfigurationSentences(confType:String, context:String): Future[List[MacroConfiguration]] = {
     val collection = open_collection("configuration")
-    val query = BSONDocument("type" -> "service", "rows" -> BSONDocument("$elemMatch" -> BSONDocument("type" -> confType, "name" -> context)));
+    val query = BSONDocument("rows" -> BSONDocument("$elemMatch" -> BSONDocument("type" -> confType, "name" -> context)));
     val configurations = collection.find(query).cursor[MacroConfiguration].collect[List]()
     configurations
   }

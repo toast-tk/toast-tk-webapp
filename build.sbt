@@ -2,7 +2,11 @@ name := "redplay"
 
 version := "1.0-SNAPSHOT"
 
-resolvers += "Synaptix Maven Releases Repository" at "http://s76cllcfakr.si.fret.sncf.fr:8090/nexus/content/repositories/releases/"
+// SNCF Resolver
+//resolvers += "Synaptix Maven Releases Repository" at "http://s76cllcfakr.si.fret.sncf.fr:8090/nexus/content/repositories/releases/"
+
+// LOCAL Resolver
+resolvers += "Local Maven Repository" at "file:///D:/Apps/m2/repository"
 
 libraryDependencies ++= Seq(
   "org.reactivemongo" %% "reactivemongo" % "0.10.0",
@@ -11,9 +15,9 @@ libraryDependencies ++= Seq(
   "org.webjars" % "requirejs" % "2.1.1",
   "org.webjars" % "webjars-play" % "2.1.0-1",
   "org.webjars" % "bootstrap" % "3.2.0-1",
-  "com.synaptix.toast" % "toast-tk-dao" % "1.3-rc1",
-  "com.synaptix.toast" % "toast-tk-automation-client" % "1.3-rc1",
-  "com.synaptix.toast" % "toast-tk-runtime" % "1.3-rc1",
+  "com.synaptix.toast" % "toast-tk-dao" % "1.3-rc2",
+  "com.synaptix.toast" % "toast-tk-automation-client" % "1.3-rc2",
+  "com.synaptix.toast" % "toast-tk-runtime" % "1.3-rc2",
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.47.0"
 )     
 

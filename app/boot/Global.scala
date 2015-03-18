@@ -3,7 +3,8 @@ package boot
 import com.synaptix.toast.dao.service.dao.access.project._
 import com.synaptix.toast.dao.service.dao.access.repository._
 import com.synaptix.toast.dao.guice._
-import controllers.mongo.MongoConnector
+import com.synaptix.toast.fixture.api._
+import controllers.mongo._
 import com.mongodb.Mongo
 import java.util.logging.{ Logger => JLogger }
 import play.api.Logger
@@ -21,6 +22,7 @@ import de.flapdoodle.embed.process.store.IArtifactStore
 import de.flapdoodle.embed.process.extract.IExtractedFileSet
 import de.flapdoodle.embed.process.io.directories.UserTempDirInPlatformTempDir
 import de.flapdoodle.embed.process.extract.UserTempNaming
+import scala.collection.JavaConverters._
 
 object MongoExeFactory {
 	def apply(port: Int, versionNumber: String, dataPath:String) = {
@@ -68,6 +70,7 @@ object Global extends play.api.GlobalSettings {
 
   
 	override def beforeStart(app: play.api.Application): Unit = {
+    Logger.info(s"[+] Preparing Toast Tk Web App environment..")
     val conf: play.api.Configuration = app.configuration
     jnlpHost = conf.getString(KeyJnlpAddr).getOrElse(throw new RuntimeException(s"$KeyJnlpAddr is missing in your configuration"))
 		if (app.mode.equals(play.api.Mode.Dev)) {
@@ -87,8 +90,96 @@ object Global extends play.api.GlobalSettings {
           val mongoUrl = conf.getString(KeyMongoDbUrl).getOrElse(throw new RuntimeException(s"$KeyMongoDbUrl is missing in your configuration"))
           conn = MongoConnector(mongoUrl)
        }
+    } 
+    conn match {
+      case conn: MongoConnector => Logger.info(s"[+] DB connection established..")
+      case _ => Logger.error(s"[-] DB connection not established..")
     }
 	}
+
+
+  /**
+   */
+  def getTypedPatternRegexReplacement(serviceType: String, word:String): String = {
+    serviceType match {
+      case "swing" => word match {
+        case "([\\w\\W]+)" => "@[[1:string:Value]]"
+        case "\\$(\\w+)" => "@[[2:variable ($name):Variable]]"
+        case "(\\w+).(\\w+)" => "@[[6:reference:SwingComponent]]"
+        case _ => word
+      }
+      case "web" => word match {
+        case "([\\w\\W]+)" => "@[[1:string:Value]]"
+        case "\\$(\\w+)" => "@[[2:variable ($name):Variable]]"
+        case "(\\w+).(\\w+)" => "@[[4:reference:WebPageItem]]"
+        case _ => word
+      }
+      case "service" => word match {
+        case _ => word
+      }
+      case _ => word
+    }
+  }
+
+  /*
+   *
+   */
+  def getPlainPatternRegexReplacement(serviceType: String, word:String): String = {
+    serviceType match {
+      case "swing" => word match {
+        case "([\\w\\W]+)" => "Value"
+        case "\\$(\\w+)" => "Variable"
+        case "(\\w+).(\\w+)" => "SwingComponent"
+        case _ => word
+      }
+      case "web" => word match {
+        case "([\\w\\W]+)" => "Value"
+        case "\\$(\\w+)" => "Variable"
+        case "(\\w+).(\\w+)" => "WebPageItem"
+        case _ => word
+      }
+      case "service" => word match {
+        case _ => word
+      }
+      case _ => word
+    }
+  }
+
+  override def onStart(app: play.api.Application): Unit = {
+    Logger.info(s"[+] Initializing DB settings...")
+    
+    def persistDefaultConfiguration(confId: Option[String]) = {
+      var congifMap = Map[String, List[ConfigurationSyntax]]()
+      val fixtureDescriptorList = FixtureApi.listAvailableSentences().asScala
+      for (descriptor <- fixtureDescriptorList) {
+        val fixtureType: String = descriptor.fixtureType
+        val fixtureName: String = descriptor.name
+        val fixturePattern: String = descriptor.pattern
+        val formatedTypedSentence: String = fixturePattern.split(" ").map ( word => {
+          getTypedPatternRegexReplacement(fixtureType, word)
+        }).mkString(" ")
+        val formatedSentence: String = fixturePattern.split(" ").map ( word => {
+          getPlainPatternRegexReplacement(fixtureType, word)
+        }).mkString(" ")
+        val key = fixtureType +":"+fixtureName
+        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(formatedSentence, formatedTypedSentence)
+        val syntaxRows = congifMap.getOrElse(key, List[ConfigurationSyntax]())
+        val newSyntaxRows =  newConfigurationSyntax :: syntaxRows
+        congifMap = congifMap + (key -> newSyntaxRows)
+      }
+
+      val configurationRows = for ((k,v) <- congifMap) yield( ConfigurationRow(k.split(":")(0),k.split(":")(1),v) )
+      conn.saveConfiguration(MacroConfiguration(confId, "default", configurationRows.toList))
+    }
+
+    import scala.concurrent.ExecutionContext.Implicits.global
+    conn.loadDefaultConfiguration().map { 
+      configuration => configuration match {
+        case None => persistDefaultConfiguration(None)
+        case Some(conf) => persistDefaultConfiguration(conf.id)
+      }
+    }
+  }
 
 	override def onStop(app: play.api.Application): Unit = {
 		conn.close()
@@ -96,16 +187,23 @@ object Global extends play.api.GlobalSettings {
 	}
 
  	def stopMongo() {
-  	Logger.info(s"Stopping MongoDB.")
   	try {
-    		if (_mongoExe != null) _mongoExe.stop()
+    		if (_mongoExe != null) {
+          Logger.info(s"[+] Stopping MongoExe.")
+          _mongoExe.stop()
+        }
   	} finally {
-    		if (process != null) process.stop()
+    		if (process != null){
+          Logger.info(s"[+] Stopping MongoD.")
+          process.stop()
+        } 
   	}
 	}
 
+
+
 	def startLocalMongoInstance(app: play.api.Application): Unit = {
-      Logger.info("Loading local mongo instance...");
+      Logger.info("[+] Loading local mongo instance...");
       val conf: play.api.Configuration = app.configuration
       val port = conf.getInt(KeyPort).getOrElse(throw new RuntimeException(s"$KeyPort is missing in your configuration"))
       
@@ -120,10 +218,10 @@ object Global extends play.api.GlobalSettings {
         val dataPath = conf.getString("embed.mongo.data").getOrElse(throw new RuntimeException(s"embed.mongo.data path is missing in your configuration"))
         val versionNumber = conf.getString(KeyMongoDbVersion).getOrElse(throw new RuntimeException(s"$KeyMongoDbVersion is missing in your configuration"))
         val(_mongoExe, exePath) = MongoExeFactory(port, versionNumber, dataPath)
-        Logger.info(s"Mongod exe path: $exePath")
+        Logger.info(s"[+] Mongod exe path: $exePath")
         try {
             process = _mongoExe.start()
-            Logger.info("Local mongo instance was successfully started !");
+            Logger.info("[+] Local mongo instance was successfully started !");
         } catch {
             case e: IOException => {
               val message = s"""Maybe the MongoDB instance is damaged, will try to repair it !"""
@@ -138,27 +236,27 @@ object Global extends play.api.GlobalSettings {
   }
 
   def tryToRepairAndStartLocalMongoDB(dbPath: String, exePath: java.io.File, mongoExe: MongodExecutable) {
-    Logger.info(s"Repairing MongoDB instance...")
+    Logger.info(s"[+] Repairing MongoDB instance...")
     import scala.sys.process.Process
     def localRepairProcess = {
       val cmd = exePath.getAbsolutePath()  + " --dbpath=\"" + dbPath + "\" --repair"
-      Logger.info(s"Command line: $cmd")
+      Logger.info(s"[+] Command line: $cmd")
       val pBuilder = Process(cmd)
       val exitCode = pBuilder.!
       exitCode == 0
     }
     try {
         if(exePath.exists() && localRepairProcess){
-          Logger.info(s"Repair Suceeded, restarting local MongoDb instance...")
+          Logger.info(s"[+] Repair Suceeded, restarting local MongoDb instance...")
           process = mongoExe.start()
-          Logger.info("Local mongo instance was successfully started !");
+          Logger.info("[+] Local mongo instance was successfully started !");
         }else{
           throw new Exception(s"Unable to activate local mongo db instance !")
         }
         //
     } catch{
       case e: Exception => {
-        Logger.error(s"Unable to activate local mongo db instance !")
+        Logger.error(s"[-] Unable to activate local mongo db instance !")
         throw new Exception(s"Unable to activate local mongo db instance !", e)
       }
     }
