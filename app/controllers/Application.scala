@@ -1,6 +1,6 @@
 package controllers
 
-import boot.Global
+import boot.AppBoot
 
 import com.synpatix.toast.runtime.core.parse._
 import com.synaptix.toast.dao.domain.impl.test.TestPage
@@ -31,11 +31,11 @@ object Application extends Controller {
   implicit val sFormat = Json.format[ScenarioWrapper]
   implicit val campaignFormat = Json.format[Cpgn]
   implicit val projectFormat = Json.format[Prj]
-  val conn = Global.conn
 
-  val projectJavaDaoService = Global.projectService
-  val repositoryJavaDaoService = Global.repositoryDaoService
-  val jnlpHost = Global.jnlpHost
+  private val conn = AppBoot.conn
+  private val projectJavaDaoService = AppBoot.projectService
+  private val repositoryJavaDaoService = AppBoot.repositoryDaoService
+  private val jnlpHost = AppBoot.jnlpHost
 
   def index = Action {  request =>
     request.session.get("connected").map { user =>
@@ -527,7 +527,7 @@ object Application extends Controller {
         conn.loadWebPagesFromRepository().map {
           pageConfigurations => {
             for (page <- pageConfigurations) {
-              val pageElements = page.rows.getOrElse(List());
+              val pageElements = page.rows.getOrElse(List()).sortWith(_.name < _.name);
               res = res ++ (pageElements.map { element => 
                   JsObject(
                     "label" -> JsString(page.name + "." + element.name) ::
@@ -546,7 +546,7 @@ object Application extends Controller {
         conn.loadSwingPagesFromRepository().map {
           pageConfigurations => {
             for (page <- pageConfigurations) {
-              val pageElements = page.rows.getOrElse(List());
+              val pageElements = page.rows.getOrElse(List()).sortWith(_.name < _.name);
               res = res ++ (pageElements.map { element => 
                   JsObject(
                     "label" -> JsString(page.name + "." + element.name) ::

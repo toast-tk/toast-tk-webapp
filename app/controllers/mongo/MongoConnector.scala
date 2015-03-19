@@ -14,7 +14,7 @@ import controllers.parsers.WebPageElement
 import controllers.parsers.WebPageElementBSONWriter
 import reactivemongo.core.commands.LastError
 import reactivemongo.bson.BSONObjectID
-import boot.Global
+import boot.AppBoot
 
 object MongoConnector extends App {
   def apply() = {
@@ -200,7 +200,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
 
   def loadAutoConfiguration(query: BSONDocument): Future[List[AutoSetupConfig]] = {
     val collection = open_collection("repository")
-    val configurationWithRefs: Future[List[AutoSetupConfigWithRefs]] = collection.find(query).cursor[AutoSetupConfigWithRefs].collect[List]()
+    val configurationWithRefs: Future[List[AutoSetupConfigWithRefs]] = collection.find(query).sort(BSONDocument("name" -> 1)).cursor[AutoSetupConfigWithRefs].collect[List]()
     // re-compute as configurations
     def convertItems(configurationWithRef: AutoSetupConfigWithRefs): Future[AutoSetupConfig] = {
       configurationWithRef.rows match {
@@ -250,7 +250,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   }
 
   def loadDefaultConfiguration(): Future[Option[MacroConfiguration]] = {
-    val collection = open_collection("cType")
+    val collection = open_collection("configuration")
     val query = BSONDocument("type" -> "default")
     val macroConfiguration = collection.find(query).one[MacroConfiguration]
     macroConfiguration

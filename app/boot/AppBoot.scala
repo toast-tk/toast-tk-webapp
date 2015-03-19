@@ -53,7 +53,7 @@ object MongoExeFactory {
   }
 }
 
-object Global extends play.api.GlobalSettings {
+object AppBoot extends play.api.GlobalSettings {
 
   val KeyMongoDbUrl = "mongo.db.url"
   val KeyPort = "embed.mongo.port"
@@ -175,8 +175,12 @@ object Global extends play.api.GlobalSettings {
     import scala.concurrent.ExecutionContext.Implicits.global
     conn.loadDefaultConfiguration().map { 
       configuration => configuration match {
-        case None => persistDefaultConfiguration(None)
-        case Some(conf) => persistDefaultConfiguration(conf.id)
+        case None => {
+          persistDefaultConfiguration(None)
+        }
+        case Some(conf) => {
+          persistDefaultConfiguration(conf.id)
+        }
       }
     }
   }
