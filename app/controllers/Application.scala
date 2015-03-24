@@ -570,13 +570,17 @@ object Application extends Controller {
     Ok(repositoryJavaDaoService.getRepoAsJson())
   }
 
-  def saveRepository() =  Action(parse.json)  {
-    implicit request => {
-      val res = repositoryJavaDaoService.saveRepoAsJson(request.body.as[String])
-      Ok("Repos")
+  def saveRepository() = Action(parse.json) { implicit request =>
+    request.body.validate[Seq[AutoSetupConfig]].map {
+      case configs: Seq[AutoSetupConfig] =>
+        for {
+          conf <- configs
+        } yield conn.saveAutoConfiguration(conf)
+        Ok("auto configuration saved !")
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
   }
-
 
   def main(args: Array[String]) {
     conn.loadAutoConfiguration.map {

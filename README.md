@@ -1,20 +1,26 @@
 RedPlay - Web App d0.1
 =======
 
+# Environment pre-requisites:
+- sbt 0.13.8
+- Scala 2.10.3
+- Play 2.2.3
+- Java 7
+- sbt-plugins: play
+
+
 # JVM settings
--Dredpepper.webapp.addr
--Dredpepper.webapp.port
--Dredpepper.plugin.dir
--Drus.inspect
+-Dtoast.webapp.addr
+-Dtoast.webapp.port
 
 # Hello Test Project Creation
 
 ### Add red pepper dependencies to the project's pom.xml
 ```xml
 	<dependency>
-		<groupId>com.synaptix.redpepper</groupId>
-		<artifactId>redpepper-automation</artifactId>
-		<version>${redpepper.version}</version>
+		<groupId>com.synaptix.toast</groupId>
+		<artifactId>toast-tk-automation-client</artifactId>
+		<version>1.3-rc2</version>
 	</dependency>
 ```
 

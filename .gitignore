@@ -18,3 +18,5 @@ bin/*
 project/*
 .target/*
 .worksheet/*
+/.target/
+/bin/
