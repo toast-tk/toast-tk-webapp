@@ -37,6 +37,7 @@ GET         /loadProjectReport/:projectName               controllers.Applicatio
 GET         /test                                         controllers.Application.loadTestReport()
 GET         /logout                                       controllers.Application.logout()
 POST        /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
+POST		/deleteScenarii								  controllers.Application.deleteScenarii()
 
 
 # Map static resources from the /public folder to the /assets URL path

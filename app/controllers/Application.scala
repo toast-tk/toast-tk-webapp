@@ -86,6 +86,8 @@ object Application extends Controller {
     }
   }
 
+
+
   /**
    * scenario service type (backend, web, ..)
    *
@@ -282,6 +284,17 @@ object Application extends Controller {
     }
   }
 
+
+  
+  def deleteScenarii() = Action(parse.json) { implicit request =>
+    request.body.validate[String].map {
+      case scenariiId: String =>
+        conn.deleteScenarii(scenariiId)
+        Ok("scenario deleted !")
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
+  }
   /**
    * Save scenarii
    */
@@ -356,10 +369,10 @@ object Application extends Controller {
     }
 
     val lines = if (scenario.rows.getOrElse("").startsWith("[")){
-        populatePatterns(scenario.rows.getOrElse("")).map { sentence => "| " + sentence + " |\n"}.mkString("") + "\n"
-      } else {
-        scenario.rows.getOrElse("").split("\n").toList.map(row => "|" + row +"|").mkString("\n")
-      }
+      populatePatterns(scenario.rows.getOrElse("")).map { sentence => "| " + sentence + " |\n"}.mkString("") + "\n"
+    } else {
+      scenario.rows.getOrElse("").split("\n").toList.map(row => "|" + row +"|").mkString("\n")
+    }
 
 
     var res = "h1. Name:" + scenario.name + "\n"

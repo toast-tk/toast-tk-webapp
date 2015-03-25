@@ -110,13 +110,27 @@ define(["angular"], function (angular) {
             load();
         },
         ScenarioCtrl: function ($rootScope, $scope, playRoutes, ngProgress) {
+            
             $scope.newRow = {};
             $scope.scenario_types = [];
             $scope.selectedType = "";
             $scope.importModes = ["prepend", "append"];
             $scope.scenarii = [];
 
-            $scope.$watch("scenario_types", function(oldVal, newVale){
+            $scope.add = add;
+            $scope.addRow = addRow;
+            $scope.save = save;
+            $scope.deleteRow = deleteRow;
+            $scope.importScenario = importScenario;
+            $scope.onPatternValueChange = onPatternValueChange;
+            $scope.convertToTemplate = convertToTemplate;
+            $scope.deleteScenarii = deleteScenarii;
+
+            $scope.$watch("scenario_types", watch_scenario_types, true);
+
+            __init__();
+
+            function watch_scenario_types(oldVal, newVale){
                 if(angular.isDefined($scope.scenario_types) && angular.isArray( $scope.scenario_types)){
                     for(var i =0 ; i < $scope.scenario_types.length; i++){
                         var scenariiDef = $scope.scenario_types[i];
@@ -129,21 +143,9 @@ define(["angular"], function (angular) {
                         });
                     }   
                 }
-            }, true);
+            }
 
-            playRoutes.controllers.Application.loadConfiguration().get().then(function (response) {
-                $scope.configurations = response.data || [];
-                for (var i = 0; i < $scope.configurations.length; i++) {
-                    for (var j = 0; j < $scope.configurations[i].rows.length; j++) {
-                        $scope.scenario_types.push({
-                            name: $scope.configurations[i].rows[j].name,
-                            type: $scope.configurations[i].rows[j].type
-                        });
-                    }
-                }
-            });
-
-            $scope.add = function () {
+            function add() {
                 playRoutes.controllers.Application.loadScenarioCtx($scope.selectedType.type).get().then(function (response) {
                     var scenarioDescriptor = response.data;
                     $scope.scenarii.push({
@@ -155,17 +157,17 @@ define(["angular"], function (angular) {
                 });
             };
 
-            $scope.addRow = function (scenario, newRow) {
+            function addRow(scenario, newRow) {
                 scenario.rows.push(newRow);
                 $scope.newRow = {};
             };
 
-            $scope.deleteRow = function (scenario, row) {
+            function deleteRow(scenario, row) {
                 //ajax call directly, if not new !
                 scenario.rows.splice(scenario.rows.indexOf(row), 1);
             };
 
-            $scope.save = function () {
+            function save() {
                 var copy = angular.copy($scope.scenarii);
                 var transformed_copy = copy.map(function (obj) {
                     obj.rows = JSON.stringify(obj.rows);
@@ -173,11 +175,17 @@ define(["angular"], function (angular) {
                     return obj;
                 });
                 playRoutes.controllers.Application.saveScenarii().post(transformed_copy).then(function () {
-                    load();
+                    __init__();
                 });
             };
 
-            $scope.importScenario = function (scenario) {
+            function deleteScenarii(scenario){
+                playRoutes.controllers.Application.deleteScenarii().post(angular.toJson(scenario.id)).then(function () {
+                    __init__();
+                });
+            }
+
+            function importScenario(scenario) {
                 var mode = scenario.selectedImportMode;
                 var toImport = scenario.imp;
                 if (mode == "prepend") {
@@ -189,7 +197,7 @@ define(["angular"], function (angular) {
                 delete scenario.selectedImportMode;
             };
 
-            $scope.onPatternValueChange = function (row, position, identifier, value) {
+            function onPatternValueChange(row, position, identifier, value) {
                 var newVal = {id: identifier, pos: position, val: value};
                 if (angular.isUndefined(row.mappings)) {
                     row.mappings = [];
@@ -208,9 +216,11 @@ define(["angular"], function (angular) {
                 }
             }
 
-            $scope.convertToTemplate = function (scenario){
+            function convertToTemplate(scenario){
                 var newScenarioTemplate = angular.copy(scenario);
+                newScenarioTemplate.name = newScenarioTemplate.name + "_template"
                 var regexList = $scope.regexList;
+
                 for(var i = 0 ; i < newScenarioTemplate.rows.length ; i++){
                     var sentence = newScenarioTemplate.rows[i].patterns;
                     for(var j=0; j < regexList.length; j++){
@@ -220,6 +230,29 @@ define(["angular"], function (angular) {
                         var pattern = regexList[j].sentence;
                         if(regex.test(checkSentence)){
                             newScenarioTemplate.rows[i].patterns = pattern;
+
+                            /** ---------------- **/
+                            var patternValue = pattern;
+                            var tag = "";
+                            var tags = [];
+                            var tagPosition = 0;
+                            while (tag != null) {
+                                if(tag != ""){
+                                    tags.push(tag);
+                                    var tagName = tags[tagPosition][0];
+                                    var varType = tags[tagPosition][3];
+                                    var varDescriptor = tags[tagPosition][4];
+                                    //warning (variable ($name) split)
+                                    var replacementValue = checkSentence.split(" ")[getIndex(pattern.split(" "), tagName)];
+                                    patternValue = replaceIndex(patternValue, tagName,  tags[tagPosition].index , replacementValue);
+                                    onPatternValueChange(newScenarioTemplate.rows[i], tagPosition, varType == "reference" ? varType : tagPosition.toString(), replacementValue)
+                                    tagPosition = tagPosition + 1;
+
+                                }
+                                var tagRegex = /(@)\[\[(\d+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+)\]\]/gi
+                                tag = tagRegex.exec(patternValue);
+                            }
+                            /** ---------------- **/
                             break;
                         }
                     } 
@@ -229,7 +262,35 @@ define(["angular"], function (angular) {
                 $scope.scenarii.push(newScenarioTemplate);
             }
 
-            function load() {
+            /** util functions */
+            function getIndex(array, word){
+                for(var i = 0 ; i< array.length; i++){
+                    if(array[i] == word){
+                        return i;
+                    }
+                }
+            }
+
+            function replaceIndex(string, regex, at, repl) {
+               return string.replace(regex, function(match, i) {
+                    if( i === at ) return repl;
+                    return match;
+                });
+            }
+
+            function __init__() {
+                playRoutes.controllers.Application.loadConfiguration().get().then(function (response) {
+                    $scope.configurations = response.data || [];
+                    for (var i = 0; i < $scope.configurations.length; i++) {
+                        for (var j = 0; j < $scope.configurations[i].rows.length; j++) {
+                            $scope.scenario_types.push({
+                                name: $scope.configurations[i].rows[j].name,
+                                type: $scope.configurations[i].rows[j].type
+                            });
+                        }
+                    }
+                });
+
                 playRoutes.controllers.Application.loadScenarii().get().then(function (response) {
                     var data = response.data || [];
                     data.map(function (scenario) {
@@ -237,7 +298,7 @@ define(["angular"], function (angular) {
                             scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
                             var isTemplate = true;
                             for(var i = 0 ; i < scenario.rows.length ; i++){
-                                if(angular.isDefined(scenario.rows[i].mappings)){
+                                if(angular.isDefined(scenario.rows[i].mappings) && scenario.rows[i].mappings.length > 0){
                                     isTemplate = false;
                                     break;
                                 }
@@ -259,8 +320,7 @@ define(["angular"], function (angular) {
                     $scope.scenarii = data;
                 });
             }
-
-            load();
+            
         },
         ProjectCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $window) {
             $scope.projects = [];

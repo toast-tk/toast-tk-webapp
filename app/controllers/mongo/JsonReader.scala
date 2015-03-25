@@ -20,7 +20,7 @@ case class InspectedPage(name: String, items: List[String])
 case class InspectedScenario(name: String, steps: String)
 case class Scenario(id: Option[String], name: String, cType: String, driver: String, rows: Option[String])
 case class TestScript(id: Option[String], name: String, scenarii: List[Scenario])
-case class ScenarioRows(patterns: String, mappings: List[ScenarioRowMapping])
+case class ScenarioRows(patterns: String, mappings: Option[List[ScenarioRowMapping]])
 case class ScenarioRowMapping(id: String, value: String, pos: Int)
 case class DBRef(collection: String, id: BSONObjectID, db: Option[String] = None)
 
@@ -57,11 +57,11 @@ object ScenarioRowMapping{
 object ScenarioRows{
   implicit val reader: Reads[ScenarioRows]= (
       (__ \ "patterns").read[String] and
-      (__ \ "mappings").read[List[ScenarioRowMapping]])(ScenarioRows.apply(_,_))
+      (__ \ "mappings").readNullable[List[ScenarioRowMapping]])(ScenarioRows.apply(_,_))
 
   implicit val writer: Writes[ScenarioRows] = (
       (__ \ "patterns").write[String] and
-      (__ \ "mappings").write[List[ScenarioRowMapping]])(unlift(ScenarioRows.unapply))
+      (__ \ "mappings").writeNullable[List[ScenarioRowMapping]])(unlift(ScenarioRows.unapply))
 }
 
 object InspectedScenario{

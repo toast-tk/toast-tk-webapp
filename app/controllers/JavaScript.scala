@@ -27,6 +27,7 @@ object JavaScript extends Controller {
           controllers.routes.javascript.Application.loadProjectReport,
           controllers.routes.javascript.Application.loadEnvConfiguration,
           controllers.routes.javascript.Application.logout,
+          controllers.routes.javascript.Application.deleteScenarii,
           controllers.routes.javascript.Users.user)
     ).as(JAVASCRIPT)
   }

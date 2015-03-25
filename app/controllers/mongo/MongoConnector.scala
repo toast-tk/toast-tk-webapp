@@ -1,5 +1,6 @@
 package controllers.mongo
 
+import scala.concurrent.duration._
 import play.api.libs.json.Reads._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
@@ -9,6 +10,7 @@ import reactivemongo.bson.Producer.nameValue2Producer
 import reactivemongo.api.collections.default.BSONCollection
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.Await
 import scala.util.{Failure, Success}
 import controllers.parsers.WebPageElement
 import controllers.parsers.WebPageElementBSONWriter
@@ -83,7 +85,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     if(scenario.rows != null){
       try{
         val scenarioRows = Json.parse(scenario.rows.getOrElse("[]")).as[List[ScenarioRows]]
-        for(row <- scenarioRows; mapping <- row.mappings){
+        for(row <- scenarioRows; mapping <- row.mappings.getOrElse(List())){
           for(configElement <- config.rows.getOrElse(List())){
             if (mapping.id.equals(configElement.id.get)){
               isImpacted = true
@@ -100,12 +102,54 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     isImpacted
   }
 
-  def refactorScenario(scenario: Scenario, config: AutoSetupConfig):  Scenario = {  
+  def convertJsonToScenarioRows(scenario: Scenario): List[ScenarioRows] = {
     val scenarioRows = Json.parse(scenario.rows.getOrElse("")).as[List[ScenarioRows]]
+    scenarioRows
+  }
+
+  def updateScenario(scenario: Scenario):  Scenario = {  
+    import scala.util.control.Breaks._
+    val scenarioRows: List[ScenarioRows] = convertJsonToScenarioRows(scenario)
     var outputRows = List[ScenarioRows]()
     for(row <- scenarioRows){
       var outputMappings = List[ScenarioRowMapping]()
-      for(mapping <- row.mappings){
+      for(mapping <- row.mappings.getOrElse(List())){
+        var mappingUpdate: Boolean = false;
+        if(mapping.id.equals("reference")){ //lame hack, to fix as soon as possible on editor.js side also
+          val pageName = mapping.value.split("[.]")(0)
+          val componentName = mapping.value.split("[.]")(1)
+          val pages: List[AutoSetupConfig] = Await.result(loadSwingPagesFromRepositoryByName(pageName), 5 seconds).asInstanceOf[List[AutoSetupConfig]]
+          if(pages.isDefinedAt(0)){
+            val page = pages(0)
+            breakable { 
+              for(component <- page.rows.getOrElse(List())){
+                if(component.name.equals(componentName)){
+                  outputMappings = ScenarioRowMapping(id = component.id.getOrElse(mapping.id), value = mapping.value, pos = mapping.pos) :: outputMappings 
+                  mappingUpdate = true
+                  break
+                }
+              } 
+            }
+          }else{
+            //Log something
+          }   
+        } 
+        if(!mappingUpdate){
+          outputMappings = mapping :: outputMappings 
+        }
+      }
+      outputRows = ScenarioRows(patterns = row.patterns, mappings = Some(outputMappings)) :: outputRows
+    }
+    val jsonRowsAsString = Json.stringify(Json.toJson(outputRows)) 
+    Scenario(id = scenario.id, name= scenario.name, cType = scenario.cType, driver = scenario.driver, rows = Some(jsonRowsAsString))
+  }
+
+  def refactorScenario(scenario: Scenario, config: AutoSetupConfig):  Scenario = {  
+    val scenarioRows = convertJsonToScenarioRows(scenario)
+    var outputRows = List[ScenarioRows]()
+    for(row <- scenarioRows){
+      var outputMappings = List[ScenarioRowMapping]()
+      for(mapping <- row.mappings.getOrElse(List())){
         for(configElement <- config.rows.getOrElse(List())){
           if (mapping.id.equals(configElement.id.get)) {
             val newMappingValue = config.name + "." + configElement.name
@@ -115,7 +159,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
           }
         }
       }
-      outputRows = ScenarioRows(patterns = row.patterns, mappings = outputMappings) :: outputRows
+      outputRows = ScenarioRows(patterns = row.patterns, mappings = Some(outputMappings)) :: outputRows
     }
     val jsonRowsAsString = Json.stringify(Json.toJson(outputRows)) 
     Scenario(id = scenario.id, name= scenario.name, cType = scenario.cType, driver = scenario.driver, rows = Some(jsonRowsAsString))
@@ -164,15 +208,22 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
       collection.save(element)
   }
 
+  def deleteScenarii(scenarioId: String) {
+    val collection = open_collection("scenarii")
+    collection.remove(BSONDocument("_id" -> BSONObjectID(scenarioId))).onComplete {
+      case Failure(e) => throw e
+      case Success(_) => println(s"[+] successfully removed scanario: $scenarioId")
+    }
+  }
+
   def saveScenario(scenario: Scenario) {
     val collection = open_collection("scenarii")
-    if(scenario.id == null){
-      collection.insert(scenario).onComplete {
+    scenario.id match {
+      case None => collection.insert(updateScenario(scenario)).onComplete {
         case Failure(e) => throw e
         case Success(_) => println("[+] successfully inserted scanario !")
       }
-    }else{
-      collection.save(scenario).onComplete {
+      case _ => collection.save(updateScenario(scenario)).onComplete {
         case Failure(e) => throw e
         case Success(_) => println("successfully saved scanario !")
       }
@@ -232,6 +283,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     element
   }
 
+
   def loadConfStaticSentences(scenarioType: String, driver: String): Future[List[String]] = {
     val collection = open_collection("scenarii")
     val query = BSONDocument("type" -> scenarioType, "driver" -> driver)
@@ -243,6 +295,10 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
 
   def loadWebPagesFromRepository(): Future[List[AutoSetupConfig]] = {
     loadAutoConfiguration(BSONDocument("type" -> "web page"))
+  }
+
+  def loadSwingPagesFromRepositoryByName(name: String): Future[List[AutoSetupConfig]] = {
+    loadAutoConfiguration(BSONDocument("type" -> "swing page", "name" -> name))
   }
 
   def loadSwingPagesFromRepository(): Future[List[AutoSetupConfig]] = {

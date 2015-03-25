@@ -44,6 +44,7 @@
     <br>
     <div>
         <div ng-repeat="scenario in scenarii | filter:query" class="scenario">
+            <button class="btn btn-xs btn-primary" data-ng-click="deleteScenarii(scenario)">-</button>
             Name: <input type="text" ng-model="scenario.name" style="width: 300px;"> of type: <label>{{ scenario.type
             }}</label>
             <span class="pull-right">
