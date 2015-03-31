@@ -30,7 +30,8 @@ case class ScenarioWrapper(name: Option[String], scenario: Option[Scenario])
 object Application extends Controller {
   implicit val sFormat = Json.format[ScenarioWrapper]
   implicit val campaignFormat = Json.format[Cpgn]
-  implicit val projectFormat = Json.format[Prj]
+  implicit val projectFormat = Json.format[Prj]  
+  implicit val scenarioRowsFormat = Json.format[ScenarioRows] 
 
   private val conn = AppBoot.conn
   private val projectJavaDaoService = AppBoot.projectService
@@ -79,7 +80,7 @@ object Application extends Controller {
       case "swing page" => Json.arr(Json.obj("name" -> "name", "descriptor" -> Json.obj()),
         Json.obj("name" -> "type", "descriptor" -> Json.obj("type" -> Json.arr("button", "input", "menu", "table", "timeline", "date", "list", "checkbox", "other"))),
         Json.obj("name" -> "locator", "descriptor" -> Json.obj()))
-      case "configure entity" => Json.arr(Json.obj("name" -> "entity", "descriptor" -> Json.obj()),
+      case "service entity" => Json.arr(Json.obj("name" -> "entity", "descriptor" -> Json.obj()),
         Json.obj("name" -> "alias", "descriptor" -> Json.obj()),
         Json.obj("name" -> "search by", "descriptor" -> Json.obj()))
       case _ => Json.arr();
@@ -103,7 +104,7 @@ object Application extends Controller {
       case "swing" => Json.arr(Json.obj("name" -> "patterns", "reference" -> true, "post" -> false),
         Json.obj("name" -> "expected result", "reference" -> false, "post" -> true),
         Json.obj("name" -> "comment", "reference" -> false, "post" -> true))
-      case "backend" => Json.arr(Json.obj("name" -> "patterns", "reference" -> true, "post" -> false),
+      case "service" => Json.arr(Json.obj("name" -> "patterns", "reference" -> true, "post" -> false),
         Json.obj("name" -> "comment", "reference" -> false, "post" -> true))
       case _ => Json.arr();
     }
@@ -299,11 +300,9 @@ object Application extends Controller {
    * Save scenarii
    */
   def saveScenarii() = Action(parse.json) { implicit request =>
-    request.body.validate[Seq[Scenario]].map {
-      case scenarii: Seq[Scenario] =>
-        for {
-          scenario <- scenarii
-        } yield conn.saveScenario(scenario)
+    request.body.validate[Scenario].map {
+      case scenario: Scenario =>
+        conn.saveScenario(scenario)
         Ok("scenario saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -363,13 +362,27 @@ object Application extends Controller {
 
       val patterns = Json.parse(rows) \\ "patterns"
       val mappings = Json.parse(rows) \\ "mappings"
+
+      //val kind = (Json.parse(rows) \ "kind").asOpt[String].getOrElse()
       val modifiedPatterns = for (i <- 0 until patterns.length) yield
         replacePatterns(patterns(i).as[String], if (mappings.isDefinedAt(i)) mappings(i).as[List[JsValue]] else List())
       modifiedPatterns.toList
     }
 
-    val lines = if (scenario.rows.getOrElse("").startsWith("[")){
-      populatePatterns(scenario.rows.getOrElse("")).map { sentence => "| " + sentence + " |\n"}.mkString("") + "\n"
+    val scenarioRows: List[ScenarioRows] = Json.parse(scenario.rows.getOrElse("[]")).as[List[ScenarioRows]]
+    val scenarioKinds: List[String] = scenarioRows.map{row => row.kind.getOrElse("")}
+    val lines = if (scenarioRows.length > 0){
+      populatePatterns(scenario.rows.getOrElse(""))
+      .zip (scenarioKinds)
+      .map { zippedScenari => {
+          val sentence = zippedScenari._1
+          zippedScenari._2 match {
+            case "" => "| " + sentence + " |\n"
+            case kind:String => "| @" + kind + " " + sentence + " |\n"
+          }
+        }
+      }
+      .mkString("") + "\n"
     } else {
       scenario.rows.getOrElse("").split("\n").toList.map(row => "|" + row +"|").mkString("\n")
     }
@@ -488,13 +501,13 @@ object Application extends Controller {
   /**
    * get all possible pattern sentences for a given scenario type
    */
-  def loadCtxSentences(confType: String, context: String) = Action.async {
-    conn.loadConfigurationSentences(confType, context).map {
+  def loadCtxSentences(confType: String) = Action.async {
+    conn.loadConfigurationSentences(confType).map {
       configurations => {
         var res = List[ConfigurationSyntax]();
         for (configuration <- configurations) {
           for (row <- configuration.rows) {
-            if (row.group.equals(confType) && row.name.equals(context)) {
+            if (row.group.equals(confType)) {
               res = res ++ replacePatternByRegex(row.syntax)
             }
           }
@@ -511,13 +524,13 @@ object Application extends Controller {
    * @param context
    * @return
    */
-  def loadSentences(confType: String, context: String) = Action.async {
-    conn.loadConfigurationSentences(confType, context).map {
+  def loadSentences(confType: String) = Action.async {
+    conn.loadConfigurationSentences(confType).map {
       configurations => {
         var res = List[ConfigurationSyntax]();
         for (configuration <- configurations) {
           for (row <- configuration.rows) {
-            if (row.group.equals(confType) && row.name.equals(context)) {
+            if (row.group.equals(confType)) {
               res = res ++ row.syntax
             }
           }
@@ -603,5 +616,4 @@ object Application extends Controller {
       }
     }
   }
-
 }

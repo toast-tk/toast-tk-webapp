@@ -4,7 +4,7 @@
   requirejs.config({
     shim: {
       'jsRoutes': {
-        deps: [],
+        deps: ['angular'],
         // it's not a RequireJS module, so we have to tell it what var is returned
         exports: 'jsRoutes'
       },
@@ -24,23 +24,35 @@
       'underscore': {
       	deps: [],
       	exports: '_'
-      }
+      },
+      'angular-ui-tree':{
+        deps: ['angular']
+      },
+      'jquery-ui':{
+        deps: ['jquery']
+      },
+      'angularRoute': ['angular']
     },
     paths: {
       'requirejs': ['../lib/requirejs/require'],
       'jsRoutes': ['/jsroutes'],
       "jquery": "//code.jquery.com/jquery-1.7.2.min",
-	  "jquery-ui" : "//code.jquery.com/ui/1.9.2/jquery-ui.min",
-   	  "angular": "//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min",
-	  "ui-sortable" : ['./libs/sortable'],
+	    "jquery-ui" : "//code.jquery.com/ui/1.9.2/jquery-ui.min",
+   	  "angular": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular",
+      "angularRoute": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route",
+	    "ui-sortable" : ['./libs/sortable'],
    	  "underscore" : "//underscorejs.org/underscore",
-   	  "qTags": ['./libs/jquery-textntags']
+   	  "qTags": ['./libs/jquery-textntags'],
+      "angular-ui-tree": ['/libs/angular-ui-tree.min'],
+      "ui.bootstrap": ['/libs/ui-bootstrap-tpls-0.12.1']
     }
   });
 
   require(["angular", "./services/playRoutes", "./controllers/login", "./controllers/editor",
-          "./directives/components", "./libs/sortable", "./libs/ngProgress.min"], function(a, b, login, editor) {
-    var app = angular.module("app", ["play.routing", "red.components", "ui.sortable", "ngProgress"]);
+          "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
+          "./libs/angular-ui-tree.min", "./libs/ui-bootstrap-tpls-0.12.1", "angularRoute"], 
+          function(a, b, login, editor) {
+    var app = angular.module("app", ['ngRoute', "play.routing", "red.components", "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap"]);
     
     app.controller("LoginCtrl", login.LoginCtrl);
     app.controller("MainCtrl", editor.MainCtrl);
@@ -50,13 +62,14 @@
     app.controller("ProjectCtrl", editor.ProjectCtrl);
     
     app.config(["$routeProvider", function($routeProvider){
-	  $routeProvider.when("/",{ templateUrl: "assets/html/login.html", controller: "LoginCtrl"});
-	  $routeProvider.when("/main",{ templateUrl: "assets/html/editor.html", controller: "MainCtrl"});
+	    $routeProvider.when("/",{ templateUrl: "assets/html/login.html", controller: "LoginCtrl"});
+	    $routeProvider.when("/main",{ templateUrl: "assets/html/editor.html", controller: "MainCtrl"});
       $routeProvider.when("/configuration",{ templateUrl: "assets/html/configuration.html", controller: "ConfigurationCtrl"});
       $routeProvider.when("/scenario",{ templateUrl: "assets/html/scenario.html", controller: "ScenarioCtrl"});
       $routeProvider.when("/repository",{ templateUrl: "assets/html/repository.html", controller: "RepositoryCtrl"});
       $routeProvider.when("/project",{ templateUrl: "assets/html/project.html", controller: "ProjectCtrl"});
-	}]);
+      $routeProvider.otherwise("/main");
+	  }]);
 	
     angular.bootstrap(document, ["app"]);
 });

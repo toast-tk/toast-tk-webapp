@@ -8,7 +8,7 @@ scalaVersion := "2.10.3"
 //resolvers += "Synaptix Maven Releases Repository" at "http://s76cllcfakr.si.fret.sncf.fr:8090/nexus/content/repositories/releases/"
 
 // LOCAL Resolver
-//resolvers += "Local Maven Repository" at "/Users/blackbox/.m2/repository"
+resolvers += "Local Maven Repository" at "file:///D:/Apps/m2/repository"
 
 libraryDependencies ++= Seq(
   "org.reactivemongo" %% "reactivemongo" % "0.10.0",

@@ -14,15 +14,15 @@ define(["angular", "qTags"], function (angular, qTags) {
 	        	var content = $('<span class="sentence"></span>');	
 	        	var addHtml = $('<button class="btn btn-primary">+</button>');
 	        	var html = '<textarea ng-model="newSentence" placeholder="sentence (use @)" style="width: 100%;" /> ';
-	        	var e = $compile(html)($scope);
+	        	var tagElement = $compile(html)($scope);
             	
-            	content.append(e);
+            	content.append(tagElement);
             	content.append(addHtml);
             	element.replaceWith(content);	
 
 
 				//TODO: move data list on server side
-				$(e).textntags({
+				$(tagElement).textntags({
 			        triggers: {'@': {uniqueTags: false}},
 			        onDataRequest:function (mode, query, triggerChar, callback) {
 			            var data = [
@@ -40,20 +40,28 @@ define(["angular", "qTags"], function (angular, qTags) {
 			        }
 			    })    
 			    .bind('tagsAdded.textntags', function (e, addedTagsList) { 
+			    	$(tagElement).textntags('editorVal', function(editorText) {
+			        	$scope.newSentence = editorText;
+			    		$scope.$digest();
+			        });
 			    	console.log('tagsAdded:' + JSON.stringify(addedTagsList)); 
 			    })
     			.bind('tagsRemoved.textntags', function (e, removedTagsList) { 
+    				$(tagElement).textntags('editorVal', function(editorText) {
+			        	$scope.newSentence = editorText;
+			    		$scope.$digest();
+			        });
     				console.log('tagsRemoved:' + JSON.stringify(removedTagsList)); 
     			});
     				
     			$(addHtml).click(function() {
-			        $(e).textntags('val', function(text) {
+			        $(tagElement).textntags('val', function(text) {
 			        	$scope.$apply(function(){
 				        	$scope.callback({a:$scope.newSentence, b:text});
 				        	$scope.newSentence = "";
 			        	});
 			        });
-			        $(e).textntags('reset');
+			        $(tagElement).textntags('reset');
 			    });
 			} 
 	    };
@@ -233,19 +241,15 @@ define(["angular", "qTags"], function (angular, qTags) {
 					   templateValue: "@",
 					   templatePost: "@",
 					   templateConfigType: "@",
-					   templateContext: "@",
 					   ngModel: "="
 					},    	
 	        link: function ($scope, element, attrs) { 
-	        
-				var init = false;
 				
-	        	$scope.$watch('templateValue + ngModel + templatePost + templateConfigType + templateContext', function(){
-	        		if(!init && ( $scope.templateValue && $scope.templatePost && $scope.templateConfigType && $scope.templateContext)){
+	        	$scope.$watch('templateValue + templatePost + templateConfigType', function(){
+	        		if($scope.templateValue && $scope.templatePost && $scope.templateConfigType){
 		        		var templateValue = $scope.templateValue;
-		        		var templateModel = $scope.templateModel;
 		        		
-		        		playRoutes.controllers.Application.loadSentences($scope.templateConfigType, $scope.templateContext).get().then(function(response){
+		        		playRoutes.controllers.Application.loadSentences($scope.templateConfigType).get().then(function(response){
 		        			$scope.values = response.data || [];
 							$scope.values.unshift({sentence: "Plain Text Step", typed_sentence : ""});
 							if($scope.templatePost == "true"){
@@ -255,7 +259,6 @@ define(["angular", "qTags"], function (angular, qTags) {
 								var el = $compile('<select ng-model="ngModel" ng-options="value.typed_sentence as value.sentence for value in values"></select>')($scope);
 					        	element.replaceWith(el);
 							}
-							init = true;
 		        		});
 					}
 	        	});

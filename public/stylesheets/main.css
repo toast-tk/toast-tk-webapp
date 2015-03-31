@@ -1,3 +1,6 @@
+
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
 .textntags-wrapper {
   position: relative;
   background: #fff;
@@ -158,4 +161,40 @@
   border-radius: 5px; 
   padding: 5px;
   margin-bottom: 10px;
+}
+
+/* Lib integration*/
+
+
+.angular-ui-tree-handle{
+  background: #f8faff;
+  border: 1px solid #dae2ea;
+  color: #7c9eb2;
+  padding: 10px 10px;
+}
+
+.angular-ui-tree-node div.title-no {
+  background: #f8faff;
+  border: 1px solid #dae2ea;
+  color: #7c9eb2;
+  padding: 10px 10px;
+}
+
+.angular-ui-tree-node div.title {
+  cursor: pointer;
+  background: #f8faff;
+  border: 1px solid #dae2ea;
+  color: #7c9eb2;
+  padding: 10px 10px;
+}
+
+.angular-ui-tree-node div.title:hover {
+  background: #008cba;
+  border: 1px solid #f8faff;
+  color: white;
+}
+
+.control {
+  top: 30px;
+  position: relative;
 }

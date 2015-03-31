@@ -313,7 +313,6 @@
                     if (elTagListItemActive && elTagListItemActive.length) {
 						editorAddingTag = true;
                         elTagListItemActive.click();
-                        return false;
                     }
                     return true;
 
@@ -551,6 +550,18 @@
                     initBeautifier();
                     initState();
                 }
+            },
+            editorVal : function (callback) {
+                if (_.isString(callback)) {
+                    var removedTags = _.uniq(_.map(tagsCollection, function (tagPos) { return tagPos[3]; }));
+                    elEditor.trigger('tagsRemoved.textntags', [removedTags]);
+                    elEditor.val(callback);
+                    initState();
+                    return;
+                } else if (!_.isFunction(callback)) {
+                    return;
+                }
+                callback.call(this, getEditorValue());
             },
             val : function (callback) {
                 if (_.isString(callback)) {

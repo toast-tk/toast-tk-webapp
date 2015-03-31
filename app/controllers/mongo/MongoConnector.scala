@@ -138,7 +138,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
           outputMappings = mapping :: outputMappings 
         }
       }
-      outputRows = ScenarioRows(patterns = row.patterns, mappings = Some(outputMappings)) :: outputRows
+      outputRows = ScenarioRows(patterns = row.patterns, kind = row.kind, mappings = Some(outputMappings)) :: outputRows
     }
     val jsonRowsAsString = Json.stringify(Json.toJson(outputRows)) 
     Scenario(id = scenario.id, name= scenario.name, cType = scenario.cType, driver = scenario.driver, rows = Some(jsonRowsAsString))
@@ -159,7 +159,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
           }
         }
       }
-      outputRows = ScenarioRows(patterns = row.patterns, mappings = Some(outputMappings)) :: outputRows
+      outputRows = ScenarioRows(patterns = row.patterns, kind = row.kind, mappings = Some(outputMappings)) :: outputRows
     }
     val jsonRowsAsString = Json.stringify(Json.toJson(outputRows)) 
     Scenario(id = scenario.id, name= scenario.name, cType = scenario.cType, driver = scenario.driver, rows = Some(jsonRowsAsString))
@@ -274,8 +274,6 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     convertedListFuture
   }
 
-
-
   def loadElement(objectId: BSONObjectID): Future[Option[WebPageElement]] = {
     val collection = open_collection("elements")
     val query = BSONDocument("_id" -> objectId)
@@ -312,9 +310,9 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     macroConfiguration
   }
 
-  def loadConfigurationSentences(confType:String, context:String): Future[List[MacroConfiguration]] = {
+  def loadConfigurationSentences(confType:String): Future[List[MacroConfiguration]] = {
     val collection = open_collection("configuration")
-    val query = BSONDocument("rows" -> BSONDocument("$elemMatch" -> BSONDocument("type" -> confType, "name" -> context)));
+    val query = BSONDocument("rows" -> BSONDocument("$elemMatch" -> BSONDocument("type" -> confType)));
     val configurations = collection.find(query).cursor[MacroConfiguration].collect[List]()
     configurations
   }

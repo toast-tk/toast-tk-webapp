@@ -3,55 +3,68 @@ define(["angular"], function (angular) {
     return {
         ConfigurationCtrl: function ($rootScope, $scope, playRoutes, ngProgress) {
             var vm = $scope;
-            $scope.service_config_types = ["web", "swing", "backend"];
+            $scope.service_config_types = ["web", "swing", "service"];
             $scope.selectedConfig = undefined;
             $scope.configurations = [];
 
-            $scope.addNewSentence = function (newSentence, sentenceWithTypes) {
+            $scope.addNewSentence = addNewSentence;
+            $scope.deleteSentenceLine = deleteSentenceLine;
+            $scope.saveConfig = saveConfig;
+            $scope.addConfigBlock = addConfigBlock;
+            $scope.editConfigLine = editConfigLine;
+            $scope.deleteConfigLine = deleteConfigLine;
+            $scope.addConfigLine = addConfigLine;
+
+            __init__();
+
+            function addNewSentence(newSentence, sentenceWithTypes) {
                 $scope.selectedConfig.syntax.push({sentence: newSentence, typed_sentence: sentenceWithTypes});
             };
 
-            $scope.deleteSentenceLine = function (newSentence) {
+            function deleteSentenceLine(newSentence) {
                 $scope.selectedConfig.syntax.splice($scope.selectedConfig.syntax.indexOf(newSentence), 1);
             };
 
-            $scope.saveConfig = function () {
+            function saveConfig() {
                 playRoutes.controllers.Application.saveConfiguration().post($scope.configurations).then(function (response) {
                     load();
                 });
             };
 
-            $scope.addConfigBlock = function () {
+            function addConfigBlock() {
                 $scope.configurations.push({type: "service", rows: []});
             };
 
-            $scope.editConfigLine = function (config, item) {
+            function editConfigLine(config, item) {
                 $scope.selectedConfig = config;
             };
 
-            $scope.deleteConfigLine = function (config, item) {
+            function deleteConfigLine(config, item) {
                 config.rows.splice(config.rows.indexOf(item), 1);
             };
 
-            $scope.addConfigLine = function (config, configName, configType) {
+            function addConfigLine(config, configName, configType) {
                 config.rows.push({type: configType, name: configName, syntax: []});
             };
 
-            function load() {
+
+            function __init__() {
                 playRoutes.controllers.Application.loadConfiguration().get().then(function (response) {
                     $scope.configurations = response.data || [];
                 });
             }
 
-            load();
         },
         RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress) {
-            $scope.run_config_types = ["web page", "configure entity", "swing page"];
+            $scope.run_config_types = ["web page", "service entity", "swing page"];
             $scope.autosetups = [];
             $scope.newAutoSetupRow = {};
             $scope.selectedAutoSetupConfigType = "";
             $scope.autoSetupConfigFilter = "";
             $scope.autosetups = [];
+            $scope.autosetup = undefined;
+
+            $scope.editRepositoryObject = editRepositoryObject;
 
             $scope.addAutoSetupConfig = function () {
                 playRoutes.controllers.Application.loadAutoSetupCtx($scope.selectedAutoSetupConfigType).get().then(function (response) {
@@ -68,7 +81,11 @@ define(["angular"], function (angular) {
                 return angular.isArray(arr) ? "array" : "";
             }
 
-            $scope.saveAutoConfig = function () {
+            function editRepositoryObject(autosetup){
+                $scope.autosetup = autosetup;
+            } 
+
+            /*$scope.saveAutoConfig = function () {
                 var deepCopy = angular.copy($scope.autosetups);
                 deepCopy = deepCopy.map(function (autoSetup) {
                     delete autoSetup.columns;
@@ -77,7 +94,7 @@ define(["angular"], function (angular) {
                 playRoutes.controllers.Application.saveAutoConfig().post(deepCopy).then(function (response) {
                     load();
                 });
-            };
+            };*/
 
             $scope.saveAutoConfigBlock = function (autosetup) {
                 var deepCopy = angular.copy(autosetup);
@@ -116,6 +133,10 @@ define(["angular"], function (angular) {
             $scope.selectedType = "";
             $scope.importModes = ["prepend", "append"];
             $scope.scenarii = [];
+            $scope.regexList = [];
+            $scope.regexMap = [];
+            $scope.scenario = undefined;
+            $scope.stepType = "";
 
             $scope.add = add;
             $scope.addRow = addRow;
@@ -124,7 +145,11 @@ define(["angular"], function (angular) {
             $scope.importScenario = importScenario;
             $scope.onPatternValueChange = onPatternValueChange;
             $scope.convertToTemplate = convertToTemplate;
+            $scope.editScenario = editScenario;
             $scope.deleteScenarii = deleteScenarii;
+            $scope.swaptToSwingRow = swaptToSwingRow;
+            $scope.swaptToWebRow = swaptToWebRow;
+            $scope.swaptToServiceRow = swaptToServiceRow;
 
             $scope.$watch("scenario_types", watch_scenario_types, true);
 
@@ -134,16 +159,45 @@ define(["angular"], function (angular) {
                 if(angular.isDefined($scope.scenario_types) && angular.isArray( $scope.scenario_types)){
                     for(var i =0 ; i < $scope.scenario_types.length; i++){
                         var scenariiDef = $scope.scenario_types[i];
-                        playRoutes.controllers.Application.loadCtxSentences(scenariiDef.type, scenariiDef.name).get().then(function(response){
+                        playRoutes.controllers.Application.loadCtxSentences(scenariiDef.type).get().then(function(response){
                             if(!angular.isDefined($scope.regexList)){
                                 $scope.regexList = response.data || [];
+                                $scope.regexMap[scenariiDef.type] = $scope.regexList;
                             }else{
                                 $scope.regexList = $scope.regexList.concat(response.data || []);
+                                $scope.regexMap[scenariiDef.type] = $scope.regexList;
                             }
                         });
                     }   
                 }
             }
+
+            function editScenario(scenario){
+                $scope.scenario = scenario; 
+                swaptToDefaultRow();
+            }
+
+            ////////// trigger the right event !! //////////////
+            function swaptToSwingRow(){
+                $scope.stepType = "swing";
+                $scope.regexList = $scope.regexMap[$scope.stepType];
+            }
+
+            function swaptToServiceRow(){
+                $scope.stepType = "service";
+                $scope.regexList = $scope.regexMap[$scope.stepType];
+            }
+
+            function swaptToWebRow(){
+                $scope.stepType = "web";
+                $scope.regexList = $scope.regexMap[$scope.stepType];
+            }
+
+            function swaptToDefaultRow(){
+                $scope.stepType = $scope.scenario.type;   
+                $scope.regexList = $scope.regexMap[$scope.stepType];
+            }
+            //////////////////////////////////////////////////
 
             function add() {
                 playRoutes.controllers.Application.loadScenarioCtx($scope.selectedType.type).get().then(function (response) {
@@ -157,8 +211,9 @@ define(["angular"], function (angular) {
                 });
             };
 
-            function addRow(scenario, newRow) {
-                scenario.rows.push(newRow);
+            function addRow(newRow) {
+                newRow.kind = $scope.stepType;
+                $scope.scenario.rows.push(newRow);
                 $scope.newRow = {};
             };
 
@@ -168,13 +223,10 @@ define(["angular"], function (angular) {
             };
 
             function save() {
-                var copy = angular.copy($scope.scenarii);
-                var transformed_copy = copy.map(function (obj) {
-                    obj.rows = JSON.stringify(obj.rows);
-                    delete obj.columns;
-                    return obj;
-                });
-                playRoutes.controllers.Application.saveScenarii().post(transformed_copy).then(function () {
+                var scenarioCopy = angular.copy($scope.scenario);
+                scenarioCopy.rows = JSON.stringify(scenarioCopy.rows);
+                delete copy.columns;
+                playRoutes.controllers.Application.saveScenarii().post(scenarioCopy).then(function () {
                     __init__();
                 });
             };
