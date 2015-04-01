@@ -5,10 +5,8 @@
     shim: {
       'jsRoutes': {
         deps: ['angular'],
-        // it's not a RequireJS module, so we have to tell it what var is returned
         exports: 'jsRoutes'
       },
-      // Hopefully this all will not be necessary but can be fetched from WebJars in the future
       'angular': {
         deps: ['jquery', 'qTags'],
         exports: 'angular'
@@ -48,16 +46,17 @@
     }
   });
 
-  require(["angular", "./services/playRoutes", "./controllers/login", "./controllers/editor",
+  require(["angular", "./services/playRoutes", 
+          "./controllers/login", "./controllers/editor", "./controllers/scenario",
           "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
           "./libs/angular-ui-tree.min", "./libs/ui-bootstrap-tpls-0.12.1", "angularRoute"], 
-          function(a, b, login, editor) {
+          function(a, b, login, editor, scenario) {
     var app = angular.module("app", ['ngRoute', "play.routing", "red.components", "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap"]);
     
     app.controller("LoginCtrl", login.LoginCtrl);
     app.controller("MainCtrl", editor.MainCtrl);
     app.controller("ConfigurationCtrl", editor.ConfigurationCtrl);
-    app.controller("ScenarioCtrl", editor.ScenarioCtrl);
+    app.controller("ScenarioCtrl", scenario.ScenarioCtrl);
     app.controller("RepositoryCtrl", editor.RepositoryCtrl);
     app.controller("ProjectCtrl", editor.ProjectCtrl);
     

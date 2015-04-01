@@ -277,10 +277,14 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   def loadElement(objectId: BSONObjectID): Future[Option[WebPageElement]] = {
     val collection = open_collection("elements")
     val query = BSONDocument("_id" -> objectId)
-    val element = collection.find(query).one[WebPageElement]
-    element
+    collection.find(query).one[WebPageElement]
   }
 
+  def loadScenarioById(id: String): Future[Option[Scenario]] = {
+    val collection = open_collection("scenarii")
+    val query = BSONDocument("_id" -> BSONObjectID(id))
+    collection.find(query).one[Scenario]
+  }
 
   def loadConfStaticSentences(scenarioType: String, driver: String): Future[List[String]] = {
     val collection = open_collection("scenarii")

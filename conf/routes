@@ -12,22 +12,17 @@ GET         /jsroutes.js                                  controllers.JavaScript
 # AJAX routes
 POST        /login                                        controllers.Application.login()
 GET			/loadEnvConfiguration						  controllers.Application.loadEnvConfiguration()
-GET         /loadScenarioCtx/:scenarioType                controllers.Application.loadScenarioCtx(scenarioType: String)
 GET         /loadAutoSetupCtx/:setupType                  controllers.Application.loadAutoSetupCtx(setupType: String)
 GET         /loadConfiguration                            controllers.Application.loadConfiguration()
 GET         /loadAutoConfiguration                        controllers.Application.loadAutoConfiguration()
-GET         /loadScenarii                                 controllers.Application.loadScenarii()
-GET         /wikiScenarii                                 controllers.Application.loadWikifiedScenarii()
 GET         /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
 GET         /loadCtxTagData/:itemName                     controllers.Application.loadCtxTagData(itemName: String)
-GET         /users/:id                                    controllers.Users.user(id: Long)
 GET         /loadCtxSentences/:confType			          controllers.Application.loadCtxSentences(confType:String)
 GET         /loadSentences/:confType		              controllers.Application.loadSentences(confType:String)
 POST        /saveConfiguration                            controllers.Application.saveConfiguration()
 POST        /saveAutoSetupConfiguration                   controllers.Application.saveAutoConfig()
 POST		/saveAutoConfigBlock						  controllers.Application.saveAutoConfigBlock()
 POST        /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
-POST        /saveScenarii                                 controllers.Application.saveScenarii()
 GET         /loadWikifiedRepository                       controllers.Application.loadWikifiedRepository()
 POST        /saveProject                                  controllers.Application.saveProject()
 GET         /loadProject                                  controllers.Application.loadProject()
@@ -36,8 +31,19 @@ POST		/saveRepository								  controllers.Application.saveRepository()
 GET         /loadProjectReport/:projectName               controllers.Application.loadProjectReport(projectName:String)
 GET         /test                                         controllers.Application.loadTestReport()
 GET         /logout                                       controllers.Application.logout()
+
+# Ajax routes: Users
+GET         /users/:id                                    controllers.Users.user(id: Long)
+
+# Ajax routes: Scenarii Controller
+GET         /loadScenariiList                             controllers.ScenarioController.loadScenariiList()
+GET         /loadScenarii                                 controllers.ScenarioController.loadScenarii()
+GET         /wikiScenarii                                 controllers.ScenarioController.loadWikifiedScenarii()
+GET         /loadScenarioSteps/:id                        controllers.ScenarioController.loadScenarioSteps(id: String)
+GET         /loadScenarioCtx/:scenarioType                controllers.ScenarioController.loadScenarioCtx(scenarioType: String)
+POST        /saveScenarii                                 controllers.ScenarioController.saveScenarii()
+POST		/deleteScenarii								  controllers.ScenarioController.deleteScenarii()
 POST        /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
-POST		/deleteScenarii								  controllers.Application.deleteScenarii()
 
 
 # Map static resources from the /public folder to the /assets URL path

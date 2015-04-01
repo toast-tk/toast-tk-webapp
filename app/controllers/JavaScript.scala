@@ -10,7 +10,6 @@ object JavaScript extends Controller {
     Ok(
       Routes.javascriptRouter(varName)(
           controllers.routes.javascript.Application.login,
-          controllers.routes.javascript.Application.loadScenarioCtx,
           controllers.routes.javascript.Application.saveConfiguration,
           controllers.routes.javascript.Application.saveAutoConfig,
           controllers.routes.javascript.Application.saveAutoConfigBlock,
@@ -20,14 +19,15 @@ object JavaScript extends Controller {
           controllers.routes.javascript.Application.loadAutoSetupCtx,
           controllers.routes.javascript.Application.loadCtxSentences,
           controllers.routes.javascript.Application.loadSentences,
-          controllers.routes.javascript.Application.loadScenarii,
-          controllers.routes.javascript.Application.saveScenarii,
+          controllers.routes.javascript.ScenarioController.loadScenarii,
+          controllers.routes.javascript.ScenarioController.loadScenarioCtx,
+          controllers.routes.javascript.ScenarioController.saveScenarii,
+          controllers.routes.javascript.ScenarioController.deleteScenarii,
           controllers.routes.javascript.Application.saveProject,
           controllers.routes.javascript.Application.loadProject,
           controllers.routes.javascript.Application.loadProjectReport,
           controllers.routes.javascript.Application.loadEnvConfiguration,
           controllers.routes.javascript.Application.logout,
-          controllers.routes.javascript.Application.deleteScenarii,
           controllers.routes.javascript.Users.user)
     ).as(JAVASCRIPT)
   }

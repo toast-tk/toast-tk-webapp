@@ -88,28 +88,6 @@ object Application extends Controller {
   }
 
 
-
-  /**
-   * scenario service type (backend, web, ..)
-   *
-   */
-  def loadScenarioCtx(scenarioType: String) = Action {
-    Ok(scenarioDescriptorProvider(scenarioType))
-  }
-
-  def scenarioDescriptorProvider(scenarioType: String): JsArray = {
-    scenarioType match {
-      case "web" => Json.arr(Json.obj("name" -> "patterns", "reference" -> true, "post" -> false),
-        Json.obj("name" -> "comment", "reference" -> false, "post" -> true))
-      case "swing" => Json.arr(Json.obj("name" -> "patterns", "reference" -> true, "post" -> false),
-        Json.obj("name" -> "expected result", "reference" -> false, "post" -> true),
-        Json.obj("name" -> "comment", "reference" -> false, "post" -> true))
-      case "service" => Json.arr(Json.obj("name" -> "patterns", "reference" -> true, "post" -> false),
-        Json.obj("name" -> "comment", "reference" -> false, "post" -> true))
-      case _ => Json.arr();
-    }
-  }
-
   /**
    * Save Meta config
    */
@@ -199,7 +177,7 @@ object Application extends Controller {
         val campaign = new Campaign()
         campaign.setName(cpgn.name)
         val testPagelist = new java.util.ArrayList[TestPage]()
-        val testPages = (for (c <- campaigns; wrapper <- c.scenarii) yield parseTestPage(wrapper.scenario.get, wikifiedScenario(wrapper.scenario.get).as[String]))
+        val testPages = (for (c <- campaigns; wrapper <- c.scenarii) yield parseTestPage(wrapper.scenario.get, ScenarioController.wikifiedScenario(wrapper.scenario.get).as[String]))
         for (tPage <- testPages) {
           testPagelist.add(tPage)
         }
@@ -286,28 +264,6 @@ object Application extends Controller {
   }
 
 
-  
-  def deleteScenarii() = Action(parse.json) { implicit request =>
-    request.body.validate[String].map {
-      case scenariiId: String =>
-        conn.deleteScenarii(scenariiId)
-        Ok("scenario deleted !")
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
-  }
-  /**
-   * Save scenarii
-   */
-  def saveScenarii() = Action(parse.json) { implicit request =>
-    request.body.validate[Scenario].map {
-      case scenario: Scenario =>
-        conn.saveScenario(scenario)
-        Ok("scenario saved !")
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
-  }
 
   /**
    * load to init configuration
@@ -321,99 +277,7 @@ object Application extends Controller {
   }
 
   /**
-   * load to init scenarii
-   */
-  def loadScenarii() = Action.async {
-    conn.loadScenarii.map {
-      scenarii => {
-        val input = Json.toJson(scenarii).as[JsArray]
-        def extendedObject(obj: JsObject) = {
-          obj + ("columns" -> scenarioDescriptorProvider((obj \ "type").as[String]))
-        }
-        val response = for (i <- input.value) yield extendedObject(i.as[JsObject])
-        Ok(Json.toJson(response))
-      }
-    }
-  }
-
-  def wikifiedScenario(scenario: Scenario): JsValue = {
-    lazy val regex = """@\[\[\d+:[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+:[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+\]\]""".r
-    def populatePatterns(rows: String): List[String] = {
-      def replacePatterns(pattern: String, mapping: List[JsValue]): String = {
-        var outputArray = List[String]()
-        var mappingPosition = 0
-        val splittedPattern = pattern.split("\\s+")
-        splittedPattern.foreach { word =>
-          word match {
-            case regex() =>
-              var replacementWord = "";
-              for (jsonMapping <- mapping) {
-                val pos = (jsonMapping \ "pos").as[Int]
-                if (pos.equals(mappingPosition)) replacementWord = (jsonMapping \ "val").as[String]
-              }
-              outputArray = ("*" + replacementWord + "*") :: outputArray
-              mappingPosition = mappingPosition + 1
-            case x => outputArray = x :: outputArray
-          }
-        }
-        outputArray.reverse.mkString(" ")
-      }
-
-
-      val patterns = Json.parse(rows) \\ "patterns"
-      val mappings = Json.parse(rows) \\ "mappings"
-
-      //val kind = (Json.parse(rows) \ "kind").asOpt[String].getOrElse()
-      val modifiedPatterns = for (i <- 0 until patterns.length) yield
-        replacePatterns(patterns(i).as[String], if (mappings.isDefinedAt(i)) mappings(i).as[List[JsValue]] else List())
-      modifiedPatterns.toList
-    }
-
-    val scenarioRows: List[ScenarioRows] = Json.parse(scenario.rows.getOrElse("[]")).as[List[ScenarioRows]]
-    val scenarioKinds: List[String] = scenarioRows.map{row => row.kind.getOrElse("")}
-    val lines = if (scenarioRows.length > 0){
-      populatePatterns(scenario.rows.getOrElse(""))
-      .zip (scenarioKinds)
-      .map { zippedScenari => {
-          val sentence = zippedScenari._1
-          zippedScenari._2 match {
-            case "" => "| " + sentence + " |\n"
-            case kind:String => "| @" + kind + " " + sentence + " |\n"
-          }
-        }
-      }
-      .mkString("") + "\n"
-    } else {
-      scenario.rows.getOrElse("").split("\n").toList.map(row => "|" + row +"|").mkString("\n")
-    }
-
-
-    var res = "h1. Name:" + scenario.name + "\n"
-    res = res + "#scenario id:" + scenario.id.get + "\n"
-    res = res + "#scenario driver:" + scenario.driver + "\n"
-    res = res + "|| scenario || " + scenario.cType + " ||\n"
-    res = res + lines
-    JsString(res)
-  }
-
-
-  /**
-   * load to wiki scenarii
-   * Scenario: (id: Option[String], cType: String, driver: String,rows: String)
-   * || scenario || swing ||
-   * |Type *toto* in *LoginDialog.loginTextField*|
-   */
-  def loadWikifiedScenarii() = Action.async {
-    conn.loadScenarii.map {
-      scenarii => {
-        val response = for (scenario <- scenarii) yield wikifiedScenario(scenario)
-        Ok(Json.toJson(response))
-      }
-    }
-  }
-
-  /**
-   * load to init configuration
+   * load to init repository configuration
    */
   def loadAutoConfiguration() = Action.async {
     conn.loadAutoConfiguration.map {
