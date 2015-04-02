@@ -100,7 +100,7 @@ define(["angular"], function (angular) {
             function save() {
                 var scenarioCopy = angular.copy($scope.scenario);
                 scenarioCopy.rows = JSON.stringify(scenarioCopy.rows);
-                delete copy.columns;
+                delete scenarioCopy.columns;
                 playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function () {
                     __init__();
                 });
