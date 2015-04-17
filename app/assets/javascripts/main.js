@@ -47,17 +47,18 @@
   });
 
   require(["angular", "./services/playRoutes", 
-          "./controllers/login", "./controllers/editor", "./controllers/scenario",
+          "./controllers/login", "./controllers/editor", "./controllers/scenario", 
+          "./controllers/configuration","./controllers/repository", "./controllers/home",
           "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
           "./libs/angular-ui-tree.min", "./libs/ui-bootstrap-tpls-0.12.1", "angularRoute"], 
-          function(a, b, login, editor, scenario) {
+          function(a, b, login, editor, scenario, configuration, repository, home) {
     var app = angular.module("app", ['ngRoute', "play.routing", "red.components", "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap"]);
     
     app.controller("LoginCtrl", login.LoginCtrl);
-    app.controller("MainCtrl", editor.MainCtrl);
-    app.controller("ConfigurationCtrl", editor.ConfigurationCtrl);
+    app.controller("MainCtrl", home.MainCtrl);
+    app.controller("ConfigurationCtrl", configuration.ConfigurationCtrl);
     app.controller("ScenarioCtrl", scenario.ScenarioCtrl);
-    app.controller("RepositoryCtrl", editor.RepositoryCtrl);
+    app.controller("RepositoryCtrl", repository.RepositoryCtrl);
     app.controller("ProjectCtrl", editor.ProjectCtrl);
     
     app.config(["$routeProvider", function($routeProvider){

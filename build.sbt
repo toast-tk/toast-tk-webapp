@@ -18,7 +18,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "webjars-play" % "2.1.0-1",
   "org.webjars" % "bootstrap" % "3.2.0-1",
   "com.synaptix.toast" % "toast-tk-dao" % "1.3-rc2",
-  "com.synaptix.toast" % "toast-tk-automation-client" % "1.3-rc2",
+  "com.synaptix.toast" % "toast-tk-fixtures" % "1.3-rc2",
   "com.synaptix.toast" % "toast-tk-runtime" % "1.3-rc2",
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.47.0"
 )     

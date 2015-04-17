@@ -110,6 +110,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   def updateScenario(scenario: Scenario):  Scenario = {  
     import scala.util.control.Breaks._
     val scenarioRows: List[ScenarioRows] = convertJsonToScenarioRows(scenario)
+    println(scenarioRows)
     var outputRows = List[ScenarioRows]()
     for(row <- scenarioRows){
       var outputMappings = List[ScenarioRowMapping]()
@@ -140,7 +141,8 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
       }
       outputRows = ScenarioRows(patterns = row.patterns, kind = row.kind, mappings = Some(outputMappings)) :: outputRows
     }
-    val jsonRowsAsString = Json.stringify(Json.toJson(outputRows)) 
+    val jsonRowsAsString = Json.stringify(Json.toJson(outputRows.reverse)) 
+     println(jsonRowsAsString)
     Scenario(id = scenario.id, name= scenario.name, cType = scenario.cType, driver = scenario.driver, rows = Some(jsonRowsAsString))
   }
 
@@ -230,6 +232,20 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
   }
 
+  def savePlainScenario(scenario: Scenario) {
+    val collection = open_collection("scenarii")
+    scenario.id match {
+      case None => collection.insert(scenario).onComplete {
+        case Failure(e) => throw e
+        case Success(_) => println("[+] successfully inserted scanario !")
+      }
+      case _ => collection.save(scenario).onComplete {
+        case Failure(e) => throw e
+        case Success(_) => println("successfully saved scanario !")
+      }
+    }
+  }
+
   def loadConfiguration(): Future[List[MacroConfiguration]] = {
     val collection = open_collection("configuration")
     val query = BSONDocument()
@@ -308,8 +324,12 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   }
 
   def loadDefaultConfiguration(): Future[Option[MacroConfiguration]] = {
+    loadMacroConfiguration("default")
+  }
+
+  def loadMacroConfiguration(cType: String): Future[Option[MacroConfiguration]] = {
     val collection = open_collection("configuration")
-    val query = BSONDocument("type" -> "default")
+    val query = BSONDocument("type" -> cType)
     val macroConfiguration = collection.find(query).one[MacroConfiguration]
     macroConfiguration
   }

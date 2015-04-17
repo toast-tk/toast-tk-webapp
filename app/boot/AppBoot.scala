@@ -59,6 +59,8 @@ object AppBoot extends play.api.GlobalSettings {
   val KeyPort = "embed.mongo.port"
   val KeyMongoDbVersion = "embed.mongo.dbversion"
   val KeyJnlpAddr= "jnlp.host"
+
+  //FIXME pass to the injector the proper mongo db host
 	private lazy val injector = com.google.inject.Guice.createInjector(new MongoModule());
 	lazy val projectService = injector.getInstance(classOf[ProjectDaoService.Factory])create("test_project_db");
   lazy val repositoryDaoService = injector.getInstance(classOf[RepositoryDaoService.Factory])create("play_db");
@@ -77,17 +79,22 @@ object AppBoot extends play.api.GlobalSettings {
       val enabled = conf.getBoolean("embed.mongo.enabled").getOrElse(false);
        if(enabled){
           startLocalMongoInstance(app) 
+          Logger.info(s"[+] Connecting to local mongoDB instance !")
           conn = MongoConnector()
        }else{
-          conn = MongoConnector(conf.getString(KeyMongoDbUrl).getOrElse("localhost"))
+          val mongoUrl = conf.getString(KeyMongoDbUrl).getOrElse("localhost")
+          Logger.info(s"[+] Connecting to mongoUrl: $mongoUrl")
+          conn = MongoConnector(mongoUrl)
        }
     } else {
        val enabled = conf.getBoolean("embed.mongo.enabled").getOrElse(false);
        if(enabled){
           startLocalMongoInstance(app)
+          Logger.info(s"[+] Connecting to local mongoDB instance !")
           conn = MongoConnector()
        }else {
           val mongoUrl = conf.getString(KeyMongoDbUrl).getOrElse(throw new RuntimeException(s"$KeyMongoDbUrl is missing in your configuration"))
+          Logger.info(s"[+] Connecting to mongoUrl: $mongoUrl")
           conn = MongoConnector(mongoUrl)
        }
     } 
@@ -203,8 +210,6 @@ object AppBoot extends play.api.GlobalSettings {
         } 
   	}
 	}
-
-
 
 	def startLocalMongoInstance(app: play.api.Application): Unit = {
       Logger.info("[+] Loading local mongo instance...");

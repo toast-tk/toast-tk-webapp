@@ -31,7 +31,6 @@ object Application extends Controller {
   implicit val sFormat = Json.format[ScenarioWrapper]
   implicit val campaignFormat = Json.format[Cpgn]
   implicit val projectFormat = Json.format[Prj]  
-  implicit val scenarioRowsFormat = Json.format[ScenarioRows] 
 
   private val conn = AppBoot.conn
   private val projectJavaDaoService = AppBoot.projectService
@@ -147,10 +146,11 @@ object Application extends Controller {
   }
 
   def saveNewInspectedScenario() = Action(parse.json) { implicit request =>
-    request.body.validate[InspectedScenario].map {
+    val scenarioR = Json.fromJson(request.body)(Json.format[InspectedScenario])
+    scenarioR.map {
       case scenario: InspectedScenario =>
         val logInstance = Scenario(id = None, name = scenario.name, cType = "swing", driver = "connecteurSwing", rows = Some(scenario.steps))
-        conn.saveScenario(logInstance)
+        conn.savePlainScenario(logInstance)
         Ok("scenario saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -453,9 +453,77 @@ object Application extends Controller {
     }
   }
 
+  def persistConfiguration(formerConfiguration: Option[MacroConfiguration], fixtureDescriptor: MojoFixtureDescriptor) = {
+      var congifMap = Map[String, List[ConfigurationSyntax]]()
+      val fixtureDescriptorList = fixtureDescriptor.sentences
+      for (descriptor <- fixtureDescriptorList) {
+        val fixtureType: String = descriptor.fixtureType
+        val fixtureName: String = descriptor.name
+        val fixturePattern: String = descriptor.pattern
+        
+        println()
+        println("Input Sentence <--> " +  fixturePattern);
+        val formatedTypedSentence: String = fixturePattern.split(" ").map ( word => {
+          DomainController.getTypedPatternRegexReplacement(fixtureType, word)
+        }).mkString(" ")
+        println("Output Sentence typed -> " +  formatedTypedSentence);
+        val formatedSentence: String = fixturePattern.split(" ").map ( word => {
+          DomainController.getPlainPatternRegexReplacement(fixtureType, word)
+        }).mkString(" ")
+        println("Output Sentence plain -> " +  formatedSentence);
+        println()
+        
+        val key = fixtureType +":"+fixtureName
+        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(formatedSentence, formatedTypedSentence)
+        val syntaxRows = congifMap.getOrElse(key, List[ConfigurationSyntax]())
+        val newSyntaxRows =  newConfigurationSyntax :: syntaxRows
+        congifMap = congifMap + (key -> newSyntaxRows)
+      }
+      
+      println(formerConfiguration)
+      val configurationRows = for ((k,v) <- congifMap) yield(ConfigurationRow(k.split(":")(0),k.split(":")(1),v) )
+    
+      formerConfiguration match {
+        case None => {
+          conn.saveConfiguration(MacroConfiguration(None, fixtureDescriptor.name, configurationRows.toList))
+        }
+        case Some(conf) => {
+          val rows = for {
+            macroConfigurationRow <- conf.rows
+            if(!macroConfigurationRow.name.equals(configurationRows.head.name)
+             &&  !macroConfigurationRow.group.equals(configurationRows.head.group))
+          } yield(macroConfigurationRow)
+          val rowsToPersist = configurationRows.head :: rows
+          conn.saveConfiguration(MacroConfiguration(conf.id, fixtureDescriptor.name, rowsToPersist.toList))
+        }
+      }
+  }
+
+  /**
+   * 
+   */
+  def onConnectorReceived = Action(parse.json) { implicit request =>
+    request.body.validate[MojoFixtureDescriptor].map {
+      case fixtureDescriptor: MojoFixtureDescriptor =>
+        conn.loadMacroConfiguration(fixtureDescriptor.name).map { 
+          configuration => configuration match {
+            case None => {
+              persistConfiguration(None, fixtureDescriptor)
+            }
+            case Some(conf) => {
+              persistConfiguration(Some(conf), fixtureDescriptor)
+            }
+          }
+        }
+        Ok("Auto configuration saved !")
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
+  }
+
   /**
    * Load repository
-  */
+   */
   def loadRepository() = Action {
     Ok(repositoryJavaDaoService.getRepoAsJson())
   }

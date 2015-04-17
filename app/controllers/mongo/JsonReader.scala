@@ -23,6 +23,8 @@ case class TestScript(id: Option[String], name: String, scenarii: List[Scenario]
 case class ScenarioRows(patterns: String, kind: Option[String], mappings: Option[List[ScenarioRowMapping]])
 case class ScenarioRowMapping(id: String, value: String, pos: Int)
 case class DBRef(collection: String, id: BSONObjectID, db: Option[String] = None)
+case class FixtureDescriptorLine(name: String, fixtureType: String, pattern: String)
+case class MojoFixtureDescriptor(name: String, sentences: List[FixtureDescriptorLine])
 
 object DBRef {
   implicit object DBRefReader extends BSONDocumentReader[DBRef] {
@@ -41,6 +43,28 @@ object DBRef {
         "$db" -> ref.db)
   }
 } 
+
+object MojoFixtureDescriptor {
+  implicit val reader: Reads[MojoFixtureDescriptor]= (
+      (__ \ "name").read[String] and
+      (__ \ "sentences").read[List[FixtureDescriptorLine]])(MojoFixtureDescriptor.apply(_,_))
+
+  implicit val writer: Writes[MojoFixtureDescriptor] = (
+      (__ \ "name").write[String] and
+      (__ \ "sentences").write[List[FixtureDescriptorLine]])(unlift(MojoFixtureDescriptor.unapply))
+}
+
+object FixtureDescriptorLine {
+  implicit val reader: Reads[FixtureDescriptorLine]= (
+      (__ \ "name").read[String] and
+      (__ \ "fixtureType").read[String] and
+      (__ \ "pattern").read[String])(FixtureDescriptorLine.apply(_,_,_))
+
+  implicit val writer: Writes[FixtureDescriptorLine] = (
+      (__ \ "name").write[String] and
+      (__ \ "fixtureType").write[String] and
+      (__ \ "pattern").write[String])(unlift(FixtureDescriptorLine.unapply))
+}
 
 object ScenarioRowMapping{
   implicit val reader: Reads[ScenarioRowMapping]= (

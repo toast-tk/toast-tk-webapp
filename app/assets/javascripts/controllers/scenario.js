@@ -146,7 +146,7 @@ define(["angular"], function (angular) {
             function convertToTemplate(scenario){
                 var newScenarioTemplate = angular.copy(scenario);
                 newScenarioTemplate.name = newScenarioTemplate.name + "_template"
-                var regexList = $scope.regexList;
+                var regexList = $scope. gre;
 
                 for(var i = 0 ; i < newScenarioTemplate.rows.length ; i++){
                     var sentence = newScenarioTemplate.rows[i].patterns;
