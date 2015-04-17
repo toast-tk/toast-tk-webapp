@@ -59,38 +59,50 @@ object ScenarioController extends Controller {
     modifiedPatterns.toList
   }
 
-
   /**
    *
    */
   def wikifiedScenario(scenario: Scenario): JsValue = {
-    val scenarioRows: List[ScenarioRows] = Json.parse(scenario.rows.getOrElse("[]")).as[List[ScenarioRows]]
-    val scenarioKinds: List[String] = scenarioRows.map{row => row.kind.getOrElse("")}
-    val lines = if (scenarioRows.length > 0){
-      populatePatterns(scenario.rows.getOrElse(""))
-      .zip (scenarioKinds)
-      .map { zippedScenari => {
-          val sentence = zippedScenari._1
-          zippedScenari._2 match {
-            case "" => "| " + sentence + " |\n"
-            case kind:String => "| @" + kind + " " + sentence + " |\n"
+    try { 
+      val scenarioRows: List[ScenarioRows] = Json.parse(scenario.rows.getOrElse("[]")).as[List[ScenarioRows]]
+      val scenarioKinds: List[String] = scenarioRows.map{row => row.kind.getOrElse("")}
+      val lines = if (scenarioRows.length > 0){
+        populatePatterns(scenario.rows.getOrElse(""))
+        .zip (scenarioKinds)
+        .map { zippedScenari => {
+            val sentence = zippedScenari._1
+            zippedScenari._2 match {
+              case "" => "| " + sentence + " |\n"
+              case kind:String => "| @" + kind + " " + sentence + " |\n"
+            }
           }
         }
+        .mkString("") + "\n"
+      } else {
+        scenario.rows.getOrElse("").split("\n").toList.map(row => "|" + row +"|").mkString("\n")
       }
-      .mkString("") + "\n"
-    } else {
-      scenario.rows.getOrElse("").split("\n").toList.map(row => "|" + row +"|").mkString("\n")
+
+      var res = "h1. Name:" + scenario.name + "\n"
+      res = res + "#scenario id:" + scenario.id.get + "\n"
+      res = res + "#scenario driver:" + scenario.driver + "\n"
+      res = res + "|| scenario || " + scenario.cType + " ||\n"
+      res = res + lines
+      
+      JsString(res)
+    } catch {
+      case e: Exception => {
+        //Case where the scenario has been freshly imported from the client
+        val lines = scenario.rows.getOrElse("").split("\n").toList.map(row => "|" + row +"|").mkString("\n")
+        var res = "h1. Name:" + scenario.name + "\n"
+        res = res + "#scenario id:" + scenario.id.get + "\n"
+        res = res + "#scenario driver:" + scenario.driver + "\n"
+        res = res + "|| scenario || " + scenario.cType + " ||\n"
+        res = res + lines
+
+        JsString(res)
+      }
     }
-
-
-    var res = "h1. Name:" + scenario.name + "\n"
-    res = res + "#scenario id:" + scenario.id.get + "\n"
-    res = res + "#scenario driver:" + scenario.driver + "\n"
-    res = res + "|| scenario || " + scenario.cType + " ||\n"
-    res = res + lines
-    JsString(res)
   }
-
 
   /**
    * load to wiki scenarii
