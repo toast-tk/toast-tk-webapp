@@ -9,32 +9,37 @@ GET         /                                             controllers.Applicatio
 # JavaScript routes
 GET         /jsroutes.js                                  controllers.JavaScript.jsRoutes()
 
-# AJAX routes
-POST        /login                                        controllers.Application.login()
-GET			/loadEnvConfiguration						  controllers.Application.loadEnvConfiguration()
-GET         /loadAutoSetupCtx/:setupType                  controllers.Application.loadAutoSetupCtx(setupType: String)
-GET         /loadConfiguration                            controllers.Application.loadConfiguration()
-GET         /loadAutoConfiguration                        controllers.Application.loadAutoConfiguration()
-GET         /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
-GET         /loadCtxTagData/:itemName                     controllers.Application.loadCtxTagData(itemName: String)
-GET         /loadCtxSentences/:confType			          controllers.Application.loadCtxSentences(confType:String)
-GET         /loadSentences/:confType		              controllers.Application.loadSentences(confType:String)
-POST        /saveConfiguration                            controllers.Application.saveConfiguration()
-POST        /saveAutoSetupConfiguration                   controllers.Application.saveAutoConfig()
-POST		/saveAutoConfigBlock						  controllers.Application.saveAutoConfigBlock()
-POST        /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
-GET         /loadWikifiedRepository                       controllers.Application.loadWikifiedRepository()
-POST        /saveProject                                  controllers.Application.saveProject()
-GET         /loadProject                                  controllers.Application.loadProject()
-GET			/loadRepository 							  controllers.Application.loadRepository()
-POST		/saveRepository								  controllers.Application.saveRepository()
-GET         /loadProjectReport/:projectName               controllers.Application.loadProjectReport(projectName:String)
-GET         /test                                         controllers.Application.loadTestReport()
-GET         /logout                                       controllers.Application.logout()
-POST		/postConnector								  controllers.Application.onConnectorReceived()
+# AJAX APP routes
+GET         /loadEnvConfiguration                         controllers.Application.loadEnvConfiguration()
 
 # Ajax routes: Users
+POST        /login                                        controllers.Application.login()
 GET         /users/:id                                    controllers.Users.user(id: Long)
+GET         /logout                                       controllers.Application.logout()
+
+# Ajax Domain Controller
+GET         /loadAutoSetupCtx/:setupType                  controllers.Application.loadAutoSetupCtx(setupType: String)
+GET         /loadCtxTagData/:itemName                     controllers.Application.loadCtxTagData(itemName: String)
+GET         /loadCtxSentences/:confType                   controllers.Application.loadCtxSentences(confType:String)
+
+# Ajax for API controller
+POST        /postConnector                                controllers.Application.onConnectorReceived()
+POST        /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
+GET         /loadWikifiedRepository                       controllers.Application.loadWikifiedRepository()
+GET         /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
+GET         /loadSentences/:confType                      controllers.Application.loadSentences(confType:String)
+
+# Ajax routes: Configuration Controller
+
+GET         /loadConfiguration                            controllers.Application.loadConfiguration()
+POST        /saveConfiguration                            controllers.Application.saveConfiguration()
+
+# Ajax routes: Repository Controller
+GET         /loadAutoConfiguration                        controllers.Application.loadAutoConfiguration()
+POST        /saveAutoSetupConfiguration                   controllers.Application.saveAutoConfig()
+POST        /saveAutoConfigBlock                          controllers.Application.saveAutoConfigBlock()
+GET         /loadRepository                               controllers.Application.loadRepository()
+POST        /saveRepository                               controllers.Application.saveRepository()
 
 # Ajax routes: Scenarii Controller
 GET         /loadScenariiList                             controllers.ScenarioController.loadScenariiList()
@@ -43,9 +48,15 @@ GET         /wikiScenarii                                 controllers.ScenarioCo
 GET         /loadScenarioSteps/:id                        controllers.ScenarioController.loadScenarioSteps(id: String)
 GET         /loadScenarioCtx/:scenarioType                controllers.ScenarioController.loadScenarioCtx(scenarioType: String)
 POST        /saveScenarii                                 controllers.ScenarioController.saveScenarii()
-POST		/deleteScenarii								  controllers.ScenarioController.deleteScenarii()
+POST        /deleteScenarii                               controllers.ScenarioController.deleteScenarii()
 POST        /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
 
+
+# Ajax routes: Project Controller
+POST        /saveProject                                  controllers.Application.saveProject()
+GET         /loadProject                                  controllers.Application.loadProject()
+GET         /loadProjectReport/:projectName               controllers.Application.loadProjectReport(projectName:String)
+GET         /test                                         controllers.Application.loadTestReport()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                 controllers.Assets.at(path="/public", file)

@@ -47,7 +47,6 @@ define(["angular"], function (angular) {
                 config.rows.push({type: configType, name: configName, syntax: []});
             };
 
-
             function __init__() {
                 playRoutes.controllers.Application.loadConfiguration().get().then(function (response) {
                     $scope.configurations = response.data || [];

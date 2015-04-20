@@ -23,6 +23,7 @@ import de.flapdoodle.embed.process.extract.IExtractedFileSet
 import de.flapdoodle.embed.process.io.directories.UserTempDirInPlatformTempDir
 import de.flapdoodle.embed.process.extract.UserTempNaming
 import scala.collection.JavaConverters._
+import controllers.DomainController
 
 object MongoExeFactory {
 	def apply(port: Int, versionNumber: String, dataPath:String) = {
@@ -104,54 +105,6 @@ object AppBoot extends play.api.GlobalSettings {
     }
 	}
 
-
-  /**
-   */
-  def getTypedPatternRegexReplacement(serviceType: String, word:String): String = {
-    serviceType match {
-      case "swing" => word match {
-        case "([\\w\\W]+)" => "@[[1:string:Value]]"
-        case "\\$(\\w+)" => "@[[2:variable ($name):Variable]]"
-        case "(\\w+).(\\w+)" => "@[[6:reference:SwingComponent]]"
-        case _ => word
-      }
-      case "web" => word match {
-        case "([\\w\\W]+)" => "@[[1:string:Value]]"
-        case "\\$(\\w+)" => "@[[2:variable ($name):Variable]]"
-        case "(\\w+).(\\w+)" => "@[[4:reference:WebPageItem]]"
-        case _ => word
-      }
-      case "service" => word match {
-        case _ => word
-      }
-      case _ => word
-    }
-  }
-
-  /*
-   *
-   */
-  def getPlainPatternRegexReplacement(serviceType: String, word:String): String = {
-    serviceType match {
-      case "swing" => word match {
-        case "([\\w\\W]+)" => "Value"
-        case "\\$(\\w+)" => "Variable"
-        case "(\\w+).(\\w+)" => "SwingComponent"
-        case _ => word
-      }
-      case "web" => word match {
-        case "([\\w\\W]+)" => "Value"
-        case "\\$(\\w+)" => "Variable"
-        case "(\\w+).(\\w+)" => "WebPageItem"
-        case _ => word
-      }
-      case "service" => word match {
-        case _ => word
-      }
-      case _ => word
-    }
-  }
-
   override def onStart(app: play.api.Application): Unit = {
     Logger.info(s"[+] Initializing DB settings...")
     
@@ -163,10 +116,10 @@ object AppBoot extends play.api.GlobalSettings {
         val fixtureName: String = descriptor.name
         val fixturePattern: String = descriptor.pattern
         val formatedTypedSentence: String = fixturePattern.split(" ").map ( word => {
-          getTypedPatternRegexReplacement(fixtureType, word)
+          DomainController.getTypedPatternRegexReplacement(fixtureType, word)
         }).mkString(" ")
         val formatedSentence: String = fixturePattern.split(" ").map ( word => {
-          getPlainPatternRegexReplacement(fixtureType, word)
+          DomainController.getPlainPatternRegexReplacement(fixtureType, word)
         }).mkString(" ")
         val key = fixtureType +":"+fixtureName
         val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(formatedSentence, formatedTypedSentence)
