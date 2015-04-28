@@ -31,16 +31,18 @@ define(["angular"], function (angular) {
                 $scope.autosetup = autosetup;
             } 
 
-            /*$scope.saveAutoConfig = function () {
-                var deepCopy = angular.copy($scope.autosetups);
-                deepCopy = deepCopy.map(function (autoSetup) {
-                    delete autoSetup.columns;
-                    return autoSetup;
-                });
-                playRoutes.controllers.Application.saveAutoConfig().post(deepCopy).then(function (response) {
-                    load();
-                });
-            };*/
+            /*
+                $scope.saveAutoConfig = function () {
+                    var deepCopy = angular.copy($scope.autosetups);
+                    deepCopy = deepCopy.map(function (autoSetup) {
+                        delete autoSetup.columns;
+                        return autoSetup;
+                    });
+                    playRoutes.controllers.Application.saveAutoConfig().post(deepCopy).then(function (response) {
+                        load();
+                    });
+                };
+            */
 
             $scope.saveAutoConfigBlock = function (autosetup) {
                 var deepCopy = angular.copy(autosetup);

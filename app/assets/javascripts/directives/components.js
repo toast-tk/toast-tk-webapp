@@ -148,6 +148,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 	        		if(descriptor == 'WebPageItem' && patternContext == "web" ){
 	        			playRoutes.controllers.Application.loadCtxTagData(descriptor).get().then(function(response){
 							var select = element.find('.'+descriptor+'_'+tagPosition);
+							$scope.regexList.sort();
 							$.each(response.data, function(key, value) {
 								select.append($('<option>', { value : key }).text(value));
 							});
@@ -256,7 +257,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 								element.replaceWith($("<span></span>"))
 							}
 							else if(templateValue == "true"){
-								var el = $compile('<select ng-model="ngModel" ng-options="value.typed_sentence as value.sentence for value in values"></select>')($scope);
+								var el = $compile('<select ng-model="ngModel" ng-options="value.typed_sentence as value.sentence for value in values | orderBy: \'sentence\'"></select>')($scope);
 					        	element.replaceWith(el);
 							}
 		        		});

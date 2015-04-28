@@ -25,6 +25,7 @@ define(["angular"], function (angular) {
             $scope.swaptToSwingRow = swaptToSwingRow;
             $scope.swaptToWebRow = swaptToWebRow;
             $scope.swaptToServiceRow = swaptToServiceRow;
+            $scope.addRowBefore = addRowBefore;
 
             $scope.$watch("scenario_types", watch_scenario_types, true);
 
@@ -92,6 +93,11 @@ define(["angular"], function (angular) {
                 $scope.newRow = {};
             };
 
+
+            function addRowBefore(scenario, newRow, currentRow) {
+            
+            };
+
             function deleteRow(scenario, row) {
                 //ajax call directly, if not new !
                 scenario.rows.splice(scenario.rows.indexOf(row), 1);
@@ -146,7 +152,7 @@ define(["angular"], function (angular) {
             function convertToTemplate(scenario){
                 var newScenarioTemplate = angular.copy(scenario);
                 newScenarioTemplate.name = newScenarioTemplate.name + "_template"
-                var regexList = $scope. gre;
+                var regexList = $scope.regexMap['swing']; //TODO: /sallah-kokaina/toast-tk-play-webapp/issues/11
 
                 for(var i = 0 ; i < newScenarioTemplate.rows.length ; i++){
                     var sentence = newScenarioTemplate.rows[i].patterns;
