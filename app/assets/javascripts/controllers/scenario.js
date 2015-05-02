@@ -212,7 +212,7 @@ define(["angular"], function (angular) {
             }
 
             function __init__() {
-                playRoutes.controllers.Application.loadConfiguration().get().then(function (response) {
+                playRoutes.controllers.ConfigurationController.loadConfiguration().get().then(function (response) {
                     $scope.configurations = response.data || [];
                     for (var i = 0; i < $scope.configurations.length; i++) {
                         for (var j = 0; j < $scope.configurations[i].rows.length; j++) {

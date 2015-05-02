@@ -65,7 +65,7 @@
         </div>   
         <div class="col-md-8">
             <div class="scenario" ng-show="scenario != undefined">
-                {{scenario.name}}
+                <input type="text" ng-model="scenario.name"/>
                 <span class="pull-right">
                     <button class="btn btn-xs btn-success" ng-show="scenario.template" ng-click="convertToTemplate(scenario)">T</button>
                     <button class="btn btn-xs btn-primary" data-ng-click="importScenario(scenario)">Import</button>

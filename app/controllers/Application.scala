@@ -1,40 +1,16 @@
 package controllers
 
 import boot.AppBoot
-
-import com.synpatix.toast.runtime.core.parse._
-import com.synaptix.toast.dao.domain.impl.test.TestPage
-import com.synaptix.toast.dao.service.dao.access.project._
-import com.synaptix.toast.dao.domain.impl.report._
-import com.synaptix.toast.dao.report.ProjectHtmlReportGenerator
-
 import controllers.mongo._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.libs.iteratee.Enumerator
-import play.api.libs.json.Reads._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import play.api.mvc._
 import controllers.parsers.WebPageElement
 
 
-import scala.collection.immutable.StringOps
-import scala.util.matching.Regex
-
-case class Prj(id: Option[String], name: String, iterations: Option[Short], campaigns: List[Cpgn])
-
-case class Cpgn(id: Option[String], name: String, scenarii: List[ScenarioWrapper])
-
-case class ScenarioWrapper(name: Option[String], scenario: Option[Scenario])
-
 object Application extends Controller {
-  implicit val sFormat = Json.format[ScenarioWrapper]
-  implicit val campaignFormat = Json.format[Cpgn]
-  implicit val projectFormat = Json.format[Prj]  
-
   private val conn = AppBoot.conn
-  private val projectJavaDaoService = AppBoot.projectService
-  private val repositoryJavaDaoService = AppBoot.repositoryDaoService
   private val jnlpHost = AppBoot.jnlpHost
 
   def index = Action {  request =>
@@ -65,71 +41,9 @@ object Application extends Controller {
    *
    */
   def loadAutoSetupCtx(setupType: String) = Action {
-    Ok(autoSetupCtxProvider(setupType))
+    Ok(DomainController.autoSetupCtxProvider(setupType))
   }
 
-
-  def autoSetupCtxProvider(setupType: String): JsArray = {
-    setupType match {
-      case "web page" => Json.arr(Json.obj("name" -> "name", "descriptor" -> Json.obj()),
-        Json.obj("name" -> "type", "descriptor" -> Json.obj("type" -> Json.arr("button", "link"))),
-        Json.obj("name" -> "locator", "descriptor" -> Json.obj()),
-        Json.obj("name" -> "method", "descriptor" -> Json.obj("type" -> Json.arr("CSS", "XPATH", "ID"))),
-        Json.obj("name" -> "position", "descriptor" -> Json.obj()))
-      case "swing page" => Json.arr(Json.obj("name" -> "name", "descriptor" -> Json.obj()),
-        Json.obj("name" -> "type", "descriptor" -> Json.obj("type" -> Json.arr("button", "input", "menu", "table", "timeline", "date", "list", "checkbox", "other"))),
-        Json.obj("name" -> "locator", "descriptor" -> Json.obj()))
-      case "service entity" => Json.arr(Json.obj("name" -> "entity", "descriptor" -> Json.obj()),
-        Json.obj("name" -> "alias", "descriptor" -> Json.obj()),
-        Json.obj("name" -> "search by", "descriptor" -> Json.obj()))
-      case _ => Json.arr();
-    }
-  }
-
-
-  /**
-   * Save Meta config
-   */
-  def saveConfiguration() = Action(parse.json) { implicit request =>
-    request.body.validate[Seq[MacroConfiguration]].map {
-      case configs: Seq[MacroConfiguration] =>
-        for {
-          conf <- configs
-        } yield conn.saveConfiguration(conf)
-        Ok("configuration saved !")
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
-  }
-
-  /**
-   * Save Auto config
-   */
-  def saveAutoConfig() = Action(parse.json) { implicit request =>
-    request.body.validate[Seq[AutoSetupConfig]].map {
-      case configs: Seq[AutoSetupConfig] =>
-        for {
-          conf <- configs
-        } yield conn.saveAutoConfiguration(conf)
-        Ok("auto configuration saved !")
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
-  }
-
-  /**
-   * Save Auto config
-   */
-  def saveAutoConfigBlock() = Action(parse.json) { implicit request =>
-    request.body.validate[AutoSetupConfig].map {
-      case config: AutoSetupConfig =>
-        conn.saveAutoConfiguration(config)
-        conn.refactorScenarii(config)
-        Ok("auto configuration saved !")
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
-  }
 
   /**
    * Save new page
@@ -157,140 +71,6 @@ object Application extends Controller {
     }
   }
 
-
-  /**
-   * Save project
-   */
-  def saveProject() = Action(parse.json) { implicit request =>
-    val parser = new TestParser()
-
-    def parseTestPage(scenario: Scenario, wikiScenario: String): TestPage = {
-      val testPage = parser.parseString(wikiScenario)
-      testPage.setName(scenario.name)
-      testPage.setPageName(scenario.name)
-      testPage
-    }
-
-    def transformCampaign(campaigns: List[Cpgn]): java.util.ArrayList[Campaign] = {
-      val list = new java.util.ArrayList[Campaign]()
-      for (cpgn <- campaigns) {
-        val campaign = new Campaign()
-        campaign.setName(cpgn.name)
-        val testPagelist = new java.util.ArrayList[TestPage]()
-        val testPages = (for (c <- campaigns; wrapper <- c.scenarii) yield parseTestPage(wrapper.scenario.get, ScenarioController.wikifiedScenario(wrapper.scenario.get).as[String]))
-        for (tPage <- testPages) {
-          testPagelist.add(tPage)
-        }
-        campaign.setTestCases(testPagelist)
-        list.add(campaign)
-      }
-
-      list
-    }
-    def tranformProject(p: Prj): Project = {
-      val pr = new Project()
-      pr.setName(p.name)
-      pr.setCampaigns(transformCampaign(p.campaigns))
-      pr
-    }
-
-    request.body.validate[Prj].map {
-      case project: Prj =>
-        if(project.id.isDefined) {
-          val javaProject = projectJavaDaoService.getLastByName(project.name)
-
-        }
-        else{
-          projectJavaDaoService.saveNewIteration(tranformProject(project))
-        }
-        Ok("project saved !")
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
-  }
-
-  /**
-   * load to init projects
-   */
-  def loadProject() = Action {
-    val projects = projectJavaDaoService.findAllLastProjects().iterator
-    var prjs = List[Prj]()
-    while (projects.hasNext()) {
-      val project = projects.next()
-      var cmpgs = List[Cpgn]()
-      val campaigns = project.getCampaigns().iterator
-      while (campaigns.hasNext()) {
-        val campaign = campaigns.next()
-        var scns = List[ScenarioWrapper]()
-        val scenarii = campaign.getTestCases().iterator
-        while (scenarii.hasNext()) {
-          val scenario = scenarii.next()
-          scns = ScenarioWrapper(Some(scenario.getPageName()), None) :: scns
-        }
-        cmpgs = Cpgn(Some(campaign.getId().toString()), campaign.getName(), scns) :: cmpgs
-      }
-      prjs = Prj(Some(project.getId().toString()), project.getName(), Some(project.getIteration()) , cmpgs) :: prjs
-    }
-
-    Ok(Json.toJson(prjs))
-  }
-
-  def loadProjectReport(name: String) = Action {
-    val report = projectJavaDaoService.getProjectHTMLReport(name)
-    SimpleResult( header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
-      body = Enumerator(new StringOps(report).getBytes()))
-  }
-
-  def loadTestReport() = Action {
-    implicit request => {
-      val pName = request.queryString("project")(0);
-      val iter = request.queryString("iteration")(0);
-      val tName = request.queryString("test")(0);
-      var p = projectJavaDaoService.getByNameAndIteration(pName, iter);
-      var pageReport = ""
-      val iteratorCampaign = p.getCampaigns().iterator
-      while (iteratorCampaign.hasNext()) {
-        val iteratorTestPage = iteratorCampaign.next().getTestCases().iterator
-        while(iteratorTestPage.hasNext()){
-          val testPage =iteratorTestPage.next()
-          if (testPage.getName().equals(tName)) {
-            pageReport = ProjectHtmlReportGenerator.generatePageReport(null, testPage);
-          }
-        }
-      }
-      SimpleResult( header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
-        body = Enumerator(new StringOps(pageReport).getBytes()))
-    }
-  }
-
-
-
-  /**
-   * load to init configuration
-   */
-  def loadConfiguration() = Action.async {
-    conn.loadConfiguration.map {
-      configurations => {
-        Ok(Json.toJson(configurations))
-      }
-    }
-  }
-
-  /**
-   * load to init repository configuration
-   */
-  def loadAutoConfiguration() = Action.async {
-    conn.loadAutoConfiguration.map {
-      repository => {
-        val input = Json.toJson(repository).as[JsArray]
-        def extendedObject(obj: JsObject) = {
-          obj + ("columns" -> autoSetupCtxProvider((obj \ "type").as[String]))
-        }
-        val response = for (i <- input.value) yield extendedObject(i.as[JsObject])
-        Ok(Json.toJson(response))
-      }
-    }
-  }
 
   /**
    * load to wiki repository configuration
@@ -331,29 +111,13 @@ object Application extends Controller {
   }
 
 
-
-  /**
-   * Return the regex value for a type in an automation sentence
-   *
-   * @param tagType
-   */
-  def sentenceChunkReplacement(tagType:String) = {
-    tagType match {
-      case "Value" => """([\\w\\W]+)"""
-      case "Variable" => """\\$(\\w+)"""
-      case "WebPageItem" => """(\\w+).(\\w+)"""
-      case "SwingComponent" => """(\\w+).(\\w+)"""
-      case _ => tagType
-    }
-  }
-
   def replacePatternByRegex(syntaxes: List[ConfigurationSyntax]): List[ConfigurationSyntax] = {
     lazy val regex = """@\[\[(\d+):[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+:([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+)\]\]"""
     def replacePatterns(sentence: String): String = {
       var outputArray = List[String]()
       val replacedSentence = sentence.replaceAll(regex, "@[[$1:_:$2]]")
       val splittedSentence = replacedSentence.split("\\s+")
-      splittedSentence.foreach { word => outputArray = sentenceChunkReplacement(word.replaceAll(regex, "$2")) :: outputArray}
+      splittedSentence.foreach { word => outputArray = DomainController.sentenceChunkReplacement(word.replaceAll(regex, "$2")) :: outputArray}
       outputArray.reverse.mkString(" ")
     }
     def replaceConfigurationSyntax(syntax: ConfigurationSyntax): ConfigurationSyntax = {
@@ -521,24 +285,6 @@ object Application extends Controller {
     }
   }
 
-  /**
-   * Load repository
-   */
-  def loadRepository() = Action {
-    Ok(repositoryJavaDaoService.getRepoAsJson())
-  }
-
-  def saveRepository() = Action(parse.json) { implicit request =>
-    request.body.validate[Seq[AutoSetupConfig]].map {
-      case configs: Seq[AutoSetupConfig] =>
-        for {
-          conf <- configs
-        } yield conn.saveAutoConfiguration(conf)
-        Ok("auto configuration saved !")
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
-  }
 
   def main(args: Array[String]) {
     conn.loadAutoConfiguration.map {

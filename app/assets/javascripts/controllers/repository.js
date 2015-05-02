@@ -47,7 +47,7 @@ define(["angular"], function (angular) {
             $scope.saveAutoConfigBlock = function (autosetup) {
                 var deepCopy = angular.copy(autosetup);
                 delete deepCopy.columns;
-                playRoutes.controllers.Application.saveAutoConfigBlock().post(deepCopy).then(function (response) {
+                playRoutes.controllers.RepositoryController.saveAutoConfigBlock().post(deepCopy).then(function (response) {
                     load();
                 });
             };
@@ -62,7 +62,7 @@ define(["angular"], function (angular) {
             };
 
             function load() {
-                playRoutes.controllers.Application.loadAutoConfiguration().get().then(function (response) {
+                playRoutes.controllers.RepositoryController.loadAutoConfiguration().get().then(function (response) {
                     //convert autosetup rows into json
                     var autosetups = response.data.map(function (obj) {
                         obj.rows = angular.isObject(obj.rows) ? obj.rows : JSON.parse(obj.rows);

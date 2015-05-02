@@ -26,7 +26,7 @@ define(["angular"], function (angular) {
             };
 
             function saveConfig() {
-                playRoutes.controllers.Application.saveConfiguration().post($scope.configurations).then(function (response) {
+                playRoutes.controllers.ConfigurationController.saveConfiguration().post($scope.configurations).then(function (response) {
                     load();
                 });
             };
@@ -48,7 +48,7 @@ define(["angular"], function (angular) {
             };
 
             function __init__() {
-                playRoutes.controllers.Application.loadConfiguration().get().then(function (response) {
+                playRoutes.controllers.ConfigurationController.loadConfiguration().get().then(function (response) {
                     $scope.configurations = response.data || [];
                 });
             }

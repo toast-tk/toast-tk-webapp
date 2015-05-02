@@ -1,30 +1,16 @@
  
 package controllers
 
-import com.synpatix.toast.runtime.core.parse._
-import com.synaptix.toast.dao.domain.impl.test.TestPage
-import com.synaptix.toast.dao.service.dao.access.project._
-import com.synaptix.toast.dao.domain.impl.report._
-import com.synaptix.toast.dao.report.ProjectHtmlReportGenerator
-
-import controllers.mongo._
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.libs.iteratee.Enumerator
-import play.api.libs.json.Reads._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import play.api.mvc._
-import controllers.parsers.WebPageElement
-
-
-import scala.collection.immutable.StringOps
-import scala.util.matching.Regex
 
 
 object DomainController extends Controller with InnerDomainController
 
 trait InnerDomainController {
   this: Controller =>
+
 
   def autoSetupCtxProvider(setupType: String): JsArray = {
     setupType match {

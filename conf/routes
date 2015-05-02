@@ -28,18 +28,18 @@ POST        /saveNewInspectedPage                         controllers.Applicatio
 GET         /loadWikifiedRepository                       controllers.Application.loadWikifiedRepository()
 GET         /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
 GET         /loadSentences/:confType                      controllers.Application.loadSentences(confType:String)
+POST        /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
 
 # Ajax routes: Configuration Controller
-
-GET         /loadConfiguration                            controllers.Application.loadConfiguration()
-POST        /saveConfiguration                            controllers.Application.saveConfiguration()
+GET         /loadConfiguration                            controllers.ConfigurationController.loadConfiguration()
+POST        /saveConfiguration                            controllers.ConfigurationController.saveConfiguration()
 
 # Ajax routes: Repository Controller
-GET         /loadAutoConfiguration                        controllers.Application.loadAutoConfiguration()
-POST        /saveAutoSetupConfiguration                   controllers.Application.saveAutoConfig()
-POST        /saveAutoConfigBlock                          controllers.Application.saveAutoConfigBlock()
-GET         /loadRepository                               controllers.Application.loadRepository()
-POST        /saveRepository                               controllers.Application.saveRepository()
+GET         /loadAutoConfiguration                        controllers.RepositoryController.loadAutoConfiguration()
+POST        /saveAutoSetupConfiguration                   controllers.RepositoryController.saveAutoConfig()
+POST        /saveAutoConfigBlock                          controllers.RepositoryController.saveAutoConfigBlock()
+GET         /loadRepository                               controllers.RepositoryController.loadRepository()
+POST        /saveRepository                               controllers.RepositoryController.saveRepository()
 
 # Ajax routes: Scenarii Controller
 GET         /loadScenariiList                             controllers.ScenarioController.loadScenariiList()
@@ -49,14 +49,12 @@ GET         /loadScenarioSteps/:id                        controllers.ScenarioCo
 GET         /loadScenarioCtx/:scenarioType                controllers.ScenarioController.loadScenarioCtx(scenarioType: String)
 POST        /saveScenarii                                 controllers.ScenarioController.saveScenarii()
 POST        /deleteScenarii                               controllers.ScenarioController.deleteScenarii()
-POST        /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
-
 
 # Ajax routes: Project Controller
-POST        /saveProject                                  controllers.Application.saveProject()
-GET         /loadProject                                  controllers.Application.loadProject()
-GET         /loadProjectReport/:projectName               controllers.Application.loadProjectReport(projectName:String)
-GET         /test                                         controllers.Application.loadTestReport()
+POST        /saveProject                                  controllers.ProjectController.saveProject()
+GET         /loadProject                                  controllers.ProjectController.loadProject()
+GET         /loadProjectReport/:projectName               controllers.ProjectController.loadProjectReport(projectName:String)
+GET         /test                                         controllers.ProjectController.loadTestReport()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                 controllers.Assets.at(path="/public", file)

@@ -1,11 +1,6 @@
 package boot
 
-import com.synaptix.toast.dao.service.dao.access.project._
-import com.synaptix.toast.dao.service.dao.access.repository._
-import com.synaptix.toast.dao.guice._
-import com.synaptix.toast.fixture.api._
 import controllers.mongo._
-import com.mongodb.Mongo
 import java.util.logging.{ Logger => JLogger }
 import play.api.Logger
 import java.io.IOException
@@ -13,16 +8,12 @@ import de.flapdoodle.embed.mongo.{ Command, MongodStarter, MongodProcess, Mongod
 import de.flapdoodle.embed.process.distribution.GenericVersion
 import de.flapdoodle.embed.process.distribution.Distribution
 import de.flapdoodle.embed.mongo.config.{ ArtifactStoreBuilder, DownloadConfigBuilder,  Net, MongodConfigBuilder, RuntimeConfigBuilder, Storage }
-import de.flapdoodle.embed.process.config.store.HttpProxyFactory
-import de.flapdoodle.embed.mongo.runtime.Mongod
 import de.flapdoodle.embed.process.runtime.Network
 import de.flapdoodle.embed.mongo.distribution.Versions
 import de.flapdoodle.embed.process.config.io.ProcessOutput
-import de.flapdoodle.embed.process.store.IArtifactStore
-import de.flapdoodle.embed.process.extract.IExtractedFileSet
 import de.flapdoodle.embed.process.io.directories.UserTempDirInPlatformTempDir
 import de.flapdoodle.embed.process.extract.UserTempNaming
-import scala.collection.JavaConverters._
+import toast.engine.ToastRuntimeJavaWrapper
 import controllers.DomainController
 
 object MongoExeFactory {
@@ -34,10 +25,7 @@ object MongoExeFactory {
                               .defaults(command)
                               .tempDir(new UserTempDirInPlatformTempDir())
                               .executableNaming(new UserTempNaming())
-                              .download(new DownloadConfigBuilder()
-                                        .defaultsForCommand(command)
-                                        .proxyFactory(new HttpProxyFactory("octant.fret.scnf.fr", 3128))
-                                       )
+                              .download(new DownloadConfigBuilder().defaultsForCommand(command))
                         )
       		.processOutput(ProcessOutput.getDefaultInstanceSilent())
       		.build()
@@ -60,11 +48,6 @@ object AppBoot extends play.api.GlobalSettings {
   val KeyPort = "embed.mongo.port"
   val KeyMongoDbVersion = "embed.mongo.dbversion"
   val KeyJnlpAddr= "jnlp.host"
-
-  //FIXME pass to the injector the proper mongo db host
-	private lazy val injector = com.google.inject.Guice.createInjector(new MongoModule());
-	lazy val projectService = injector.getInstance(classOf[ProjectDaoService.Factory])create("test_project_db");
-  lazy val repositoryDaoService = injector.getInstance(classOf[RepositoryDaoService.Factory])create("play_db");
 	
   var conn: MongoConnector = _
   var jnlpHost: String = "" 
@@ -110,7 +93,7 @@ object AppBoot extends play.api.GlobalSettings {
     
     def persistDefaultConfiguration(confId: Option[String]) = {
       var congifMap = Map[String, List[ConfigurationSyntax]]()
-      val fixtureDescriptorList = FixtureApi.listAvailableSentences().asScala
+      val fixtureDescriptorList = ToastRuntimeJavaWrapper.actionAdapterSentenceList
       for (descriptor <- fixtureDescriptorList) {
         val fixtureType: String = descriptor.fixtureType
         val fixtureName: String = descriptor.name

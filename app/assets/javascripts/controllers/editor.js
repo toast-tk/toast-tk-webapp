@@ -4,8 +4,7 @@ define(["angular"], function (angular) {
         ProjectCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $window) {
             $scope.projects = [];
 
-
-            playRoutes.controllers.Application.loadScenarii().get().then(function (response) {
+            playRoutes.controllers.ScenarioController.loadScenarii().get().then(function (response) {
                 var data = response.data || [];
                 $scope.scenarii = data;
             });
@@ -35,7 +34,7 @@ define(["angular"], function (angular) {
             }
 
             $scope.saveProject = function (project) {
-                playRoutes.controllers.Application.saveProject().post(project).then(function (response) {
+                playRoutes.controllers.ProjectController.saveProject().post(project).then(function (response) {
                     load();
                 });
             }
@@ -50,13 +49,13 @@ define(["angular"], function (angular) {
 
             $scope.displayReport = function (project) {
                 $window.open("/loadProjectReport/" + project.name)
-                playRoutes.controllers.Application.loadProjectReport(project.name).get().then(function (response) {
+                playRoutes.controllers.ProjectController.loadProjectReport(project.name).get().then(function (response) {
                     console.log(response)
                 });
             }
 
             function load() {
-                playRoutes.controllers.Application.loadProject().get().then(function (response) {
+                playRoutes.controllers.ProjectController.loadProject().get().then(function (response) {
                     var data = response.data || [];
                     $scope.projects = data;
                 });
