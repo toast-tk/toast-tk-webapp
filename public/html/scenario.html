@@ -75,11 +75,11 @@
                 </span>
                 <table class="table table-striped" width="200px;">
                     <thead>
-                    <tr>
-                        <th></th>
-                        <th ng-repeat="c in scenario.columns"></span>{{c.name}}</th>
-                        <th></th>
-                    </tr>
+                        <tr>
+                            <th></th>
+                            <th ng-repeat="c in scenario.columns"></span>{{c.name}}</th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody ui-sortable ng-model="scenario.rows">
                     <tr ng-repeat="r in scenario.rows">
