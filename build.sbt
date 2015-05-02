@@ -1,6 +1,6 @@
-name := "redplay"
+name := "toast-tk-webapp"
 
-version := "1.0-SNAPSHOT"
+version := "1.3-rc2"
 
 scalaVersion := "2.10.3"
 
@@ -8,7 +8,7 @@ scalaVersion := "2.10.3"
 //resolvers += "Synaptix Maven Releases Repository" at "http://uri/repositories/releases/"
 
 // LOCAL Resolver
-resolvers += "Local Maven Repository" at "file:/Users/blackbox/.m2/repository"
+resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= Seq(
   "org.reactivemongo" %% "reactivemongo" % "0.10.0",
