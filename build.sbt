@@ -1,6 +1,6 @@
 name := "toast-tk-webapp"
 
-version := "1.3-rc2"
+version := "1.3-rc3"
 
 scalaVersion := "2.10.3"
 
@@ -17,7 +17,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "requirejs" % "2.1.1",
   "org.webjars" % "webjars-play" % "2.1.0-1",
   "org.webjars" % "bootstrap" % "3.2.0-1",
-  "com.synaptix.toast" % "toast-tk-runtime" % "1.3-rc2",
+  "com.synaptix.toast" % "toast-tk-runtime" % "1.3-rc3",
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.47.0"
 )     
 
