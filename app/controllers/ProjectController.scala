@@ -2,7 +2,7 @@ package controllers
 
 import com.synaptix.toast.dao.domain.impl.report.{Project, Campaign}
 import com.synaptix.toast.dao.domain.impl.test.TestPage
-import com.synaptix.toast.dao.report.ProjectHtmlReportGenerator
+import com.synaptix.toast.automation.report.ProjectHtmlReportGenerator
 import com.synpatix.toast.runtime.core.parse.TestParser
 import controllers.mongo.Scenario
 import play.api.libs.iteratee.Enumerator
@@ -11,6 +11,7 @@ import play.api.mvc.{ResponseHeader, SimpleResult, Action, Controller}
 import toast.engine.ToastRuntimeJavaWrapper
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.collection.immutable.StringOps
+import com.synaptix.toast.automation.report.HTMLReporter
 
 case class ScenarioWrapper(name: Option[String], scenario: Option[Scenario])
 case class Cpgn(id: Option[String], name: String, scenarii: List[ScenarioWrapper])
@@ -40,7 +41,7 @@ object ProjectController  extends Controller {
           val scenario = scenarii.next()
           scns = ScenarioWrapper(Some(scenario.getPageName()), None) :: scns
         }
-        cmpgs = Cpgn(Some(campaign.getId().toString()), campaign.getName(), scns) :: cmpgs
+        cmpgs = Cpgn(Some(campaign.getIdAsString()), campaign.getName(), scns) :: cmpgs
       }
       prjs = Prj(Some(project.getId().toString()), project.getName(), Some(project.getIteration()) , cmpgs) :: prjs
     }
@@ -71,7 +72,7 @@ object ProjectController  extends Controller {
         for (tPage <- testPages) {
           testPagelist.add(tPage)
         }
-        campaign.setTestCases(testPagelist)
+        campaign.setTestCasesImpl(testPagelist)
         list.add(campaign)
       }
 
@@ -80,7 +81,7 @@ object ProjectController  extends Controller {
     def tranformProject(p: Prj): Project = {
       val pr = new Project()
       pr.setName(p.name)
-      pr.setCampaigns(transformCampaign(p.campaigns))
+      pr.setCampaignsImpl(transformCampaign(p.campaigns))
       pr
     }
 
@@ -99,13 +100,8 @@ object ProjectController  extends Controller {
     }
   }
 
-
-
-
-
-
   def loadProjectReport(name: String) = Action {
-    val report = projectJavaDaoService.getProjectHTMLReport(name)
+    val report = HTMLReporter.getProjectHTMLReport(name)
     SimpleResult( header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
       body = Enumerator(new StringOps(report).getBytes()))
   }

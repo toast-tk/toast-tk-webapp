@@ -12,8 +12,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.Await
 import scala.util.{Failure, Success}
+import controllers.parsers.EntityField
 import controllers.parsers.WebPageElement
 import controllers.parsers.WebPageElementBSONWriter
+import controllers.parsers.ServiceEntityFieldBSONWriter
 import reactivemongo.core.commands.LastError
 import reactivemongo.bson.BSONObjectID
 import boot.AppBoot
@@ -165,6 +167,41 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
     val jsonRowsAsString = Json.stringify(Json.toJson(outputRows)) 
     Scenario(id = scenario.id, name= scenario.name, cType = scenario.cType, driver = scenario.driver, rows = Some(jsonRowsAsString))
+  }
+
+  def saveServiceEntityConfiguration(conf: ServiceEntityConfig) {
+    val collection = open_collection("repository")
+    val elementsToPersist: List[EntityField] = conf.rows.getOrElse(List())
+    val elementAsBsonDocuments: List[BSONDocument] = for(element <- elementsToPersist) yield ServiceEntityFieldBSONWriter.write(element)
+    val listOfFutures: List[Future[LastError]] = for(element <- elementAsBsonDocuments) yield saveContainerElement(element)
+    val futureList = Future.sequence(listOfFutures)
+    //once we've completed saving elements
+    //we can check here through last errors if everything has been saved !
+    futureList.map(_ => {
+      //TODO      
+    })
+    val dbRefs: List[DBRef] = elementAsBsonDocuments match {
+      case elements: List[BSONDocument] => elements.map(element => { 
+                                              val objectId = element.getAs[BSONObjectID]("_id").get
+                                              DBRef("elements", objectId)
+                                          })
+      case _ => List()
+    }
+    val autoSetupWithRefs: ServiceEntityConfigWithRefs = ServiceEntityConfigWithRefs (
+      id = conf.id, name = conf.name, cType = conf.cType, rows = Some(dbRefs)
+    )
+
+    println("[+] successfully saved configuration elements, persisting configuration..")
+    autoSetupWithRefs.id match {
+      case None => collection.insert(autoSetupWithRefs).onComplete {
+        case Failure(e) => throw e
+        case Success(_) => println("[+] successfully inserted repository updates !")
+      }
+      case _ => collection.save(autoSetupWithRefs).onComplete {
+        case Failure(e) => throw e
+        case Success(_) => println("[=] successfully saved repository updates !")
+      }
+    }
   }
 
   def saveAutoConfiguration(conf: AutoSetupConfig) {

@@ -7,6 +7,9 @@ scalaVersion := "2.10.3"
 // Synaptix Resolver
 //resolvers += "Synaptix Maven Releases Repository" at "http://uri/repositories/releases/"
 
+// SNCF Resolver
+// resolvers += "SNCF Maven Releases Repository" at "http://s76cllcfakr.si.fret.sncf.fr:8090/nexus/content/repositories/releases/"
+
 // LOCAL Resolver
 resolvers += Resolver.mavenLocal
 

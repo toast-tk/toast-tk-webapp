@@ -47,9 +47,16 @@ define(["angular"], function (angular) {
             $scope.saveAutoConfigBlock = function (autosetup) {
                 var deepCopy = angular.copy(autosetup);
                 delete deepCopy.columns;
-                playRoutes.controllers.RepositoryController.saveAutoConfigBlock().post(deepCopy).then(function (response) {
-                    load();
-                });
+                if(deepCopy.type === "service entity"){
+                    playRoutes.controllers.RepositoryController.saveServiceConfigBlock().post(deepCopy).then(function (response) {
+                        load();
+                    });
+                    
+                }else{
+                    playRoutes.controllers.RepositoryController.saveAutoConfigBlock().post(deepCopy).then(function (response) {
+                        load();
+                    });
+                }
             };
 
             $scope.deleteRow = function (row, autosetup) {

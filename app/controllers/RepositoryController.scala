@@ -1,6 +1,8 @@
+
 package controllers
 
 import boot.AppBoot
+import controllers.mongo.ServiceEntityConfig
 import controllers.mongo.AutoSetupConfig
 import play.api.libs.json.{JsError, JsObject, JsArray, Json}
 import play.api.mvc.{Controller, Action}
@@ -36,6 +38,21 @@ object RepositoryController  extends Controller {
         for {
           conf <- configs
         } yield conn.saveAutoConfiguration(conf)
+        Ok("auto configuration saved !")
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
+  }
+
+
+  /**
+   * Save Service config block with test refactoring
+   */
+  def saveServiceConfigBlock() = Action(parse.json) { implicit request =>
+    request.body.validate[ServiceEntityConfig].map {
+      case config: ServiceEntityConfig =>
+        conn.saveServiceEntityConfiguration(config)
+        //conn.refactorScenarii(config)
         Ok("auto configuration saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))

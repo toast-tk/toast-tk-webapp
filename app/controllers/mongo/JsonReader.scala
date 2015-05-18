@@ -1,6 +1,7 @@
 package controllers.mongo
 
 import controllers.parsers.WebPageElement
+import controllers.parsers.EntityField
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.libs.json.Writes._
@@ -14,6 +15,8 @@ import reactivemongo.bson.BSONObjectID
 case class ConfigurationSyntax(sentence: String, typed_sentence: String)
 case class ConfigurationRow(group: String, name: String, syntax: List[ConfigurationSyntax])
 case class MacroConfiguration(id: Option[String], cType: String, rows: List[ConfigurationRow])
+case class ServiceEntityConfig(id: Option[String], name: String, cType: String, rows: Option[List[EntityField]])
+case class ServiceEntityConfigWithRefs(id: Option[String], name: String, cType: String, rows: Option[List[DBRef]])
 case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: Option[List[WebPageElement]])
 case class AutoSetupConfigWithRefs(id: Option[String], name: String, cType: String, rows: Option[List[DBRef]])
 case class InspectedPage(name: String, items: List[String])
@@ -187,6 +190,65 @@ object AutoSetupConfigWithRefs{
       val ctype = doc.getAs[String]("type").get
       val rows = doc.getAs[List[DBRef]]("rows").getOrElse(List())
       AutoSetupConfigWithRefs(Option[String](id), name, ctype, Option[List[DBRef]](rows))
+    }
+  }
+}
+
+
+object  ServiceEntityConfigWithRefs{
+    implicit object ServiceEntityConfigurationWriter extends BSONDocumentWriter[ServiceEntityConfigWithRefs] {
+    def write(configuration: ServiceEntityConfigWithRefs): BSONDocument = 
+      configuration.id match {
+        case None => BSONDocument("name"-> configuration.name, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
+        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> configuration.name, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
+      }
+  }
+
+  implicit object ServiceEntityConfigurationReader extends BSONDocumentReader[ServiceEntityConfigWithRefs] {
+    def read(doc: BSONDocument): ServiceEntityConfigWithRefs = {
+      val id = doc.getAs[BSONObjectID]("_id").get.stringify
+      val name = doc.getAs[String]("name").get
+      val ctype = doc.getAs[String]("type").get
+      val rows = doc.getAs[List[DBRef]]("rows").getOrElse(List())
+      ServiceEntityConfigWithRefs(Option[String](id), name, ctype, Option[List[DBRef]](rows))
+    }
+  }
+}
+
+object ServiceEntityConfig{
+    implicit val autoSetupConfigReader: Reads[ServiceEntityConfig]= (
+      (__ \ "id").readNullable[String] and
+      (__ \ "name").read[String] and
+      (__ \ "type").read[String] and
+      (__ \ "rows").readNullable[List[EntityField]])(ServiceEntityConfig.apply(_,_ , _,_)
+    )
+
+    implicit val autoSetupConfigWriter: Writes[ServiceEntityConfig] = (
+    (__ \ "id").writeNullable[String] and
+    (__ \ "name").write[String] and
+    (__ \ "type").write[String] and
+    (__ \ "rows").writeNullable[List[EntityField]])(unlift(ServiceEntityConfig.unapply))
+
+  implicit object ServiceEntityConfigurationWriter extends BSONDocumentWriter[ServiceEntityConfig] {
+    def formatName(name: String): String = {
+      name.trim.replace(" ", "_").replace("'", "_").replace("°", "_")
+    }
+    def write(configuration: ServiceEntityConfig): BSONDocument = {
+      val formatedName = formatName(configuration.name)
+      configuration.id match {
+        case None => BSONDocument("name"-> formatedName, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
+        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> formatedName, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
+      }
+    }
+  }
+
+  implicit object ServiceEntityConfigurationReader extends BSONDocumentReader[ServiceEntityConfig] {
+    def read(doc: BSONDocument): ServiceEntityConfig = {
+      val id = doc.getAs[BSONObjectID]("_id").get.stringify
+      val name = doc.getAs[String]("name").get
+      val ctype = doc.getAs[String]("type").get
+      val rows = doc.getAs[List[EntityField]]("rows").getOrElse(List())
+      ServiceEntityConfig(Option[String](id), name, ctype, Option[List[EntityField]](rows))
     }
   }
 }

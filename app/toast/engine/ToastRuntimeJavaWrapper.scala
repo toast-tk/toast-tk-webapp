@@ -1,6 +1,6 @@
 package toast.engine
 
-
+import play.api.Play
 import com.synaptix.toast.adapter._
 import com.synaptix.toast.dao.guice.MongoModule
 import com.synaptix.toast.dao.service.dao.access.project.ProjectDaoService
@@ -9,8 +9,9 @@ import scala.collection.JavaConverters._
 
 object ToastRuntimeJavaWrapper {
 
-  //FIXME pass to the injector the proper mongo db host
-  private lazy val injector = com.google.inject.Guice.createInjector(new MongoModule());
+  val mongoDBHost = Play.current.configuration.getString("db.mongo.host").getOrElse("localhost")
+  val mongoDBPort = Play.current.configuration.getInt("db.mongo.port").getOrElse(27017)
+  private lazy val injector = com.google.inject.Guice.createInjector(new MongoModule(mongoDBHost,mongoDBPort));
   lazy val projectService = injector.getInstance(classOf[ProjectDaoService.Factory])create("test_project_db");
   lazy val repositoryDaoService = injector.getInstance(classOf[RepositoryDaoService.Factory])create("play_db");
 
