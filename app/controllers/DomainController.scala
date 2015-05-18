@@ -22,9 +22,9 @@ trait InnerDomainController {
       case "swing page" => Json.arr(Json.obj("name" -> "name", "descriptor" -> Json.obj()),
         Json.obj("name" -> "type", "descriptor" -> Json.obj("type" -> Json.arr("button", "input", "menu", "table", "timeline", "date", "list", "checkbox", "other"))),
         Json.obj("name" -> "locator", "descriptor" -> Json.obj()))
-      case "service entity" => Json.arr(Json.obj("name" -> "entity", "descriptor" -> Json.obj()),
+      case "service entity" => Json.arr(Json.obj("name" -> "name", "descriptor" -> Json.obj()),
         Json.obj("name" -> "alias", "descriptor" -> Json.obj()),
-        Json.obj("name" -> "search by", "descriptor" -> Json.obj()))
+        Json.obj("name" -> "searchBy", "descriptor" -> Json.obj(), "label" -> "search by"))
       case _ => Json.arr();
     }
   }
