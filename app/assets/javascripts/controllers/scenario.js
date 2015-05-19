@@ -78,12 +78,14 @@ define(["angular"], function (angular) {
             function add() {
                 playRoutes.controllers.ScenarioController.loadScenarioCtx($scope.selectedType.type).get().then(function (response) {
                     var scenarioDescriptor = response.data;
-                    $scope.scenarii.push({
+                    var newScenario = {
                         type: $scope.selectedType.type,
                         driver: $scope.selectedType.name, //related service
                         columns: scenarioDescriptor,
                         rows: []
-                    });
+                    }
+                    $scope.scenarii.push(newScenario);
+                    $scope.scenario = newScenario;
                 });
             };
 

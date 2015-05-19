@@ -15,7 +15,7 @@ import scala.util.{Failure, Success}
 import controllers.parsers.EntityField
 import controllers.parsers.WebPageElement
 import controllers.parsers.WebPageElementBSONWriter
-import controllers.parsers.ServiceEntityFieldBSONWriter
+import controllers.parsers.EntityFieldBSONWriter
 import reactivemongo.core.commands.LastError
 import reactivemongo.bson.BSONObjectID
 import boot.AppBoot
@@ -172,7 +172,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   def saveServiceEntityConfiguration(conf: ServiceEntityConfig) {
     val collection = open_collection("repository")
     val elementsToPersist: List[EntityField] = conf.rows.getOrElse(List())
-    val elementAsBsonDocuments: List[BSONDocument] = for(element <- elementsToPersist) yield ServiceEntityFieldBSONWriter.write(element)
+    val elementAsBsonDocuments: List[BSONDocument] = for(element <- elementsToPersist) yield EntityFieldBSONWriter.write(element)
     val listOfFutures: List[Future[LastError]] = for(element <- elementAsBsonDocuments) yield saveContainerElement(element)
     val futureList = Future.sequence(listOfFutures)
     //once we've completed saving elements
@@ -297,9 +297,41 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     scenarii
   }
 
+  def loadWebPageRepository(): Future[List[AutoSetupConfig]] = {
+    loadAutoConfiguration(BSONDocument("type" -> "web page"))
+  }
 
-  def loadAutoConfiguration(): Future[List[AutoSetupConfig]] = {
-    loadAutoConfiguration(BSONDocument())
+  def loadSwingPageRepository(): Future[List[AutoSetupConfig]] = {
+    loadAutoConfiguration(BSONDocument("type" -> "swing page"))
+  }
+
+  def loadServiceEntityRepository(): Future[List[ServiceEntityConfig]] = {
+    loadServiceAutoConfiguration(BSONDocument("type" -> "service entity"))
+  }
+
+  def loadServiceAutoConfiguration(query: BSONDocument): Future[List[ServiceEntityConfig]] = {
+    val collection = open_collection("repository")
+    val configurationWithRefs: Future[List[ServiceEntityConfigWithRefs]] = collection.find(query).sort(BSONDocument("name" -> 1)).cursor[ServiceEntityConfigWithRefs].collect[List]()
+    // re-compute as configurations
+    def convertItems(configurationWithRef: ServiceEntityConfigWithRefs): Future[ServiceEntityConfig] = {
+      configurationWithRef.rows match {
+        case Some(refs) => {
+          val loadedElementFutureList: Future[List[Option[EntityField]]] = Future.sequence(for( ref <- refs ) yield loadEntityField(ref.id))
+          loadedElementFutureList.map(elements => ServiceEntityConfig(
+                                            id = configurationWithRef.id, 
+                                            name = configurationWithRef.name, 
+                                            cType = configurationWithRef.cType,
+                                            rows = Some(elements.flatMap(_.toList))))
+        }
+      }
+    }
+    val convertedListFuture: Future[List[ServiceEntityConfig]] = configurationWithRefs.flatMap {
+      configurationWithRefs => {
+        val configFutureList: Future[List[ServiceEntityConfig]] = Future.sequence(for (configurationWithRef <- configurationWithRefs) yield convertItems(configurationWithRef))
+        configFutureList
+      }
+    }
+    convertedListFuture
   }
 
   def loadAutoConfiguration(query: BSONDocument): Future[List[AutoSetupConfig]] = {
@@ -327,6 +359,11 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     convertedListFuture
   }
 
+  def loadEntityField(objectId: BSONObjectID): Future[Option[EntityField]] = {
+    val collection = open_collection("elements")
+    val query = BSONDocument("_id" -> objectId)
+    collection.find(query).one[EntityField]
+  }
   def loadElement(objectId: BSONObjectID): Future[Option[WebPageElement]] = {
     val collection = open_collection("elements")
     val query = BSONDocument("_id" -> objectId)

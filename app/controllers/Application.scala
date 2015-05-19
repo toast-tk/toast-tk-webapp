@@ -78,7 +78,7 @@ object Application extends Controller {
    * WebPageElement(name: String, elementType: String, locator: String, method: String, position: Int)
    */
   def loadWikifiedRepository() = Action.async {
-    conn.loadAutoConfiguration.map {
+    conn.loadSwingPageRepository.map {
       repository => {
         def wikifiedObject(page: AutoSetupConfig): JsValue = {
           var res = "page id:" + page.id.get + "\n"
@@ -255,7 +255,7 @@ object Application extends Controller {
           val rows = for {
             macroConfigurationRow <- conf.rows
             if(!macroConfigurationRow.name.equals(configurationRows.head.name)
-             &&  !macroConfigurationRow.group.equals(configurationRows.head.group))
+             && !macroConfigurationRow.group.equals(configurationRows.head.group))
           } yield(macroConfigurationRow)
           val rowsToPersist = configurationRows.head :: rows
           conn.saveConfiguration(MacroConfiguration(conf.id, fixtureDescriptor.name, rowsToPersist.toList))
@@ -282,16 +282,6 @@ object Application extends Controller {
         Ok("Auto configuration saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
-    }
-  }
-
-
-  def main(args: Array[String]) {
-    conn.loadAutoConfiguration.map {
-      repository => {
-        println(repository)
-        println(Json.toJson(repository))
-      }
     }
   }
 }

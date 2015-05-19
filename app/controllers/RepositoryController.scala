@@ -9,7 +9,7 @@ import play.api.mvc.{Controller, Action}
 import toast.engine.ToastRuntimeJavaWrapper
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-object RepositoryController  extends Controller {
+object RepositoryController extends Controller {
 
   private val conn = AppBoot.conn
 
@@ -17,7 +17,40 @@ object RepositoryController  extends Controller {
    * load to init repository configuration
    */
   def loadAutoConfiguration() = Action.async {
-    conn.loadAutoConfiguration.map {
+    conn.loadSwingPageRepository.map {
+      repository => {
+        val input = Json.toJson(repository).as[JsArray]
+        def extendedObject(obj: JsObject) = {
+          obj + ("columns" -> DomainController.autoSetupCtxProvider((obj \ "type").as[String]))
+        }
+        val response = for (i <- input.value) yield extendedObject(i.as[JsObject])
+        Ok(Json.toJson(response))
+      }
+    }
+  }
+
+  /**
+   * load to init repository configuration
+   */
+  def loadServiceEntityRepository() = Action.async {
+    conn.loadServiceEntityRepository.map {
+      repository => {
+        val input = Json.toJson(repository).as[JsArray]
+        def extendedObject(obj: JsObject) = {
+          obj + ("columns" -> DomainController.autoSetupCtxProvider((obj \ "type").as[String]))
+        }
+        val response = for (i <- input.value) yield extendedObject(i.as[JsObject])
+        Ok(Json.toJson(response))
+      }
+    }
+  }
+
+
+  /**
+   * load to init repository configuration
+   */
+  def loadWebPageRepository() = Action.async {
+    conn.loadWebPageRepository.map {
       repository => {
         val input = Json.toJson(repository).as[JsArray]
         def extendedObject(obj: JsObject) = {

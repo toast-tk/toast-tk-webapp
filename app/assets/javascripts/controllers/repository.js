@@ -2,24 +2,30 @@ define(["angular"], function (angular) {
     "use strict";
     return {
         RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress) {
-            $scope.run_config_types = ["web page", "service entity", "swing page"];
+            $scope.run_config_types = [ "swing page", "web page", "service entity"];
             $scope.autosetups = [];
             $scope.newAutoSetupRow = {};
             $scope.selectedAutoSetupConfigType = "";
-            $scope.autoSetupConfigFilter = "";
+            $scope.autoSetupConfigFilter = $scope.run_config_types[0];
             $scope.autosetups = [];
             $scope.autosetup = undefined;
 
             $scope.editRepositoryObject = editRepositoryObject;
 
+            $scope.$watch("autoSetupConfigFilter", function(oldValue, newValue){
+                load();
+            });
+
             $scope.addAutoSetupConfig = function () {
                 playRoutes.controllers.Application.loadAutoSetupCtx($scope.selectedAutoSetupConfigType).get().then(function (response) {
                     var autoSetupDescriptor = response.data;
-                    $scope.autosetups.push({
+                    var newSetupBlock = {
                         type: $scope.selectedAutoSetupConfigType,
                         columns: autoSetupDescriptor,
                         rows: []
-                    });
+                    };
+                    $scope.autosetups.push();
+                    $scope.autosetup = newSetupBlock;
                 });
             };
 
@@ -69,15 +75,25 @@ define(["angular"], function (angular) {
             };
 
             function load() {
-                playRoutes.controllers.RepositoryController.loadAutoConfiguration().get().then(function (response) {
-                    //convert autosetup rows into json
+                if(angular.isDefined($scope.autoSetupConfigFilter) && $scope.autoSetupConfigFilter != ""){
+                    if($scope.autoSetupConfigFilter == "swing page"){
+                        playRoutes.controllers.RepositoryController.loadAutoConfiguration().get().then(handleResult);
+                    }else if ($scope.autoSetupConfigFilter == "web page"){
+                        playRoutes.controllers.RepositoryController.loadWebPageRepository().get().then(handleResult);
+                    }else if ($scope.autoSetupConfigFilter == "service entity"){
+                        playRoutes.controllers.RepositoryController.loadServiceEntityRepository().get().then(handleResult);
+                    }
+                }
+
+                function handleResult(response){
                     var autosetups = response.data.map(function (obj) {
                         obj.rows = angular.isObject(obj.rows) ? obj.rows : JSON.parse(obj.rows);
                         return obj;
                     });
                     $scope.autosetups = autosetups || [];
-                });
+                }
             }
+
 
             load();
         }

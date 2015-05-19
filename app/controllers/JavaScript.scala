@@ -16,6 +16,8 @@ object JavaScript extends Controller {
           controllers.routes.javascript.RepositoryController.saveServiceConfigBlock,
           controllers.routes.javascript.RepositoryController.saveAutoConfigBlock,
           controllers.routes.javascript.RepositoryController.loadAutoConfiguration,
+          controllers.routes.javascript.RepositoryController.loadServiceEntityRepository,
+          controllers.routes.javascript.RepositoryController.loadWebPageRepository,
           controllers.routes.javascript.Application.loadCtxTagData,
           controllers.routes.javascript.Application.loadAutoSetupCtx,
           controllers.routes.javascript.Application.loadCtxSentences,

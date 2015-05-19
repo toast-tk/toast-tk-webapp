@@ -53,13 +53,20 @@ object EntityField{
   }
 
   implicit object EntityFieldImplicitBSONWriter extends BSONDocumentWriter[EntityField] {
-    def write(entity: EntityField): BSONDocument = ServiceEntityFieldBSONWriter.write(entity)
+    def write(entity: EntityField): BSONDocument = EntityFieldBSONWriter.write(entity)
   }
 }
 
-object ServiceEntityFieldBSONWriter extends BSONDocumentWriter[EntityField] {
+object EntityFieldBSONWriter extends BSONDocumentWriter[EntityField] {
   def write(entity: EntityField): BSONDocument = {
-    BSONDocument("_id" -> entity.id,  "name"-> entity.name, "alias" -> entity.alias, "searchBy" -> entity.searchBy)
+    entity.id match {
+      case None => {
+        BSONDocument("_id" -> BSONObjectID.generate, "name"-> entity.name, "alias" -> entity.alias, "searchBy" -> entity.searchBy)
+      }
+      case value:Option[String] => {
+        BSONDocument("_id" -> BSONObjectID(entity.id.get), "name"-> entity.name, "alias" -> entity.alias, "searchBy" -> entity.searchBy)
+      }
+    }
   }
 }
 
@@ -69,7 +76,8 @@ object ServiceEntity{
     def write(configuration: ServiceEntity): BSONDocument = {
 
       configuration.id match {
-        case None =>  BSONDocument("name"-> configuration.name,
+        case None =>  BSONDocument(
+                      "name"-> configuration.name,
                       "type" -> configuration.cType,
                       "rows" -> configuration.elements)
         case value:Option[String] => BSONDocument(

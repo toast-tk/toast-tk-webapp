@@ -36,6 +36,8 @@ POST        /saveConfiguration                            controllers.Configurat
 
 # Ajax routes: Repository Controller
 GET         /loadAutoConfiguration                        controllers.RepositoryController.loadAutoConfiguration()
+GET			/loadServiceEntityRepository				  controllers.RepositoryController.loadServiceEntityRepository()
+GET			/loadWebPageRepository						  controllers.RepositoryController.loadWebPageRepository()
 POST        /saveAutoSetupConfiguration                   controllers.RepositoryController.saveAutoConfig()
 POST        /saveServiceConfigBlock						  controllers.RepositoryController.saveServiceConfigBlock()	
 POST        /saveAutoConfigBlock                          controllers.RepositoryController.saveAutoConfigBlock()
