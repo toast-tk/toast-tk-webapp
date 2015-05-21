@@ -41,7 +41,7 @@ object ProjectController  extends Controller {
           val scenario = scenarii.next()
           scns = ScenarioWrapper(Some(scenario.getPageName()), None) :: scns
         }
-        cmpgs = Cpgn(Some(campaign.getIdAsString()), campaign.getName(), scns) :: cmpgs
+        cmpgs = Cpgn(Some(campaign.getIdAsString()), campaign.getName(), scns.reverse) :: cmpgs
       }
       prjs = Prj(Some(project.getId().toString()), project.getName(), Some(project.getIteration()) , cmpgs) :: prjs
     }

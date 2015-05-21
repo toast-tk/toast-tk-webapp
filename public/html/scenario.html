@@ -51,8 +51,10 @@
             <div ui-tree data-drag-enabled="false">
               <ol ui-tree-nodes="" ng-model="scenarii">
                 <li ng-repeat="scenario in scenarii | filter:query" ui-tree-node>
-                  <div class="title" ng-click="editScenario(scenario)">
-                    {{scenario.name}} ({{scenario.type}})
+                  <div class="title row" ng-click="editScenario(scenario)">
+                    <div class="col-md-9">
+                        {{scenario.name}} ({{scenario.type}})
+                    </div>
                     <a class="pull-right btn btn-primary btn-xs" data-nodrag="" ng-click="deleteScenarii(scenario)">
                         <span class="glyphicon glyphicon-remove"></span>
                     </a>

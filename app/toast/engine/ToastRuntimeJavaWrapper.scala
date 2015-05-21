@@ -9,7 +9,7 @@ import scala.collection.JavaConverters._
 
 object ToastRuntimeJavaWrapper {
 
-  val mongoDBHost = Play.current.configuration.getString("db.mongo.host").getOrElse("localhost")
+  val mongoDBHost = Play.current.configuration.getString("db.mongo.host").getOrElse("10.23.252.131")
   val mongoDBPort = Play.current.configuration.getInt("db.mongo.port").getOrElse(27017)
   private lazy val injector = com.google.inject.Guice.createInjector(new MongoModule(mongoDBHost,mongoDBPort));
   lazy val projectService = injector.getInstance(classOf[ProjectDaoService.Factory])create("test_project_db");
