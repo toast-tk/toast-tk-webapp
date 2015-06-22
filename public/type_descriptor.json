@@ -1,0 +1,20 @@
+[
+	{
+		"type": "string",	
+		"category" : "value",
+		"regexList" : [ "([\\w\\W]+)", "(\\w+)", "\\*([\\w\\W]+)\\*", "\\*(\\w+)\\*" ],
+		"replacement" : "@[[1:string:Value]]"
+	},
+	{
+		"type": "string",	
+		"category" : "variable",
+		"regexList" : [ "\\$(\\w+)", "(\\$\\w+)" ],
+		"replacement" : "@[[2:variable ($name):Variable]]"
+	},
+	{
+		"type" : "component",
+		"category": "swing",
+		"regexList": [ "(\\w+).(\\w+)" , "\\*(\\w+).(\\w+)\\*" ],
+		"replacement" : "@[[6:reference:SwingComponent]]"
+	}
+]
