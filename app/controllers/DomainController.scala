@@ -51,8 +51,8 @@ trait InnerDomainController {
     tagType match {
       case "Value" => """\\*([\\w\\W]+)\\*"""
       case "Variable" => """(\\$\\w+)"""
-      case "WebPageItem" => """(\\w+).(\\w+)"""
-      case "SwingComponent" => """(\\w+).(\\w+)"""
+      case "WebPageItem" => """\\*(\\w+).(\\w+)\\*"""
+      case "SwingComponent" => """\\*(\\w+).(\\w+)\\*"""
       case _ => tagType
     }
   }

@@ -1,6 +1,11 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
+
+        ScenarioLineCtrl: function($scope){
+            
+        },
+
         ScenarioCtrl: function ($rootScope, $scope, playRoutes, ngProgress) {
             
             $scope.newRow = {};

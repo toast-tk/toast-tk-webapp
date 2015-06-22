@@ -18,7 +18,6 @@ define(["angular"], function(angular) {
           $scope.loggedIn = true;
           $scope.user = response.data;
           $rootScope.user = $scope.user;
-
         });
       };
     }

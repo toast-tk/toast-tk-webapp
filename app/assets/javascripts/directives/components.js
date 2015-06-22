@@ -136,7 +136,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 					        	
 	        	function getTagForType(tagPosition, varType, varDescriptor){
 	        		if(varType == "string"){
-	        			return '<input type="text" class="'+varDescriptor+ '_' + tagPosition +'"/><br/>';
+	        			return '<input type="text" editable-text="someModel" class="'+varDescriptor+ '_' + tagPosition +'"/><br/>';
 	        		} else if (varType == "reference"){
 	        			return '<select class="'+varDescriptor+ '_' + tagPosition +'"></select><br/>';
 	        		} else {
