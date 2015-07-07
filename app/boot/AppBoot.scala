@@ -98,14 +98,8 @@ object AppBoot extends play.api.GlobalSettings {
         val fixtureType: String = descriptor.fixtureType
         val fixtureName: String = descriptor.name
         val fixturePattern: String = descriptor.pattern
-        val formatedTypedSentence: String = fixturePattern.split(" ").map ( word => {
-          DomainController.getTypedPatternRegexReplacement(fixtureType, word)
-        }).mkString(" ")
-        val formatedSentence: String = fixturePattern.split(" ").map ( word => {
-          DomainController.getPlainPatternRegexReplacement(fixtureType, word)
-        }).mkString(" ")
         val key = fixtureType +":"+fixtureName
-        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(formatedSentence, formatedTypedSentence)
+        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(fixturePattern, fixturePattern)
         val syntaxRows = congifMap.getOrElse(key, List[ConfigurationSyntax]())
         val newSyntaxRows =  newConfigurationSyntax :: syntaxRows
         congifMap = congifMap + (key -> newSyntaxRows)

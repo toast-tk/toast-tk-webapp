@@ -1,13 +1,12 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-
         ScenarioLineCtrl: function($scope){
             
         },
-
+        Ctrl: function($scope){
+        },
         ScenarioCtrl: function ($rootScope, $scope, playRoutes, ngProgress) {
-            
             $scope.newRow = {};
             $scope.scenario_types = [];
             $scope.selectedType = "";
@@ -17,6 +16,9 @@ define(["angular"], function (angular) {
             $scope.regexMap = [];
             $scope.scenario = undefined;
             $scope.stepType = "";
+            $scope.editable = {
+                value: "something"
+            };
 
             $scope.add = add;
             $scope.addRow = addRow;

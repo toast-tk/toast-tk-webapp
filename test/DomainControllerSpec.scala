@@ -3,6 +3,7 @@ import org.specs2.runner._
 import org.junit.runner._
 import play.api.test._
 import play.api.test.Helpers._
+import com.synaptix.toast.runtime.core.runtime._
 import play.api.mvc.Controller
 import controllers.InnerDomainController
 
@@ -69,7 +70,7 @@ class ApplicationSpec extends PlaySpecification {
       result must be equalTo """swi-normal/assemblage.prevision/findOnePrevisionForTnr @[[1:string:Value]] AS @[[1:string:Value]]"""  
     } 
 
-    "4: convert regex in sentence to know types" in {
+    "5: convert regex in sentence to know types" in {
       val controller = new TestDomainController()
       val fixturePattern: String = """Multiplier (\$[\w]+) par \*([\w\W]+)\*"""
       val result = fixturePattern.split(" ").map ( word => {
@@ -78,7 +79,17 @@ class ApplicationSpec extends PlaySpecification {
       result must be equalTo """Multiplier @[[2:variable ($name):Variable]] par @[[1:string:Value]]"""  
     } 
 
-
+    "6: initalize action items descriptor" in {
+      val controller = new TestDomainController()
+      val result = controller.actionItems.size > 0
+      result must be equalTo true  
+    } 
     
+    "7: find variable action item description" in {
+      val controller = new TestDomainController()
+      val result = controller.findActionItemByCategoryAndType(ActionItem.ActionCategoryEnum.value, ActionItem.ActionTypeEnum.string)
+      result.regex must be equalTo "\\*([\\w\\W]+)\\*"  
+    } 
+
   }
 }

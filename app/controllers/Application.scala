@@ -110,37 +110,13 @@ object Application extends Controller {
     }
   }
 
-
-  def replacePatternByRegex(syntaxes: List[ConfigurationSyntax]): List[ConfigurationSyntax] = {
-    lazy val regex = """@\[\[(\d+):[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+:([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+)\]\]"""
-    def replacePatterns(sentence: String): String = {
-      var outputArray = List[String]()
-      val replacedSentence = sentence.replaceAll(regex, "@[[$1:_:$2]]")
-      val splittedSentence = replacedSentence.split("\\s+")
-      splittedSentence.foreach { word => outputArray = DomainController.sentenceChunkReplacement(word.replaceAll(regex, "$2")) :: outputArray}
-      outputArray.reverse.mkString(" ")
-    }
-    def replaceConfigurationSyntax(syntax: ConfigurationSyntax): ConfigurationSyntax = {
-      ConfigurationSyntax(syntax.typed_sentence,replacePatterns(syntax.typed_sentence))
-    }
-    for (syntax <- syntaxes) yield replaceConfigurationSyntax(syntax)
-  }
-
   /**
    * get all possible pattern sentences for a given scenario type
    */
   def loadCtxSentences(confType: String) = Action.async {
     conn.loadConfigurationSentences(confType).map {
       configurations => {
-        var res = List[ConfigurationSyntax]();
-        for (configuration <- configurations) {
-          for (row <- configuration.rows) {
-            if (row.group.equals(confType)) {
-              res = res ++ replacePatternByRegex(row.syntax)
-            }
-          }
-        }
-        Ok(Json.toJson(res))
+        Ok(Json.toJson(configurations))
       }
     }
 
@@ -176,7 +152,7 @@ object Application extends Controller {
    */
   def loadCtxTagData(itemName: String) = Action.async {
     itemName match {
-      case "WebPageItem" => {
+      case "web" => {
         var res = List[JsValue]();
         conn.loadWebPagesFromRepository().map {
           pageConfigurations => {
@@ -195,7 +171,7 @@ object Application extends Controller {
             Ok(Json.toJson(res));
         }
       }
-      case "SwingComponent" => {
+      case "swing" => {
         var res = List[JsValue]();
         conn.loadSwingPagesFromRepository().map {
           pageConfigurations => {
@@ -225,20 +201,8 @@ object Application extends Controller {
         val fixtureName: String = descriptor.name
         val fixturePattern: String = descriptor.pattern
         
-        println()
-        println("Input Sentence <--> " +  fixturePattern);
-        val formatedTypedSentence: String = fixturePattern.split(" ").map ( word => {
-          DomainController.getTypedPatternRegexReplacement(fixtureType, word)
-        }).mkString(" ")
-        println("Output Sentence typed -> " +  formatedTypedSentence);
-        val formatedSentence: String = fixturePattern.split(" ").map ( word => {
-          DomainController.getPlainPatternRegexReplacement(fixtureType, word)
-        }).mkString(" ")
-        println("Output Sentence plain -> " +  formatedSentence);
-        println()
-        
         val key = fixtureType +":"+fixtureName
-        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(formatedSentence, formatedTypedSentence)
+        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(fixturePattern, fixturePattern)
         val syntaxRows = congifMap.getOrElse(key, List[ConfigurationSyntax]())
         val newSyntaxRows =  newConfigurationSyntax :: syntaxRows
         congifMap = congifMap + (key -> newSyntaxRows)

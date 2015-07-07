@@ -37,6 +37,12 @@
   }
 }
 
+
+.wrap-word{
+  word-wrap: break-word;
+  white-space: normal;
+}
+
 .textntags-wrapper .textntags-tag-list {
   display: none;
   background: #fff;

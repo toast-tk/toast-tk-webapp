@@ -3,7 +3,7 @@ package controllers
 import com.synaptix.toast.dao.domain.impl.report.{Project, Campaign}
 import com.synaptix.toast.dao.domain.impl.test.TestPage
 import com.synaptix.toast.automation.report.ProjectHtmlReportGenerator
-import com.synpatix.toast.runtime.core.parse.TestParser
+import com.synaptix.toast.runtime.core.parse.TestParser
 import controllers.mongo.Scenario
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.json.{Json, JsError}

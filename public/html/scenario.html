@@ -30,11 +30,8 @@
     <br>
 
     <h1> Test Scripts
-        
         <!-- TODO: reload page after save -->
     </h1>
-    <input type="text" editable-text="model" class="class"/>
-
     <div class="row">
         <div class="col-md-6" style="text-align:left;">
             Filter: <input type="text" ng-model="query"/>
@@ -48,13 +45,13 @@
     <br>
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div ui-tree data-drag-enabled="false">
               <ol ui-tree-nodes="" ng-model="scenarii">
                 <li ng-repeat="scenario in scenarii | filter:query" ui-tree-node>
                   <div class="title row" ng-click="editScenario(scenario)">
-                    <div class="col-md-9">
-                        {{scenario.name}} ({{scenario.type}})
+                    <div class="col-md-9 wrap-word">
+                        {{scenario.name}}
                     </div>
                     <a class="pull-right btn btn-primary btn-xs" data-nodrag="" ng-click="deleteScenarii(scenario)">
                         <span class="glyphicon glyphicon-remove"></span>
@@ -66,7 +63,7 @@
               </ol>
             </div>
         </div>   
-        <div class="col-md-8">
+        <div class="col-md-9">
             <div class="scenario" ng-show="scenario != undefined">
                 <input type="text" ng-model="scenario.name"/>
                 <span class="pull-right">
@@ -105,10 +102,14 @@
                             </span>    
                         </td>
                         <td ng-repeat="c in scenario.columns"
-                            pattern pattern-value="{{r[c.name]}}" pattern-post="{{c.post}}"
-                            pattern-model="r" pattern-column="{{c.name}}"
+                            pattern 
+                            pattern-value="{{r[c.name]}}" 
+                            pattern-post="{{c.post}}"
+                            pattern-model="r" 
+                            pattern-column="{{c.name}}"
                             pattern-context="{{scenario.type}}"
-                            on-pattern-change="onPatternValueChange(row, position, identifier, value)"></td>
+                            on-pattern-change="onPatternValueChange(row, position, identifier, value)">
+                        </td>
                         <td>
                             <button class="btn btn-xs" data-ng-click="deleteRow(scenario, r)">-</button>
                         </td>

@@ -10,6 +10,7 @@ object JavaScript extends Controller {
     Ok(
       Routes.javascriptRouter(varName)(
           controllers.routes.javascript.Application.login,
+          controllers.routes.javascript.DomainController.typeDescriptor,
           controllers.routes.javascript.ConfigurationController.saveConfiguration,
           controllers.routes.javascript.ConfigurationController.loadConfiguration,
           controllers.routes.javascript.RepositoryController.saveAutoConfig,
