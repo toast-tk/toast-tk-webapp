@@ -25,27 +25,34 @@
     </div>
   </div>
 </nav>
-<div class="container">
-    <br>
-    <br>
-
-    <h1> Test Scripts
-        <!-- TODO: reload page after save -->
-    </h1>
-    <div class="row">
-        <div class="col-md-6" style="text-align:left;">
-            Filter: <input type="text" ng-model="query"/>
-        </div>
-        <div class="col-md-6" style="text-align:right;">
-            Add a new <select ng-model="selectedType" ng-options="type.name for type in scenario_types"></select>
-            scenario <button class="btn btn-primary btn-xs" data-ng-click="add()">+</button>
-
+<div class="container" tk-slider>
+    <div class="section-header">
+        <div class="row">
+            <div class="col-md-6">
+                <span class="title">Test Scripts</span>
+                <button type="button" class="slide-in-button btn btn-default btn-xs hide">
+                    >>
+                </button>
+            </div>
+            <div class="col-md-6 pull-right">
+                <div class="pull-right">
+                    Add a new <select ng-model="selectedType" ng-options="type for type in scenario_types"></select>
+                    scenario <button class="btn btn-primary btn-xs" data-ng-click="add()">+</button>
+                </div>
+            </div>
         </div>
     </div>
-    <br>
+    <div class="row" ng-if="scenarii.length == 0">
 
-    <div class="row">
-        <div class="col-md-3">
+    </div>
+    <div class="row" ng-if="scenarii.length > 0" >
+        <div class="col-md-3 effectSideBar">
+            <div class="side-header">
+                Filter: <input type="text" ng-model="query"/>
+                <button type="button" class="slide-out-button btn btn-default btn-xs">
+                    <<
+                </button> 
+            </div>
             <div ui-tree data-drag-enabled="false">
               <ol ui-tree-nodes="" ng-model="scenarii">
                 <li ng-repeat="scenario in scenarii | filter:query" ui-tree-node>
@@ -63,7 +70,7 @@
               </ol>
             </div>
         </div>   
-        <div class="col-md-9">
+        <div class="col-md-9 effectContent">
             <div class="scenario" ng-show="scenario != undefined">
                 <input type="text" ng-model="scenario.name"/>
                 <span class="pull-right">
@@ -126,7 +133,7 @@
                         <td colspan="2">
                             <div class="btn-group" dropdown>
                               <button type="button" class="btn btn-primary btn-xs" ng-click="addRow(newRow)">
-                                Add {{stepType}} Step
+                              + {{stepType}} step
                               </button>
                               <button type="button" class="btn btn-primary btn-xs dropdown-toggle" dropdown-toggle>
                                 <span class="caret"></span>

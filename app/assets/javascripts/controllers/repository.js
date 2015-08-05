@@ -13,7 +13,7 @@ define(["angular"], function (angular) {
             $scope.editRepositoryObject = editRepositoryObject;
 
             $scope.$watch("autoSetupConfigFilter", function(oldValue, newValue){
-                load();
+                __init__();
             });
 
             $scope.addAutoSetupConfig = function () {
@@ -50,17 +50,22 @@ define(["angular"], function (angular) {
                 };
             */
 
+           $scope.deleteObject = function(autosetup){
+                playRoutes.controllers.RepositoryController.deleteObject().post(angular.toJson(autosetup.id)).then(function () {
+                    __init__();
+                });
+           }
+
             $scope.saveAutoConfigBlock = function (autosetup) {
                 var deepCopy = angular.copy(autosetup);
                 delete deepCopy.columns;
                 if(deepCopy.type === "service entity"){
                     playRoutes.controllers.RepositoryController.saveServiceConfigBlock().post(deepCopy).then(function (response) {
-                        load();
-                    });
-                    
+                         __init__();
+                    });            
                 }else{
                     playRoutes.controllers.RepositoryController.saveAutoConfigBlock().post(deepCopy).then(function (response) {
-                        load();
+                         __init__();
                     });
                 }
             };
@@ -74,7 +79,7 @@ define(["angular"], function (angular) {
                 $scope.newAutoSetupRow = {};
             };
 
-            function load() {
+            function __init__() {
                 if(angular.isDefined($scope.autoSetupConfigFilter) && $scope.autoSetupConfigFilter != ""){
                     if($scope.autoSetupConfigFilter == "swing page"){
                         playRoutes.controllers.RepositoryController.loadAutoConfiguration().get().then(handleResult);
@@ -95,7 +100,7 @@ define(["angular"], function (angular) {
             }
 
 
-            load();
+            __init__();
         }
     };
 });

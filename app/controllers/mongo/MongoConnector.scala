@@ -118,7 +118,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
       var outputMappings = List[ScenarioRowMapping]()
       for(mapping <- row.mappings.getOrElse(List())){
         var mappingUpdate: Boolean = false;
-        if(mapping.id.equals("reference")){ //lame hack, to fix as soon as possible on editor.js side also
+        if(mapping.id.equals("component")){ //lame hack, to fix as soon as possible on editor.js side also
           val pageName = mapping.value.split("[.]")(0)
           val componentName = mapping.value.split("[.]")(1)
           val pages: List[AutoSetupConfig] = Await.result(loadSwingPagesFromRepositoryByName(pageName), 5 seconds).asInstanceOf[List[AutoSetupConfig]]
@@ -245,6 +245,15 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   def saveContainerElement(element: BSONDocument): Future[LastError] = {
       val collection = open_collection("elements")
       collection.save(element)
+  }
+
+
+  def deleteObject(autoSetupId: String) {
+    val collection = open_collection("repository")
+    collection.remove(BSONDocument("_id" -> BSONObjectID(autoSetupId))).onComplete {
+      case Failure(e) => throw e
+      case Success(_) => println(s"[+] successfully removed object from respository: $autoSetupId")
+    }
   }
 
   def deleteScenarii(scenarioId: String) {

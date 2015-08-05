@@ -2,7 +2,7 @@ define(["angular", "qTags"], function (angular, qTags) {
   	"use strict";
 
   	// The module - will be referenced by other modules
-  	var module = angular.module("red.components", ["play.routing"]);
+  	var module = angular.module("tk.components", ["play.routing"]);
   
 	module.directive('sentence', function ($compile, playRoutes) {
 	    return {
@@ -12,8 +12,9 @@ define(["angular", "qTags"], function (angular, qTags) {
 			},	    	
 	        link: function ($scope, element, attrs) { 
 	        	var content = $('<span class="sentence"></span>');	
-	        	var addHtml = $('<button class="btn btn-primary">+</button>');
-	        	var html = '<textarea ng-model="newSentence" placeholder="sentence (use @)" style="width: 100%;" /> ';
+	        	//disabled !
+	        	var addHtml = $('<button ng-disabled class="btn btn-primary">+</button>');
+	        	var html = '<textarea ng-disabled ng-model="newSentence" placeholder="sentence (use @)" style="width: 100%;" /> ';
 	        	var tagElement = $compile(html)($scope);
             	
             	content.append(tagElement);
@@ -72,61 +73,58 @@ define(["angular", "qTags"], function (angular, qTags) {
 					},   	
 	        link: function ($scope, element, attrs) { 
 	        	var regex = /{{([\w:]+)}}/gi
-				var init = false;
-	        	$scope.$watch('patternValue + patternPost + patternColumn + patternModel + patternContext', function(){
-		        	if(!init){
-		        		element.empty();
-		        		if($scope.patternPost == "true"){
-		        			var e = $compile('<input type="text" ng-model="patternModel[patternColumn]" placeholder="{{patternColumn}}" style="width: 100%;"/>')($scope);
-		        			element.append(e);
-		        		}else{
-		        			var patternValue = $scope.patternValue;
-							if(patternValue == "" || angular.isUndefined(patternValue)){
-								var e = $compile('<input type="text" ng-model="patternModel[patternColumn]" style="width: 100%;"/>')($scope);
-								element.append(e);
-							}else{
-								//round I: element creation
-								var tags = [];
-								var tagPosition = 0;
-								var previousIndex = 0;
-								var tag = regex.exec(patternValue);
-								while (tag != null) {
-									//add tag
-									tags.push(tag);
+	        	var watcher = $scope.$watch('patternValue + patternPost + patternColumn + patternModel + patternContext', function(){
+	        		element.empty();
+	        		if($scope.patternPost == "true"){
+	        			var e = $compile('<input type="text" ng-model="patternModel[patternColumn]" placeholder="{{patternColumn}}" style="width: 100%;"/>')($scope);
+	        			element.append(e);
+	        		}else{
+	        			var patternValue = $scope.patternValue;
+						if(patternValue == "" || angular.isUndefined(patternValue)){
+							var e = $compile('<input type="text" ng-model="patternModel[patternColumn]" style="width: 100%;"/>')($scope);
+							element.append(e);
+						}else{
+							//round I: element creation
+							var tags = [];
+							var tagPosition = 0;
+							var previousIndex = 0;
+							var tag = regex.exec(patternValue);
+							while (tag != null) {
+								//add tag
+								tags.push(tag);
 
-									//get tag information details
-									var varValue = tags[tagPosition][1];
-									var varCategory = varValue.split(':')[0];
-									var varType = varValue.split(':')[1];
-									var replacementTag = "<span class='item-wrapper'>" +getTagForType(varCategory, tagPosition)+ "</span>";
-									var tagIsolatedScope = $rootScope.$new(true, $scope);
-									
-									if(varCategory == "value"){
-										initialiseValueScope(tagIsolatedScope, tagPosition);
-									}
-									else if(varCategory == "component"){
-										initialiseOptionScope(tagIsolatedScope, tagPosition);
-									}
-									
-									var replacementTagElement = $compile(replacementTag)(tagIsolatedScope);
-									element.append("<span>"+patternValue.substring(previousIndex, tags[tagPosition].index)+"</span>");
-									element.append(replacementTagElement);
-									previousIndex = tags[tagPosition].index + replacementTag.length;
-									patternValue = replaceIndex(patternValue, tags[tagPosition][0],  tags[tagPosition].index , replacementTag);
-									tagPosition = tagPosition + 1;
-									tag = regex.exec(patternValue);
+								//get tag information details
+								var varValue = tags[tagPosition][1];
+								var varCategory = varValue.split(':')[0];
+								var varType = varValue.split(':')[1];
+								var replacementTag = "<span class='item-wrapper'>" +getTagForType(varCategory, tagPosition)+ "</span>";
+								var tagIsolatedScope = $rootScope.$new(true, $scope);
+								
+								if(varCategory == "value"){
+									initialiseValueScope(tagIsolatedScope, tagPosition);
 								}
-								if(tags.length == 0){
-									element.append($("<span>" + patternValue + "</span>"));
+								else if(varCategory == "component"){
+									initialiseOptionScope(tagIsolatedScope, tagPosition, varCategory, varType);
 								}
+								
+								var replacementTagElement = $compile(replacementTag)(tagIsolatedScope);
+								element.append("<span>"+patternValue.substring(previousIndex, tags[tagPosition].index)+"</span>");
+								element.append(replacementTagElement);
+								previousIndex = tags[tagPosition].index + replacementTag.length;
+								patternValue = replaceIndex(patternValue, tags[tagPosition][0],  tags[tagPosition].index , replacementTag);
+								tagPosition = tagPosition + 1;
+								tag = regex.exec(patternValue);
 							}
-		        		}
-		        		init = true;
+							if(tags.length == 0){
+								element.append($("<span>" + patternValue + "</span>"));
+							}
+						}
 	        		}
+	        		watcher();
 	        	});
 
 
-				function initialiseOptionScope(tagIsolatedScope, tagPosition){
+				function initialiseOptionScope(tagIsolatedScope, tagPosition, varCategory, varType){
 					playRoutes.controllers.Application.loadCtxTagData(varType).get().then(function(response){
 						var tagValue;
 						var options = [];
@@ -199,12 +197,20 @@ define(["angular", "qTags"], function (angular, qTags) {
 				}
 	        	
 	        	/** util functions */
-	        	function replaceIndex(string, regex, at, repl) {
-				   return string.replace(regex, function(match, i) {
-				        if( i === at ) return repl;
-				        return match;
-				    });
-				}
+	        	function getIndex(array, word){
+                	for(var i = 0 ; i< array.length; i++){
+	                    if(array[i] == word){
+	                        return i;
+	                    }
+	                }
+	            }
+
+	            function replaceIndex(string, regex, at, repl) {
+	               return string.replace(regex, function(match, i) {
+	                    if( i === at ) return repl;
+	                    return match;
+	                });
+	            }
 					        
 				//put in webservice	
 	        	function getTagForType(category, tagPosition){
@@ -225,6 +231,42 @@ define(["angular", "qTags"], function (angular, qTags) {
 	    };
 	});
 	
+	module.directive("tkSlider", function($compile, $timeout){
+		return {
+	    	restrict: 'A',	   	
+	        link: function ($scope, element, attrs) { 
+	        	$timeout(function(){
+	        		$(".slide-out-button").click(function(){
+        			var positionOfEffectValue = 300;
+	                var positionOfEffect = "-=" + (positionOfEffectValue) + "px";
+	                $(".effectSideBar").animate({
+	                    left: positionOfEffect
+	                }, 500, function () {
+	                	$(".slide-in-button").removeClass("hide");
+                        $(".effectSideBar").attr("class", "effectSideBar hide");
+                        $(".effectContent").attr("class", "effectContent col-md-12");
+	                });
+		        	});
+		        	$(".slide-in-button").click(function(){
+	        			var positionOfEffectValue = 300;
+		                var positionOfEffect = "+=" + (positionOfEffectValue) + "px";
+		                $(".effectSideBar").animate({
+		                    left: positionOfEffect
+		                }, 500, function () {
+		                	$(".slide-in-button").addClass("hide");
+	                        $(".effectSideBar").attr("class", "effectSideBar col-md-3");
+	                        $(".effectContent").attr("class", "effectContent col-md-9");
+		                });
+		        	});
+
+	        	}, 500);
+
+	        	
+			} 
+	    };
+	});
+
+
 	module.directive('template', function ($compile, playRoutes) {
 	    return {
 	    	restrict: 'A',	

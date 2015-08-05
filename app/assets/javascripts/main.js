@@ -50,12 +50,16 @@
   require(["angular", "./services/playRoutes", 
             "./controllers/login", "./controllers/editor", "./controllers/scenario", 
             "./controllers/configuration","./controllers/repository", "./controllers/home",
+            "./services/client-service",
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
             "./libs/angular-ui-tree.min", "./libs/ui-bootstrap-tpls-0.12.1", "angularRoute",
             "./libs/xeditable"], 
           function(a, b, login, editor, scenario, configuration, repository, home) {
 
-              var app = angular.module("app", ['ngRoute', "play.routing", "red.components", "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable"]);
+              var app = angular.module("app", 
+                ['ngRoute', "play.routing", 
+                "tk.components", "tk.services",
+                "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable"]);
               app.controller("LoginCtrl", login.LoginCtrl);
               app.controller("MainCtrl", home.MainCtrl);
               app.controller("ConfigurationCtrl", configuration.ConfigurationCtrl);

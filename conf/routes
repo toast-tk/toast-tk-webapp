@@ -44,6 +44,7 @@ POST        /saveServiceConfigBlock						  controllers.RepositoryController.save
 POST        /saveAutoConfigBlock                          controllers.RepositoryController.saveAutoConfigBlock()
 GET         /loadRepository                               controllers.RepositoryController.loadRepository()
 POST        /saveRepository                               controllers.RepositoryController.saveRepository()
+POST        /deleteObject								  controllers.RepositoryController.deleteObject()
 
 # Ajax routes: Scenarii Controller
 GET         /loadScenariiList                             controllers.ScenarioController.loadScenariiList()

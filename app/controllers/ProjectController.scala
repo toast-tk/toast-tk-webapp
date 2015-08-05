@@ -2,7 +2,6 @@ package controllers
 
 import com.synaptix.toast.dao.domain.impl.report.{Project, Campaign}
 import com.synaptix.toast.dao.domain.impl.test.TestPage
-import com.synaptix.toast.automation.report.ProjectHtmlReportGenerator
 import com.synaptix.toast.runtime.core.parse.TestParser
 import controllers.mongo.Scenario
 import play.api.libs.iteratee.Enumerator
@@ -13,7 +12,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.collection.immutable.StringOps
 import com.synaptix.toast.automation.report.HTMLReporter
 
-case class ScenarioWrapper(name: Option[String], scenario: Option[Scenario])
+case class ScenarioWrapper(id: Option[String], name: Option[String], scenario: Option[Scenario])
 case class Cpgn(id: Option[String], name: String, scenarii: List[ScenarioWrapper])
 case class Prj(id: Option[String], name: String, iterations: Option[Short], campaigns: List[Cpgn])
 
@@ -27,7 +26,7 @@ object ProjectController  extends Controller {
    * load to init projects
    */
   def loadProject() = Action {
-    val projects = projectJavaDaoService.findAllLastProjects().iterator
+    val projects = projectJavaDaoService.findAllReferenceProjects().iterator
     var prjs = List[Prj]()
     while (projects.hasNext()) {
       val project = projects.next()
@@ -39,7 +38,7 @@ object ProjectController  extends Controller {
         val scenarii = campaign.getTestCases().iterator
         while (scenarii.hasNext()) {
           val scenario = scenarii.next()
-          scns = ScenarioWrapper(Some(scenario.getPageName()), None) :: scns
+          scns = ScenarioWrapper(Some(scenario.getIdAsString()),Some(scenario.getPageName()), None) :: scns
         }
         cmpgs = Cpgn(Some(campaign.getIdAsString()), campaign.getName(), scns.reverse) :: cmpgs
       }
@@ -57,6 +56,10 @@ object ProjectController  extends Controller {
 
     def parseTestPage(scenario: Scenario, wikiScenario: String): TestPage = {
       val testPage = parser.parseString(wikiScenario)
+      scenario.id match {
+        case None => {}
+        case Some(id) => testPage.setId(id)
+      }
       testPage.setName(scenario.name)
       testPage.setPageName(scenario.name)
       testPage
@@ -75,26 +78,20 @@ object ProjectController  extends Controller {
         campaign.setTestCasesImpl(testPagelist)
         list.add(campaign)
       }
-
       list
     }
     def tranformProject(p: Prj): Project = {
-      val pr = new Project()
-      pr.setName(p.name)
-      pr.setCampaignsImpl(transformCampaign(p.campaigns))
-      pr
+      val project = new Project()
+      project.setName(p.name)
+      project.setCampaignsImpl(transformCampaign(p.campaigns))
+      project
     }
 
     request.body.validate[Prj].map {
-      case project: Prj =>
-        if(project.id.isDefined) {
-          val javaProject = projectJavaDaoService.getLastByName(project.name)
-
-        }
-        else{
-          projectJavaDaoService.saveNewIteration(tranformProject(project))
-        }
-        Ok("project saved !")
+      case project: Prj => {
+        projectJavaDaoService.saveReferenceProject(tranformProject(project))
+        Ok("project saved !") 
+      }
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
     }
@@ -102,7 +99,7 @@ object ProjectController  extends Controller {
 
   def loadProjectReport(name: String) = Action {
     val report = HTMLReporter.getProjectHTMLReport(name)
-    SimpleResult( header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
+    SimpleResult(header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
                   body = Enumerator(new StringOps(report).getBytes()))
   }
 
@@ -117,9 +114,9 @@ object ProjectController  extends Controller {
       while (iteratorCampaign.hasNext()) {
         val iteratorTestPage = iteratorCampaign.next().getTestCases().iterator
         while(iteratorTestPage.hasNext()){
-          val testPage =iteratorTestPage.next()
+          val testPage = iteratorTestPage.next()
           if (testPage.getName().equals(tName)) {
-            pageReport = ProjectHtmlReportGenerator.generatePageReport(null, testPage);
+            pageReport = HTMLReporter.getTestPageHTMLReport(testPage);
           }
         }
       }
@@ -127,6 +124,4 @@ object ProjectController  extends Controller {
         body = Enumerator(new StringOps(pageReport).getBytes()))
     }
   }
-
-
 }

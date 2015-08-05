@@ -2,23 +2,15 @@
 	{
 		"id": "1",
 		"name" : "Value",
-		"kind":"string",	
+		"kind": "string",	
 		"category" : "value",
-		"regex" : "\\*([\\w\\W]+)\\*",
+		"regex" : "\\*([\\$?\\w\\W]+)\\*",
 		"replacement" : "@[[1:value:string]]"
-	},
-	{
-		"id": "2",
-		"name" : "Variable",
-		"kind":"string",	
-		"category" : "variable",
-		"regex" : "\\$(\\w+)",
-		"replacement" : "@[[2:variable:string]]"
 	},
 	{
 		"id": "3",
 		"name" : "Service",
-		"type" : "service",
+		"kind" : "service",
 		"category": "component",
 		"regex": "",
 		"replacement" : "@[[3:component:service]]"
@@ -26,23 +18,23 @@
 	{
 		"id": "4",
 		"name" : "WebPageItem",
-		"type" : "web",
+		"kind" : "web",
 		"category": "component",
 		"regex": "\\*(\\w+).(\\w+)\\*",
 		"replacement" : "@[[4:component:web]]"
 	},
 	{
 		"id": "5",
-		"name" : "WebPageItem",
-		"type" : "entity",
+		"name" : "EntityItem",
+		"kind" : "entity",
 		"category": "component",
 		"regex": "",
-		"replacement" : "@[[3:component:entity]]"
+		"replacement" : "@[[5:component:entity]]"
 	},
 	{
 		"id": "6",
 		"name" : "SwingComponent",
-		"type" : "swing",
+		"kind" : "swing",
 		"category": "component",
 		"regex": "\\*(\\w+).(\\w+)\\*",
 		"replacement" : "@[[6:component:swing]]"

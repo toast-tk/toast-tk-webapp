@@ -7,6 +7,7 @@ import controllers.mongo.AutoSetupConfig
 import play.api.libs.json.{JsError, JsObject, JsArray, Json}
 import play.api.mvc.{Controller, Action}
 import toast.engine.ToastRuntimeJavaWrapper
+import scala.collection.JavaConversions._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 object RepositoryController extends Controller {
@@ -77,6 +78,19 @@ object RepositoryController extends Controller {
     }
   }
 
+  /**
+  *
+  * Delete an auto config
+  */
+  def deleteObject = Action(parse.json) { implicit request =>
+    request.body.validate[String].map {
+      case autoSetupId: String =>
+        conn.deleteObject(autoSetupId)
+        Ok("object deleted !")
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+    }
+  }
 
   /**
    * Save Service config block with test refactoring

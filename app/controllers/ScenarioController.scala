@@ -7,7 +7,6 @@ import com.synaptix.toast.runtime.core.parse._
 import com.synaptix.toast.dao.domain.impl.test.TestPage
 import com.synaptix.toast.dao.service.dao.access.project._
 import com.synaptix.toast.dao.domain.impl.report._
-import com.synaptix.toast.automation.report.ProjectHtmlReportGenerator
 
 import controllers.mongo._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
