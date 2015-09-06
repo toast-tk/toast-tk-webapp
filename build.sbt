@@ -8,7 +8,7 @@ scalaVersion := "2.10.3"
 //resolvers += "SNCF Maven Releases Repository" at "http://s76cllcfakr.si.fret.sncf.fr:8090/nexus/content/repositories/releases/"
 
 // LOCAL Resolver
-resolvers += "Local m2 Repository" at "file:///D:/Apps/m2/repository"
+resolvers += "Local m2 Repository" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
 
 libraryDependencies ++= Seq(
   "org.reactivemongo" %% "reactivemongo" % "0.10.0",
