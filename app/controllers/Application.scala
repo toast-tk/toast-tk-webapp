@@ -82,8 +82,7 @@ object Application extends Controller {
       repository => {
         def wikifiedObject(page: AutoSetupConfig): JsValue = {
           var res = "page id:" + page.id.get + "\n"
-          res = res + "|| auto setup || " + page.name + " ||\n"
-          res = res + "| " + page.cType + " | " + page.name + " |\n"
+          res = res + "|| setup || " +  page.cType + " || " + page.name + " ||\n"
           res = res + "| name | type | locator |\n"
           for (row <- page.rows.getOrElse(List())) {
             res = res + "|" + row.name + "|" + row.elementType + "|" + row.locator + "|\n"

@@ -98,9 +98,14 @@ object ProjectController  extends Controller {
   }
 
   def loadProjectReport(name: String) = Action {
-    val report = HTMLReporter.getProjectHTMLReport(name)
-    SimpleResult(header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
+    request => {
+      val host = request.host;
+      println(host);
+      val report = HTMLReporter.getProjectHTMLReport(host, name)
+      SimpleResult(header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
                   body = Enumerator(new StringOps(report).getBytes()))
+
+    }
   }
 
   def loadTestReport() = Action {
