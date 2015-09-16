@@ -2,7 +2,7 @@ package controllers
 
 import com.synaptix.toast.dao.domain.impl.report.{Project, Campaign}
 import com.synaptix.toast.dao.domain.impl.test.TestPage
-import com.synaptix.toast.runtime.core.parse.TestParser
+import com.synaptix.toast.runtime.parse.TestParser
 import controllers.mongo.Scenario
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.json.{Json, JsError}
@@ -10,7 +10,7 @@ import play.api.mvc.{ResponseHeader, SimpleResult, Action, Controller}
 import toast.engine.ToastRuntimeJavaWrapper
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.collection.immutable.StringOps
-import com.synaptix.toast.automation.report.HTMLReporter
+import com.synaptix.toast.runtime.report.HTMLReporter
 
 case class ScenarioWrapper(id: Option[String], name: Option[String], scenario: Option[Scenario])
 case class Cpgn(id: Option[String], name: String, scenarii: List[ScenarioWrapper])

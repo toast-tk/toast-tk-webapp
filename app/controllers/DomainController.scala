@@ -6,7 +6,8 @@ import play.api.Play.current
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import play.api.mvc._
-import com.synaptix.toast.runtime.core.runtime._
+import com.synaptix.toast.runtime._
+import com.synaptix.toast.runtime.bean._
 import scala.collection.JavaConversions._
 import org.apache.commons.io.IOUtils
 import java.nio.charset.Charset
