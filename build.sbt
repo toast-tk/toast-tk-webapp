@@ -6,7 +6,7 @@ scalaVersion := "2.11.7"
 
 resolvers += "Synaptix" at "http://nexus.synaptix-labs.com/content/repositories/snapshots/"
 
-resolvers += "Typesafe" at http://repo.typesafe.com/typesafe/releases/
+resolvers += "Typesafe" at "http://repo.typesafe.com/typesafe/releases/"
 
 libraryDependencies ++= Seq(
   "org.reactivemongo" % "reactivemongo_2.11" % "0.11.7",
