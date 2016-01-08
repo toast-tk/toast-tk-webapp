@@ -1,12 +1,12 @@
 package controllers
 
 import com.synaptix.toast.dao.domain.impl.report.{Project, Campaign}
-import com.synaptix.toast.dao.domain.impl.test.TestPage
+import com.synaptix.toast.dao.domain.impl.test.block.TestPage
 import com.synaptix.toast.runtime.parse.TestParser
 import controllers.mongo.Scenario
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.json.{Json, JsError}
-import play.api.mvc.{ResponseHeader, SimpleResult, Action, Controller}
+import play.api.mvc.{ResponseHeader, Result, Action, Controller}
 import toast.engine.ToastRuntimeJavaWrapper
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.collection.immutable.StringOps
@@ -55,7 +55,7 @@ object ProjectController  extends Controller {
     val parser = new TestParser()
 
     def parseTestPage(scenario: Scenario, wikiScenario: String): TestPage = {
-      val testPage = parser.parseString(wikiScenario)
+      val testPage = parser.readString(wikiScenario, scenario.name)
       scenario.id match {
         case None => {}
         case Some(id) => testPage.setId(id)
@@ -98,13 +98,10 @@ object ProjectController  extends Controller {
   }
 
   def loadProjectReport(name: String) = Action {
-    request => {
-      val host = request.host;
-      println(host);
-      val report = HTMLReporter.getProjectHTMLReport(host, name)
-      SimpleResult(header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
+    implicit request => {
+    val report = HTMLReporter.getProjectHTMLReport(name)
+    Result(header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
                   body = Enumerator(new StringOps(report).getBytes()))
-
     }
   }
 
@@ -125,7 +122,7 @@ object ProjectController  extends Controller {
           }
         }
       }
-      SimpleResult( header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
+      Result( header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
         body = Enumerator(new StringOps(pageReport).getBytes()))
     }
   }
