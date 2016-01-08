@@ -4,7 +4,7 @@ package controllers
 import boot.AppBoot
 
 import com.synaptix.toast.runtime.parse._
-import com.synaptix.toast.dao.domain.impl.test.TestPage
+import com.synaptix.toast.dao.domain.impl.test.block.TestPage
 import com.synaptix.toast.dao.service.dao.access.project._
 import com.synaptix.toast.dao.domain.impl.report._
 
