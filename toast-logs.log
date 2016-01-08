@@ -1,0 +1,31 @@
+2016-01-08 15:33:04,274 WARN re.ap.MongoDriver [ForkJoinPool-1-worker-1] No mongo-async-driver configuration found
+2016-01-08 15:33:04,516 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-4] The node set is now available
+2016-01-08 15:33:04,537 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-4] The primary is now available
+2016-01-08 15:34:02,317 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-3] Received Close message, going to close connections and moving on stage Closing
+2016-01-08 15:34:02,378 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-3] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#1571841328] is stopping.
+2016-01-08 15:34:02,382 WARN re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-3] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#1571841328] stopped.
+2016-01-08 15:36:19,414 WARN re.ap.MongoDriver [ForkJoinPool-1-worker-1] No mongo-async-driver configuration found
+2016-01-08 15:36:19,700 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-8] The node set is now available
+2016-01-08 15:36:19,703 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-8] The primary is now available
+2016-01-08 16:53:48,566 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-7] Received Close message, going to close connections and moving on stage Closing
+2016-01-08 16:53:48,617 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-7] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#989592504] is stopping.
+2016-01-08 16:53:48,620 WARN re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-7] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#989592504] stopped.
+2016-01-08 16:56:58,645 WARN re.ap.MongoDriver [ForkJoinPool-1-worker-1] No mongo-async-driver configuration found
+2016-01-08 16:56:58,861 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-6] The node set is now available
+2016-01-08 16:56:58,864 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-6] The primary is now available
+2016-01-08 17:05:03,426 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-4] Received Close message, going to close connections and moving on stage Closing
+2016-01-08 17:05:03,489 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-4] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#817972488] is stopping.
+2016-01-08 17:05:03,494 WARN re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-4] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#817972488] stopped.
+2016-01-08 17:21:21,814 WARN re.ap.MongoDriver [ForkJoinPool-2-worker-1] No mongo-async-driver configuration found
+2016-01-08 17:21:22,037 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-2] The node set is now available
+2016-01-08 17:21:22,039 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-2] The primary is now available
+2016-01-08 17:21:34,903 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-9] class com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine type has been registered to Morphia !
+2016-01-08 17:21:34,904 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-9] class com.synaptix.toast.dao.domain.impl.test.block.line.ComponentConfigLine type has been registered to Morphia !
+2016-01-08 17:21:34,911 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-9] class com.synaptix.toast.dao.domain.impl.test.block.TestPage type has been registered to Morphia !
+2016-01-08 17:21:34,914 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-9] class com.synaptix.toast.dao.domain.impl.report.Campaign type has been registered to Morphia !
+2016-01-08 17:21:34,915 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-9] class com.synaptix.toast.dao.domain.impl.team.GroupImpl type has been registered to Morphia !
+2016-01-08 17:21:34,917 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-9] class com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine type has been registered to Morphia !
+2016-01-08 17:21:34,919 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-9] class com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl type has been registered to Morphia !
+2016-01-08 17:21:34,919 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-9] class com.synaptix.toast.dao.domain.impl.repository.ElementImpl type has been registered to Morphia !
+2016-01-08 17:21:34,921 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-9] class com.synaptix.toast.dao.domain.impl.report.Project type has been registered to Morphia !
+2016-01-08 17:21:34,921 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-9] class com.synaptix.toast.dao.domain.impl.test.block.line.TestLine type has been registered to Morphia !

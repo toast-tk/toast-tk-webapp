@@ -6,6 +6,7 @@ import play.api.libs.json.Writes._
 import play.api.libs.json._
 import reactivemongo.api.{MongoDriver, _}
 import reactivemongo.bson.BSONDocument
+import reactivemongo.api.commands.UpdateWriteResult
 import reactivemongo.bson.Producer.nameValue2Producer
 import reactivemongo.api.collections.bson.BSONCollection
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -16,7 +17,6 @@ import controllers.parsers.EntityField
 import controllers.parsers.WebPageElement
 import controllers.parsers.WebPageElementBSONWriter
 import controllers.parsers.EntityFieldBSONWriter
-import reactivemongo.core.commands.LastError
 import reactivemongo.bson.BSONObjectID
 import boot.AppBoot
 
@@ -56,7 +56,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
         case Success(_) => println("successfully inserted configuration !")
       }
     }else{
-      collection.update(BSONDocument("_id" -> BSONObjectID(conf.id.get)), conf).onComplete {
+      collection.update(BSONDocument("_id" -> BSONObjectID(conf.id.get)), conf, upsert=true).onComplete {
         case Failure(e) => throw e
         case Success(_) => println("successfully saved configuration !")
       }
@@ -173,7 +173,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     val collection = open_collection("repository")
     val elementsToPersist: List[EntityField] = conf.rows.getOrElse(List())
     val elementAsBsonDocuments: List[BSONDocument] = for(element <- elementsToPersist) yield EntityFieldBSONWriter.write(element)
-    val listOfFutures: List[Future[LastError]] = for(element <- elementAsBsonDocuments) yield saveContainerElement(element)
+    val listOfFutures: List[Future[UpdateWriteResult]] = for(element <- elementAsBsonDocuments) yield saveContainerElement(element)
     val futureList = Future.sequence(listOfFutures)
     //once we've completed saving elements
     //we can check here through last errors if everything has been saved !
@@ -197,7 +197,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
         case Failure(e) => throw e
         case Success(_) => println("[+] successfully inserted repository updates !")
       }
-      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(autoSetupWithRefs.id.get)), autoSetupWithRefs).onComplete {
+      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(autoSetupWithRefs.id.get)), autoSetupWithRefs, upsert = true).onComplete {
         case Failure(e) => throw e
         case Success(_) => println("[=] successfully saved repository updates !")
       }
@@ -208,7 +208,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     val collection = open_collection("repository")
     val elementsToPersist: List[WebPageElement] = conf.rows.getOrElse(List())
     val elementAsBsonDocuments: List[BSONDocument] = for(element <- elementsToPersist) yield WebPageElementBSONWriter.write(element)
-    val listOfFutures: List[Future[LastError]] = for(element <- elementAsBsonDocuments) yield saveContainerElement(element)
+    val listOfFutures: List[Future[UpdateWriteResult]] = for(element <- elementAsBsonDocuments) yield saveContainerElement(element)
     val futureList = Future.sequence(listOfFutures)
     //once we've completed saving elements
     //we can check here through last errors if everything has been saved !
@@ -232,7 +232,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
         case Failure(e) => throw e
         case Success(_) => println("[+] successfully inserted repository updates !")
       }
-      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(autoSetupWithRefs.id.get)),autoSetupWithRefs).onComplete {
+      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(autoSetupWithRefs.id.get)),autoSetupWithRefs, upsert = true).onComplete {
         case Failure(e) => throw e
         case Success(_) => println("[=] successfully saved repository updates !")
       }
@@ -242,9 +242,9 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   /**
    * We return a future
    */
-  def saveContainerElement(element: BSONDocument): Future[LastError] = {
+  def saveContainerElement(element: BSONDocument): Future[UpdateWriteResult] = {
       val collection = open_collection("elements")
-      collection.update(element)
+      collection.update(BSONDocument("_id" -> element.get("_id").get),element,upsert=true)
   }
 
 
@@ -271,7 +271,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
         case Failure(e) => throw e
         case Success(_) => println("[+] successfully inserted scanario !")
       }
-      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(scenario.id.get)), updateScenario(scenario)).onComplete {
+      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(scenario.id.get)), updateScenario(scenario), upsert=true).onComplete {
         case Failure(e) => throw e
         case Success(_) => println("successfully saved scanario !")
       }
@@ -285,7 +285,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
         case Failure(e) => throw e
         case Success(_) => println("[+] successfully inserted scanario !")
       }
-      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(scenario.id.get)), scenario).onComplete {
+      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(scenario.id.get)), scenario, upsert=true).onComplete {
         case Failure(e) => throw e
         case Success(_) => println("successfully saved scanario !")
       }

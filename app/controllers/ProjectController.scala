@@ -1,7 +1,7 @@
 package controllers
 
 import com.synaptix.toast.dao.domain.impl.report.{Project, Campaign}
-import com.synaptix.toast.dao.domain.impl.test.block.TestPage
+import com.synaptix.toast.dao.domain.impl.test.block.ITestPage
 import com.synaptix.toast.runtime.parse.TestParser
 import controllers.mongo.Scenario
 import play.api.libs.iteratee.Enumerator
@@ -38,7 +38,7 @@ object ProjectController  extends Controller {
         val scenarii = campaign.getTestCases().iterator
         while (scenarii.hasNext()) {
           val scenario = scenarii.next()
-          scns = ScenarioWrapper(Some(scenario.getIdAsString()),Some(scenario.getPageName()), None) :: scns
+          scns = ScenarioWrapper(Some(scenario.getIdAsString()),Some(scenario.getName()), None) :: scns
         }
         cmpgs = Cpgn(Some(campaign.getIdAsString()), campaign.getName(), scns.reverse) :: cmpgs
       }
@@ -54,14 +54,13 @@ object ProjectController  extends Controller {
   def saveProject() = Action(parse.json) { implicit request =>
     val parser = new TestParser()
 
-    def parseTestPage(scenario: Scenario, wikiScenario: String): TestPage = {
+    def parseTestPage(scenario: Scenario, wikiScenario: String): ITestPage = {
       val testPage = parser.readString(wikiScenario, scenario.name)
       scenario.id match {
         case None => {}
         case Some(id) => testPage.setId(id)
       }
       testPage.setName(scenario.name)
-      testPage.setPageName(scenario.name)
       testPage
     }
 
@@ -70,12 +69,12 @@ object ProjectController  extends Controller {
       for (cpgn <- campaigns) {
         val campaign = new Campaign()
         campaign.setName(cpgn.name)
-        val testPagelist = new java.util.ArrayList[TestPage]()
+        val testPagelist = new java.util.ArrayList[ITestPage]()
         val testPages = (for (c <- campaigns; wrapper <- c.scenarii) yield parseTestPage(wrapper.scenario.get, ScenarioController.wikifiedScenario(wrapper.scenario.get).as[String]))
         for (tPage <- testPages) {
           testPagelist.add(tPage)
         }
-        campaign.setTestCasesImpl(testPagelist)
+        campaign.setTestCases(testPagelist)
         list.add(campaign)
       }
       list

@@ -9,15 +9,20 @@ resolvers += "Synaptix" at "http://nexus.synaptix-labs.com/content/repositories/
 resolvers += "Typesafe" at "http://repo.typesafe.com/typesafe/releases/"
 
 libraryDependencies ++= Seq(
+  "com.google.code.gson" % "gson" % "2.5",
   "org.reactivemongo" % "reactivemongo_2.11" % "0.11.7",
   "org.webjars" % "jquery" % "1.7.2",
   "org.webjars" % "angularjs" % "1.3.0",
   "org.webjars" % "requirejs" % "2.1.1",
   "org.webjars" % "webjars-play" % "2.1.0-1",
   "org.webjars" % "bootstrap" % "3.2.0-1",
+  "com.synaptix.toast" % "toast-tk-runtime-api" % "1.0.0-SNAPSHOT",
   "com.synaptix.toast" % "toast-tk-runtime" % "1.0.0-SNAPSHOT",
+  "com.synaptix.toast" % "toast-tk-adapters-api" % "1.0.0-SNAPSHOT",
   "com.synaptix.toast" % "toast-tk-adapters" % "1.0.0-SNAPSHOT",
   "com.synaptix.toast" % "toast-tk-dao" % "1.0.0-SNAPSHOT",
+  "com.synaptix.toast" % "toast-tk-dao-api" % "1.0.0-SNAPSHOT",
+  "com.github.jmkgreen.morphia" % "morphia" % "1.2.3",
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0"
 )
 

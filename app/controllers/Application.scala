@@ -27,7 +27,7 @@ object Application extends Controller {
 
   def login() = Action(parse.json) { implicit request =>
     //Check credentials and so on...
-    Ok(views.html.index()).withSession("connected" -> "user goes here !")
+    Ok(views.html.index()).withSession(request2session + ("connected" -> "user goes here !"))
   }
 
   def logout() = Action {
