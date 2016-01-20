@@ -74,7 +74,7 @@ object RepositoryController extends Controller {
         } yield conn.saveAutoConfiguration(conf)
         Ok("auto configuration saved !")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 
@@ -88,7 +88,7 @@ object RepositoryController extends Controller {
         conn.deleteObject(autoSetupId)
         Ok("object deleted !")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 
@@ -102,7 +102,7 @@ object RepositoryController extends Controller {
         //conn.refactorScenarii(config)
         Ok("auto configuration saved !")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 
@@ -116,7 +116,7 @@ object RepositoryController extends Controller {
         conn.refactorScenarii(config)
         Ok("auto configuration saved !")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 
@@ -135,7 +135,7 @@ object RepositoryController extends Controller {
         } yield conn.saveAutoConfiguration(conf)
         Ok("auto configuration saved !")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 

@@ -53,7 +53,7 @@ object Application extends Controller {
         conn.saveAutoConfiguration(AutoSetupConfig(None, page.name, "swing page", Some(pageElements)))
         Ok("received inspected page...")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 
@@ -65,7 +65,7 @@ object Application extends Controller {
         conn.savePlainScenario(logInstance)
         Ok("scenario saved !")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 
@@ -242,7 +242,7 @@ object Application extends Controller {
         }
         Ok("Auto configuration saved !")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 }

@@ -92,7 +92,7 @@ object ProjectController  extends Controller {
         Ok("project saved !") 
       }
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 

@@ -35,7 +35,7 @@ object ConfigurationController extends Controller {
         } yield conn.saveConfiguration(conf)
         Ok("configuration saved !")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 

@@ -59,8 +59,8 @@ define(["angular"], function (angular) {
                 playRoutes.controllers.ScenarioController.loadScenarioCtx($scope.selectedType).get().then(function (response) {
                     var scenarioDescriptor = response.data;
                     var newScenario = {
-                        type: $scope.selectedType.type,
-                        driver: $scope.selectedType.name, //related service
+                        type: $scope.selectedType,
+                        driver: $scope.selectedType, //related service
                         columns: scenarioDescriptor,
                         rows: []
                     }

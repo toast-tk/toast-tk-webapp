@@ -4,7 +4,9 @@ version := "1.3-rc4"
 
 scalaVersion := "2.11.7"
 
-resolvers += "Synaptix" at "http://nexus.synaptix-labs.com/content/repositories/snapshots/"
+resolvers += "SNCF" at "http://x64ertbidv3.si.fret.sncf.fr:8091/nexus/content/repositories/snapshots/"
+
+//resolvers += "Synaptix" at "http://nexus.synaptix-labs.com/content/repositories/snapshots/"
 
 resolvers += "Typesafe" at "http://repo.typesafe.com/typesafe/releases/"
 
@@ -16,13 +18,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "requirejs" % "2.1.1",
   "org.webjars" % "webjars-play" % "2.1.0-1",
   "org.webjars" % "bootstrap" % "3.2.0-1",
-  "com.synaptix.toast" % "toast-tk-runtime-api" % "1.0.0-SNAPSHOT",
   "com.synaptix.toast" % "toast-tk-runtime" % "1.0.0-SNAPSHOT",
-  "com.synaptix.toast" % "toast-tk-adapters-api" % "1.0.0-SNAPSHOT",
-  "com.synaptix.toast" % "toast-tk-adapters" % "1.0.0-SNAPSHOT",
-  "com.synaptix.toast" % "toast-tk-dao" % "1.0.0-SNAPSHOT",
-  "com.synaptix.toast" % "toast-tk-dao-api" % "1.0.0-SNAPSHOT",
-  "com.github.jmkgreen.morphia" % "morphia" % "1.2.3",
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0"
 )
 

@@ -127,7 +127,7 @@ object ScenarioController extends Controller {
         conn.deleteScenarii(scenariiId)
         Ok("scenario deleted !")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 
@@ -140,7 +140,7 @@ object ScenarioController extends Controller {
         conn.saveScenario(scenario)
         Ok("scenario saved !")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 
