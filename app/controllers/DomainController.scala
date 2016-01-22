@@ -1,16 +1,42 @@
  
 package controllers
 
+import play.api.Play
+import play.api.Play.current
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import play.api.mvc._
-
+import com.synaptix.toast.runtime._
+import com.synaptix.toast.runtime.bean._
+import scala.collection.JavaConversions._
+import org.apache.commons.io.IOUtils
+import java.nio.charset.Charset
+import java.io.File
 
 object DomainController extends Controller with InnerDomainController
 
 trait InnerDomainController {
   this: Controller =>
 
+  val actionItems = ActionItemDescriptionCollector.initActionItems().toList
+  type ActionCategory = ActionItem.ActionCategoryEnum
+  type ActionType = ActionItem.ActionTypeEnum
+  
+  def typeDescriptor () = Action{
+    val jsonDescriptor = Play.application.resourceAsStream("type_descriptor.json")
+    val jsonString = IOUtils.toString(jsonDescriptor.get, "UTF-8")
+    Ok(Json.parse(jsonString))
+  }
+
+  def findActionItemByCategoryAndType(actionCategory: ActionCategory, actionType: ActionType) = {
+    val actionItem: ActionItem = actionItems.filter(actionItem => actionItem.kind == actionType && actionItem.category == actionCategory).head
+    actionItem
+  }
+
+    def findActionItemByCategoryAndType(actionCategory: String, actionType: String) = {
+    val actionItem: ActionItem = actionItems.filter(actionItem => actionItem.kind.name() == actionType && actionItem.category.name() == actionCategory).head
+    actionItem
+  }
 
   def autoSetupCtxProvider(setupType: String): JsArray = {
     setupType match {
@@ -42,71 +68,5 @@ trait InnerDomainController {
     }
   }
 
-  /**
-   * Return the regex value for a type in an automation sentence
-   *
-   * @param tagType
-   */
-  def sentenceChunkReplacement(tagType:String) = {
-    tagType match {
-      case "Value" => """\\*([\\w\\W]+)\\*"""
-      case "Variable" => """(\\$\\w+)"""
-      case "WebPageItem" => """(\\w+).(\\w+)"""
-      case "SwingComponent" => """(\\w+).(\\w+)"""
-      case _ => tagType
-    }
-  }
-
-
-  /**
-   */
-  def getTypedPatternRegexReplacement(serviceType: String, word:String): String = {
-    serviceType match {
-      case "swing" => word match {
-        case "([\\w\\W]+)" |"""(\w+)""" | "\\*([\\w\\W]+)\\*" | """\\*(\\w+)\\*""" | """\*([\w\W]+)\*""" | """([\w\W]+)""" | """([\\w\\W]+)""" => "@[[1:string:Value]]"
-        case "\\$(\\w+)" | "(\\$\\w+)" | """(\$[\w]+)"""| """(\\$\\w+)""" | """(\$\w+)""" => "@[[2:variable ($name):Variable]]"
-        case "(\\w+).(\\w+)" | "\\*(\\w+).(\\w+)\\*" | """\*(\w+).(\w+)\*""" | """\\*(\\w+).(\\w+)\\*""" => "@[[6:reference:SwingComponent]]"
-        case _ => word
-      }
-      case "web" => word match {
-        case "([\\w\\W]+)" |"""(\w+)""" | "\\*([\\w\\W]+)\\*" | """\\*(\\w+)\\*""" | """\*([\w\W]+)\*""" | """([\w\W]+)""" | """([\\w\\W]+)""" => "@[[1:string:Value]]"
-        case "\\$(\\w+)" | "(\\$\\w+)" | """(\$[\w]+)""" | """(\\$\\w+)""" | """(\$\w+)""" => "@[[2:variable ($name):Variable]]"
-        case "(\\w+).(\\w+)" | "\\*(\\w+).(\\w+)\\*" | """\*(\w+).(\w+)\*""" | """\\*(\\w+).(\\w+)\\*""" => "@[[4:reference:WebPageItem]]"
-        case _ => word
-      }
-      case "service" => word match {        
-        case "([\\w\\W]+)" | """(\w+)""" | "\\*([\\w\\W]+)\\*" | """\\*(\\w+)\\*""" | """\*([\w\W]+)\*""" | """([\w\W]+)""" | """([\\w\\W]+)""" => "@[[1:string:Value]]"
-        case "\\$(\\w+)" | "(\\$\\w+)" | """(\$[\w]+)"""| """(\\$\\w+)""" | """(\$\w+)""" => "@[[2:variable ($name):Variable]]"
-        case _ => word
-      }
-      case _ => word
-    }
-  }
-
-  /*
-   *
-   */
-  def getPlainPatternRegexReplacement(serviceType: String, word:String): String = {
-    serviceType match {
-      case "swing" => word match {
-        case "([\\w\\W]+)" | """(\w+)""" | "\\*([\\w\\W]+)\\*" | """\\*(\\w+)\\*""" | """\*([\w\W]+)\*""" | """([\w\W]+)""" | """([\\w\\W]+)""" => "Value"
-        case "\\$(\\w+)" | "(\\$\\w+)" | """(\$[\w]+)""" | """(\\$\\w+)""" | """(\$\w+)""" => "Variable"
-        case "(\\w+).(\\w+)" | "\\*(\\w+).(\\w+)\\*"| """\*(\w+).(\w+)\*"""  | """\\*(\\w+).(\\w+)\\*"""=> "SwingComponent"
-        case _ => word
-      }
-      case "web" => word match {
-        case "([\\w\\W]+)" | """(\w+)""" | "\\*([\\w\\W]+)\\*" | """\\*(\\w+)\\*""" | """\*([\w\W]+)\*""" | """([\w\W]+)""" | """([\\w\\W]+)""" => "Value"
-        case "\\$(\\w+)" | "(\\$\\w+)" | """(\$[\w]+)""" | """(\\$\\w+)""" | """(\$\w+)""" => "Variable"
-        case "(\\w+).(\\w+)" | "\\*(\\w+).(\\w+)\\*" | """\*(\w+).(\w+)\*""" | """\\*(\\w+).(\\w+)\\*""" => "WebPageItem"
-        case _ => word
-      }
-      case "service" => word match {
-        case "([\\w\\W]+)" | """(\w+)""" | "\\*([\\w\\W]+)\\*" | """\\*(\\w+)\\*""" | """\*([\w\W]+)\*""" | """([\w\W]+)""" | """([\\w\\W]+)""" => "Value"
-        case "\\$(\\w+)" | "(\\$\\w+)" | """(\$[\w]+)""" | """(\\$\\w+)""" | """(\$\w+)""" => "Variable"
-        case _ => word
-      }
-      case _ => word
-    }
-  }
 }
 

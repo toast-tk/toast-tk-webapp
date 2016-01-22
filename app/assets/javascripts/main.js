@@ -38,22 +38,28 @@
         "jquery-ui" : "//code.jquery.com/ui/1.9.2/jquery-ui.min",
         "angular": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular",
         "angularRoute": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route",
-	    "ui-sortable" : ['./libs/sortable'],
+	       "ui-sortable" : ['./libs/sortable'],
         "underscore" : "//underscorejs.org/underscore",
         "qTags": ['./libs/jquery-textntags'],
         "angular-ui-tree": ['/libs/angular-ui-tree.min'],
-        "ui.bootstrap": ['/libs/ui-bootstrap-tpls-0.12.1']
+        "ui.bootstrap": ['/libs/ui-bootstrap-tpls-0.12.1'],
+        "xeditable": ['libs/xeditable']
     }
   });
 
   require(["angular", "./services/playRoutes", 
-          "./controllers/login", "./controllers/editor", "./controllers/scenario", 
-          "./controllers/configuration","./controllers/repository", "./controllers/home",
-          "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
-          "./libs/angular-ui-tree.min", "./libs/ui-bootstrap-tpls-0.12.1", "angularRoute"], 
+            "./controllers/login", "./controllers/editor", "./controllers/scenario", 
+            "./controllers/configuration","./controllers/repository", "./controllers/home",
+            "./services/client-service",
+            "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
+            "./libs/angular-ui-tree.min", "./libs/ui-bootstrap-tpls-0.12.1", "angularRoute",
+            "./libs/xeditable"], 
           function(a, b, login, editor, scenario, configuration, repository, home) {
 
-              var app = angular.module("app", ['ngRoute', "play.routing", "red.components", "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap"]);
+              var app = angular.module("app", 
+                ['ngRoute', "play.routing", 
+                "tk.components", "tk.services",
+                "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable"]);
               app.controller("LoginCtrl", login.LoginCtrl);
               app.controller("MainCtrl", home.MainCtrl);
               app.controller("ConfigurationCtrl", configuration.ConfigurationCtrl);
@@ -69,6 +75,12 @@
                   $routeProvider.when("/project",{ templateUrl: "assets/html/project.html", controller: "ProjectCtrl"});
                   $routeProvider.otherwise("/main");
               }]);
+
+              app.run(function(editableOptions) {
+                editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
+                editableOptions.mode = 'popup';
+              });
+
               angular.bootstrap(document, ["app"]);
           });
 })();

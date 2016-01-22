@@ -1,33 +1,27 @@
 name := "toast-tk-webapp"
 
-version := "1.3-rc3"
+version := "1.3-rc4"
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.11.7"
 
-// Synaptix Resolver
-//resolvers += "Synaptix Maven Releases Repository" at "http://uri/repositories/releases/"
+resolvers += "SNCF" at "http://x64ertbidv3.si.fret.sncf.fr:8091/nexus/content/repositories/snapshots/"
 
-// SNCF Resolver
-resolvers += "SNCF Maven Releases Repository" at "http://s76cllcfakr.si.fret.sncf.fr:8090/nexus/content/repositories/releases/"
+//resolvers += "Synaptix" at "http://nexus.synaptix-labs.com/content/repositories/snapshots/"
 
-// LOCAL Resolver
-//resolvers += Resolver.mavenLocal
+resolvers += "Typesafe" at "http://repo.typesafe.com/typesafe/releases/"
 
 libraryDependencies ++= Seq(
-  "org.reactivemongo" %% "reactivemongo" % "0.10.0",
+  "com.google.code.gson" % "gson" % "2.5",
+  "org.reactivemongo" % "reactivemongo_2.11" % "0.11.7",
   "org.webjars" % "jquery" % "1.7.2",
   "org.webjars" % "angularjs" % "1.3.0",
   "org.webjars" % "requirejs" % "2.1.1",
   "org.webjars" % "webjars-play" % "2.1.0-1",
   "org.webjars" % "bootstrap" % "3.2.0-1",
-  "com.synaptix.toast" % "toast-tk-runtime" % "1.3-rc3",
-  "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.47.0"
-)     
+  "com.synaptix.toast" % "toast-tk-runtime" % "1.0.0-SNAPSHOT",
+  "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0"
+)
 
-// Run r.js (RequireJS optimizer) when building the app for production
-//pipelineStages := Seq(rjs)
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-// The r.js optimizer won't find jsRoutes so we must tell it to ignore it
-//RjsKeys.paths += ("jsRoutes" -> ("/jsroutes" -> "empty:"))
-
-play.Project.playScalaSettings
+//play.Project.playScalaSettings

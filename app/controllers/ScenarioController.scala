@@ -3,11 +3,10 @@ package controllers
 
 import boot.AppBoot
 
-import com.synpatix.toast.runtime.core.parse._
-import com.synaptix.toast.dao.domain.impl.test.TestPage
+import com.synaptix.toast.runtime.parse._
+import com.synaptix.toast.dao.domain.impl.test.block.TestPage
 import com.synaptix.toast.dao.service.dao.access.project._
 import com.synaptix.toast.dao.domain.impl.report._
-import com.synaptix.toast.automation.report.ProjectHtmlReportGenerator
 
 import controllers.mongo._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -128,7 +127,7 @@ object ScenarioController extends Controller {
         conn.deleteScenarii(scenariiId)
         Ok("scenario deleted !")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 
@@ -141,7 +140,7 @@ object ScenarioController extends Controller {
         conn.saveScenario(scenario)
         Ok("scenario saved !")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 

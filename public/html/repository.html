@@ -25,43 +25,50 @@
 	</div>
   </div>
 </nav>
-<div class="container">
-  	<br>
-  	<br>
-
-  	<div  class="row">
-  		<div class="col-md-6">
-  			<h1> Object Repository </h1>
-  		</div>
-  		<div class="col-md-6">
-  			<span class="control pull-right"> 
-				Add a new <select ng-model="selectedAutoSetupConfigType" ng-options="type for type in run_config_types"></select> auto setup
+<div class="container" tk-slider>
+    <div class="section-header">
+        <div class="row">
+            <div class="col-md-6">
+                <span class="title">Object Repository</span>
+                <button type="button" id="" class="btn btn-default btn-xs hide slide-in-button">
+                    >>
+                </button>
+            </div>
+            <div class="col-md-6 pull-right">
+                <div class="pull-right">
+				Add a new <select ng-model="selectedAutoSetupConfigType" ng-options="type for type in run_config_types"></select> object
 				<button class="btn btn-primary btn-xs" data-ng-click="addAutoSetupConfig()">+</button>
-			</span>
-  		</div>
-  	<div>
-	<hr/>
-	<div class="row">
-		<div class="col-md-12">
-			<span class="pull-right">
-				Filter: <select ng-model="autoSetupConfigFilter" data-ng-options="type for type in run_config_types"></select>
-			</span>
-		</div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-md-4">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-if="autosetups.length == 0">
+
+    </div>
+	<div class="row" ng-if="autosetups.length > 0" tk-slider>
+		<div class="col-md-3 effectSideBar">
+            <div class="side-header">
+                Filter: <select ng-model="autoSetupConfigFilter" data-ng-options="type for type in run_config_types"></select>
+                <button type="button" class="btn btn-default btn-xs slide-out-button">
+                    <<
+                </button> 
+            </div>
 			<div ui-tree data-drag-enabled="false">
 			  <ol ui-tree-nodes="" ng-model="autosetups">
 			    <li ng-repeat="autosetup in autosetups | filter:autoSetupConfigFilter" ui-tree-node>
-			      <div class="title" ng-click="editRepositoryObject(autosetup)">
-			        {{autosetup.name}}
+			      <div class="title row" ng-click="editRepositoryObject(autosetup)">
+			     	 <div class="col-md-9 wrap-word">
+                        {{autosetup.name}}
+                    </div>
+			        <a class="pull-right btn btn-primary btn-xs" data-nodrag="" ng-click="deleteObject(autosetup)">
+                    	<span class="glyphicon glyphicon-remove"></span>
+                  	</a>
 			      </div>
 			    </li>
 			  </ol>
 			</div>
 		</div>
-		<div class="col-md-8">
+		<div class="col-md-9 effectContent">
 			<div class="dictionnary-block" ng-show="autosetup != undefined">
 				Type: <label>{{ autosetup.type }}</label> Name: <input type="text" placeholder="name" ng-model="autosetup.name"/>
 				<button class="btn btn-mini pull-right" data-ng-click="saveAutoConfigBlock(autosetup)">Save</button>
@@ -70,10 +77,11 @@
 						<td ng-repeat="c in autosetup.columns">
 							<span>{{c.name}}</span>
 						</td>
-						<td></td>
+						<td>
+							
+						</td>
 					</tr>
 					<tr ng-repeat="r in autosetup.rows">
-						<!--td ng-repeat="c in autosetup.columns">{{r[c.name]}}</td-->
 						<td ng-repeat="c in autosetup.columns">
 							<span ng-model="r[c.name]">
 								<ng-switch on="isArray(c.descriptor.type)">

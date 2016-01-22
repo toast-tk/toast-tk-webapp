@@ -10,6 +10,7 @@ object JavaScript extends Controller {
     Ok(
       Routes.javascriptRouter(varName)(
           controllers.routes.javascript.Application.login,
+          controllers.routes.javascript.DomainController.typeDescriptor,
           controllers.routes.javascript.ConfigurationController.saveConfiguration,
           controllers.routes.javascript.ConfigurationController.loadConfiguration,
           controllers.routes.javascript.RepositoryController.saveAutoConfig,
@@ -18,6 +19,7 @@ object JavaScript extends Controller {
           controllers.routes.javascript.RepositoryController.loadAutoConfiguration,
           controllers.routes.javascript.RepositoryController.loadServiceEntityRepository,
           controllers.routes.javascript.RepositoryController.loadWebPageRepository,
+          controllers.routes.javascript.RepositoryController.deleteObject,
           controllers.routes.javascript.Application.loadCtxTagData,
           controllers.routes.javascript.Application.loadAutoSetupCtx,
           controllers.routes.javascript.Application.loadCtxSentences,

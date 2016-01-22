@@ -1,5 +1,49 @@
 
+.container .effectContent{
+  margin-top: 10px;
+}
+
+.editable-controls select{
+  height: 40px !important;
+}
+
+.section-header{
+  margin-top: 45px;
+  padding: 10px;
+  background-color: rgba(217, 230, 242, 0.85);
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+.section-header .title{
+    font-size: large;
+}
+
+.side-header {
+  background: #f8faff;
+  border: 1px solid #dae2ea;
+  color: #7c9eb2;
+  padding: 10px 10px;
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+
+.action-item {
+  background-color: #f2f2f2;
+  -webkit-border-radius: 2px;
+  border-radius: 10px;
+  margin: 2px 2px 2px 2px;
+  color: #464646;
+  font-size: 14px;
+  position: relative;
+  padding: 3px 5px 3px 5px;
+  -webkit-box-shadow: 1px 1px 0px 0px #fff;
+  box-shadow: 1px 1px 0px 0px #fff;
+  line-height: 14px;
+}
 
 .textntags-wrapper {
   position: relative;
@@ -35,6 +79,12 @@
   .textntags-wrapper textarea{
     padding: 9px 8px;
   }
+}
+
+
+.wrap-word{
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .textntags-wrapper .textntags-tag-list {
@@ -142,21 +192,25 @@
 	float: right;
 }
 
-.table-striped>tbody>tr:nth-child(odd)>td, .table-striped>tbody>tr:nth-child(odd)>th{
+.table-striped>tbody>tr:nth-child(odd)>td, .table-striped>tbody>tr:nth-child(odd)>th {
   background-color: #DDDDDD;
 }
 
-.scenario{
+.scenario {
   border: 1px solid black;
   padding: 10px;
   margin-bottom: 10px;
+}
+
+.scenario select {
+  height: 29px;
 }
 
 .table-striped > tbody > tr:hover > td {
   background-color: #efefef;
 }
 
-.dictionnary-block{
+.dictionnary-block {
   border: 1px solid black;
   border-radius: 5px; 
   padding: 5px;
@@ -166,7 +220,7 @@
 /* Lib integration*/
 
 
-.angular-ui-tree-handle{
+.angular-ui-tree-handle {
   background: #f8faff;
   border: 1px solid #dae2ea;
   color: #7c9eb2;

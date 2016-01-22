@@ -158,10 +158,10 @@ object WebPageWikiParserTest extends WebPageWikiParser with App {
         println("saving => " + page)
 
         import scala.concurrent.ExecutionContext.Implicits.global
-        MongoConnector().getRepositoryCollection.save(page).onComplete {
+        /*MongoConnector().getRepositoryCollection.save(page).onComplete {
           case scala.util.Failure(e) => throw e
           case scala.util.Success(_) => println("successfully saved !")
-        }
+        }*/
       }
     }
   }

@@ -27,9 +27,7 @@ object Application extends Controller {
 
   def login() = Action(parse.json) { implicit request =>
     //Check credentials and so on...
-    Ok(views.html.index()).withSession(
-      session + ("connected" -> "user goes here !")
-    )
+    Ok(views.html.index()).withSession(request2session + ("connected" -> "user goes here !"))
   }
 
   def logout() = Action {
@@ -55,7 +53,7 @@ object Application extends Controller {
         conn.saveAutoConfiguration(AutoSetupConfig(None, page.name, "swing page", Some(pageElements)))
         Ok("received inspected page...")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 
@@ -67,7 +65,7 @@ object Application extends Controller {
         conn.savePlainScenario(logInstance)
         Ok("scenario saved !")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 
@@ -82,8 +80,7 @@ object Application extends Controller {
       repository => {
         def wikifiedObject(page: AutoSetupConfig): JsValue = {
           var res = "page id:" + page.id.get + "\n"
-          res = res + "|| auto setup || " + page.name + " ||\n"
-          res = res + "| " + page.cType + " | " + page.name + " |\n"
+          res = res + "|| setup || " +  page.cType + " || " + page.name + " ||\n"
           res = res + "| name | type | locator |\n"
           for (row <- page.rows.getOrElse(List())) {
             res = res + "|" + row.name + "|" + row.elementType + "|" + row.locator + "|\n"
@@ -110,37 +107,13 @@ object Application extends Controller {
     }
   }
 
-
-  def replacePatternByRegex(syntaxes: List[ConfigurationSyntax]): List[ConfigurationSyntax] = {
-    lazy val regex = """@\[\[(\d+):[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+:([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+)\]\]"""
-    def replacePatterns(sentence: String): String = {
-      var outputArray = List[String]()
-      val replacedSentence = sentence.replaceAll(regex, "@[[$1:_:$2]]")
-      val splittedSentence = replacedSentence.split("\\s+")
-      splittedSentence.foreach { word => outputArray = DomainController.sentenceChunkReplacement(word.replaceAll(regex, "$2")) :: outputArray}
-      outputArray.reverse.mkString(" ")
-    }
-    def replaceConfigurationSyntax(syntax: ConfigurationSyntax): ConfigurationSyntax = {
-      ConfigurationSyntax(syntax.typed_sentence,replacePatterns(syntax.typed_sentence))
-    }
-    for (syntax <- syntaxes) yield replaceConfigurationSyntax(syntax)
-  }
-
   /**
    * get all possible pattern sentences for a given scenario type
    */
   def loadCtxSentences(confType: String) = Action.async {
     conn.loadConfigurationSentences(confType).map {
       configurations => {
-        var res = List[ConfigurationSyntax]();
-        for (configuration <- configurations) {
-          for (row <- configuration.rows) {
-            if (row.group.equals(confType)) {
-              res = res ++ replacePatternByRegex(row.syntax)
-            }
-          }
-        }
-        Ok(Json.toJson(res))
+        Ok(Json.toJson(configurations))
       }
     }
 
@@ -176,7 +149,7 @@ object Application extends Controller {
    */
   def loadCtxTagData(itemName: String) = Action.async {
     itemName match {
-      case "WebPageItem" => {
+      case "web" => {
         var res = List[JsValue]();
         conn.loadWebPagesFromRepository().map {
           pageConfigurations => {
@@ -195,7 +168,7 @@ object Application extends Controller {
             Ok(Json.toJson(res));
         }
       }
-      case "SwingComponent" => {
+      case "swing" => {
         var res = List[JsValue]();
         conn.loadSwingPagesFromRepository().map {
           pageConfigurations => {
@@ -225,20 +198,8 @@ object Application extends Controller {
         val fixtureName: String = descriptor.name
         val fixturePattern: String = descriptor.pattern
         
-        println()
-        println("Input Sentence <--> " +  fixturePattern);
-        val formatedTypedSentence: String = fixturePattern.split(" ").map ( word => {
-          DomainController.getTypedPatternRegexReplacement(fixtureType, word)
-        }).mkString(" ")
-        println("Output Sentence typed -> " +  formatedTypedSentence);
-        val formatedSentence: String = fixturePattern.split(" ").map ( word => {
-          DomainController.getPlainPatternRegexReplacement(fixtureType, word)
-        }).mkString(" ")
-        println("Output Sentence plain -> " +  formatedSentence);
-        println()
-        
         val key = fixtureType +":"+fixtureName
-        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(formatedSentence, formatedTypedSentence)
+        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(fixturePattern, fixturePattern)
         val syntaxRows = congifMap.getOrElse(key, List[ConfigurationSyntax]())
         val newSyntaxRows =  newConfigurationSyntax :: syntaxRows
         congifMap = congifMap + (key -> newSyntaxRows)
@@ -281,7 +242,7 @@ object Application extends Controller {
         }
         Ok("Auto configuration saved !")
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 }
