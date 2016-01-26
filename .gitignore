@@ -15,7 +15,6 @@ dist
 /.settings
 .cache
 bin/*
-project/*
 .target/*
 .worksheet/*
 /.target/
