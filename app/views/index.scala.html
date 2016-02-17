@@ -1,21 +1,23 @@
-@()
+.@()
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Toast Tk Webapp</title>
+    <title>Toast Tk Webapp 2</title>
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/ngProgress.css")">
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.yeti.min.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/font-awesome.css")">
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/angular-ui-tree.min.css")">
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/xeditable.css")">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/sb-admin.css")">
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+
     <script data-main="@routes.Assets.at("javascripts/main.js")" 
             type="text/javascript" 
             src="@routes.Assets.at("lib/requirejs/require.js")">
     </script>
   </head>
   <body>
-  	<ng-view></ng-view>
+     <div ui-view="main"></div>
   </body>
   </html>

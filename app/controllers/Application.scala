@@ -1,6 +1,7 @@
 package controllers
 
 import boot.AppBoot
+import play.api.Logger
 import controllers.mongo._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Writes._
@@ -27,6 +28,7 @@ object Application extends Controller {
 
   def login() = Action(parse.json) { implicit request =>
     //Check credentials and so on...
+    Logger.info(s"[+] Loging in !")
     Ok(views.html.index()).withSession(request2session + ("connected" -> "user goes here !"))
   }
 

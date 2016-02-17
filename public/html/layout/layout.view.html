@@ -1,0 +1,19 @@
+<body>
+
+    <div id="wrapper" ng-class="{'wrapper-collapsed': ">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+          <div ng-include="assets/html/layout/topmenu.view.html"></div>
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                 <div id="sidebarmenu"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper">
+          <div ui-view="content"></div>
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->

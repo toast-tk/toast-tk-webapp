@@ -1,0 +1,69 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+
+# Home page
+GET         /                                             controllers.Application.index
+
+# JavaScript routes
+GET         /jsroutes.js                                  controllers.JavaScript.jsRoutes()
+
+# AJAX APP routes
+GET         /loadEnvConfiguration                         controllers.Application.loadEnvConfiguration()
+
+# Ajax routes: Users
+POST        /login                                        controllers.Application.login()
+GET         /users/:id                                    controllers.Users.user(id: Long)
+GET         /logout                                       controllers.Application.logout()
+
+# Ajax Domain Controller
+GET         /loadAutoSetupCtx/:setupType                  controllers.Application.loadAutoSetupCtx(setupType: String)
+GET         /loadCtxTagData/:itemName                     controllers.Application.loadCtxTagData(itemName: String)
+GET         /loadCtxSentences/:confType                   controllers.Application.loadCtxSentences(confType:String)
+GET			/typeDescriptor								  controllers.DomainController.typeDescriptor()
+
+# Ajax for API controller
+POST        /postConnector                                controllers.Application.onConnectorReceived()
+POST        /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
+GET         /loadWikifiedRepository                       controllers.Application.loadWikifiedRepository()
+GET         /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
+GET         /loadSentences/:confType                      controllers.Application.loadSentences(confType:String)
+POST        /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
+
+# Ajax routes: Configuration Controller
+GET         /loadConfiguration                            controllers.ConfigurationController.loadConfiguration()
+POST        /saveConfiguration                            controllers.ConfigurationController.saveConfiguration()
+
+# Ajax routes: Repository Controller
+GET         /loadAutoConfiguration                        controllers.RepositoryController.loadAutoConfiguration()
+GET			/loadServiceEntityRepository				  controllers.RepositoryController.loadServiceEntityRepository()
+GET			/loadWebPageRepository						  controllers.RepositoryController.loadWebPageRepository()
+POST        /saveAutoSetupConfiguration                   controllers.RepositoryController.saveAutoConfig()
+POST        /saveServiceConfigBlock						  controllers.RepositoryController.saveServiceConfigBlock()	
+POST        /saveAutoConfigBlock                          controllers.RepositoryController.saveAutoConfigBlock()
+GET         /loadRepository                               controllers.RepositoryController.loadRepository()
+POST        /saveRepository                               controllers.RepositoryController.saveRepository()
+POST        /deleteObject								  controllers.RepositoryController.deleteObject()
+
+# Ajax routes: Scenarii Controller
+GET         /loadScenariiList                             controllers.ScenarioController.loadScenariiList()
+GET         /loadScenarii                                 controllers.ScenarioController.loadScenarii()
+GET         /wikiScenarii                                 controllers.ScenarioController.loadWikifiedScenarii()
+GET         /loadScenarioSteps/:id                        controllers.ScenarioController.loadScenarioSteps(id: String)
+GET         /loadScenarioCtx/:scenarioType                controllers.ScenarioController.loadScenarioCtx(scenarioType: String)
+POST        /saveScenarii                                 controllers.ScenarioController.saveScenarii()
+POST        /deleteScenarii                               controllers.ScenarioController.deleteScenarii()
+
+# Ajax routes: Project Controller
+POST        /saveProject                                  controllers.ProjectController.saveProject()
+GET         /loadProject                                  controllers.ProjectController.loadProject()
+GET         /loadProjectReport/:projectName               controllers.ProjectController.loadProjectReport(projectName:String)
+GET         /test                                         controllers.ProjectController.loadTestReport()
+
+# Map static resources from the /public folder to the /assets URL path
+GET         /assets/*file                                 controllers.Assets.at(path="/public", file)
+
+# Map the webjar static assets to the /webjars URL
+GET         /webjars/*file                                controllers.WebJarAssets.at(file)
+

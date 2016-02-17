@@ -299,6 +299,6 @@ define(["angular", "qTags"], function (angular, qTags) {
 	    };
 	});
 	
-
+	
   	return module;
 });
