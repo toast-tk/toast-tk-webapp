@@ -12,12 +12,16 @@
 		    	  var self = this;
 		    	  this.openCallBacks = {};
 		    	  this.closeCallBacks = {};
+		    	  this.collapseCallBacks = {};
+		    	  this.expandCallBacks = {};
 		    	  
 		    	  return { 
 		    		  		open : open,
 		    		  		close : close,
+		    		  		collapse: collapse,
 		    		  		addOpenCallBack: addOpenCallBack,
-		    		  		addCloseCallBack: addCloseCallBack
+		    		  		addCloseCallBack: addCloseCallBack,
+		    		  		addCollapseCallBack: addCollapseCallBack 
 		    		  	 };
 
 		          // BEGIN : add open callBackFunction
@@ -37,7 +41,51 @@
 		    		  self.closeCallBacks[element].push(callback);
 		    	  }
 		          // END : add close callBackFunction
+
+		          // BEGIN : add collapse callBackFunction
+		    	  function addCollapseCallBack(element, callback){
+		    		  if(!angular.isDefined(self.collapseCallBacks[element])){
+		    			  self.collapseCallBacks[element] = [];
+		    		  }
+		    		  self.collapseCallBacks[element].push(callback);
+		    	  }
+		          // END : add collapse callBackFunction
+
+		          // BEGIN : add Expand callBackFunction
+		    	  function addExpandCallBack(element, callback){
+		    		  if(!angular.isDefined(self.expandCallBacks[element])){
+		    			  self.expandCallBacks[element] = [];
+		    		  }
+		    		  self.expandCallBacks[element].push(callback);
+		    	  }
+		          // END : add expand callBackFunction
 		    	  
+		          // BEGIN : collapse sidesplit function
+		    	  function collapse(sideSplitOptions){
+		    		  if(sideSplitOptions.id){
+		    			  var appendToElement = sideSplitOptions.id;
+		    			  	  if(sideSplitOptions.message) {console.log("collapsing message", sideSplitOptions.message)};
+	                    	  angular.forEach(self.collapseCallBacks[sideSplitOptions.id],function(callback, key){
+	                    		  callback();
+	                    	  });
+//	                    	  $animate.leave(appendToElement);
+		    		  } 
+		    	  }
+		          // END : collapse sidesplit function
+
+		          // BEGIN : expand sidesplit function
+		    	  function expand(sideSplitOptions){
+		    		  if(sideSplitOptions.id){
+		    			  var appendToElement = sideSplitOptions.id;
+		    			  	  if(sideSplitOptions.message) {console.log("expanding message", sideSplitOptions.message)};
+	                    	  angular.forEach(self.expandCallBacks[sideSplitOptions.id],function(callback, key){
+	                    		  callback();
+	                    	  });
+//	                    	  $animate.leave(appendToElement);
+		    		  } 
+		    	  }
+		          // END : expand sidesplit function
+
 		          // BEGIN : close sidesplit function
 		    	  function close(sideSplitOptions){
 		    		  if(sideSplitOptions.id){

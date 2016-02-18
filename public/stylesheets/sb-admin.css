@@ -1,3 +1,6 @@
+
+/*Manually added */
+
 /*!
  * Start Bootstrap - SB Admin Bootstrap Admin Template (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.
@@ -7,8 +10,8 @@
 /* Global Styles */
 
 body {
-    margin-top: 100px;
-    background-color: #222;
+  /*  margin-top: 100px;
+    background-color: #222;*/
 }
 
 @media(min-width:768px) {
@@ -23,7 +26,7 @@ body {
 
 #page-wrapper {
     width: 100%;
-    padding: 0;
+    /*padding: 0;*/
     background-color: #fff;
 }
 
@@ -34,11 +37,32 @@ body {
 
 @media(min-width:768px) {
     #wrapper {
+      /*  padding-left: 225px;*/
+    }
+
+    .wrapper {
         padding-left: 225px;
     }
 
+    .wrapper-collapsed {
+        padding-left: 60px;
+    }
+
     #page-wrapper {
-        padding: 10px;
+        /*padding: 10px;*/
+        margin-top: -21px;
+    }
+
+    .page-wrapper{
+        padding-left: 225px;
+    }
+
+    .page-wrapper-collapsed{
+        padding-left: 60px;
+    }
+
+    .page-header {
+        margin : 21px 0 21px;
     }
 }
 
@@ -57,7 +81,7 @@ body {
     padding-top: 15px;
     padding-bottom: 15px;
     line-height: 20px;
-    color: #999;
+    color: #fff;
 }
 
 .top-nav>li>a:hover,
@@ -115,10 +139,10 @@ ul.alert-dropdown {
 @media(min-width:768px) {
     .side-nav {
         position: fixed;
-        top: 51px;
+        top: 50px;
         left: 225px;
         width: 225px;
-        margin-left: -225px;
+        margin-left: -225px !important;
         border: none;
         border-radius: 0;
         overflow-y: auto;
@@ -136,6 +160,23 @@ ul.alert-dropdown {
     .side-nav li a:focus {
         outline: none;
         background-color: #000 !important;
+    }
+
+     .side-nav-collapsed {
+        left: 0px;
+        width: 60px;
+        margin-left: 0px !important;
+        border: none;
+        border-radius: 0;
+        overflow-y: auto;
+        background-color: #222;
+        bottom: 0;
+        overflow-x: hidden;
+        padding-bottom: 40px;
+    }
+
+    .side-nav-collapsed>li>a {
+        width: 60px;
     }
 }
 

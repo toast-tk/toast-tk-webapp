@@ -54,20 +54,23 @@
         "ui.bootstrap": ['/libs/ui-bootstrap-tpls-0.12.1'],
         "xeditable": ['libs/xeditable'],
         "ui.router": ['libs/angular-ui-router.min'],
+        "webix": ['libs/webix'],
         "sidesplit": ['libs/angular-sidesplit.provider'],
-        "sidebarmenu": ['controllers/layout/sidebar.menu.controller']
+        "sidebarmenu": ['controllers/layout/sidebar.menu.controller'],
+        "layout": ['controllers/layout/layout.controller'],
+        "Scenario1Ctrl": ["./controllers/scenario1"]
     }
   });
 
-  require(["angular", "./services/playRoutes", 
-            "./controllers/login", "./controllers/editor", "./controllers/scenario", 
+  require(["angular", "./services/playRoutes", "./services/scenario.service" ,
+            "./controllers/login", "./controllers/editor", "./controllers/scenario", "Scenario1Ctrl",
             "./controllers/configuration","./controllers/repository", "./controllers/home",
-            "./controllers/layout/sidebar.menu.controller",
+            "./controllers/layout/sidebar.menu.controller", "layout",
             "./services/client-service",
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
             "./libs/angular-ui-tree.min", "./libs/ui-bootstrap-tpls-0.12.1", "angularRoute",
-            "./libs/xeditable", "./libs/angular-ui-router.min", "sidesplit"], 
-          function(a, b, login, editor, scenario, configuration, repository, home,sidebarmenu) {
+            "./libs/xeditable", "./libs/angular-ui-router.min", "sidesplit", "webix"], 
+          function(a, b, ScenarioService, login, editor, scenario, scenario1, configuration, repository, home, sidebarmenu, layout) {
 
               var app = angular.module("app", 
                 ['ngRoute', 'ui.router', "play.routing", 
@@ -77,9 +80,14 @@
               app.controller("MainCtrl", home.MainCtrl);
               app.controller("ConfigurationCtrl", configuration.ConfigurationCtrl);
               app.controller("ScenarioCtrl", scenario.ScenarioCtrl);
+              app.controller("Scenario1Ctrl", scenario1.Scenario1Ctrl);
+              
               app.controller("RepositoryCtrl", repository.RepositoryCtrl);
               app.controller("ProjectCtrl", editor.ProjectCtrl);
               app.controller("SidebarMenuCtrl", sidebarmenu.SidebarMenuCtrl);
+              app.controller("LayoutCtrl", layout.LayoutCtrl);
+              
+              app.service("ScenarioService", ScenarioService.ScenarioService);
 
               app.config(["$stateProvider", function($stateProvider){
                   /*$routeProvider.when("/",{ templateUrl: "assets/html/login.html", controller: "LoginCtrl"});
@@ -89,22 +97,78 @@
                   $routeProvider.when("/repository",{ templateUrl: "assets/html/repository.html", controller: "RepositoryCtrl"});
                   $routeProvider.when("/project",{ templateUrl: "assets/html/project.html", controller: "ProjectCtrl"});*/
                   $stateProvider
+                  .state('login', {
+                      url: "/",
+                       views: {
+                           'main': {
+                      templateUrl: "assets/html/login.html", 
+                      controller: "LoginCtrl"
+                        }
+                      }
+                  })
+                  .state('main', {
+                      url: "/main",
+                      views: {
+                         'main': {
+                      templateUrl: "assets/html/editor.html", 
+                      controller: "MainCtrl"
+                       }
+                     }
+                  })
+                  .state('configuration', {
+                      url: "/configuration",
+                      views: {
+                         'main': {
+                      templateUrl: "assets/html/configuration.html",
+                      controller: "ConfigurationCtrl"
+                          }
+                      }
+                  })
+                  .state('scenario', {
+                      url: "/scenario",
+                      views: {
+                         'main': {
+                      templateUrl: "assets/html/scenario.html",
+                       controller: "ScenarioCtrl"
+                        }
+                      }
+                  })
+                  .state('repository', {
+                      url: "/repository",
+                      views: {
+                         'main': {
+                      templateUrl: "assets/html/repository.html",
+                      controller: "RepositoryCtrl"
+                        }
+                     }
+                  })
+                  .state('project', {
+                      url: "/project",
+                      views: {
+                         'main': {
+                      templateUrl: "assets/html/project.html",
+                      controller: "ProjectCtrl"
+                    }
+                  }
+                  })
+
+                  
         .state('layout', {
           url: "/",
           abstract: true,
           views: {
             'main': {
               templateUrl: "assets/html/layout/layout.view.html",
-              controller: "ScenarioCtrl",
+              controller: "LayoutCtrl",
             }
           }
         })
         .state('layout.scenario1', {
-      url: "/scenario1",
+      url: "scenario1",
       views: {
         'content':{
-         templateUrl: "assets/html/scenario.html",
-         controller: "ScenarioCtrl"
+         templateUrl: "assets/html/scenario1.html",
+         controller: "Scenario1Ctrl"
        }
      }
    });

@@ -16,7 +16,10 @@
                         <a href="#/project"><i class="fa fa-fw fa-terminal fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Test Compaign Reports</span></a>
                     </li>
                     <li style="position: fixed; bottom: 0;">
-                        <a ng-click="collapse()"><i style="width: 100%;" class="btn fa fa-lg fa-chevron-circle-left" ng-class="{'fa-2x': isCollapsed === true}"></i></a>
+                        <a ng-click="collapse()">
+                        <i  ng-if="isCollapsed===false" style="width: 100%;" class="btn fa fa-lg fa-chevron-circle-left" ng-class="{'fa-2x': isCollapsed === true}"></i>
+                        <i  ng-if="isCollapsed===true" class="fa fa-lg fa-chevron-circle-right" ng-class="{'fa-2x': isCollapsed === true}"></i>
+                        </a>
                     </li>
                 </ul>
             <!-- /.navbar-collapse -->

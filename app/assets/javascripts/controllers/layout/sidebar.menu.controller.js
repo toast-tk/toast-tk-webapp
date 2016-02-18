@@ -5,13 +5,16 @@ define(["angular"], function(angular) {
     	}
 
 
-	SidebarMenuCtrl.$inject = ['$scope'];
+	SidebarMenuCtrl.$inject = ['$scope','$sideSplit'];
 
-	function SidebarMenuCtrl($scope) {
+	function SidebarMenuCtrl($scope,$sideSplit) {
 		$scope.isCollapsed = false;
-		console.log("hello");
 		$scope.collapse = function(){
 			$scope.isCollapsed = !$scope.isCollapsed ;
+			 $sideSplit.collapse({ 
+                             id: angular.element('#sidebarmenu'),
+                             message :"collapsed!"
+                      });
 		};
 	}
 

@@ -1,15 +1,9 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        ScenarioCtrl: function ($rootScope, $scope, playRoutes, ngProgress, ClientService,$sideSplit) {
+        ScenarioCtrl: function ($rootScope, $scope, playRoutes, ngProgress, ClientService) {
 
-             $sideSplit.open({ 
-                        templateUrl: 'assets/html/layout/sidebar.view.html',
-                        controller: 'SidebarMenuCtrl',
-                        appendTo : angular.element('#sidebarmenu'),
-                        position : "left",
-            });
-
+            //plain json data, based on objects
             $scope.newRow = {};
             $scope.scenario_types = ["swing", "service", "web"];
             $scope.selectedType = "";
