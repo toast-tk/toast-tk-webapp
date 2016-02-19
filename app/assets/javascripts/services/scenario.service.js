@@ -42,6 +42,7 @@ define(["angular"], function (angular) {
                                 activeTitle:true,
                                 id:"tree1",
                                 select:true,
+                                template:"{common.icon()} <i class='fa fa-#image#' style='float:left; margin:3px 4px 0px 1px;'> </i> #name#",
                                 data : webix.copy(dataTree),
                                 type:{
                                    folder:function(obj, common){

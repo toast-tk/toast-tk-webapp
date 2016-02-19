@@ -15,13 +15,13 @@
                 <!-- /.row -->
                 <div class="row" style="width:{{effectContentWidth}}px; height:98%;">
                   <div webix-ui id="contentWebixLayout"> <!--layout rows with type "space" are created-->
-                  <div margin="2" height="51" >
+                  <div height="51" >
                       <h3 class="page-header" >
                         <i class="fa fa-fw fa-pencil-square-o"></i>  Scenarii Edition <small> Test scripts</small>
                       </h3>
                   </div>
-    <div view="cols" margin="2"> <!--Webix layout cols are initialized-->
-        <div width="200" margin="2"> 
+    <div view="cols"> <!--Webix layout cols are initialized-->
+        <div width="200"> 
                                    <div class="panel panel-default">
                           <div class="panel-heading">
                             <h3 class="panel-title"><i class="fa fa-files-o fa-fw"></i> Explorateur</h3>
@@ -33,24 +33,36 @@
                    </div>
         </div>
         <div view="resizer"></div>
-        <div view="cols" margin="2">
+        <div view="cols">
               <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title"><i class="fa fa-bars fa-fw"></i> {{scenario.name}}</h3>
-                        <input type="text" ng-model="scenario.name"/>
-
+                        <h3 class="panel-title" >
+                        <i ng-if="scenario.type === 'swing'" class="fa fa-laptop fa-fw"></i>
+                        <i ng-if="scenario.type === 'service'" class="fa fa-bolt fa-fw"></i>
+                        <i ng-if="scenario.type === 'web'" class="fa fa-globe fa-fw"></i>
+                        <span ng-if="isEditScenarioName===false">{{scenario.name}}</span>
+                        <input type="text" ng-if="isEditScenarioName===true" ng-model="scenario.name"/>
+                        <div class="pull-right" style="margin: -5px;">
+                        <button class="btn btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
+                            <button class="btn btn-xs" data-ng-click="save()"> <i class="fa fa-floppy-o"></i> Save</button>
+                            <button class="btn btn-xs" data-ng-click="save()"><i class="fa fa-trash"></i></button>
+                        </div>
+                        </h3>
                     </div>
                     <div class="panel-body">
                         <!--  -->
                         <div class="effectContent">
                             <div class="scenario" ng-show="scenario != undefined">
-                                <span class="">
-                                    <button class="btn btn-xs btn-success" ng-show="scenario.template" ng-click="convertToTemplate(scenario)">T</button>
-                                    <button class="btn btn-xs btn-primary" data-ng-click="importScenario(scenario)">Import</button>
-                                    <select ng-model="scenario.selectedImportMode" ng-options="mode for mode in importModes"></select>
-                                    from <select ng-model="scenario.imp" ng-options="reference as reference.name for reference in scenarii" ></select>
-                                    <button class="btn btn-xs" data-ng-click="save()">Save</button>
-                                </span>
+                                <div class="panel panel-default">
+                                  <div class="panel-body">
+                                        Import :
+                                        <button class="btn btn-xs btn-success" ng-show="scenario.template" ng-click="convertToTemplate(scenario)">T</button>
+                                        <select ng-model="scenario.selectedImportMode" ng-options="mode for mode in importModes"></select>
+                                        from <select ng-model="scenario.imp" ng-options="reference as reference.name for reference in scenarii" ></select>
+                                        <button class="btn btn-xs btn-primary" data-ng-click="importScenario(scenario)">Import</button>
+                                </div>
+                            </div>
+                                
                                 <table class="table table-striped" width="200px;">
                                     <thead>
                                         <tr>
@@ -95,44 +107,44 @@
                                     </td>
                                 </tr>
                             </tbody>
-                            <tr ng-model="newRow">
-                                <td colspan="3">
-                                    <span template ng-model="newRow['patterns']" template-value="true"
-                                    template-post="false" template-config-type="{{ stepType }}">
-                                    <input type="text" ng-model="newRow[c.name]" 
-                                    style="width: 100%;" placeholder="{{c.name}}"/>
-                                </span>
-                            </td>
-                            <td colspan="2">
-                                <div class="btn-group" dropdown>
-                                  <button type="button" class="btn btn-primary btn-xs" ng-click="addRow(newRow)">
-                                      + {{stepType}} step
-                                  </button>
-                                  <button type="button" class="btn btn-primary btn-xs dropdown-toggle" dropdown-toggle>
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <a href="javascript:void(0)" data-ng-click="swaptToSwingRow()">
-                                            <i class="fa fa-laptop fa-fw"></i>swing
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)" data-ng-click="swaptToWebRow()">
-                                            <i class="fa fa-tablet fa-fw"></i>web
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)" data-ng-click="swaptToServiceRow()">
-                                            <i class="fa fa-flash fa-fw"></i>service
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
                 </table>
+                <tr ng-model="newRow">
+                    <td colspan="3">
+                        <span template ng-model="newRow['patterns']" template-value="true"
+                        template-post="false" template-config-type="{{ stepType }}">
+                        <input type="text" ng-model="newRow[c.name]" 
+                        style="width: 100%;" placeholder="{{c.name}}"/>
+                    </span>
+                </td>
+                <td colspan="2">
+                    <div class="btn-group" dropdown>
+                      <button type="button" class="btn btn-primary btn-xs" ng-click="addRow(newRow)">
+                          + {{stepType}} step
+                      </button>
+                      <button type="button" class="btn btn-primary btn-xs dropdown-toggle" dropdown-toggle>
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            <a href="javascript:void(0)" data-ng-click="swaptToSwingRow()">
+                                <i class="fa fa-laptop fa-fw"></i>swing
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" data-ng-click="swaptToWebRow()">
+                                <i class="fa fa-tablet fa-fw"></i>web
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" data-ng-click="swaptToServiceRow()">
+                                <i class="fa fa-flash fa-fw"></i>service
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
             </div>
         </div>
         <!-- /. effect content -->

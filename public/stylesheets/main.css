@@ -250,3 +250,17 @@
   top: 30px;
   position: relative;
 }
+
+
+/* bootstrap overriding */
+.panel-default {
+    border: none !important;
+}
+.panel-body {
+    padding: 8px !important;
+}
+/* webix overriding */
+.webix_tree_item.webix_selected {
+    background: #ddd !important;
+    color: #000;
+}

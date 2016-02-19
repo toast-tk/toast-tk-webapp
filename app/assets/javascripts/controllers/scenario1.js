@@ -2,6 +2,7 @@ define(["angular"], function (angular) {
     "use strict";
     return {
         Scenario1Ctrl: function ($rootScope, $scope, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, ScenarioService) {
+            $scope.isEditScenarioName = false;
             //plain json data, based on objects
 
             $scope.newRow = {};
@@ -248,6 +249,19 @@ define(["angular"], function (angular) {
                 playRoutes.controllers.ScenarioController.loadScenarii().get().then(function (response) {
                     var data = response.data || [];
                     data.map(function (scenario) {
+                                                    scenario.template = isTemplate;
+                            scenario.value = scenario.name; // todo : fix: pour la recherche 
+                            console.log("scenario.type", scenario.type);
+                            if(scenario.type==="swing"){
+                                scenario.image = "laptop";    
+                            }else if(scenario.type==="service"){
+                                scenario.image = "bolt";    
+                            } else if(scenario.type==="web"){
+                                scenario.image = "globe";    
+                            } else {
+                                scenario.image = "file-code-o";    
+                            }
+                            
                         try{
                             scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
                             var isTemplate = true;
@@ -257,8 +271,6 @@ define(["angular"], function (angular) {
                                     break;
                                 }
                             }
-                            scenario.template = isTemplate;
-                            scenario.value = scenario.name;
                         }catch(e){
                             if(!angular.isObject(scenario.rows)){
                                 //convert it into rows
