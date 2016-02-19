@@ -62,7 +62,8 @@ body {
     }
 
     .page-header {
-        margin : 21px 0 21px;
+        /*margin : 21px 0 21px;*/
+            margin: 6px 0 6px;
     }
 }
 

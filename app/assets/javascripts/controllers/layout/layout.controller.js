@@ -18,7 +18,7 @@ define(["angular"], function(angular) {
                         position : "left",
         });
 
-		$sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(){
+		$sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(isCollapsedRetour){
 				$scope.isCollapsed = !$scope.isCollapsed ;
 		});
 

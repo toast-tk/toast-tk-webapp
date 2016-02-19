@@ -2,7 +2,6 @@ define(["angular"], function (angular) {
     "use strict";
     return {
         Scenario1Ctrl: function ($rootScope, $scope, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, ScenarioService) {
-
             //plain json data, based on objects
 
             $scope.newRow = {};
@@ -274,17 +273,44 @@ define(["angular"], function (angular) {
                         return scenario;
                     });
                     $scope.scenarii = data;
+                    
+                    /*TODO :FIX: faire sortir dans l'initialisation*/
+                    function reAdjustContentSize(){
+                    $timeout(function(){
+                            $scope.effectContentWidth = window.innerWidth - angular.element('#side-nav').width();
+                            $timeout(function(){
+                                $$("contentWebixLayout").adjust();
+                            },0);
+                        },0);
+                    }
+                    /* begin : adjusting page content size */
+                    reAdjustContentSize()
+                    webix.event(window, "resize", reAdjustContentSize);
+                    $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), reAdjustContentSize);
+                    /* end : adjusting page content size */
+
+                    /* begin : generation de la tree */
                     var treeExplorerPromise = ScenarioService.buildExplorerTree("toastScenariosTreeExplorer", $scope.scenarii);
                     treeExplorerPromise.then(function(treeExplorer){
-                        console.log(treeExplorer);
-                          treeExplorer.adjust(); 
-                        $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(){
-                              $timeout(function(){treeExplorer.adjust(); },0);
+                         webix.ready(function(){ webix.markup.init(); });
+
+                        /* begin : adjusting treeExplorer size */
+                        treeExplorer.adjust();
+                        $$("$template2").attachEvent("onViewResize", function(){
+                                   treeExplorer.adjust();
                         });
+                        $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(isCollapsed){
+                            $timeout(function(){
+                                treeExplorer.adjust();
+                            },0);
+                        });
+                        /* end : adjusting treeExplorer size */
                         $scope.addScenarioToParent = function(){
                            ScenarioService.addToExplorerTree("new element", treeExplorer);    
                         }
                     });
+                    /* end : generation de la tree */
+
                     ScenarioService.addSelectedNodeCallback(function(selectedScenario){
                         $scope.scenario = selectedScenario ;
                         $scope.$apply();

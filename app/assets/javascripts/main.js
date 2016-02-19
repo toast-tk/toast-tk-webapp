@@ -36,7 +36,10 @@
       'sidesplit':{
         deps: ['angular']
       },
-      'sidebarmenu':{
+      'webix':{
+        deps: ['angular']
+      },
+       'sidebarmenu':{
         deps: ['angular']
       }
     },
@@ -75,7 +78,7 @@
               var app = angular.module("app", 
                 ['ngRoute', 'ui.router', "play.routing", 
                 "tk.components", "tk.services",
-                "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable", "sidesplit"]);
+                "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable", "sidesplit", "webix"]);
               app.controller("LoginCtrl", login.LoginCtrl);
               app.controller("MainCtrl", home.MainCtrl);
               app.controller("ConfigurationCtrl", configuration.ConfigurationCtrl);

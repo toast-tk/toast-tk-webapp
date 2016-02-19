@@ -3135,4 +3135,34 @@ reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$: MongoError['N
 	at akka.dispatch.Mailbox.run(Mailbox.scala:220) ~[akka-actor_2.11-2.3.13.jar:?]
 	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:397) ~[akka-actor_2.11-2.3.13.jar:?]
 	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.7.jar:?]
-	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.7.jar:?]
+2016-02-18 18:05:37,618 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-3] The node set is now available
+2016-02-18 18:05:37,621 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-3] The primary is now available
+2016-02-18 18:48:00,912 ERROR re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] The entire node set is unreachable, is there a network problem?
+2016-02-18 18:48:56,549 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-4] The node set is now available
+2016-02-18 18:48:56,550 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-4] The primary is now available
+2016-02-19 04:33:53,578 ERROR re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-12] The entire node set is unreachable, is there a network problem?
+2016-02-19 04:44:40,891 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-16] The node set is now available
+2016-02-19 04:44:45,967 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-16] The primary is now available
+2016-02-19 09:08:14,835 ERROR re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-15] The entire node set is unreachable, is there a network problem?
+2016-02-19 09:08:44,817 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-20] The node set is now available
+2016-02-19 09:08:44,818 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-20] The primary is now available
+2016-02-19 09:08:44,820 ERROR re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-20] The entire node set is unreachable, is there a network problem?
+2016-02-19 09:08:45,138 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-20] The node set is now available
+2016-02-19 09:08:45,163 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-20] The primary is now available
+2016-02-19 09:15:37,900 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-21] Received Close message, going to close connections and moving on stage Closing
+2016-02-19 09:15:41,198 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-21] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#-1795883431] is stopping.
+2016-02-19 09:15:41,384 WARN re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-21] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#-1795883431] stopped.
+2016-02-19 09:17:30,373 WARN re.ap.MongoDriver [ForkJoinPool-1-worker-1] No mongo-async-driver configuration found
+2016-02-19 09:17:31,233 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-6] The node set is now available
+2016-02-19 09:17:31,238 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-6] The primary is now available
+2016-02-19 09:17:33,621 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine type has been registered to Morphia !
+2016-02-19 09:17:33,632 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.report.Campaign type has been registered to Morphia !
+2016-02-19 09:17:33,633 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.common.TagImpl type has been registered to Morphia !
+2016-02-19 09:17:33,657 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.team.UserImpl type has been registered to Morphia !
+2016-02-19 09:17:33,662 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.test.block.TestPage type has been registered to Morphia !
+2016-02-19 09:17:33,673 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl type has been registered to Morphia !
+2016-02-19 09:17:33,674 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.team.GroupImpl type has been registered to Morphia !
+2016-02-19 09:17:33,690 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine type has been registered to Morphia !

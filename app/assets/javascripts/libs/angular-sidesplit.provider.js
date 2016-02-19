@@ -61,12 +61,14 @@
 		          // END : add expand callBackFunction
 		    	  
 		          // BEGIN : collapse sidesplit function
+		          var isCollapsed = false;
 		    	  function collapse(sideSplitOptions){
 		    		  if(sideSplitOptions.id){
 		    			  var appendToElement = sideSplitOptions.id;
+		    			  	  isCollapsed = !isCollapsed ;
 		    			  	  if(sideSplitOptions.message) {console.log("collapsing message", sideSplitOptions.message)};
 	                    	  angular.forEach(self.collapseCallBacks[sideSplitOptions.id],function(callback, key){
-	                    		  callback();
+	                    		  callback(isCollapsed);
 	                    	  });
 //	                    	  $animate.leave(appendToElement);
 		    		  } 
