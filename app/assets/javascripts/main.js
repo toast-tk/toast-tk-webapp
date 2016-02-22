@@ -36,6 +36,15 @@
       'sidesplit':{
         deps: ['angular']
       },
+      'angular-animate':{
+        deps: ['angular']
+      },
+      'bootstrap': {
+        deps: ['jquery']
+      },
+      'ui.bootstrap': {
+        deps: ['angular','bootstrap']
+      },
       'webix':{
         deps: ['angular']
       },
@@ -46,7 +55,7 @@
     paths: {
         'requirejs': ['../lib/requirejs/require'],
         'jsRoutes': ['/jsroutes'],
-        "jquery": "//code.jquery.com/jquery-1.7.2.min",
+        "jquery": "//code.jquery.com/jquery-2.2.0.min",
         "jquery-ui" : "//code.jquery.com/ui/1.9.2/jquery-ui.min",
         "angular": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular",
         "angularRoute": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route",
@@ -54,7 +63,9 @@
         "underscore" : "//underscorejs.org/underscore",
         "qTags": ['./libs/jquery-textntags'],
         "angular-ui-tree": ['/libs/angular-ui-tree.min'],
-        "ui.bootstrap": ['/libs/ui-bootstrap-tpls-0.12.1'],
+        "angular-animate":['libs/angular-animate.min'],
+        "bootstrap":['libs/bootstrap.min'],
+        "ui.bootstrap": ['libs/ui-bootstrap-tpls-0.12.1'],
         "xeditable": ['libs/xeditable'],
         "ui.router": ['libs/angular-ui-router.min'],
         "webix": ['libs/webix'],
@@ -71,12 +82,12 @@
             "./controllers/layout/sidebar.menu.controller", "layout",
             "./services/client-service",
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
-            "./libs/angular-ui-tree.min", "./libs/ui-bootstrap-tpls-0.12.1", "angularRoute",
-            "./libs/xeditable", "./libs/angular-ui-router.min", "sidesplit", "webix"], 
+            "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute",
+            "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "webix"], 
           function(a, b, ScenarioService, login, editor, scenario, scenario1, configuration, repository, home, sidebarmenu, layout) {
 
               var app = angular.module("app", 
-                ['ngRoute', 'ui.router', "play.routing", 
+                ['ngRoute', 'ui.router', "play.routing", "ngAnimate",
                 "tk.components", "tk.services",
                 "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable", "sidesplit", "webix"]);
               app.controller("LoginCtrl", login.LoginCtrl);

@@ -3,6 +3,8 @@ define(["angular"], function (angular) {
     return {
         Scenario1Ctrl: function ($rootScope, $scope, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, ScenarioService) {
             $scope.isEditScenarioName = false;
+              $scope.isCollapsed = false;
+
             //plain json data, based on objects
 
             $scope.newRow = {};
@@ -325,6 +327,9 @@ define(["angular"], function (angular) {
 
                     ScenarioService.addSelectedNodeCallback(function(selectedScenario){
                         $scope.scenario = selectedScenario ;
+                        $timeout(function(){
+                            $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
+                        },500);
                         $scope.$apply();
                     });
                 });

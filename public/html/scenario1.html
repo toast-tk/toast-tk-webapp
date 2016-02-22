@@ -1,5 +1,5 @@
 <body>
-  <div class="container-fluid">
+  <div class="container-fluid" style="overflow: hidden;">
 
     <!-- Page Heading -->
     <div class="row">
@@ -13,148 +13,195 @@
                     </div>
                 </div>
                 <!-- /.row -->
-                <div class="row" style="width:{{effectContentWidth}}px; height:98%;">
+                <div class="row" style="width:{{effectContentWidth}}px; height:99%; overflow: hidden;">
                   <div webix-ui id="contentWebixLayout"> <!--layout rows with type "space" are created-->
-                  <div height="51" >
-                      <h3 class="page-header" >
-                        <i class="fa fa-fw fa-pencil-square-o"></i>  Scenarii Edition <small> Test scripts</small>
-                      </h3>
-                  </div>
-    <div view="cols"> <!--Webix layout cols are initialized-->
-        <div width="200"> 
-                                   <div class="panel panel-default">
+                      <div height="51" >
+                          <h3 class="page-header" >
+                            <i class="fa fa-fw fa-pencil-square-o"></i>  Scenarii Edition <small> Test scripts</small>
+                        </h3>
+                    </div>
+                    <div view="cols"> <!--Webix layout cols are initialized-->
+                        <div width="200"> 
+                         <div class="panel panel-default">
                           <div class="panel-heading">
                             <h3 class="panel-title"><i class="fa fa-files-o fa-fw"></i> Explorateur</h3>
                         </div>
                         <div class="panel-body">
-                           <div class="btn btn-primary btn-sm" ng-click="addScenarioToParent()"> + Add new</div>
-                           <div view="tree" id="toastScenariosTreeExplorer" style='width:100%; height:600px;'></div>
-                       </div>
-                   </div>
-        </div>
-        <div view="resizer"></div>
-        <div view="cols">
-              <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title" >
+                         <div class="btn btn-primary btn-sm" ng-click="addScenarioToParent()"> + Add new</div>
+                         <div view="tree" id="toastScenariosTreeExplorer" style='width:100%; height:90%;'></div>
+                     </div>
+                 </div>
+             </div>
+             <div view="resizer"></div>
+             <div view="cols">
+              <div class="panel panel-default"  ng-show="scenario != undefined">
+                <div class="panel-heading">
+                    <h3 class="panel-title" >
                         <i ng-if="scenario.type === 'swing'" class="fa fa-laptop fa-fw"></i>
                         <i ng-if="scenario.type === 'service'" class="fa fa-bolt fa-fw"></i>
                         <i ng-if="scenario.type === 'web'" class="fa fa-globe fa-fw"></i>
                         <span ng-if="isEditScenarioName===false">{{scenario.name}}</span>
                         <input type="text" ng-if="isEditScenarioName===true" ng-model="scenario.name"/>
                         <div class="pull-right" style="margin: -5px;">
-                        <button class="btn btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
-                            <button class="btn btn-xs" data-ng-click="save()"> <i class="fa fa-floppy-o"></i> Save</button>
-                            <button class="btn btn-xs" data-ng-click="save()"><i class="fa fa-trash"></i></button>
+                            <button class="btn btn-default btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
+                            <button class="btn btn-default btn-xs" data-ng-click="save()"> <i class="fa fa-floppy-o"></i> Save</button>
+                            <button class="btn btn-default btn-xs" data-ng-click="save()"><i class="fa fa-trash"></i></button>
                         </div>
-                        </h3>
-                    </div>
-                    <div class="panel-body">
-                        <!--  -->
-                        <div class="effectContent">
-                            <div class="scenario" ng-show="scenario != undefined">
-                                <div class="panel panel-default">
-                                  <div class="panel-body">
-                                        Import :
-                                        <button class="btn btn-xs btn-success" ng-show="scenario.template" ng-click="convertToTemplate(scenario)">T</button>
-                                        <select ng-model="scenario.selectedImportMode" ng-options="mode for mode in importModes"></select>
-                                        from <select ng-model="scenario.imp" ng-options="reference as reference.name for reference in scenarii" ></select>
-                                        <button class="btn btn-xs btn-primary" data-ng-click="importScenario(scenario)">Import</button>
-                                </div>
-                            </div>
-                                
-                                <table class="table table-striped" width="200px;">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th ng-repeat="c in scenario.columns"></span>{{c.name}}</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody ui-sortable ng-model="scenario.rows">
-                                        <tr ng-repeat="r in scenario.rows">
-                                            <td>
-                                                <span ng-switch="r.kind">
-                                                    <i ng-switch-when="service"
-                                                    class="fa fa-flash fa-2x"
-                                                    tooltip="Service" tooltip-trigger="mouseenter" tooltip-placement="top"/>
-                                                    <i ng-switch-when="swing"
-                                                    class="fa fa-laptop fa-2x"
-                                                    tooltip="Swing" tooltip-trigger="mouseenter" tooltip-placement="top"/>
-                                                    <i ng-switch-when="web"
-                                                    class="fa fa-tablet fa-2x"
-                                                    tooltip="Web" tooltip-trigger="mouseenter" tooltip-placement="top"/>
-                                                    <span class="fa-stack fa-lg" ng-switch-default
-                                                    tooltip="Unknown" tooltip-trigger="mouseenter" tooltip-placement="top">
-                                                    <i class="fa fa-play fa-stack-1x"></i>
-                                                    <i class="fa fa-ban fa-stack-2x text-danger"></i>
-                                                </span>
-                                            </span>    
-                                        </td>
-                                        <td ng-repeat="c in scenario.columns"
-                                        pattern 
-                                        pattern-value="{{r[c.name]}}" 
-                                        pattern-post="{{c.post}}"
-                                        pattern-model="r" 
-                                        pattern-column="{{c.name}}"
-                                        pattern-context="{{scenario.type}}"
-                                        on-pattern-change="onPatternValueChange(row, position, identifier, value)">
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-xs" data-ng-click="deleteRow(scenario, r)">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                </table>
-                <tr ng-model="newRow">
-                    <td colspan="3">
-                        <span template ng-model="newRow['patterns']" template-value="true"
-                        template-post="false" template-config-type="{{ stepType }}">
-                        <input type="text" ng-model="newRow[c.name]" 
-                        style="width: 100%;" placeholder="{{c.name}}"/>
-                    </span>
-                </td>
-                <td colspan="2">
-                    <div class="btn-group" dropdown>
-                      <button type="button" class="btn btn-primary btn-xs" ng-click="addRow(newRow)">
-                          + {{stepType}} step
-                      </button>
-                      <button type="button" class="btn btn-primary btn-xs dropdown-toggle" dropdown-toggle>
-                        <span class="caret"></span>
-                        <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li>
-                            <a href="javascript:void(0)" data-ng-click="swaptToSwingRow()">
-                                <i class="fa fa-laptop fa-fw"></i>swing
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" data-ng-click="swaptToWebRow()">
-                                <i class="fa fa-tablet fa-fw"></i>web
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" data-ng-click="swaptToServiceRow()">
-                                <i class="fa fa-flash fa-fw"></i>service
-                            </a>
-                        </li>
-                    </ul>
+                    </h3>
                 </div>
+                <div class="panel-body">
+                    <div id="scenariiActionContent" class="effectContent scenario" style="height: 98%;overflow: auto;">
+
+                        <div class="panel panel-default" style="margin-bottom: 11px;">
+                            <div class="panel-heading" style="padding: 3px;" role="tab" id="headingOne">
+                                <h4 class="panel-title" style="font-size:14px;">
+                                  <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                   Import :
+                               </a>
+                           </h4>
+                       </div>
+                       <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                        <div class="panel-body">
+                           <button class="btn btn-xs btn-success" ng-show="scenario.template" ng-click="convertToTemplate(scenario)">T</button>
+                           <select ng-model="scenario.selectedImportMode" ng-options="mode for mode in importModes"></select>
+                           from <select ng-model="scenario.imp" ng-options="reference as reference.name for reference in scenarii" ></select>
+                           <button class="btn btn-xs btn-primary" data-ng-click="importScenario(scenario)">Import</button>
+                       </div>
+                   </div>
+               </div>
+               <div id="importActionsPanel" class="panel panel-default" style="height: 86%; overflow-y: scroll;">
+                   <ul class="list-group list-striped" ui-sortable ng-model="scenario.rows">
+                      <li class="list-group-item row" ng-repeat="r in scenario.rows">
+                        <span class="col-md-1"  style="width: 5%; padding-left: 6px; padding-right: 6px;" ng-switch="r.kind">
+                            <i ng-switch-when="service"
+                            class="fa fa-flash fa-2x"
+                            tooltip="Service" tooltip-trigger="mouseenter" tooltip-placement="top"/>
+                            <i ng-switch-when="swing"
+                            class="fa fa-laptop fa-2x"
+                            tooltip="Swing" tooltip-trigger="mouseenter" tooltip-placement="top"/>
+                            <i ng-switch-when="web"
+                            class="fa fa-tablet fa-2x"
+                            tooltip="Web" tooltip-trigger="mouseenter" tooltip-placement="top"/>
+                            <span class="fa-stack fa-lg" ng-switch-default
+                            tooltip="Unknown" tooltip-trigger="mouseenter" tooltip-placement="top">
+                            <i class="fa fa-play fa-stack-1x"></i>
+                            <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                        </span>
+                    </span>    
+
+                    <span class="col-md-10" ng-if="scenario.columns[0].name === 'patterns'"
+                    pattern style="width: 85%; padding-left: 6px; padding-right: 6px;"
+                    pattern-value="{{r[scenario.columns[0].name]}}" 
+                    pattern-post="{{scenario.columns[0].post}}"
+                    pattern-model="r" 
+                    pattern-column="{{scenario.columns[0].name}}"
+                    pattern-context="{{scenario.type}}"
+                    on-pattern-change="onPatternValueChange(row, position, identifier, value)">
+                </span>
+                <span class="pull-right col-md-1" style="padding-left: 6px; padding-right: 6px; width: 9%;">
+                    <button class="btn btn-default btn-xs" data-ng-click="">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                    <button class="btn btn-default btn-xs" data-ng-click="deleteRow(scenario, r)">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </span>
+            </li>
+            <li ng-model="newRow" class="list-group-item row">
+
+               <span class="col-md-1" style="width: 5%; padding-left: 6px; padding-right: 6px;">
+                <i class="fa fa-chevron-right fa-2x"></i>
+               </span>
+               <span template ng-model="newRow['patterns']" template-value="true"
+               template-post="false" template-config-type="{{ stepType }}">
+               <input class="col-md-10" style="width: 85%; padding-left: 6px; padding-right: 6px;" 
+               type="text" ng-model="newRow[c.name]" placeholder="{{c.name}}"/>
+           </span>
+           <div class="btn-group col-md-1" style="width: 10%; padding-left: 6px; padding-right: 6px;" dropdown>
+              <button type="button" class="btn btn-primary btn-xs" ng-click="addRow(newRow)">
+                  + {{stepType}} step
+              </button>
+              <button type="button" class="btn btn-primary btn-xs dropdown-toggle" dropdown-toggle>
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li>
+                    <a href="javascript:void(0)" data-ng-click="swaptToSwingRow()">
+                        <i class="fa fa-laptop fa-fw"></i>swing
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" data-ng-click="swaptToWebRow()">
+                        <i class="fa fa-tablet fa-fw"></i>web
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" data-ng-click="swaptToServiceRow()">
+                        <i class="fa fa-flash fa-fw"></i>service
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li>
+</ul>
+
+
+<!--            <table class="table table-striped" width="200px;">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th ng-repeat="c in scenario.columns"></span>{{c.name}}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody ui-sortable ng-model="scenario.rows">
+                <tr ng-repeat="r in scenario.rows">
+                    <td>
+                        <span ng-switch="r.kind">
+                            <i ng-switch-when="service"
+                            class="fa fa-flash fa-2x"
+                            tooltip="Service" tooltip-trigger="mouseenter" tooltip-placement="top"/>
+                            <i ng-switch-when="swing"
+                            class="fa fa-laptop fa-2x"
+                            tooltip="Swing" tooltip-trigger="mouseenter" tooltip-placement="top"/>
+                            <i ng-switch-when="web"
+                            class="fa fa-tablet fa-2x"
+                            tooltip="Web" tooltip-trigger="mouseenter" tooltip-placement="top"/>
+                            <span class="fa-stack fa-lg" ng-switch-default
+                            tooltip="Unknown" tooltip-trigger="mouseenter" tooltip-placement="top">
+                            <i class="fa fa-play fa-stack-1x"></i>
+                            <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                        </span>
+                    </span>    
+                </td>
+                <td ng-repeat="c in scenario.columns"
+                pattern 
+                pattern-value="{{r[c.name]}}" 
+                pattern-post="{{c.post}}"
+                pattern-model="r" 
+                pattern-column="{{c.name}}"
+                pattern-context="{{scenario.type}}"
+                on-pattern-change="onPatternValueChange(row, position, identifier, value)">
+            </td>
+            <td>
+                <button class="btn btn-xs" data-ng-click="deleteRow(scenario, r)">
+                    <i class="fa fa-trash"></i>
+                </button>
             </td>
         </tr>
-            </div>
-        </div>
-        <!-- /. effect content -->
-    </div>
+    </tbody>
+</table>    -->                 
+</div>
+</div>
+<!-- /. effect content -->
+</div>
 </div>
 <!-- /.panel -->
-        </div>
-    </div>
-  </div>
-  </div>
+</div>
+</div>
+</div>
+</div>
 <!--                 <div data-view="cols">
                     <div data-view="template" data-width="200"> 
                         <div class="panel panel-default">
