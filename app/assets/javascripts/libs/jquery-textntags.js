@@ -181,7 +181,7 @@
                     tagText = triggers[tagPos[2]].syntax(objPropTransformer(tagPos[3], false));
                 
                 position = tagPos[0] + tagPos[1];
-                return diff_text + tagText;
+                return diff_text + tagPos[3].replacement;
             });
             
             return tagged_text.join('') + plain_text.substr(position);
