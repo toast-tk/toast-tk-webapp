@@ -275,3 +275,12 @@
     background: #ddd !important;
     color: #000;
 }
+
+/* angucomplete overriding*/
+
+.angucomplete-dropdown {
+    width: 100% !important;
+  }
+.angucomplete-selected-row {
+     color: #000 !important; 
+}

@@ -48,7 +48,10 @@
       'webix':{
         deps: ['angular']
       },
-       'sidebarmenu':{
+      'angucomplete':{
+        deps: ['angular']
+      },
+      'sidebarmenu':{
         deps: ['angular']
       }
     },
@@ -70,6 +73,7 @@
         "ui.router": ['libs/angular-ui-router.min'],
         "webix": ['libs/webix'],
         "sidesplit": ['libs/angular-sidesplit.provider'],
+        "angucomplete": ['libs/angucomplete-alt.min'],
         "sidebarmenu": ['controllers/layout/sidebar.menu.controller'],
         "layout": ['controllers/layout/layout.controller'],
         "Scenario1Ctrl": ["./controllers/scenario1"]
@@ -82,14 +86,14 @@
             "./controllers/layout/sidebar.menu.controller", "layout",
             "./services/client-service",
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
-            "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute",
+            "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "webix"], 
           function(a, b, ScenarioService, login, editor, scenario, scenario1, configuration, repository, home, sidebarmenu, layout) {
 
               var app = angular.module("app", 
                 ['ngRoute', 'ui.router', "play.routing", "ngAnimate",
                 "tk.components", "tk.services",
-                "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable", "sidesplit", "webix"]);
+                "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable", "sidesplit", "webix","angucomplete-alt"]);
               app.controller("LoginCtrl", login.LoginCtrl);
               app.controller("MainCtrl", home.MainCtrl);
               app.controller("ConfigurationCtrl", configuration.ConfigurationCtrl);

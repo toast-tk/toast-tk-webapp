@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        Scenario1Ctrl: function ($rootScope, $scope, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, ScenarioService) {
+        Scenario1Ctrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, ScenarioService) {
             $scope.isEditScenarioName = false;
               $scope.isCollapsed = false;
 
@@ -18,7 +18,8 @@ define(["angular"], function (angular) {
             $scope.stepType = "";
 
             $scope.add = add;
-            $scope.addRow = addRow;
+            $scope.addNewStep = addNewStep;
+            $scope.newStepSelected = newStepSelected;
             $scope.save = save;
             $scope.deleteRow = deleteRow;
             $scope.importScenario = importScenario;
@@ -26,9 +27,6 @@ define(["angular"], function (angular) {
             $scope.convertToTemplate = convertToTemplate;
             $scope.editScenario = editScenario;
             $scope.deleteScenarii = deleteScenarii;
-            $scope.swaptToSwingRow = swaptToSwingRow;
-            $scope.swaptToWebRow = swaptToWebRow;
-            $scope.swaptToServiceRow = swaptToServiceRow;
             $scope.addRowBefore = addRowBefore;
 
             __init__();
@@ -37,28 +35,6 @@ define(["angular"], function (angular) {
                 $scope.scenario = scenario; 
                 swaptToDefaultRow();
             }
-
-            ////////// trigger the right event !! //////////////
-            function swaptToSwingRow(){
-                $scope.stepType = "swing";
-                $scope.regexList = $scope.regexMap[$scope.stepType];
-            }
-
-            function swaptToServiceRow(){
-                $scope.stepType = "service";
-                $scope.regexList = $scope.regexMap[$scope.stepType];
-            }
-
-            function swaptToWebRow(){
-                $scope.stepType = "web";
-                $scope.regexList = $scope.regexMap[$scope.stepType];
-            }
-
-            function swaptToDefaultRow(){
-                $scope.stepType = $scope.scenario.type;   
-                $scope.regexList = $scope.regexMap[$scope.stepType];
-            }
-            //////////////////////////////////////////////////
 
             function add() {
                 playRoutes.controllers.ScenarioController.loadScenarioCtx($scope.selectedType).get().then(function (response) {
@@ -75,12 +51,34 @@ define(["angular"], function (angular) {
                 });
             };
 
-            function addRow(newRow) {
-                newRow.kind = $scope.stepType;
-                $scope.scenario.rows.push(newRow);
-                $scope.newRow = {};
-            };
+            /* BEGIN : new step adding through autocomplete */
+            var newStepPromise = $q.defer();
+            function newStepSelected(newStep){
+                 console.log("here",newStep);
+                 var step =  {};
+                 step.kind = $scope.scenario.type ;
+                if(angular.isDefined(newStep)){
+                    /*console.log("here",newStep);*/
+                    step['patterns'] = newStep.originalObject.typed_sentence;
+                    step.kind = newStep.description ;
+                } else { //step vide ou ne fait pas partie de la liste
+                    step['patterns'] = "";
+                    newStepPromise.resolve(step);
+                }
+                newStepPromise = $q.defer();
+                newStepPromise.resolve(step);
+            }
 
+            function addNewStep(){
+                newStepPromise.promise.then(function(step){
+                    console.log("   adding ;", angular.copy(step));
+                    $scope.scenario.rows.push(angular.copy(step));
+                    $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "fast");
+                    $scope.$broadcast('angucomplete-alt:clearInput', 'newStepAutocomplete');
+            });
+                
+            }
+            /* END : new step adding through autocomplete */
 
             function addRowBefore(scenario, newRow, currentRow) {
             
@@ -239,12 +237,21 @@ define(["angular"], function (angular) {
                 });
             }                    
 
+            $scope.regexFullList=[];
             function __init__() {
                 for(var i =0 ; i < $scope.scenario_types.length; i++){
                     var scenariiKind = $scope.scenario_types[i];
+                    console.log("scenariiKind", scenariiKind);
                     ClientService.loadRegexList(scenariiKind, function(scenariiKind, list){
+                        console.log("scenariiKind1111111", scenariiKind);
                          $scope.regexList = $scope.regexList.concat(list || []);
                          $scope.regexMap[scenariiKind] = list;
+                         angular.forEach(list,function(value,key){
+                                value.kind = scenariiKind;
+                                $scope.regexFullList.push(value);
+                         });
+                        
+                     console.log("$scope.regexFullList", $scope.regexFullList);
                     });
                 }   
 
@@ -329,7 +336,7 @@ define(["angular"], function (angular) {
                         $scope.scenario = selectedScenario ;
                         $timeout(function(){
                             $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
-                        },500);
+                            },500);
                         $scope.$apply();
                     });
                 });
