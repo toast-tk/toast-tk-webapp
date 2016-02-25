@@ -76,19 +76,21 @@
         "angucomplete": ['libs/angucomplete-alt.min'],
         "sidebarmenu": ['controllers/layout/sidebar.menu.controller'],
         "layout": ['controllers/layout/layout.controller'],
-        "Scenario1Ctrl": ["./controllers/scenario1"]
+        "Scenario1Ctrl": ["./controllers/scenario1"],
+        "newStepModalCtrl": ["./controllers/scenario/newstep.modal.controller"]
     }
   });
 
   require(["angular", "./services/playRoutes", "./services/scenario.service" ,
             "./controllers/login", "./controllers/editor", "./controllers/scenario", "Scenario1Ctrl",
             "./controllers/configuration","./controllers/repository", "./controllers/home",
-            "./controllers/layout/sidebar.menu.controller", "layout",
+            "./controllers/layout/sidebar.menu.controller", "layout", "newStepModalCtrl",
+
             "./services/client-service",
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
             "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "webix"], 
-          function(a, b, ScenarioService, login, editor, scenario, scenario1, configuration, repository, home, sidebarmenu, layout) {
+          function(a, b, ScenarioService, login, editor, scenario, scenario1, configuration, repository, home, sidebarmenu, layout, newStepModalCtrl) {
 
               var app = angular.module("app", 
                 ['ngRoute', 'ui.router', "play.routing", "ngAnimate",
@@ -104,7 +106,8 @@
               app.controller("ProjectCtrl", editor.ProjectCtrl);
               app.controller("SidebarMenuCtrl", sidebarmenu.SidebarMenuCtrl);
               app.controller("LayoutCtrl", layout.LayoutCtrl);
-              
+              app.controller("newStepModalCtrl", newStepModalCtrl.newStepModalCtrl);
+
               app.service("ScenarioService", ScenarioService.ScenarioService);
 
               app.config(["$stateProvider", function($stateProvider){
@@ -185,7 +188,7 @@
       url: "scenario1",
       views: {
         'content':{
-         templateUrl: "assets/html/scenario1.html",
+         templateUrl: "assets/html/scenario/scenario1.html",
          controller: "Scenario1Ctrl"
        }
      }

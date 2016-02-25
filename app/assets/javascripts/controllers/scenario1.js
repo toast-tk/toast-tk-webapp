@@ -1,12 +1,11 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        Scenario1Ctrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, ScenarioService) {
+        Scenario1Ctrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $modal, ScenarioService) {
             $scope.isEditScenarioName = false;
-              $scope.isCollapsed = false;
+            $scope.isCollapsed = false;
 
             //plain json data, based on objects
-
             $scope.newRow = {};
             $scope.scenario_types = ["swing", "service", "web"];
             $scope.selectedType = "";
@@ -54,13 +53,13 @@ define(["angular"], function (angular) {
             /* BEGIN : new step adding through autocomplete */
             var newStepPromise = $q.defer();
             function newStepSelected(newStep){
-                 console.log("here",newStep);
-                 var step =  {};
-                 step.kind = $scope.scenario.type ;
-                if(angular.isDefined(newStep)){
-                    /*console.log("here",newStep);*/
-                    step['patterns'] = newStep.originalObject.typed_sentence;
-                    step.kind = newStep.description ;
+               console.log("here",newStep);
+               var step =  {};
+               step.kind = $scope.scenario.type ;
+               if(angular.isDefined(newStep)){
+                /*console.log("here",newStep);*/
+                step['patterns'] = newStep.originalObject.typed_sentence;
+                step.kind = newStep.description ;
                 } else { //step vide ou ne fait pas partie de la liste
                     step['patterns'] = "";
                     newStepPromise.resolve(step);
@@ -75,13 +74,13 @@ define(["angular"], function (angular) {
                     $scope.scenario.rows.push(angular.copy(step));
                     $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "fast");
                     $scope.$broadcast('angucomplete-alt:clearInput', 'newStepAutocomplete');
-            });
+                });
                 
             }
             /* END : new step adding through autocomplete */
 
             function addRowBefore(scenario, newRow, currentRow) {
-            
+
             };
 
             function deleteRow(scenario, row) {
@@ -231,34 +230,34 @@ define(["angular"], function (angular) {
             }
 
             function replaceIndex(string, regex, at, repl) {
-               return string.replace(regex, function(match, i) {
-                    if( i === at ) return repl;
-                    return match;
-                });
-            }                    
+             return string.replace(regex, function(match, i) {
+                if( i === at ) return repl;
+                return match;
+            });
+         }                    
 
-            $scope.regexFullList=[];
-            function __init__() {
-                for(var i =0 ; i < $scope.scenario_types.length; i++){
-                    var scenariiKind = $scope.scenario_types[i];
-                    console.log("scenariiKind", scenariiKind);
-                    ClientService.loadRegexList(scenariiKind, function(scenariiKind, list){
-                        console.log("scenariiKind1111111", scenariiKind);
-                         $scope.regexList = $scope.regexList.concat(list || []);
-                         $scope.regexMap[scenariiKind] = list;
-                         angular.forEach(list,function(value,key){
-                                value.kind = scenariiKind;
-                                $scope.regexFullList.push(value);
-                         });
-                        
-                     console.log("$scope.regexFullList", $scope.regexFullList);
+         $scope.regexFullList=[];
+         function __init__() {
+            for(var i =0 ; i < $scope.scenario_types.length; i++){
+                var scenariiKind = $scope.scenario_types[i];
+                console.log("scenariiKind", scenariiKind);
+                ClientService.loadRegexList(scenariiKind, function(scenariiKind, list){
+                    console.log("scenariiKind1111111", scenariiKind);
+                    $scope.regexList = $scope.regexList.concat(list || []);
+                    $scope.regexMap[scenariiKind] = list;
+                    angular.forEach(list,function(value,key){
+                        value.kind = scenariiKind;
+                        $scope.regexFullList.push(value);
                     });
-                }   
 
-                playRoutes.controllers.ScenarioController.loadScenarii().get().then(function (response) {
-                    var data = response.data || [];
-                    data.map(function (scenario) {
-                                                    scenario.template = isTemplate;
+                    console.log("$scope.regexFullList", $scope.regexFullList);
+                });
+            }   
+
+            playRoutes.controllers.ScenarioController.loadScenarii().get().then(function (response) {
+                var data = response.data || [];
+                data.map(function (scenario) {
+                    scenario.template = isTemplate;
                             scenario.value = scenario.name; // todo : fix: pour la recherche 
                             console.log("scenario.type", scenario.type);
                             if(scenario.type==="swing"){
@@ -271,17 +270,17 @@ define(["angular"], function (angular) {
                                 scenario.image = "file-code-o";    
                             }
                             
-                        try{
-                            scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
-                            var isTemplate = true;
-                            for(var i = 0 ; i < scenario.rows.length ; i++){
-                                if(angular.isDefined(scenario.rows[i].mappings) && scenario.rows[i].mappings.length > 0){
-                                    isTemplate = false;
-                                    break;
+                            try{
+                                scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
+                                var isTemplate = true;
+                                for(var i = 0 ; i < scenario.rows.length ; i++){
+                                    if(angular.isDefined(scenario.rows[i].mappings) && scenario.rows[i].mappings.length > 0){
+                                        isTemplate = false;
+                                        break;
+                                    }
                                 }
-                            }
-                        }catch(e){
-                            if(!angular.isObject(scenario.rows)){
+                            }catch(e){
+                                if(!angular.isObject(scenario.rows)){
                                 //convert it into rows
                                 var lines = scenario.rows.split( "\n" );
                                 scenario.template = true;
@@ -293,55 +292,61 @@ define(["angular"], function (angular) {
                         }
                         return scenario;
                     });
-                    $scope.scenarii = data;
-                    
-                    /*TODO :FIX: faire sortir dans l'initialisation*/
-                    function reAdjustContentSize(){
-                    $timeout(function(){
-                            $scope.effectContentWidth = window.innerWidth - angular.element('#side-nav').width();
-                            $timeout(function(){
-                                $$("contentWebixLayout").adjust();
-                            },0);
-                        },0);
-                    }
-                    /* begin : adjusting page content size */
-                    reAdjustContentSize()
-                    webix.event(window, "resize", reAdjustContentSize);
-                    $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), reAdjustContentSize);
-                    /* end : adjusting page content size */
+$scope.scenarii = data;
 
-                    /* begin : generation de la tree */
-                    var treeExplorerPromise = ScenarioService.buildExplorerTree("toastScenariosTreeExplorer", $scope.scenarii);
-                    treeExplorerPromise.then(function(treeExplorer){
-                         webix.ready(function(){ webix.markup.init(); });
+/*TODO :FIX: faire sortir dans l'initialisation*/
+function reAdjustContentSize(){
+    $timeout(function(){
+        $scope.effectContentWidth = window.innerWidth - angular.element('#side-nav').width();
+        $timeout(function(){
+            $$("contentWebixLayout").adjust();
+        },0);
+    },0);
+}
+/* begin : adjusting page content size */
+reAdjustContentSize()
+webix.event(window, "resize", reAdjustContentSize);
+$sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), reAdjustContentSize);
+/* end : adjusting page content size */
 
-                        /* begin : adjusting treeExplorer size */
-                        treeExplorer.adjust();
-                        $$("$template2").attachEvent("onViewResize", function(){
-                                   treeExplorer.adjust();
-                        });
-                        $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(isCollapsed){
-                            $timeout(function(){
-                                treeExplorer.adjust();
-                            },0);
-                        });
-                        /* end : adjusting treeExplorer size */
-                        $scope.addScenarioToParent = function(){
-                           ScenarioService.addToExplorerTree("new element", treeExplorer);    
-                        }
-                    });
-                    /* end : generation de la tree */
+/* begin : generation de la tree */
+var treeExplorerPromise = ScenarioService.buildExplorerTree("toastScenariosTreeExplorer", $scope.scenarii);
+treeExplorerPromise.then(function(treeExplorer){
+   webix.ready(function(){ webix.markup.init(); });
 
-                    ScenarioService.addSelectedNodeCallback(function(selectedScenario){
-                        $scope.scenario = selectedScenario ;
-                        $timeout(function(){
-                            $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
-                            },500);
-                        $scope.$apply();
-                    });
-                });
-            }
-            
-        }
-    };
+   /* begin : adjusting treeExplorer size */
+   treeExplorer.adjust();
+   $$("$template2").attachEvent("onViewResize", function(){
+     treeExplorer.adjust();
+ });
+   $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(isCollapsed){
+    $timeout(function(){
+        treeExplorer.adjust();
+    },0);
+});
+   /* end : adjusting treeExplorer size */
+   $scope.addScenarioToParent = function(){
+    ScenarioService.saveConcernedTreeNode(treeExplorer).then(function(){
+            var modalInstance = $modal.open({
+                            animation: $scope.animationsEnabled,
+                            templateUrl: 'assets/html/scenario/newstep.modal.scenario.html',
+                            controller:'newStepModalCtrl'
+                          });
+    });    
+}
+});
+/* end : generation de la tree */
+
+ScenarioService.addSelectedNodeCallback(function(selectedScenario){
+    $scope.scenario = selectedScenario ;
+    $timeout(function(){
+        $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
+    },500);
+    $scope.$apply();
+});
+});
+}
+
+}
+};
 });

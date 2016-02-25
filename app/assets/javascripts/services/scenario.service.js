@@ -3,8 +3,10 @@ define(["angular"], function (angular) {
     return {
         ScenarioService: function ($q) {
           var self = this ;
+          self.concernedTreeNodePromise = $q.defer() ;
           self.selectedNodeCallback = [];
             return {
+              saveConcernedTreeNode : saveConcernedTreeNode,
               buildExplorerTree : buildExplorerTree,
               addToExplorerTree : addToExplorerTree,
               addSelectedNodeCallback : addSelectedNodeCallback  
@@ -28,7 +30,7 @@ define(["angular"], function (angular) {
                                     { id:"4", value:"wierd folder1", data:[]},
                                     { id:"5", value:"empty folder", type:'folder'}
                             ];*/
-
+console.log("rgfzrgzrg", dataTree);
                  var treeExplorer = new webix.ui({
                       container: treeContainer,
                       rows:[
@@ -88,23 +90,31 @@ define(["angular"], function (angular) {
             }
 
             /**/
-            function addToExplorerTree(newElementValue, treeExplorer){
+            function saveConcernedTreeNode(treeExplorer){
                webix.ready(function(){
                       var tree = treeExplorer.getChildViews()[1];
-                      var parentId= tree.getSelectedId();
-                      var selectedItem = tree.getSelectedItem();
-                        if(parentId 
-                            && (selectedItem.type==="folder" 
-                            || (angular.isDefined(selectedItem.data) && selectedItem.type != []))){
-                                   tree.add( {value:newElementValue}, 0, parentId);
-                            }
-                        else if(parentId){
-                             tree.add({value: newElementValue}, 0, tree.getParentId(parentId));
+                      self.selectedTree  = treeExplorer.getChildViews()[1];
+                      var parentId=  self.selectedTree.getSelectedId();
+                      var selectedItem =  self.selectedTree.getSelectedItem();
+                        if(parentId){
+                              self.concernedTreeNodePromise.resolve();
+                          if((selectedItem.type==="folder" || (angular.isDefined(selectedItem.data) && selectedItem.type != []))){
+                                  self.concernedNode = parentId;
+                          } else {
+                            self.concernedNode = tree.getParentId(parentId);
+                           /* tree.add({value: newElementValue}, 0, tree.getParentId(parentId));*/
+                          }
+                            
+                        } else {
+                              webix.alert("Select a folder");
                         }
-                            else {
-                                    webix.alert("Select a folder");
-                            }
                    });
+                return self.concernedTreeNodePromise.promise ;
+            }
+
+            function addToExplorerTree(newElementValue){
+              console.log("new node name",newElementValue);
+                  self.selectedTree.add( newElementValue, 0, self.concernedNode);
             }
 
             /**/

@@ -110,24 +110,100 @@
                 </span>
             </li>
             <li ng-model="newRow" class="list-group-item row">
-            <!-- {{regexMap}} {{regexList}} -->
-            <div angucomplete-alt id="newStepAutocomplete"
-             ng-keyup="$event.keyCode == 13 && addNewStep()"
-             selected-object="newStepSelected"
-              template-url="/assets/html/action.angucomplete.template.html"
-              placeholder="Type here.."
-              maxlength="50"
-              pause="100"
-              selected-object="selectedSentence"
-              local-data="regexFullList"
-              search-fields="sentence"
-              description-field="kind"
-              title-field="sentence"
-              minlength="1"
-              input-class="form-control form-control-small"
-              match-class="highlight"></div>
+<div angucomplete-alt id="ex1"
+  placeholder="Search countries"
+  maxlength="50"
+  pause="100"
+  selected-object="selectedCountry"
+  local-data="countries"
+  search-fields="name"
+  title-field="name"
+  minlength="1"
+  input-class="form-control form-control-small"
+  match-class="highlight"></div>
+               <span class="col-md-1" style="width: 5%; padding-left: 6px; padding-right: 6px;">
+                <i class="fa fa-chevron-right fa-2x"></i>
+               </span>
+               <span template ng-model="newRow['patterns']" template-value="true"
+               template-post="false" template-config-type="{{ stepType }}">
+               <input class="col-md-10" style="width: 85%; padding-left: 6px; padding-right: 6px;" 
+               type="text" ng-model="newRow[c.name]" placeholder="{{c.name}}"/>
+           </span>
+           <div class="btn-group col-md-1" style="width: 10%; padding-left: 6px; padding-right: 6px;" dropdown>
+              <button type="button" class="btn btn-primary btn-xs" ng-click="addRow(newRow)">
+                  + {{stepType}} step
+              </button>
+              <button type="button" class="btn btn-primary btn-xs dropdown-toggle" dropdown-toggle>
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li>
+                    <a href="javascript:void(0)" data-ng-click="swaptToSwingRow()">
+                        <i class="fa fa-laptop fa-fw"></i>swing
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" data-ng-click="swaptToWebRow()">
+                        <i class="fa fa-tablet fa-fw"></i>web
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" data-ng-click="swaptToServiceRow()">
+                        <i class="fa fa-flash fa-fw"></i>service
+                    </a>
+                </li>
+            </ul>
+        </div>
     </li>
-</ul>               
+</ul>
+
+
+<!--            <table class="table table-striped" width="200px;">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th ng-repeat="c in scenario.columns"></span>{{c.name}}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody ui-sortable ng-model="scenario.rows">
+                <tr ng-repeat="r in scenario.rows">
+                    <td>
+                        <span ng-switch="r.kind">
+                            <i ng-switch-when="service"
+                            class="fa fa-flash fa-2x"
+                            tooltip="Service" tooltip-trigger="mouseenter" tooltip-placement="top"/>
+                            <i ng-switch-when="swing"
+                            class="fa fa-laptop fa-2x"
+                            tooltip="Swing" tooltip-trigger="mouseenter" tooltip-placement="top"/>
+                            <i ng-switch-when="web"
+                            class="fa fa-tablet fa-2x"
+                            tooltip="Web" tooltip-trigger="mouseenter" tooltip-placement="top"/>
+                            <span class="fa-stack fa-lg" ng-switch-default
+                            tooltip="Unknown" tooltip-trigger="mouseenter" tooltip-placement="top">
+                            <i class="fa fa-play fa-stack-1x"></i>
+                            <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                        </span>
+                    </span>    
+                </td>
+                <td ng-repeat="c in scenario.columns"
+                pattern 
+                pattern-value="{{r[c.name]}}" 
+                pattern-post="{{c.post}}"
+                pattern-model="r" 
+                pattern-column="{{c.name}}"
+                pattern-context="{{scenario.type}}"
+                on-pattern-change="onPatternValueChange(row, position, identifier, value)">
+            </td>
+            <td>
+                <button class="btn btn-xs" data-ng-click="deleteRow(scenario, r)">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>    -->                 
 </div>
 </div>
 <!-- /. effect content -->
