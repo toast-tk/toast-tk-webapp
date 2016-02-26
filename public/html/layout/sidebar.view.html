@@ -6,11 +6,11 @@
                     <li>
                         <a href="#/configuration"><i class="fa fa-fw fa-gear fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span ng-if="isCollapsed===false">Settings</span></a>
                     </li>
-                    <li>
-                        <a ref="#/repository"><i class="fa fa-fw fa-archive fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Obejct repository</span></a>
+                    <li ng-class="{'active' : currentState === 'layout.repository1'}">
+                        <a ng-click="goToState('layout.repository1')"><i class="fa fa-fw fa-archive fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Object repository</span></a>
                     </li>
-                    <li class="active">
-                        <a href="#/scenario1"><i class="fa fa-fw fa-pencil-square-o fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
+                    <li ng-class="{'active' : currentState === 'layout.scenario1'}">
+                        <a  ng-click="goToState('layout.scenario1')"><i class="fa fa-fw fa-pencil-square-o fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
                         <span  ng-if="isCollapsed===false">Scenarii Edition</span></a>
                     </li>
                     <li>

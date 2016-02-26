@@ -30,7 +30,6 @@ define(["angular"], function (angular) {
                                     { id:"4", value:"wierd folder1", data:[]},
                                     { id:"5", value:"empty folder", type:'folder'}
                             ];*/
-console.log("rgfzrgzrg", dataTree);
                  var treeExplorer = new webix.ui({
                       container: treeContainer,
                       rows:[

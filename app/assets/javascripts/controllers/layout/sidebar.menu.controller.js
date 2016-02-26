@@ -5,10 +5,11 @@ define(["angular"], function(angular) {
     	}
 
 
-	SidebarMenuCtrl.$inject = ['$scope','$sideSplit'];
+	SidebarMenuCtrl.$inject = ['$scope', '$state','$sideSplit'];
 
-	function SidebarMenuCtrl($scope,$sideSplit) {
+	function SidebarMenuCtrl($scope, $state, $sideSplit) {
 		$scope.isCollapsed = false;
+		$scope.currentState = $state.current.name ;
 		$scope.collapse = function(){
 			$scope.isCollapsed = !$scope.isCollapsed ;
 			 $sideSplit.collapse({ 
@@ -16,6 +17,11 @@ define(["angular"], function(angular) {
                              message :"collapsed!"
                       });
 		};
+
+		$scope.goToState = function(stateName){
+			$state.go(stateName);
+			$scope.currentState = stateName ;
+		}
 	}
 
 });

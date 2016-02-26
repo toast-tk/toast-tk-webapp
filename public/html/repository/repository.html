@@ -1,0 +1,103 @@
+ <div class="container-fluid" id="repository" style="overflow: hidden;">
+                      <div class="row" style="width:{{effectContentWidth}}px; height:99%; overflow: hidden;">
+                        <div webix-ui id="contentWebixLayout"> <!--layout rows with type "space" are created-->
+                          <div height="51" >
+                            <h3 class="page-header" >
+                              <i class="fa fa-fw fa-archive"></i>  Object repository <small> repo</small>
+                            </h3>
+                          </div>
+                          <div view="cols"> <!--Webix layout cols are initialized-->
+                            <div width="280"> 
+                             <div class="panel panel-default">
+                              <div class="panel-heading">
+                                <div class="panel-title">
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-filter"></i> </span>
+                                    <select class="form-control btn" ng-model="autoSetupConfigFilter" data-ng-options="type for type in run_config_types"></select>
+                                </div>
+
+                                </div>
+                              </div>
+                              <div class="panel-body" style="height: 92%; overflow: auto;">
+                                <div ui-tree data-drag-enabled="false">
+                                <ol ui-tree-nodes="" class="list-group" ng-model="autosetups">
+                                    <li class="list-group-item" ng-repeat="autosetup in autosetups | filter:autoSetupConfigFilter" ui-tree-node>
+                                      <div class="title row" style="margin-left: 0; margin-right: 0;" ng-click="editRepositoryObject(autosetup)">
+                                       <div class="col-md-9 wrap-word">
+                                        {{autosetup.name}}
+                                      </div>
+                                      <a class="pull-right btn btn-primary btn-xs" data-nodrag="" ng-click="deleteObject(autosetup)">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                      </a>
+                                    </div>
+                                  </li>
+                                </ol>
+                              </div>
+                             </div>
+                           </div>
+                         </div>
+                         <div view="resizer"></div>
+                         <div view="cols">
+                          <div class="panel panel-default"  ng-show="autosetup != undefined">
+                            <div class="panel-heading">
+                              <h3 class="panel-title" >
+                                <i class="{{ICONS[scenario.type]}} fa-fw"></i>
+                                <span > Type: <label>{{ autosetup.type }}</label> Name: <input type="text" placeholder="name" ng-model="autosetup.name"/></span>
+                                <div class="pull-right" style="margin: -5px;">
+                                  <button class="btn btn-default btn-xs"  data-ng-click="saveAutoConfigBlock(autosetup)"> <i class="fa fa-floppy-o"></i> Save</button>
+                                </div>
+                              </h3>
+                            </div>
+                            <div class="panel-body">
+                              <div id="scenariiActionContent" class="effectContent scenario" style="height: 98%;overflow: auto;">
+                                <div>
+                                  <table class="table" width="200px;">
+                                    <tr>
+                                      <td ng-repeat="c in autosetup.columns">
+                                        <span>{{c.name}}</span>
+                                      </td>
+                                      <td>
+
+                                      </td>
+                                    </tr>
+                                    <tr ng-repeat="r in autosetup.rows">
+                                      <td ng-repeat="c in autosetup.columns">
+                                        <span ng-model="r[c.name]">
+                                          <ng-switch on="isArray(c.descriptor.type)">
+                                          <select ng-switch-when="array" ng-model="r[c.name]" ng-options="type for type in c.descriptor.type" style="width: 100%;" placeholder="{{c.name}}"/>
+                                          <input ng-switch-default type="text" ng-model="r[c.name]" style="width: 100%;" placeholder="{{c.name}}"/>
+                                        </ng-switch>
+                                      </span>
+                                    </td>
+                                    <td>
+                                      <button class="btn btn-xs" data-ng-click="deleteRow(r,autosetup)">
+                                        <i class="fa fa-trash"></i>
+                                      </button>
+                                    </td>
+                                  </tr>
+                                  <tr ng-model="newAutoSetupRow">
+                                    <td ng-repeat="c in autosetup.columns">
+                                      <span ng-model="newAutoSetupRow[c.name]">
+                                        <ng-switch on="isArray(c.descriptor.type)">
+                                        <select ng-switch-when="array" ng-model="newAutoSetupRow[c.name]" ng-options="type for type in c.descriptor.type" style="width: 100%;" placeholder="{{c.name}}"/>
+                                        <input ng-switch-default type="text" ng-model="newAutoSetupRow[c.name]" style="width: 100%;" placeholder="{{c.name}}"/>
+                                      </ng-switch>
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <button class="btn btn-primary btn-xs" data-ng-click="addAutoSetupRow(autosetup,newAutoSetupRow)"><i class="fa fa-plus"></i></button>
+                                  </td>
+                                </tr>
+                              </table>
+                            </div>
+                      </div>
+                      <!-- /. effect content -->
+                    </div>
+                  </div>
+                  <!-- /.panel -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.container-fluid -->

@@ -1,0 +1,11 @@
+#repository .panel-body {
+    padding: 0 !important;
+}
+
+#repository .angular-ui-tree-node div.title {
+    cursor: pointer;
+    background: #f8faff;
+    border: none; 
+    color: #222; 
+    padding: 6px 6px;
+}

@@ -239,17 +239,13 @@ define(["angular"], function (angular) {
          function __init__() {
             for(var i =0 ; i < $scope.scenario_types.length; i++){
                 var scenariiKind = $scope.scenario_types[i];
-                console.log("scenariiKind", scenariiKind);
                 ClientService.loadRegexList(scenariiKind, function(scenariiKind, list){
-                    console.log("scenariiKind1111111", scenariiKind);
                     $scope.regexList = $scope.regexList.concat(list || []);
                     $scope.regexMap[scenariiKind] = list;
                     angular.forEach(list,function(value,key){
                         value.kind = scenariiKind;
                         $scope.regexFullList.push(value);
                     });
-
-                    console.log("$scope.regexFullList", $scope.regexFullList);
                 });
             }   
 
@@ -258,9 +254,7 @@ define(["angular"], function (angular) {
                 data.map(function (scenario) {
                     scenario.template = isTemplate;
                             scenario.value = scenario.name; // todo : fix: pour la recherche 
-                            console.log("scenario.type", scenario.type);
-                            scenario.image = ICONS[scenario.type];
-                            
+                            scenario.image = ICONS[scenario.type];                            
                             try{
                                 scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
                                 var isTemplate = true;

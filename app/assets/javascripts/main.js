@@ -78,13 +78,14 @@
         "angucomplete": ['libs/angucomplete-alt.min'],
         "sidebarmenu": ['controllers/layout/sidebar.menu.controller'],
         "layout": ['controllers/layout/layout.controller'],
-        "Scenario1Ctrl": ["./controllers/scenario1"],
+        "Repository1Ctrl": ["./controllers/repository/repository.controller"],
+        "Scenario1Ctrl": ["./controllers/scenario/scenario.controller"],
         "newStepModalCtrl": ["./controllers/scenario/newstep.modal.controller"]
     }
   });
 
   require(["angular", "./services/playRoutes", "./services/scenario.service" ,
-            "./controllers/login", "./controllers/editor", "./controllers/scenario", "Scenario1Ctrl",
+            "./controllers/login", "./controllers/editor", "./controllers/scenario", "Repository1Ctrl", "Scenario1Ctrl",
             "./controllers/configuration","./controllers/repository", "./controllers/home",
             "./controllers/layout/sidebar.menu.controller", "layout", "newStepModalCtrl", "json!config/icon.constants.config.json",
 
@@ -92,7 +93,7 @@
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
             "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "webix"], 
-          function(a, b, ScenarioService, login, editor, scenario, scenario1, configuration, repository, home, sidebarmenu, layout, newStepModalCtrl, constantsFile) {
+          function(a, b, ScenarioService, login, editor, scenario, repository1, scenario1, configuration, repository, home, sidebarmenu, layout, newStepModalCtrl, constantsFile) {
 
               var app = angular.module("app", 
                 ['ngRoute', 'ui.router', "play.routing", "ngAnimate",
@@ -105,6 +106,8 @@
               app.controller("Scenario1Ctrl", scenario1.Scenario1Ctrl);
               
               app.controller("RepositoryCtrl", repository.RepositoryCtrl);
+              app.controller("Repository1Ctrl", repository1.RepositoryCtrl);
+
               app.controller("ProjectCtrl", editor.ProjectCtrl);
               app.controller("SidebarMenuCtrl", sidebarmenu.SidebarMenuCtrl);
               app.controller("LayoutCtrl", layout.LayoutCtrl);
@@ -186,15 +189,24 @@
             }
           }
         })
-        .state('layout.scenario1', {
-      url: "scenario1",
-      views: {
-        'content':{
-         templateUrl: "assets/html/scenario/scenario1.html",
-         controller: "Scenario1Ctrl"
-       }
-     }
-   });
+        .state('layout.repository1', {
+              url: "repository1",
+              views: {
+                'content':{
+                 templateUrl: "assets/html/repository/repository.html",
+                 controller: "Repository1Ctrl"
+               }
+             }
+      })
+      .state('layout.scenario1', {
+          url: "scenario1",
+          views: {
+            'content':{
+             templateUrl: "assets/html/scenario/scenario1.html",
+             controller: "Scenario1Ctrl"
+           }
+         }
+      });
 
 /*                  $routeProvider.when("/scenario1",{ templateUrl: "assets/html/scenario1.html", controller: "ScenarioCtrl"});
 */
