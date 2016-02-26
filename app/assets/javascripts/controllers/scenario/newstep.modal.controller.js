@@ -2,14 +2,22 @@ define(["angular"], function (angular) {
     "use strict";
     return {
         newStepModalCtrl: function ($scope,  $modalInstance, ScenarioService) {
-            $scope.scenarioTypeDropdownLabel = "Select type ..";
+            console.log("new node type", $scope.newNodeType);
             var newScenario = {};
+            if($scope.newNodeType === "folder"){
+                newScenario.type = "folder";
+                newScenario.image = "folder";
+                newScenario.data = [];
+            }
+
+            $scope.scenarioTypeDropdownLabel = "Select type ..";
+            
             $scope.closeModal = closeModal ;
             function closeModal(){
-               $modalInstance.close();
-           }
+             $modalInstance.close();
+         }
 
-           $scope.createScenario = function(){
+         $scope.createNewNode = function(){
             newScenario.name = $scope.scenarioName;
             newScenario.value = $scope.scenarioName;
             ScenarioService.addToExplorerTree(newScenario);

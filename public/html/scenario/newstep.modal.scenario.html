@@ -1,11 +1,11 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" ng-click="closeModal()"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">New Scenario</h4>
+				<h4 class="modal-title">New {{newNodeType}}</h4>
 			</div>
 			<div class="modal-body">
 				<div class="content-fluid row">
-					<div class="col-md-3">
+					<div ng-if="newNodeType === 'scenario'" class="col-md-3">
 						<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
 							{{scenarioTypeDropdownLabel}}
 							
@@ -19,7 +19,7 @@
 							</li>
 							<li>
 								<a ng-click="swapToType('web')">
-									<i class="fa fa-tablet fa-fw"></i>web
+									<i class="fa fa-globe fa-fw"></i>web
 								</a>
 							</li>
 							<li>
@@ -29,13 +29,13 @@
 							</li>
 						</ul>
 					</div>
-					<div class="Col-md-9">
-						<input type="text" class="form-control" ng-model="scenarioName" id="ScenarioName" placeholder="Type scenario name here ..">
+					<div ng-class="{'Col-md-9' : newNodeType === 'scenario', 'Col-md-12' : newNodeType === 'folder'}">
+						<input type="text" class="form-control" ng-model="scenarioName" id="ScenarioName" placeholder="Type {{newNodeType}} name here ..">
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default"  ng-click="closeModal()">Close</button>
-				<button type="button" class="btn btn-primary" ng-click="createScenario()">Create</button>
+				<button type="button" class="btn btn-primary" ng-click="createNewNode()">Create</button>
 			</div>
 		</div><!-- /.modal-content -->

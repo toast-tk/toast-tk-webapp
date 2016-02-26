@@ -97,14 +97,13 @@ console.log("rgfzrgzrg", dataTree);
                       var parentId=  self.selectedTree.getSelectedId();
                       var selectedItem =  self.selectedTree.getSelectedItem();
                         if(parentId){
-                              self.concernedTreeNodePromise.resolve();
                           if((selectedItem.type==="folder" || (angular.isDefined(selectedItem.data) && selectedItem.type != []))){
                                   self.concernedNode = parentId;
                           } else {
                             self.concernedNode = tree.getParentId(parentId);
                            /* tree.add({value: newElementValue}, 0, tree.getParentId(parentId));*/
                           }
-                            
+                            self.concernedTreeNodePromise.resolve();
                         } else {
                               webix.alert("Select a folder");
                         }

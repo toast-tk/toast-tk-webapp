@@ -325,12 +325,15 @@ treeExplorerPromise.then(function(treeExplorer){
     },0);
 });
    /* end : adjusting treeExplorer size */
-   $scope.addScenarioToParent = function(){
+   $scope.addNodeToParent = function(nodeType){
     ScenarioService.saveConcernedTreeNode(treeExplorer).then(function(){
+        var modalScope = $scope.$new(true);
+        modalScope.newNodeType = nodeType;
             var modalInstance = $modal.open({
                             animation: $scope.animationsEnabled,
                             templateUrl: 'assets/html/scenario/newstep.modal.scenario.html',
-                            controller:'newStepModalCtrl'
+                            controller:'newStepModalCtrl',
+                            scope : modalScope
                           });
     });    
 }
