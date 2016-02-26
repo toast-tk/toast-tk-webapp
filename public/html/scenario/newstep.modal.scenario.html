@@ -1,12 +1,14 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" ng-click="closeModal()"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">New {{newNodeType}}</h4>
+				<h4 class="modal-title">
+				<i class="{{ICONS[newNodeType]}} fa-fw"></i> New {{newNodeType}}</h4>
 			</div>
 			<div class="modal-body">
 				<div class="content-fluid row">
 					<div ng-if="newNodeType === 'scenario'" class="col-md-3">
 						<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
+							<i class="{{ICONS[scenarioTypeDropdownLabel]}} fa-fw"></i>
 							{{scenarioTypeDropdownLabel}}
 							
 							<span class="caret"></span>
@@ -14,17 +16,17 @@
 						<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 							<li>
 							<a ng-click="swapToType('swing')">
-									<i class="fa fa-laptop fa-fw"></i>swing
+									<i class="{{ICONS['swing']}} fa-fw"></i> swing
 								</a>
 							</li>
 							<li>
 								<a ng-click="swapToType('web')">
-									<i class="fa fa-globe fa-fw"></i>web
+									<i class="{{ICONS['web']}} fa-fw"></i> web
 								</a>
 							</li>
 							<li>
 								<a ng-click="swapToType('service')">
-									<i class="fa fa-flash fa-fw"></i>service
+									<i class="{{ICONS['service']}}  fa-fw"></i> service
 								</a>
 							</li>
 						</ul>

@@ -44,7 +44,7 @@ console.log("rgfzrgzrg", dataTree);
                                 activeTitle:true,
                                 id:"tree1",
                                 select:true,
-                                template:"{common.icon()} <i class='fa fa-#image#' style='float:left; margin:3px 4px 0px 1px;'> </i> #name#",
+                                template:"{common.icon()} <i class='#image#' style='float:left; margin:3px 4px 0px 1px;'> </i> #name#",
                                 data : webix.copy(dataTree),
                                 type:{
                                    folder:function(obj, common){
@@ -91,6 +91,7 @@ console.log("rgfzrgzrg", dataTree);
 
             /**/
             function saveConcernedTreeNode(treeExplorer){
+               self.concernedTreeNodePromise = $q.defer() ;
                webix.ready(function(){
                       var tree = treeExplorer.getChildViews()[1];
                       self.selectedTree  = treeExplorer.getChildViews()[1];
@@ -106,6 +107,7 @@ console.log("rgfzrgzrg", dataTree);
                             self.concernedTreeNodePromise.resolve();
                         } else {
                               webix.alert("Select a folder");
+                              self.concernedTreeNodePromise.reject();
                         }
                    });
                 return self.concernedTreeNodePromise.promise ;

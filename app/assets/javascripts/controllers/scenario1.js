@@ -1,10 +1,10 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        Scenario1Ctrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $modal, ScenarioService) {
+        Scenario1Ctrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $modal, ScenarioService, ICONS) {
             $scope.isEditScenarioName = false;
             $scope.isCollapsed = false;
-
+            $scope.ICONS = ICONS ;
             //plain json data, based on objects
             $scope.newRow = {};
             $scope.scenario_types = ["swing", "service", "web"];
@@ -35,25 +35,24 @@ define(["angular"], function (angular) {
                 swaptToDefaultRow();
             }
 
-            function add() {
-                playRoutes.controllers.ScenarioController.loadScenarioCtx($scope.selectedType).get().then(function (response) {
+            function add(selectedType) {
+                playRoutes.controllers.ScenarioController.loadScenarioCtx(selectedType).get().then(function (response) {
                     var scenarioDescriptor = response.data;
                     var newScenario = {
-                        type: $scope.selectedType,
-                        driver: $scope.selectedType, //related service
+                        type: selectedType,
+                        driver: selectedType, //related service
                         columns: scenarioDescriptor,
                         rows: []
                     }
                     $scope.scenarii.push(newScenario);
                     $scope.scenario = newScenario;
-                    $scope.stepType = $scope.selectedType;
+                    $scope.stepType = selectedType;
                 });
             };
 
             /* BEGIN : new step adding through autocomplete */
             var newStepPromise = $q.defer();
             function newStepSelected(newStep){
-               console.log("here",newStep);
                var step =  {};
                step.kind = $scope.scenario.type ;
                if(angular.isDefined(newStep)){
@@ -260,15 +259,7 @@ define(["angular"], function (angular) {
                     scenario.template = isTemplate;
                             scenario.value = scenario.name; // todo : fix: pour la recherche 
                             console.log("scenario.type", scenario.type);
-                            if(scenario.type==="swing"){
-                                scenario.image = "laptop";    
-                            }else if(scenario.type==="service"){
-                                scenario.image = "bolt";    
-                            } else if(scenario.type==="web"){
-                                scenario.image = "globe";    
-                            } else {
-                                scenario.image = "file-code-o";    
-                            }
+                            scenario.image = ICONS[scenario.type];
                             
                             try{
                                 scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
@@ -335,6 +326,10 @@ treeExplorerPromise.then(function(treeExplorer){
                             controller:'newStepModalCtrl',
                             scope : modalScope
                           });
+
+            modalInstance.result.then(function(selectedType){
+                add(selectedType);
+            });
     });    
 }
 });

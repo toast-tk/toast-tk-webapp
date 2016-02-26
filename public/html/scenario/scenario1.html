@@ -27,8 +27,9 @@
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-    <li><a ng-click="addNodeToParent('folder')">Folder</a></li>
-    <li><a ng-click="addNodeToParent('scenario')">Scenario</a></li>
+    <li><a ng-click="addNodeToParent('folder')">
+          <i class="{{ICONS['folder']}} fa-fw"></i> Folder</a></li>
+    <li><a ng-click="addNodeToParent('scenario')"><i class="{{ICONS['scenario']}} fa-fw"></i> Scenario</a></li>
   </ul>
 </span>
 
@@ -46,9 +47,7 @@
                           <div class="panel panel-default"  ng-show="scenario != undefined">
                             <div class="panel-heading">
                               <h3 class="panel-title" >
-                                <i ng-if="scenario.type === 'swing'" class="fa fa-laptop fa-fw"></i>
-                                <i ng-if="scenario.type === 'service'" class="fa fa-bolt fa-fw"></i>
-                                <i ng-if="scenario.type === 'web'" class="fa fa-globe fa-fw"></i>
+                                <i class="{{ICONS[scenario.type]}} fa-fw"></i>
                                 <span ng-if="isEditScenarioName===false">{{scenario.name}}</span>
                                 <input type="text" ng-if="isEditScenarioName===true" ng-model="scenario.name"/>
                                 <div class="pull-right" style="margin: -5px;">
@@ -81,22 +80,11 @@
                              <div id="importActionsPanel" class="panel panel-default" style="height: 86%; overflow-y: scroll;">
                                <ul class="list-group list-striped" ui-sortable ng-model="scenario.rows">
                                 <li class="list-group-item row" ng-repeat="r in scenario.rows">
-                                  <span class="col-md-1"  style="width: 5%; padding-left: 6px; padding-right: 6px;" ng-switch="r.kind">
-                                    <i ng-switch-when="service"
-                                    class="fa fa-flash fa-2x"
-                                    tooltip="Service" tooltip-trigger="mouseenter" tooltip-placement="top"/>
-                                    <i ng-switch-when="swing"
-                                    class="fa fa-laptop fa-2x"
-                                    tooltip="Swing" tooltip-trigger="mouseenter" tooltip-placement="top"/>
-                                    <i ng-switch-when="web"
-                                    class="fa fa-tablet fa-2x"
-                                    tooltip="Web" tooltip-trigger="mouseenter" tooltip-placement="top"/>
-                                    <span class="fa-stack fa-lg" ng-switch-default
-                                    tooltip="Unknown" tooltip-trigger="mouseenter" tooltip-placement="top">
-                                    <i class="fa fa-play fa-stack-1x"></i>
-                                    <i class="fa fa-ban fa-stack-2x text-danger"></i>
-                                  </span>
-                                </span>    
+                                    <span class="col-md-1"  style="width: 5%; padding-left: 6px; padding-right: 6px;">
+                                        <i
+                                          class="{{ICONS[r.kind]}} fa-2x"
+                                          tooltip="{{r.kind}}" tooltip-trigger="mouseenter" tooltip-placement="right"/>
+                                    </span>  
 
                                 <span class="col-md-10" ng-if="scenario.columns[0].name === 'patterns'"
                                 pattern style="width: 85%; padding-left: 6px; padding-right: 6px;"
