@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $timeout, $modal) {
+        RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $timeout, $modal, $sideSplit) {
             $scope.run_config_types = [ "swing page", "web page", "service entity"];
             $scope.autosetups = [];
             $scope.newAutoSetupRow = {};
@@ -28,7 +28,8 @@ define(["angular"], function (angular) {
             /* begin : adjusting page content size */
             reAdjustContentSize()
             webix.event(window, "resize", reAdjustContentSize);
-            
+            $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), reAdjustContentSize);
+
             /* BEGIN : open & add object modal */
             $scope.addNewObject = function(){
                 var modalScope = $scope.$new(true);

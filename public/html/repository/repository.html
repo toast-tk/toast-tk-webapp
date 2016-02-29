@@ -29,15 +29,15 @@
 
                                 </div>
                               </div>
-                              <div class="panel-body" style="height: 92%; overflow: auto;">
+                              <div class="panel-body" style="height: 85%; overflow: auto;">
                                 <div ui-tree data-drag-enabled="false">
                                 <ol ui-tree-nodes="" class="list-group" ng-model="autosetups">
-                                    <li class="list-group-item" ng-repeat="autosetup in autosetups | filter:autoSetupConfigFilter" ui-tree-node>
-                                      <div class="title row" style="margin-left: 0; margin-right: 0;" ng-click="editRepositoryObject(autosetup)">
+                                    <li class="list-group-item" ng-class="{'active' : autoset === autosetup}" ng-repeat="autoset in autosetups | filter:autoSetupConfigFilter" ui-tree-node>
+                                      <div class="title row" style="margin-left: 0; margin-right: 0;" ng-click="editRepositoryObject(autoset)">
                                        <div class="col-md-9 wrap-word">
-                                        {{autosetup.name}}
+                                        {{autoset.name}}
                                       </div>
-                                      <a class="pull-right btn btn-primary btn-xs" data-nodrag="" ng-click="deleteObject(autosetup)">
+                                      <a class="pull-right btn btn-primary btn-xs" data-nodrag="" ng-click="deleteObject(autoset)">
                                         <span class="glyphicon glyphicon-remove"></span>
                                       </a>
                                     </div>
