@@ -13,7 +13,7 @@
                         <a  ng-click="goToState('layout.scenario1')"><i class="fa fa-fw fa-pencil-square-o fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
                         <span  ng-if="isCollapsed===false">Scenarii Edition</span></a>
                     </li>
-                    <li>
+                    <li ng-class="{'active' : currentState === 'layout.campaign1'}">
                         <a ng-click="goToState('layout.campaign1')"><i class="fa fa-fw fa-terminal fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Test Compaign Reports</span></a>
                     </li>
                     <li style="position: fixed; bottom: 0;">

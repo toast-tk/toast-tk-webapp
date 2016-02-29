@@ -140,15 +140,6 @@
                         }
                       }
                   })
-                  .state('main', {
-                      url: "/main",
-                      views: {
-                         'main': {
-                      templateUrl: "assets/html/editor.html", 
-                      controller: "MainCtrl"
-                       }
-                     }
-                  })
                   .state('configuration', {
                       url: "/configuration",
                       views: {
@@ -197,6 +188,15 @@
             }
           }
         })
+        .state('main', {
+          url: "/main",
+          views: {
+           'main': {
+            templateUrl: "assets/html/editor.html", 
+            controller: "MainCtrl"
+          }
+        }
+      })
         .state('layout.repository1', {
               url: "repository1",
               views: {
