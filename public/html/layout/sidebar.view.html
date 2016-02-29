@@ -14,7 +14,7 @@
                         <span  ng-if="isCollapsed===false">Scenarii Edition</span></a>
                     </li>
                     <li>
-                        <a href="#/project"><i class="fa fa-fw fa-terminal fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Test Compaign Reports</span></a>
+                        <a ng-click="goToState('layout.campaign1')"><i class="fa fa-fw fa-terminal fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Test Compaign Reports</span></a>
                     </li>
                     <li style="position: fixed; bottom: 0;">
                         <a ng-click="collapse()">

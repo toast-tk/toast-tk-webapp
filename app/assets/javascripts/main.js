@@ -78,23 +78,25 @@
         "angucomplete": ['libs/angucomplete-alt.min'],
         "sidebarmenu": ['controllers/layout/sidebar.menu.controller'],
         "layout": ['controllers/layout/layout.controller'],
+        "layoutService" :  ['controllers/layout/layout.service'],
         "Repository1Ctrl": ["./controllers/repository/repository.controller"],
         "Scenario1Ctrl": ["./controllers/scenario/scenario.controller"],
+        "Campaign1Ctrl": ["./controllers/campaign/campaign.controller"],
         "newStepModalCtrl": ["./controllers/scenario/newstep.modal.controller"],
         "newObjectModalCtrl": ["./controllers/repository/newobject.modal.controller"]
     }
   });
 
   require(["angular", "./services/playRoutes", "./services/scenario.service" ,
-            "./controllers/login", "./controllers/editor", "./controllers/scenario", "Repository1Ctrl", "Scenario1Ctrl",
+            "./controllers/login", "./controllers/editor", "./controllers/scenario", "Repository1Ctrl", "Scenario1Ctrl", "Campaign1Ctrl",
             "./controllers/configuration","./controllers/repository", "./controllers/home",
-            "./controllers/layout/sidebar.menu.controller", "layout", "newObjectModalCtrl", "newStepModalCtrl", "json!config/icon.constants.config.json",
+            "./controllers/layout/sidebar.menu.controller", "layout", "layoutService", "newObjectModalCtrl", "newStepModalCtrl", "json!config/icon.constants.config.json",
 
             "./services/client-service",
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
             "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "webix"], 
-          function(a, b, ScenarioService, login, editor, scenario, repository1, scenario1, configuration, repository, home, sidebarmenu, layout, newObjectModalCtrl, newStepModalCtrl, constantsFile) {
+          function(a, b, ScenarioService, login, editor, scenario, repository1, scenario1, campaign1, configuration, repository, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepModalCtrl, constantsFile) {
 
               var app = angular.module("app", 
                 ['ngRoute', 'ui.router', "play.routing", "ngAnimate",
@@ -110,12 +112,15 @@
               app.controller("Repository1Ctrl", repository1.RepositoryCtrl);
 
               app.controller("ProjectCtrl", editor.ProjectCtrl);
+              app.controller("Campaign1Ctrl", campaign1.CampaignCtrl);
+              
               app.controller("SidebarMenuCtrl", sidebarmenu.SidebarMenuCtrl);
               app.controller("LayoutCtrl", layout.LayoutCtrl);
               
               app.controller("newObjectModalCtrl", newObjectModalCtrl.newObjectModalCtrl);
               app.controller("newStepModalCtrl", newStepModalCtrl.newStepModalCtrl);
 
+              app.service("LayoutService", layoutService.LayoutService);
               app.service("ScenarioService", ScenarioService.ScenarioService);
               app.constant("ICONS", constantsFile);
               app.config(["$stateProvider", function($stateProvider){
@@ -207,6 +212,15 @@
             'content':{
              templateUrl: "assets/html/scenario/scenario1.html",
              controller: "Scenario1Ctrl"
+           }
+         }
+      })
+      .state('layout.campaign1', {
+          url: "campaign1",
+          views: {
+            'content':{
+             templateUrl: "assets/html/campaign/campaign.html",
+             controller: "Campaign1Ctrl"
            }
          }
       });

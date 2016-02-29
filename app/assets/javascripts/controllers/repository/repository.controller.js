@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $timeout, $modal, $sideSplit) {
+        RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $timeout, $modal, $sideSplit, LayoutService) {
             $scope.run_config_types = [ "swing page", "web page", "service entity"];
             $scope.autosetups = [];
             $scope.newAutoSetupRow = {};
@@ -16,19 +16,13 @@ define(["angular"], function (angular) {
                 __init__();
             });
 
-            /*TODO :FIX: faire sortir dans l'initialisation*/
-            function reAdjustContentSize(){
-                $timeout(function(){
-                    $scope.effectContentWidth = window.innerWidth - angular.element('#side-nav').width();
-                    $timeout(function(){
-                        $$("contentWebixLayout").adjust();
-                    },0);
-                },0);
-            }
             /* begin : adjusting page content size */
-            reAdjustContentSize()
-            webix.event(window, "resize", reAdjustContentSize);
-            $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), reAdjustContentSize);
+            $scope.effectContentWidth = LayoutService.reAdjustContentSize();
+            webix.event(window, "resize", function(){LayoutService.reAdjustContentSize()});
+            $sideSplit.addCollapseCallBack(
+                angular.element('#sidebarmenu'), 
+                function(){LayoutService.reAdjustContentSize()});
+
 
             /* BEGIN : open & add object modal */
             $scope.addNewObject = function(){

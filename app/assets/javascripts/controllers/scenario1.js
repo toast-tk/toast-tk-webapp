@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        Scenario1Ctrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $modal, ScenarioService, ICONS, LayoutService) {
+        Scenario1Ctrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $modal, ScenarioService, ICONS) {
             $scope.isEditScenarioName = false;
             $scope.isCollapsed = false;
             $scope.ICONS = ICONS ;
@@ -239,13 +239,17 @@ define(["angular"], function (angular) {
          function __init__() {
             for(var i =0 ; i < $scope.scenario_types.length; i++){
                 var scenariiKind = $scope.scenario_types[i];
+                console.log("scenariiKind", scenariiKind);
                 ClientService.loadRegexList(scenariiKind, function(scenariiKind, list){
+                    console.log("scenariiKind1111111", scenariiKind);
                     $scope.regexList = $scope.regexList.concat(list || []);
                     $scope.regexMap[scenariiKind] = list;
                     angular.forEach(list,function(value,key){
                         value.kind = scenariiKind;
                         $scope.regexFullList.push(value);
                     });
+
+                    console.log("$scope.regexFullList", $scope.regexFullList);
                 });
             }   
 
@@ -254,7 +258,9 @@ define(["angular"], function (angular) {
                 data.map(function (scenario) {
                     scenario.template = isTemplate;
                             scenario.value = scenario.name; // todo : fix: pour la recherche 
-                            scenario.image = ICONS[scenario.type];                            
+                            console.log("scenario.type", scenario.type);
+                            scenario.image = ICONS[scenario.type];
+                            
                             try{
                                 scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
                                 var isTemplate = true;
@@ -279,14 +285,19 @@ define(["angular"], function (angular) {
                     });
 $scope.scenarii = data;
 
-
+/*TODO :FIX: faire sortir dans l'initialisation*/
+function reAdjustContentSize(){
+    $timeout(function(){
+        $scope.effectContentWidth = window.innerWidth - angular.element('#side-nav').width();
+        $timeout(function(){
+            $$("contentWebixLayout").adjust();
+        },0);
+    },0);
+}
 /* begin : adjusting page content size */
-$scope.effectContentWidth = LayoutService.reAdjustContentSize();
-webix.event(window, "resize", function(){LayoutService.reAdjustContentSize()});
-$sideSplit.addCollapseCallBack(
-                angular.element('#sidebarmenu'), 
-                function(){LayoutService.reAdjustContentSize()});
-
+reAdjustContentSize()
+webix.event(window, "resize", reAdjustContentSize);
+$sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), reAdjustContentSize);
 /* end : adjusting page content size */
 
 /* begin : generation de la tree */

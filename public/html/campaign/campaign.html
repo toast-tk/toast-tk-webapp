@@ -1,0 +1,76 @@
+ <div class="container-fluid" id="repository" style="overflow: hidden;">
+                      <div class="row" style="width:{{effectContentWidth}}px; height:99%; overflow: hidden;">
+                        <div webix-ui id="contentWebixLayout"> <!--layout rows with type "space" are created-->
+                          <div height="51" >
+                            <h3 class="page-header" >
+                              <i class="fa fa-fw fa-terminal "></i> Test Campaign <small> reports</small>
+                            </h3>
+                          </div>
+                          <div view="cols"> <!--Webix layout cols are initialized-->
+                            <div width="280"> 
+                             <div class="panel panel-default">
+                              <div class="panel-heading">
+                                <div class="panel-title">
+                                <h3 class="panel-title">
+                                		<i class="fa fa-folder-open"></i>
+                                		Projects
+                                		<button class="btn btn-primary btn-xs  pull-right" style="margin: -5px;" data-ng-click="addProjectBlock()">+ Add a new project </button>
+                                	</h3>
+                                </div>
+                              </div>
+                              <div class="panel-body" style="height: 85%; overflow: auto;">
+                                <div ui-tree data-drag-enabled="false">
+                                <ol ui-tree-nodes="" class="list-group" ng-model="projects">
+                                    <li class="list-group-item" ng-repeat="project in projects" ui-tree-node>
+                                    	<div ng-click="selectProject(project)">
+                                    		<span class="project-title">
+                                    			project.name                                  		</span>
+                                    	</div>
+                                  </li>
+                                </ol>
+                              </div>
+                             </div>
+                           </div>
+                         </div>
+                         <div view="resizer"></div>
+                         <div view="cols">
+                          <div class="panel panel-default"  ng-show="selectedProject != undefined">
+                            <div class="panel-heading">
+                              <h3 class="panel-title" >
+                                {{selectedProject.name}}
+                                <input type="text" ng-model="project.name">
+                                    		<span class="pull-right">
+                                    			<button class="btn btn-primary btn-xs" data-ng-click="displayReport(project)">See Report</button>
+                                    		</span>
+
+                              </h3>
+                            </div>
+                            <div class="panel-body">
+                            					<div ng-repeat="campaign in selectedProject.campaigns" class="campaign">
+						<button class="btn btn-xs" data-ng-click="deleteCampaign(campaign, selectedProject)">- retirer</button> Campaign name: <input type="text" ng-model="campaign.name"> 
+						<span>
+							 <button class="btn btn-primary btn-xs" data-ng-click="addScenarioToCampaign(campaign)">
+							 	+ Add a new scenario
+						 	</button>
+						</span>
+						<br/>
+						<br/>
+						<span>
+							<ul ui-sortable ng-model="campaign.scenarii">
+								<li ng-repeat="scenario in campaign.scenarii">
+									Scenario Name:
+									<select ng-model="scenario.name" ng-options="reference.name as reference.name for reference in scenarii"/>
+									<button class="btn btn-xs" data-ng-click="deleteScenario(scenario, campaign)">-</button>
+								</li>
+							</ul>
+						</span>
+					</div>
+                    </div>
+                  </div>
+                  <!-- /.panel -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.container-fluid -->
