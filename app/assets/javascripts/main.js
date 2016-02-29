@@ -80,20 +80,21 @@
         "layout": ['controllers/layout/layout.controller'],
         "Repository1Ctrl": ["./controllers/repository/repository.controller"],
         "Scenario1Ctrl": ["./controllers/scenario/scenario.controller"],
-        "newStepModalCtrl": ["./controllers/scenario/newstep.modal.controller"]
+        "newStepModalCtrl": ["./controllers/scenario/newstep.modal.controller"],
+        "newObjectModalCtrl": ["./controllers/repository/newobject.modal.controller"]
     }
   });
 
   require(["angular", "./services/playRoutes", "./services/scenario.service" ,
             "./controllers/login", "./controllers/editor", "./controllers/scenario", "Repository1Ctrl", "Scenario1Ctrl",
             "./controllers/configuration","./controllers/repository", "./controllers/home",
-            "./controllers/layout/sidebar.menu.controller", "layout", "newStepModalCtrl", "json!config/icon.constants.config.json",
+            "./controllers/layout/sidebar.menu.controller", "layout", "newObjectModalCtrl", "newStepModalCtrl", "json!config/icon.constants.config.json",
 
             "./services/client-service",
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
             "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "webix"], 
-          function(a, b, ScenarioService, login, editor, scenario, repository1, scenario1, configuration, repository, home, sidebarmenu, layout, newStepModalCtrl, constantsFile) {
+          function(a, b, ScenarioService, login, editor, scenario, repository1, scenario1, configuration, repository, home, sidebarmenu, layout, newObjectModalCtrl, newStepModalCtrl, constantsFile) {
 
               var app = angular.module("app", 
                 ['ngRoute', 'ui.router', "play.routing", "ngAnimate",
@@ -111,6 +112,8 @@
               app.controller("ProjectCtrl", editor.ProjectCtrl);
               app.controller("SidebarMenuCtrl", sidebarmenu.SidebarMenuCtrl);
               app.controller("LayoutCtrl", layout.LayoutCtrl);
+              
+              app.controller("newObjectModalCtrl", newObjectModalCtrl.newObjectModalCtrl);
               app.controller("newStepModalCtrl", newStepModalCtrl.newStepModalCtrl);
 
               app.service("ScenarioService", ScenarioService.ScenarioService);

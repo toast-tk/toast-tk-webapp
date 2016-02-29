@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $timeout) {
+        RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $timeout, $modal) {
             $scope.run_config_types = [ "swing page", "web page", "service entity"];
             $scope.autosetups = [];
             $scope.newAutoSetupRow = {};
@@ -29,11 +29,26 @@ define(["angular"], function (angular) {
             reAdjustContentSize()
             webix.event(window, "resize", reAdjustContentSize);
             
-            $scope.addAutoSetupConfig = function () {
-                playRoutes.controllers.Application.loadAutoSetupCtx($scope.selectedAutoSetupConfigType).get().then(function (response) {
+            /* BEGIN : open & add object modal */
+            $scope.addNewObject = function(){
+                var modalScope = $scope.$new(true);
+                    var modalInstance = $modal.open({
+                        animation: $scope.animationsEnabled,
+                        templateUrl: 'assets/html/repository/newobject.modal.repository.html',
+                        controller:'newObjectModalCtrl'
+                    });
+
+                    modalInstance.result.then(function(newObject){
+                        addAutoSetupConfig(newObject);
+                    });   
+            }
+            
+            function addAutoSetupConfig(newObject) {
+                playRoutes.controllers.Application.loadAutoSetupCtx(newObject.type).get().then(function (response) {
                     var autoSetupDescriptor = response.data;
                     var newSetupBlock = {
-                        type: $scope.selectedAutoSetupConfigType,
+                        name: newObject.name,
+                        type: newObject.type,
                         columns: autoSetupDescriptor,
                         rows: []
                     };
@@ -41,6 +56,7 @@ define(["angular"], function (angular) {
                     $scope.autosetup = newSetupBlock;
                 });
             };
+             /* END : open & add object modal */
 
             $scope.isArray = function (arr) {
                 return angular.isArray(arr) ? "array" : "";
