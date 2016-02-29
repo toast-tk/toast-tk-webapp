@@ -3,5 +3,6 @@
 			"scenario" : "fa fa-file-code-o",
 			"swing" : "fa fa-laptop", 
 			"web" : "fa fa-globe",
-			"service" : "fa fa-bolt"
+			"service" : "fa fa-bolt",
+			"object" : "fa fa-file-o"
 }
