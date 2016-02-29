@@ -79,6 +79,7 @@
         "sidebarmenu": ['controllers/layout/sidebar.menu.controller'],
         "layout": ['controllers/layout/layout.controller'],
         "layoutService" :  ['controllers/layout/layout.service'],
+        "SettingsCtrl" :  ['controllers/settings/settings.controller'],
         "Repository1Ctrl": ["./controllers/repository/repository.controller"],
         "Scenario1Ctrl": ["./controllers/scenario/scenario.controller"],
         "Campaign1Ctrl": ["./controllers/campaign/campaign.controller"],
@@ -88,7 +89,7 @@
   });
 
   require(["angular", "./services/playRoutes", "./services/scenario.service" ,
-            "./controllers/login", "./controllers/editor", "./controllers/scenario", "Repository1Ctrl", "Scenario1Ctrl", "Campaign1Ctrl",
+            "./controllers/login", "./controllers/editor", "./controllers/scenario", "SettingsCtrl", "Repository1Ctrl", "Scenario1Ctrl", "Campaign1Ctrl",
             "./controllers/configuration","./controllers/repository", "./controllers/home",
             "./controllers/layout/sidebar.menu.controller", "layout", "layoutService", "newObjectModalCtrl", "newStepModalCtrl", "json!config/icon.constants.config.json",
 
@@ -96,7 +97,7 @@
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
             "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "webix"], 
-          function(a, b, ScenarioService, login, editor, scenario, repository1, scenario1, campaign1, configuration, repository, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepModalCtrl, constantsFile) {
+          function(a, b, ScenarioService, login, editor, scenario, settingsCtrl, repository1, scenario1, campaign1, configuration, repository, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepModalCtrl, constantsFile) {
 
               var app = angular.module("app", 
                 ['ngRoute', 'ui.router', "play.routing", "ngAnimate",
@@ -108,6 +109,8 @@
               app.controller("ScenarioCtrl", scenario.ScenarioCtrl);
               app.controller("Scenario1Ctrl", scenario1.Scenario1Ctrl);
               
+              app.controller("SettingsCtrl", settingsCtrl.SettingsCtrl);
+
               app.controller("RepositoryCtrl", repository.RepositoryCtrl);
               app.controller("Repository1Ctrl", repository1.RepositoryCtrl);
 
@@ -196,6 +199,15 @@
             controller: "MainCtrl"
           }
         }
+      })
+        .state('layout.settings', {
+              url: "settings",
+              views: {
+                'content':{
+                 templateUrl: "assets/html/settings/settings.html",
+                 controller: "SettingsCtrl"
+               }
+             }
       })
         .state('layout.repository1', {
               url: "repository1",

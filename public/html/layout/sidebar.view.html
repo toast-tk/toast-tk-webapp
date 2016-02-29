@@ -3,8 +3,8 @@
                     <li>
                         <a href="#/main"><i class="fa fa-fw fa-home fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Home</span></a>
                     </li>
-                    <li>
-                        <a href="#/configuration"><i class="fa fa-fw fa-gear fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span ng-if="isCollapsed===false">Settings</span></a>
+                    <li ng-class="{'active' : currentState === 'layout.settings'}">
+                        <a ng-click="goToState('layout.settings')"><i class="fa fa-fw fa-gear fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span ng-if="isCollapsed===false">Settings</span></a>
                     </li>
                     <li ng-class="{'active' : currentState === 'layout.repository1'}">
                         <a ng-click="goToState('layout.repository1')"><i class="fa fa-fw fa-archive fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Object repository</span></a>
