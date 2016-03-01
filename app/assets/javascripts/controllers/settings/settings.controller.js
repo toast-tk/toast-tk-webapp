@@ -1,8 +1,16 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        SettingsCtrl: function ($rootScope, $scope, playRoutes, ngProgress) {
+        SettingsCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $sideSplit, LayoutService) {
             var vm = $scope;
+            
+            $scope.effectContentWidth = LayoutService.reAdjustContentSize();
+            webix.event(window, "resize", function(){LayoutService.reAdjustContentSize()});
+            $sideSplit.addCollapseCallBack(
+                angular.element('#sidebarmenu'), 
+                function(){LayoutService.reAdjustContentSize()});
+
+
             $scope.service_config_types = ["web", "swing", "service"];
             $scope.selectedConfig = undefined;
             $scope.configurations = [];
@@ -50,6 +58,7 @@ define(["angular"], function (angular) {
             function __init__() {
                 playRoutes.controllers.ConfigurationController.loadConfiguration().get().then(function (response) {
                     $scope.configurations = response.data || [];
+                    console.log("configurations", $scope.configurations);
                 });
             }
 
