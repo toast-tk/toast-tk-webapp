@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        newStepModalCtrl: function ($scope,  $modalInstance, ScenarioService,ICONS) {
+        newStepModalCtrl: function ($scope,  $modalInstance, TreeLayoutService,ICONS) {
             $scope.ICONS = ICONS;
             var newScenario = {};
             if($scope.newNodeType === "folder"){
@@ -20,7 +20,7 @@ define(["angular"], function (angular) {
          $scope.createNewNode = function(){
             newScenario.name = $scope.scenarioName;
             newScenario.value = $scope.scenarioName;
-            ScenarioService.addToExplorerTree(newScenario);
+            TreeLayoutService.add(newScenario);
             $modalInstance.close(newScenario.type);
         }
 

@@ -4,5 +4,8 @@
 			"swing" : "fa fa-laptop", 
 			"web" : "fa fa-globe",
 			"service" : "fa fa-bolt",
-			"object" : "fa fa-file-o"
+			"object" : "fa fa-file-o",
+			"settings" : "fa fa-cogs",
+			"setting" : "fa fa-gear"
+
 }

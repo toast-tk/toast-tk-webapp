@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        Scenario1Ctrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $modal, ScenarioService, ICONS, LayoutService) {
+        Scenario1Ctrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $modal, TreeLayoutService, ICONS, LayoutService) {
             $scope.isEditScenarioName = false;
             $scope.isCollapsed = false;
             $scope.ICONS = ICONS ;
@@ -290,7 +290,12 @@ $sideSplit.addCollapseCallBack(
 /* end : adjusting page content size */
 
 /* begin : generation de la tree */
-var treeExplorerPromise = ScenarioService.buildExplorerTree("toastScenariosTreeExplorer", $scope.scenarii);
+var treeExplorerPromise = 
+TreeLayoutService.build("toastScenariosTreeExplorer",
+ $scope.scenarii,
+ function(obj, common){
+   return common.icon(obj,common)+ "<i class='"+ obj.image +"' style='float:left; margin:3px 4px 0px 1px;'> </i>" + obj.name;
+});
 treeExplorerPromise.then(function(treeExplorer){
    webix.ready(function(){ webix.markup.init(); });
 
@@ -306,7 +311,7 @@ treeExplorerPromise.then(function(treeExplorer){
 });
    /* end : adjusting treeExplorer size */
    $scope.addNodeToParent = function(nodeType){
-    ScenarioService.saveConcernedTreeNode(treeExplorer).then(function(){
+    TreeLayoutService.saveConcernedNode(treeExplorer).then(function(){
         var modalScope = $scope.$new(true);
         modalScope.newNodeType = nodeType;
             var modalInstance = $modal.open({
@@ -324,12 +329,14 @@ treeExplorerPromise.then(function(treeExplorer){
 });
 /* end : generation de la tree */
 
-ScenarioService.addSelectedNodeCallback(function(selectedScenario){
+TreeLayoutService.addSelectedNodeCallback("toastScenariosTreeExplorer", function(selectedScenario){
     $scope.scenario = selectedScenario ;
     $timeout(function(){
         $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
     },500);
     $scope.$apply();
+}, function(selectedElementId,selectedItem){
+    return selectedElementId && selectedItem.type!="folder";
 });
 });
 }

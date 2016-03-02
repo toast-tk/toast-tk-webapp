@@ -88,7 +88,7 @@
     }
   });
 
-  require(["angular", "./services/playRoutes", "./services/scenario.service" ,
+  require(["angular", "./services/playRoutes", "./controllers/layout/tree.layout.service" ,
             "./controllers/login", "./controllers/editor", "./controllers/scenario", "SettingsCtrl", "Repository1Ctrl", "Scenario1Ctrl", "Campaign1Ctrl",
             "./controllers/configuration","./controllers/repository", "./controllers/home",
             "./controllers/layout/sidebar.menu.controller", "layout", "layoutService", "newObjectModalCtrl", "newStepModalCtrl", "json!config/icon.constants.config.json",
@@ -97,7 +97,7 @@
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
             "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "webix"], 
-          function(a, b, ScenarioService, login, editor, scenario, settingsCtrl, repository1, scenario1, campaign1, configuration, repository, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepModalCtrl, constantsFile) {
+          function(a, b, treeLayoutService, login, editor, scenario, settingsCtrl, repository1, scenario1, campaign1, configuration, repository, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepModalCtrl, constantsFile) {
 
               var app = angular.module("app", 
                 ['ngRoute', 'ui.router', "play.routing", "ngAnimate",
@@ -124,7 +124,7 @@
               app.controller("newStepModalCtrl", newStepModalCtrl.newStepModalCtrl);
 
               app.service("LayoutService", layoutService.LayoutService);
-              app.service("ScenarioService", ScenarioService.ScenarioService);
+              app.service("TreeLayoutService", treeLayoutService.TreeLayoutService);
               app.constant("ICONS", constantsFile);
               app.config(["$stateProvider", function($stateProvider){
                   /*$routeProvider.when("/",{ templateUrl: "assets/html/login.html", controller: "LoginCtrl"});

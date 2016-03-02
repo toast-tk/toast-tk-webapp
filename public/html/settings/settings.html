@@ -30,8 +30,8 @@
 
                               	</div>
                               	<div class="panel-body">
-                              		<!--  <div view="tree" id="toastScenariosTreeExplorer" style='width:100%; height:90%;'></div> -->
-                              		<div ui-tree data-drag-enabled="false">
+                              		 <div view="tree" id="toastConfigTreeExplorer" style='width:100%; height:90%;'></div>
+ <!--                              		<div ui-tree data-drag-enabled="false">
                               			<ol ui-tree-nodes="" ng-model="configurations">
                               				<li ng-repeat="config in configurations" ui-tree-node>
                               					<div class="title-no">
@@ -60,7 +60,7 @@
                               					<div>
                               						<span>
                               							<input type="text" ng-model="newConfigName" placeholder="{{config.type}} name"/>
-                              							<!-- add an ng-show only if it's a service -->
+
                               							<select ng-model="newConfigType" data-ng-options="type for type in service_config_types" placeholder="context"></select>
                               							<button class="btn btn-primary btn-xs" data-ng-click="addConfigLine(config, newConfigName, newConfigType)">+</button>
                               						</span>
@@ -68,7 +68,7 @@
                               					<br>
                               				</li>
                               			</ol>
-                              		</div>
+                              		</div> -->
                               		<!--  -->
 
                               	</div>

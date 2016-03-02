@@ -1,20 +1,21 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        ScenarioService: function ($q) {
+        TreeLayoutService: function ($q) {
           var self = this ;
           self.concernedTreeNodePromise = $q.defer() ;
-          self.selectedNodeCallback = [];
+          self.selectedNodeCallback = []; 
             return {
-              saveConcernedTreeNode : saveConcernedTreeNode,
-              buildExplorerTree : buildExplorerTree,
-              addToExplorerTree : addToExplorerTree,
+              saveConcernedNode : saveConcernedNode,
+              build : build,
+              add : add,
               addSelectedNodeCallback : addSelectedNodeCallback  
             }
 
             /**/
-            function buildExplorerTree(treeContainer, dataTree){
+            function build(treeContainer, dataTree , templateFunction){
               var treeExplorerPromise = $q.defer();
+              var value = 
                 webix.ready(function(){
 /*                    var dataTree = [
                                     { id:"1", open:true, value:"The Shawshank", type:'folder', data:[
@@ -43,7 +44,7 @@ define(["angular"], function (angular) {
                                 activeTitle:true,
                                 id:"tree1",
                                 select:true,
-                                template:"{common.icon()} <i class='#image#' style='float:left; margin:3px 4px 0px 1px;'> </i> #name#",
+                                template: templateFunction,
                                 data : webix.copy(dataTree),
                                 type:{
                                    folder:function(obj, common){
@@ -60,20 +61,21 @@ define(["angular"], function (angular) {
                             },
                             on:{
                               onSelectChange:function () {
-                                 var selectedElementId = this.getSelectedId(true)
-                                 var selectedItem = this.getSelectedItem();
+                               var selectedElementId = this.getSelectedId(true)
+                               var selectedItem = this.getSelectedItem();
 
-                                 var text = "Selected: " + this.getSelectedId(true).join();
+                               var text = "Selected: " + this.getSelectedId(true).join();
                                 // document.getElementById(treeContainer).innerHTML = text;
-                                   if(selectedElementId && selectedItem.type!="folder"){
-                                      angular.forEach(self.selectedNodeCallback, function(callback){
-                                            callback(selectedItem);
-                                      });
-                                    }
-                                    else {
-                                           //webix.alert("Selected is not a file");
-                                    }
+                                if(angular.isDefined(self.selectedNodeCallback[treeContainer])){
+                                 angular.forEach(self.selectedNodeCallback[treeContainer], function(callback){
+                                  if(angular.isDefined(callback[1]) && callback[1](selectedElementId,selectedItem) === true){
+                                    callback[0](selectedItem);
+                                  } else if (!angular.isDefined(callback[1])){
+                                    callback[0](selectedItem);
+                                  }
+                                });
                                }
+                              }
                             }
                            }]   
                     });
@@ -89,7 +91,7 @@ define(["angular"], function (angular) {
             }
 
             /**/
-            function saveConcernedTreeNode(treeExplorer){
+            function saveConcernedNode(treeExplorer){
                self.concernedTreeNodePromise = $q.defer() ;
                webix.ready(function(){
                       var tree = treeExplorer.getChildViews()[1];
@@ -112,15 +114,24 @@ define(["angular"], function (angular) {
                 return self.concernedTreeNodePromise.promise ;
             }
 
-            function addToExplorerTree(newElementValue){
+            function add(newElementValue){
               console.log("new node name",newElementValue);
                   self.selectedTree.add( newElementValue, 0, self.concernedNode);
             }
 
-            /**/
-            function addSelectedNodeCallback(callback){
-                self.selectedNodeCallback.push(callback);
+            /* BEGIN : addSelectedNodeCallback */
+            /* @params : {treeContainer : treeId , callback : function to execute on click , selectedItemConditionFn : (optional) callback excecution condition }*/
+            function addSelectedNodeCallback(treeContainer, callback, selectedItemConditionFn){
+              if(!angular.isDefined(self.selectedNodeCallback[treeContainer])){
+                self.selectedNodeCallback[treeContainer] = [];
+              }
+              if(angular.isDefined(selectedItemConditionFn)){
+                self.selectedNodeCallback[treeContainer].push([callback,selectedItemConditionFn]);  
+              } else {
+                self.selectedNodeCallback[treeContainer].push([callback]);  
+              }
             }
+            /* END : addSelectedNodeCallback */
 
 
 

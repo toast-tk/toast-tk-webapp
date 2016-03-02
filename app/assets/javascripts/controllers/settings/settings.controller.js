@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        SettingsCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $sideSplit, LayoutService) {
+        SettingsCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $sideSplit, LayoutService, TreeLayoutService, ICONS) {
             var vm = $scope;
             
             $scope.effectContentWidth = LayoutService.reAdjustContentSize();
@@ -19,7 +19,6 @@ define(["angular"], function (angular) {
             $scope.deleteSentenceLine = deleteSentenceLine;
             $scope.saveConfig = saveConfig;
             $scope.addConfigBlock = addConfigBlock;
-            $scope.editConfigLine = editConfigLine;
             $scope.deleteConfigLine = deleteConfigLine;
             $scope.addConfigLine = addConfigLine;
 
@@ -43,10 +42,6 @@ define(["angular"], function (angular) {
                 $scope.configurations.push({type: "service", rows: []});
             };
 
-            function editConfigLine(config, item) {
-                $scope.selectedConfig = config;
-            };
-
             function deleteConfigLine(config, item) {
                 config.rows.splice(config.rows.indexOf(item), 1);
             };
@@ -58,7 +53,30 @@ define(["angular"], function (angular) {
             function __init__() {
                 playRoutes.controllers.ConfigurationController.loadConfiguration().get().then(function (response) {
                     $scope.configurations = response.data || [];
-                    console.log("configurations", $scope.configurations);
+                    console.log("$scope.configurations", $scope.configurations);
+                    angular.forEach($scope.configurations , function(conf){
+                        conf.data = conf.rows ;
+                        conf.value = conf.name || conf.type ; 
+                    });
+
+                    var treeExplorerPromise = TreeLayoutService.build("toastConfigTreeExplorer",
+                     $scope.configurations,
+                     function(obj, common){
+                        if(angular.isDefined(obj.rows) && obj.rows.length > 0){
+                            obj.image = ICONS['settings'];
+                        }else{
+                            obj.image = ICONS['setting'];
+                        }                
+                        obj.name = obj.name || obj.type ; 
+                        return common.icon(obj,common)+ "<i class='"+ obj.image +"' style='float:left; margin:3px 4px 0px 1px;'> </i>" + obj.name;
+                    });
+
+                    TreeLayoutService.addSelectedNodeCallback("toastConfigTreeExplorer", function(selectedConfig){
+                         $scope.selectedConfig = selectedConfig;
+                         $scope.$apply();
+                    }, function(selectedElementId,selectedItem){
+                        return angular.isDefined(selectedItem.syntax);
+                    });
                 });
             }
 
