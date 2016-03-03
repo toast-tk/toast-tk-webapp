@@ -155,8 +155,8 @@ object ScenarioController extends Controller {
         def extendedObject(obj: JsObject) = {
           obj + ("columns" -> DomainController.scenarioDescriptorProvider((obj \ "type").as[String]))
         }
-        val response = for (i <- input.value) yield extendedObject(i.as[JsObject])
-        Ok(Json.toJson(response))
+        val flatResponse = for (i <- input.value) yield extendedObject(i.as[JsObject])
+        Ok(Json.toJson(flatResponse))
       }
     }
   }

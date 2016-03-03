@@ -35,11 +35,12 @@ define(["angular"], function (angular) {
                 swaptToDefaultRow();
             }
 
-            function add(selectedType, selectedName) {
+            function add(selectedType, selectedName, parentId) {
                 playRoutes.controllers.ScenarioController.loadScenarioCtx(selectedType).get().then(function (response) {
                     var scenarioDescriptor = response.data;
                     var newScenario = {
                         name: selectedName,
+                        parent: parentId,
                         type: selectedType,
                         driver: selectedType, //related service
                         columns: scenarioDescriptor,
@@ -239,6 +240,30 @@ define(["angular"], function (angular) {
          }                    
 
          $scope.regexFullList=[];
+
+         function toTreeDataList(flat){
+            var nodes = [];
+            var toplevelNodes = [];
+            var lookupList = {};
+
+            for (var i = 0; i < flat.length; i++) {
+                flat[i].data = []
+                lookupList[flat[i].id] = flat[i];
+                nodes.push(flat[i]);
+                if (flat[i].parent == null || flat[i].parent == 0) {
+                    toplevelNodes.push(flat[i]);
+                }
+            }
+
+            for (var i = 0; i < nodes.length; i++) {
+              var n = nodes[i];
+              if (!(n.parent == 0 || n.parent == null)) {
+                  lookupList[n.parent].data = lookupList[n.parent].data.concat([n]);
+              }
+            }
+            return toplevelNodes;
+         }
+
          function __init__() {
             for(var i =0 ; i < $scope.scenario_types.length; i++){
                 var scenariiKind = $scope.scenario_types[i];
@@ -282,6 +307,7 @@ define(["angular"], function (angular) {
                 });
 
                 $scope.scenarii = data;
+                $scope.senariiTree = toTreeDataList(data);
 
                 /* begin : adjusting page content size */
                 $scope.effectContentWidth = LayoutService.reAdjustContentSize();
@@ -290,7 +316,7 @@ define(["angular"], function (angular) {
                 /* end : adjusting page content size */
 
                 /* begin : generation de la tree */
-                var treeExplorerPromise =  TreeLayoutService.build("toastScenariosTreeExplorer", $scope.scenarii,
+                var treeExplorerPromise =  TreeLayoutService.build("toastScenariosTreeExplorer", $scope.senariiTree,
                                              function(obj, common){
                                                return common.icon(obj,common)+ "<i class='"+ obj.image +"' style='float:left; margin:3px 4px 0px 1px;'> </i>" + obj.name;
                                             });
@@ -321,7 +347,7 @@ define(["angular"], function (angular) {
                                                   });
 
                             modalInstance.result.then(function(newScenario){
-                               add(newScenario.type, newScenario.name);
+                               add(newScenario.type, newScenario.name, newScenario.$parent);
                             });
                         });    
                     }

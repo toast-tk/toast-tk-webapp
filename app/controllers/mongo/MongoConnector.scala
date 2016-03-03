@@ -70,7 +70,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
       // BIG OPERATION !! to improve, for instance open a new future
       // and consume the database as a stream
       val query = BSONDocument()
-      val scenariiFuture = collection.find(query).cursor[Scenario].collect[List]()
+      val scenariiFuture = collection.find(query).cursor[Scenario]().collect[List]()
       scenariiFuture.map{
         scenarii => {
           for {
@@ -145,7 +145,12 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
     val jsonRowsAsString = Json.stringify(Json.toJson(outputRows.reverse)) 
      println(jsonRowsAsString)
-    Scenario(id = scenario.id, name= scenario.name, cType = scenario.cType, driver = scenario.driver, rows = Some(jsonRowsAsString))
+    Scenario(id = scenario.id, 
+             name= scenario.name, 
+             cType = scenario.cType, 
+             driver = scenario.driver, 
+             rows = Some(jsonRowsAsString),
+             parent= scenario.parent)
   }
 
   def refactorScenario(scenario: Scenario, config: AutoSetupConfig):  Scenario = {  
@@ -166,7 +171,12 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
       outputRows = ScenarioRows(patterns = row.patterns, kind = row.kind, mappings = Some(outputMappings)) :: outputRows
     }
     val jsonRowsAsString = Json.stringify(Json.toJson(outputRows)) 
-    Scenario(id = scenario.id, name= scenario.name, cType = scenario.cType, driver = scenario.driver, rows = Some(jsonRowsAsString))
+    Scenario(id = scenario.id, 
+            name= scenario.name, 
+            cType = scenario.cType, 
+            driver = scenario.driver, 
+            rows = Some(jsonRowsAsString),
+            parent= scenario.parent)
   }
 
   def saveServiceEntityConfiguration(conf: ServiceEntityConfig) {
@@ -295,14 +305,14 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   def loadConfiguration(): Future[List[MacroConfiguration]] = {
     val collection = open_collection("configuration")
     val query = BSONDocument()
-    val configurations = collection.find(query).cursor[MacroConfiguration].collect[List]()
+    val configurations = collection.find(query).cursor[MacroConfiguration]().collect[List]()
     configurations
   }
 
   def loadScenarii(): Future[List[Scenario]] = {
     val collection = open_collection("scenarii")
     val query = BSONDocument()
-    val scenarii = collection.find(query).cursor[Scenario].collect[List]()
+    val scenarii = collection.find(query).cursor[Scenario]().collect[List]()
     scenarii
   }
 
@@ -320,7 +330,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
 
   def loadServiceAutoConfiguration(query: BSONDocument): Future[List[ServiceEntityConfig]] = {
     val collection = open_collection("repository")
-    val configurationWithRefs: Future[List[ServiceEntityConfigWithRefs]] = collection.find(query).sort(BSONDocument("name" -> 1)).cursor[ServiceEntityConfigWithRefs].collect[List]()
+    val configurationWithRefs: Future[List[ServiceEntityConfigWithRefs]] = collection.find(query).sort(BSONDocument("name" -> 1)).cursor[ServiceEntityConfigWithRefs]().collect[List]()
     // re-compute as configurations
     def convertItems(configurationWithRef: ServiceEntityConfigWithRefs): Future[ServiceEntityConfig] = {
       configurationWithRef.rows match {
@@ -345,7 +355,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
 
   def loadAutoConfiguration(query: BSONDocument): Future[List[AutoSetupConfig]] = {
     val collection = open_collection("repository")
-    val configurationWithRefs: Future[List[AutoSetupConfigWithRefs]] = collection.find(query).sort(BSONDocument("name" -> 1)).cursor[AutoSetupConfigWithRefs].collect[List]()
+    val configurationWithRefs: Future[List[AutoSetupConfigWithRefs]] = collection.find(query).sort(BSONDocument("name" -> 1)).cursor[AutoSetupConfigWithRefs]().collect[List]()
     // re-compute as configurations
     def convertItems(configurationWithRef: AutoSetupConfigWithRefs): Future[AutoSetupConfig] = {
       configurationWithRef.rows match {
@@ -389,7 +399,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     val collection = open_collection("scenarii")
     val query = BSONDocument("type" -> scenarioType, "driver" -> driver)
     val filter = BSONDocument("_id" -> 0, "rows" -> 1)
-    collection.find(query, filter).cursor[BSONDocument].collect[List]().map{
+    collection.find(query, filter).cursor[BSONDocument]().collect[List]().map{
       documents => for(document <- documents) yield document.getAs[String]("rows").get
     }
   }
@@ -420,7 +430,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   def loadConfigurationSentences(confType:String): Future[List[MacroConfiguration]] = {
     val collection = open_collection("configuration")
     val query = BSONDocument("rows" -> BSONDocument("$elemMatch" -> BSONDocument("type" -> confType)));
-    val configurations = collection.find(query).cursor[MacroConfiguration].collect[List]()
+    val configurations = collection.find(query).cursor[MacroConfiguration]().collect[List]()
     configurations
   }
 }
