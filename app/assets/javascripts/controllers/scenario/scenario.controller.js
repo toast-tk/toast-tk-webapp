@@ -321,7 +321,6 @@ define(["angular"], function (angular) {
                         if(!angular.isDefined(obj.image) || obj.image == null){
                             obj.image = ICONS[obj.type];         
                         }
-                     console.log("tree build obj" , obj);
                      return common.icon(obj,common)+ "<i class='"+ obj.image +"' style='float:left; margin:3px 4px 0px 1px;'> </i>" + obj.name;
                 });
 
