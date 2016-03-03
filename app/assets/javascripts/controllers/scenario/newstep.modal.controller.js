@@ -21,16 +21,13 @@ define(["angular"], function (angular) {
             newScenario.name = $scope.scenarioName;
             newScenario.value = $scope.scenarioName;
             TreeLayoutService.add(newScenario);
-            $modalInstance.close(newScenario.type);
+            $modalInstance.close(newScenario);
         }
 
         $scope.swapToType = function(type){
             $scope.scenarioTypeDropdownLabel = type;
             newScenario.type = type;
-            newScenario.image = ICONS[type]; 
-/*            else {
-                newScenario.image = "file-code-o";    
-            }*/
+            newScenario.image = ICONS[type];
         }
     }
 };

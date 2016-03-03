@@ -9,12 +9,13 @@ define(["angular"], function (angular) {
               saveConcernedNode : saveConcernedNode,
               build : build,
               add : add,
-              addSelectedNodeCallback : addSelectedNodeCallback  
+              addSelectedNodeCallback : addSelectedNodeCallback 
             }
 
             /**/
             function build(treeContainer, dataTree , templateFunction){
               var treeExplorerPromise = $q.defer();
+              self.dataTree = dataTree;
               var value = 
                 webix.ready(function(){
 /*                    var dataTree = [
@@ -45,7 +46,7 @@ define(["angular"], function (angular) {
                                 id:"tree1",
                                 select:true,
                                 template: templateFunction,
-                                data : webix.copy(dataTree),
+                                data : dataTree,
                                 type:{
                                    folder:function(obj, common){
                                  //if open folder
@@ -105,18 +106,18 @@ define(["angular"], function (angular) {
                             self.concernedNode = tree.getParentId(parentId);
                            /* tree.add({value: newElementValue}, 0, tree.getParentId(parentId));*/
                           }
-                            self.concernedTreeNodePromise.resolve();
                         } else {
-                              webix.alert("Select a folder");
-                              self.concernedTreeNodePromise.reject();
+                          self.concernedNode = 0; //root node
                         }
+                        self.concernedTreeNodePromise.resolve();
                    });
                 return self.concernedTreeNodePromise.promise ;
             }
 
             function add(newElementValue){
               console.log("new node name",newElementValue);
-                  self.selectedTree.add( newElementValue, 0, self.concernedNode);
+              self.selectedTree.add( newElementValue, 0, self.concernedNode);
+              //self.dataTree.push(newElementValue);
             }
 
             /* BEGIN : addSelectedNodeCallback */
@@ -132,9 +133,6 @@ define(["angular"], function (angular) {
               }
             }
             /* END : addSelectedNodeCallback */
-
-
-
 }
 }
 });

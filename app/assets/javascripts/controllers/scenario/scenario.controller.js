@@ -35,10 +35,11 @@ define(["angular"], function (angular) {
                 swaptToDefaultRow();
             }
 
-            function add(selectedType) {
+            function add(selectedType, selectedName) {
                 playRoutes.controllers.ScenarioController.loadScenarioCtx(selectedType).get().then(function (response) {
                     var scenarioDescriptor = response.data;
                     var newScenario = {
+                        name: selectedName,
                         type: selectedType,
                         driver: selectedType, //related service
                         columns: scenarioDescriptor,
@@ -47,6 +48,7 @@ define(["angular"], function (angular) {
                     $scope.scenarii.push(newScenario);
                     $scope.scenario = newScenario;
                     $scope.stepType = selectedType;
+                    save();
                 });
             };
 
@@ -91,6 +93,7 @@ define(["angular"], function (angular) {
                 var scenarioCopy = angular.copy($scope.scenario);
                 scenarioCopy.rows = JSON.stringify(scenarioCopy.rows);
                 delete scenarioCopy.columns;
+                delete scenarioCopy.id;
                 playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function () {
                     __init__();
                 });
@@ -253,94 +256,89 @@ define(["angular"], function (angular) {
                 var data = response.data || [];
                 data.map(function (scenario) {
                     scenario.template = isTemplate;
-                            scenario.value = scenario.name; // todo : fix: pour la recherche 
-                            scenario.image = ICONS[scenario.type];                            
-                            try{
-                                scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
-                                var isTemplate = true;
-                                for(var i = 0 ; i < scenario.rows.length ; i++){
-                                    if(angular.isDefined(scenario.rows[i].mappings) && scenario.rows[i].mappings.length > 0){
-                                        isTemplate = false;
-                                        break;
-                                    }
-                                }
-                            }catch(e){
-                                if(!angular.isObject(scenario.rows)){
-                                //convert it into rows
-                                var lines = scenario.rows.split( "\n" );
-                                scenario.template = true;
-                                scenario.rows = [];
-                                for(var i = 0; i< lines.length; i++){
-                                    scenario.rows.push({"patterns" : lines[i]});
+                        scenario.value = scenario.name; // todo : fix: pour la recherche 
+                        scenario.image = ICONS[scenario.type];                            
+                        try{
+                            scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
+                            var isTemplate = true;
+                            for(var i = 0 ; i < scenario.rows.length ; i++){
+                                if(angular.isDefined(scenario.rows[i].mappings) && scenario.rows[i].mappings.length > 0){
+                                    isTemplate = false;
+                                    break;
                                 }
                             }
+                        }catch(e){
+                            if(!angular.isObject(scenario.rows)){
+                            //convert it into rows
+                            var lines = scenario.rows.split( "\n" );
+                            scenario.template = true;
+                            scenario.rows = [];
+                            for(var i = 0; i< lines.length; i++){
+                                scenario.rows.push({"patterns" : lines[i]});
+                            }
                         }
-                        return scenario;
+                    }
+                    return scenario;
+                });
+
+                $scope.scenarii = data;
+
+                /* begin : adjusting page content size */
+                $scope.effectContentWidth = LayoutService.reAdjustContentSize();
+                webix.event(window, "resize", function(){LayoutService.reAdjustContentSize()});
+                $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(){LayoutService.reAdjustContentSize()});
+                /* end : adjusting page content size */
+
+                /* begin : generation de la tree */
+                var treeExplorerPromise =  TreeLayoutService.build("toastScenariosTreeExplorer", $scope.scenarii,
+                                             function(obj, common){
+                                               return common.icon(obj,common)+ "<i class='"+ obj.image +"' style='float:left; margin:3px 4px 0px 1px;'> </i>" + obj.name;
+                                            });
+                treeExplorerPromise.then(function(treeExplorer){
+                   webix.ready(function(){ webix.markup.init(); });
+
+                    /* begin : adjusting treeExplorer size */
+                    treeExplorer.adjust();
+                       $$("$template2").attachEvent("onViewResize", function(){
+                         treeExplorer.adjust();
+                     });
+                       $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(isCollapsed){
+                        $timeout(function(){
+                            treeExplorer.adjust();
+                        },0);
                     });
-$scope.scenarii = data;
+                    /* end : adjusting treeExplorer size */
+   
+                    $scope.addNodeToParent = function(nodeType){
+                        TreeLayoutService.saveConcernedNode(treeExplorer).then(function(){
+                            var modalScope = $scope.$new(true);
+                            modalScope.newNodeType = nodeType;
+                            var modalInstance = $modal.open({
+                                                    animation: $scope.animationsEnabled,
+                                                    templateUrl: 'assets/html/scenario/newstep.modal.scenario.html',
+                                                    controller:'newStepModalCtrl',
+                                                    scope : modalScope
+                                                  });
 
+                            modalInstance.result.then(function(newScenario){
+                               add(newScenario.type, newScenario.name);
+                            });
+                        });    
+                    }
+                });
+                /* end : generation de la tree */
 
-/* begin : adjusting page content size */
-$scope.effectContentWidth = LayoutService.reAdjustContentSize();
-webix.event(window, "resize", function(){LayoutService.reAdjustContentSize()});
-$sideSplit.addCollapseCallBack(
-                angular.element('#sidebarmenu'), 
-                function(){LayoutService.reAdjustContentSize()});
-
-/* end : adjusting page content size */
-
-/* begin : generation de la tree */
-var treeExplorerPromise = 
-TreeLayoutService.build("toastScenariosTreeExplorer",
- $scope.scenarii,
- function(obj, common){
-   return common.icon(obj,common)+ "<i class='"+ obj.image +"' style='float:left; margin:3px 4px 0px 1px;'> </i>" + obj.name;
-});
-treeExplorerPromise.then(function(treeExplorer){
-   webix.ready(function(){ webix.markup.init(); });
-
-   /* begin : adjusting treeExplorer size */
-   treeExplorer.adjust();
-   $$("$template2").attachEvent("onViewResize", function(){
-     treeExplorer.adjust();
- });
-   $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(isCollapsed){
-    $timeout(function(){
-        treeExplorer.adjust();
-    },0);
-});
-   /* end : adjusting treeExplorer size */
-   $scope.addNodeToParent = function(nodeType){
-    TreeLayoutService.saveConcernedNode(treeExplorer).then(function(){
-        var modalScope = $scope.$new(true);
-        modalScope.newNodeType = nodeType;
-            var modalInstance = $modal.open({
-                            animation: $scope.animationsEnabled,
-                            templateUrl: 'assets/html/scenario/newstep.modal.scenario.html',
-                            controller:'newStepModalCtrl',
-                            scope : modalScope
-                          });
-
-            modalInstance.result.then(function(selectedType){
-                add(selectedType);
-            });
-    });    
-}
-});
-/* end : generation de la tree */
-
-TreeLayoutService.addSelectedNodeCallback("toastScenariosTreeExplorer", function(selectedScenario){
-    $scope.scenario = selectedScenario ;
-    $timeout(function(){
-        $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
-    },500);
-    $scope.$apply();
-}, function(selectedElementId,selectedItem){
-    return selectedElementId && selectedItem.type!="folder";
-});
-});
-}
-
-}
-};
+                TreeLayoutService.addSelectedNodeCallback("toastScenariosTreeExplorer", function(selectedScenario){
+                    $scope.scenario = selectedScenario ;
+                    $timeout(function(){
+                        $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
+                    },500);
+                    $scope.$apply();
+                }, function(selectedElementId,selectedItem){
+                    return selectedElementId && selectedItem.type!="folder";
+                });
+            }); 
+        }
+    }
+    };
 });
