@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        newObjectModalCtrl: function ($scope,  $modalInstance, ScenarioService,ICONS) {
+        newObjectModalCtrl: function ($scope,  $modalInstance, ICONS) {
             $scope.ICONS = ICONS;
             var newObject = {};
             $scope.scenarioTypeDropdownLabel = "Select type ..";
