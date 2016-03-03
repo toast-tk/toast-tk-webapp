@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        TreeLayoutService: function ($q) {
+        TreeLayoutService: function ($q, $timeout, $sideSplit) {
           var self = this ;
           self.concernedTreeNodePromise = $q.defer() ;
           self.selectedNodeCallback = []; 
@@ -9,7 +9,8 @@ define(["angular"], function (angular) {
               saveConcernedNode : saveConcernedNode,
               build : build,
               add : add,
-              addSelectedNodeCallback : addSelectedNodeCallback  
+              addSelectedNodeCallback : addSelectedNodeCallback ,
+              adjustTreeSize : adjustTreeSize
             }
 
             /**/
@@ -131,6 +132,21 @@ define(["angular"], function (angular) {
               }
             }
             /* END : addSelectedNodeCallback */
+
+            /* BEGIN : adjusting treeExplorer size */
+            function adjustTreeSize(treeExplorer){
+               $timeout(function(){
+                 treeExplorer.adjust();
+                 $$("treeTemplateContainer").attachEvent("onViewResize", function(){
+                    treeExplorer.adjust();
+                  });
+               },0);
+               $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(isCollapsed){
+                $timeout(function(){
+                  treeExplorer.adjust();
+                },0);
+              });
+           }
 
 
 

@@ -28,9 +28,6 @@ define(["angular"], function (angular) {
             $scope.scenarioTypeDropdownLabel = type;
             newScenario.type = type;
             newScenario.image = ICONS[type]; 
-/*           else {
-                newScenario.image = "file-code-o";    
-            }*/
         }
     }
 };

@@ -297,10 +297,12 @@ TreeLayoutService.build("toastScenariosTreeExplorer",
    return common.icon(obj,common)+ "<i class='"+ obj.image +"' style='float:left; margin:3px 4px 0px 1px;'> </i>" + obj.name;
 });
 treeExplorerPromise.then(function(treeExplorer){
-   webix.ready(function(){ webix.markup.init(); });
-
-   /* begin : adjusting treeExplorer size */
-   treeExplorer.adjust();
+ 
+TreeLayoutService.adjustTreeSize(treeExplorer);
+  /*webix.ready(function(){ webix.markup.init(); });
+   $timeout(function(){
+     treeExplorer.adjust();
+    },0);
    $$("$template2").attachEvent("onViewResize", function(){
      treeExplorer.adjust();
  });
@@ -308,7 +310,7 @@ treeExplorerPromise.then(function(treeExplorer){
     $timeout(function(){
         treeExplorer.adjust();
     },0);
-});
+});*/
    /* end : adjusting treeExplorer size */
    $scope.addNodeToParent = function(nodeType){
     TreeLayoutService.saveConcernedNode(treeExplorer).then(function(){

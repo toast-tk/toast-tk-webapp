@@ -4,19 +4,18 @@
                 		<div height="51" >
                 			<h3 class="page-header" >
                 				<i class="fa fa-fw fa-gear"></i>  Settings <small> (configuration) </small>
-                				<button class="btn btn-sm pull-right" style="margin-top : -5px; " data-ng-click="saveConfig()">Save</button>
+                				<button class="btn btn-default btn-sm pull-right" style="margin-top : -5px; " data-ng-click="saveConfig()">Save</button>
                 			</h3>
                 		</div>
                 		<div view="cols"> <!--Webix layout cols are initialized-->
-                			<div width="350"> 
+                			<div width="350" id="treeTemplateContainer"> 
                 				<div class="panel panel-default">
                 					<div class="panel-heading">
                 						<h3 class="panel-title"><i class="fa fa-files-o fa-fw"></i> Explorer
-<!--                 							<button class="btn btn-primary btn-xs pull-right" style="margin : -5px;" data-ng-click="addConfigBlock()">+</button> -->
-
                               		<span class="dropdown pull-right">
                               			<button class="btn btn-primary btn-xs dropdown-toggle" style="margin: -5px;" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                              				+ Add new
+                              				<i class="fa fa-plus"></i> 
+                                      Add new
                               				<span class="caret"></span>
                               			</button>
                               			<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -30,46 +29,6 @@
                               	</div>
                               	<div class="panel-body">
                               		 <div view="tree" id="toastConfigTreeExplorer" style='width:100%; height:90%;'></div>
- <!--                              		<div ui-tree data-drag-enabled="false">
-                              			<ol ui-tree-nodes="" ng-model="configurations">
-                              				<li ng-repeat="config in configurations" ui-tree-node>
-                              					<div class="title-no">
-                              						<a cclass="btn btn-xs" data-nodrag ng-click="toggle(this)">
-                              							<span class="glyphicon glyphicon-chevron-right" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span>
-                              						</a>
-                              						{{config.type}}
-                              						<a class="pull-right btn btn-danger btn-xs" data-nodrag="" ng-click="remove(this)">
-                              							<span class="glyphicon glyphicon-remove"></span>
-                              						</a>
-                              					</div>
-                              					<ol ui-tree-nodes="" ng-model="config.rows">
-                              						<li ng-repeat="configLine in config.rows" ui-tree-node>
-                              							<div class="title" ng-click="editConfigLine(configLine)">
-                              								{{configLine.name}}
-                              								<a class="pull-right btn btn-danger btn-xs" data-nodrag="" ng-click="deleteConfigLine(config, configLine)">
-                              									<span class="glyphicon glyphicon-remove"></span>
-                              								</a> 
-                              								<a class="pull-right btn btn-primary btn-xs" data-nodrag="" ng-click="editConfigLine(configLine)">
-                              									<span class="glyphicon glyphicon-edit"></span>
-                              								</a>
-                              							</div>
-                              						</li>
-                              					</ol>
-                              					<br>
-                              					<div>
-                              						<span>
-                              							<input type="text" ng-model="newConfigName" placeholder="{{config.type}} name"/>
-
-                              							<select ng-model="newConfigType" data-ng-options="type for type in service_config_types" placeholder="context"></select>
-                              							<button class="btn btn-primary btn-xs" data-ng-click="addConfigLine(config, newConfigName, newConfigType)">+</button>
-                              						</span>
-                              					</div>
-                              					<br>
-                              				</li>
-                              			</ol>
-                              		</div> -->
-                              		<!--  -->
-
                               	</div>
                               </div>
                           </div>
@@ -85,7 +44,7 @@
                           			<ul class="list-group">
                           				<li class="list-group-item row"  ng-repeat="syntax in selectedConfig.syntax">
                           					{{syntax.sentence}} 
-                          					<button class="btn btn-xs pull-right" data-ng-click="deleteSentenceLine(syntax, sentence)">
+                          					<button class="btn btn-default btn-xs pull-right" data-ng-click="deleteSentenceLine(syntax, sentence)">
                           						<i class="fa fa-trash"></i>
                           					</button>
                           				</li>
