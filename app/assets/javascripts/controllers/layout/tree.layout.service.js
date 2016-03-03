@@ -18,20 +18,6 @@ define(["angular"], function (angular) {
               self.dataTree = dataTree;
               var value = 
                 webix.ready(function(){
-/*                    var dataTree = [
-                                    { id:"1", open:true, value:"The Shawshank", type:'folder', data:[
-                                        { id:"124523450.", value:"Part 1" },
-                                        { id:"124734758373", value:"Part 2" },
-                                        { id:"1vgdfgdg", value:"Part 3" }
-                                    ]},
-                                    { id:"2", value:"The Godfather", type:'folder', data:[
-                                        { id:"2.1", value:"Part 1" },
-                                        { id:"2.2", value:"Part 2" }
-                                    ]},
-                                    { id:"3", value:"wierd folder1"},
-                                    { id:"4", value:"wierd folder1", data:[]},
-                                    { id:"5", value:"empty folder", type:'folder'}
-                            ];*/
                  var treeExplorer = new webix.ui({
                       container: treeContainer,
                       rows:[
@@ -100,7 +86,7 @@ define(["angular"], function (angular) {
                       var parentId=  self.selectedTree.getSelectedId();
                       var selectedItem =  self.selectedTree.getSelectedItem();
                         if(parentId){
-                          if((selectedItem.type==="folder" || (angular.isDefined(selectedItem.data) && selectedItem.type != []))){
+                          if((selectedItem.type==="folder" || ((angular.isDefined(selectedItem.data) || angular.isDefined(selectedItem.rows)) && selectedItem.type != []))){
                                   self.concernedNode = parentId;
                           } else {
                             self.concernedNode = tree.getParentId(parentId);
@@ -115,9 +101,7 @@ define(["angular"], function (angular) {
             }
 
             function add(newElementValue){
-              console.log("new node name",newElementValue);
               self.selectedTree.add( newElementValue, 0, self.concernedNode);
-              //self.dataTree.push(newElementValue);
             }
 
             /* BEGIN : addSelectedNodeCallback */

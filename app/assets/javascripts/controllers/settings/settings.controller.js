@@ -1,8 +1,9 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        SettingsCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $sideSplit, LayoutService, TreeLayoutService, ICONS) {
+        SettingsCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $sideSplit, LayoutService, TreeLayoutService, $modal, ICONS) {
             var vm = $scope;
+            $scope.ICONS = ICONS;
             
             $scope.effectContentWidth = LayoutService.reAdjustContentSize();
             webix.event(window, "resize", function(){LayoutService.reAdjustContentSize()});
@@ -23,6 +24,7 @@ define(["angular"], function (angular) {
             $scope.addConfigLine = addConfigLine;
 
             __init__();
+
 
             function addNewSentence(newSentence, sentenceWithTypes) {
                 $scope.selectedConfig.syntax.push({sentence: newSentence, typed_sentence: sentenceWithTypes});
@@ -53,7 +55,6 @@ define(["angular"], function (angular) {
             function __init__() {
                 playRoutes.controllers.ConfigurationController.loadConfiguration().get().then(function (response) {
                     $scope.configurations = response.data || [];
-                    console.log("$scope.configurations", $scope.configurations);
                     angular.forEach($scope.configurations , function(conf){
                         conf.data = conf.rows ;
                         conf.value = conf.name || conf.type ; 
@@ -62,13 +63,38 @@ define(["angular"], function (angular) {
                     var treeExplorerPromise = TreeLayoutService.build("toastConfigTreeExplorer",
                      $scope.configurations,
                      function(obj, common){
-                        if(angular.isDefined(obj.rows) && obj.rows.length > 0){
-                            obj.image = ICONS['settings'];
-                        }else{
-                            obj.image = ICONS['setting'];
-                        }                
+                        if(!angular.isDefined(obj.image) || obj.image == null){
+                           if(angular.isDefined(obj.rows)){
+                                obj.image = ICONS['settings set'];
+                            }else{
+                               obj.image = ICONS['settings'];
+                            }             
+                        }
                         obj.name = obj.name || obj.type ; 
                         return common.icon(obj,common)+ "<i class='"+ obj.image +"' style='float:left; margin:3px 4px 0px 1px;'> </i>" + obj.name;
+                    });
+
+                    treeExplorerPromise.then(function(treeExplorer){
+                        $scope.addNodeToParent = function(nodeType){
+                            TreeLayoutService.saveConcernedNode(treeExplorer).then(function(){
+                                var modalScope = $scope.$new(true);
+                                modalScope.newNodeType = nodeType;
+                                var modalInstance = $modal.open({
+                                    animation: $scope.animationsEnabled,
+                                    templateUrl: 'assets/html/settings/newSettings.modal.html',
+                                    controller:'NewSettingsModalCtrl',
+                                    scope : modalScope
+                                });
+
+                                modalInstance.result.then(function(selectedType){
+                                    if(selectedType.type === "settings set"){
+                                        $scope.configurations.push({type: selectedType.name, rows: []});    
+                                    } else if(selectedType.type != "settings set"){
+                                      /*  config.rows.push({type: selectedType.type, name: selectedType.name, syntax: []});*/
+                                    }
+                                });
+                            });    
+                        }
                     });
 
                     TreeLayoutService.addSelectedNodeCallback("toastConfigTreeExplorer", function(selectedConfig){
