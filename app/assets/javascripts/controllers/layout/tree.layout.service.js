@@ -99,7 +99,7 @@ define(["angular"], function (angular) {
                       var parentId=  self.selectedTree.getSelectedId();
                       var selectedItem =  self.selectedTree.getSelectedItem();
                         if(parentId){
-                          if((selectedItem.type==="folder" || (angular.isDefined(selectedItem.data) && selectedItem.type != []))){
+                          if((selectedItem.type==="folder" || ((angular.isDefined(selectedItem.data) || angular.isDefined(selectedItem.rows)) && selectedItem.type != []))){
                                   self.concernedNode = parentId;
                           } else {
                             self.concernedNode = tree.getParentId(parentId);
@@ -115,8 +115,7 @@ define(["angular"], function (angular) {
             }
 
             function add(newElementValue){
-              console.log("new node name",newElementValue);
-                  self.selectedTree.add( newElementValue, 0, self.concernedNode);
+              self.selectedTree.add( newElementValue, 0, self.concernedNode);
             }
 
             /* BEGIN : addSelectedNodeCallback */

@@ -61,10 +61,12 @@ define(["angular"], function (angular) {
             }
 
             $scope.displayReport = function (project) {
+                var project = {};
+                project.name = "rus.3.7.campaign.script" ;
                 $window.open("/loadProjectReport/" + project.name)
-                playRoutes.controllers.ProjectController.loadProjectReport(project.name).get().then(function (response) {
+/*                playRoutes.controllers.ProjectController.loadProjectReport(project.name).get().then(function (response) {
                     console.log(response)
-                });
+                });*/
             }
 
             function load() {
