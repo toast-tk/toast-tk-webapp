@@ -9,7 +9,7 @@ define(["angular"], function (angular) {
               saveConcernedNode : saveConcernedNode,
               build : build,
               add : add,
-              addSelectedNodeCallback : addSelectedNodeCallback,  
+              addSelectedNodeCallback : addSelectedNodeCallback ,
               adjustTreeSize : adjustTreeSize
             }
 
@@ -118,7 +118,27 @@ define(["angular"], function (angular) {
               }
             }
             /* END : addSelectedNodeCallback */
+<<<<<<< HEAD
 
+            /* BEGIN : adjusting treeExplorer size */
+            function adjustTreeSize(treeExplorer){
+               $timeout(function(){
+                 treeExplorer.adjust();
+                 $$("treeTemplateContainer").attachEvent("onViewResize", function(){
+                    treeExplorer.adjust();
+                  });
+               },0);
+               $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(isCollapsed){
+                $timeout(function(){
+                  treeExplorer.adjust();
+                },0);
+              });
+           }
+
+
+
+=======
+>>>>>>> 51ed78f619a4c086ab389ceee95f693fb9d33e6e
 }
 }
 });
