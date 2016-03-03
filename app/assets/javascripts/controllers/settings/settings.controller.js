@@ -77,7 +77,9 @@ define(["angular"], function (angular) {
                     treeExplorerPromise.then(function(treeExplorer){
                         TreeLayoutService.adjustTreeSize(treeExplorer);
                         $scope.addNodeToParent = function(nodeType){
-                            TreeLayoutService.saveConcernedNode(treeExplorer).then(function(){
+                            TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
+                                 return (!angular.isDefined(selectedItem.rows)); /* selected is not a settings set */
+                            }).then(function(){
                                 var modalScope = $scope.$new(true);
                                 modalScope.newNodeType = nodeType;
                                 var modalInstance = $modal.open({

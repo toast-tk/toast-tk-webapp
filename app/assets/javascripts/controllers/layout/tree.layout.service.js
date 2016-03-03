@@ -78,8 +78,9 @@ define(["angular"], function (angular) {
                 return treeExplorerPromise.promise;
             }
 
-            /**/
-            function saveConcernedNode(treeExplorer){
+            /* BEGIN : save concerted node */
+            /* @params : { treeExplorer : concerned tree , isParentConcerned : (boolean) to know if we want the selectednode or the parent}*/
+            function saveConcernedNode(treeExplorer, isParentConcerned){
                self.concernedTreeNodePromise = $q.defer() ;
                webix.ready(function(){
                       var tree = treeExplorer.getChildViews()[1];
@@ -87,10 +88,10 @@ define(["angular"], function (angular) {
                       var parentId=  self.selectedTree.getSelectedId();
                       var selectedItem =  self.selectedTree.getSelectedItem();
                         if(parentId){
-                          if((selectedItem.type==="folder" || ((angular.isDefined(selectedItem.data) || angular.isDefined(selectedItem.rows)) && selectedItem.type != []))){
-                                  self.concernedNode = parentId;
+                          if(isParentConcerned(selectedItem) === true){
+                             self.concernedNode = tree.getParentId(parentId);
                           } else {
-                            self.concernedNode = tree.getParentId(parentId);
+                             self.concernedNode = parentId;
                            /* tree.add({value: newElementValue}, 0, tree.getParentId(parentId));*/
                           }
                         } else {
@@ -118,6 +119,21 @@ define(["angular"], function (angular) {
               }
             }
             /* END : addSelectedNodeCallback */
+
+            /* BEGIN : adjusting treeExplorer size */
+            function adjustTreeSize(treeExplorer){
+               $timeout(function(){
+                 treeExplorer.adjust();
+                 $$("treeTemplateContainer").attachEvent("onViewResize", function(){
+                    treeExplorer.adjust();
+                  });
+               },0);
+               $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(isCollapsed){
+                $timeout(function(){
+                  treeExplorer.adjust();
+                },0);
+              });
+           }
 
 }
 }

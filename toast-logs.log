@@ -4212,6 +4212,7 @@ da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.to
 2016-03-03 14:02:27,380 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-32] class com.synaptix.toast.dao.domain.impl.test.block.line.TestLine type has been registered to Morphia !
 2016-03-03 14:02:27,381 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-32] class com.synaptix.toast.dao.domain.impl.team.GroupImpl type has been registered to Morphia !
 >>>>>>> 99d9d348eb36081a20355a59b1b694abf7d43a90
+<<<<<<< HEAD
 2016-03-03 16:06:36,800 WARN re.ap.MongoDriver [ForkJoinPool-1-worker-1] No mongo-async-driver configuration found
 2016-03-03 16:06:40,345 ERROR re.ap.Failover2 [ForkJoinPool-4-worker-3] Got an error, no more attempts to do. Completing with a failure...
 reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$: MongoError['No primary node is available!']
@@ -4232,3 +4233,207 @@ reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$: MongoError['N
 	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:397) ~[akka-actor_2.11-2.3.13.jar:?]
 	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.7.jar:?]
 	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.
+=======
+2016-03-03 16:45:01,887 WARN re.ap.MongoDriver [ForkJoinPool-2-worker-1] No mongo-async-driver configuration found
+2016-03-03 16:45:02,445 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-2] The node set is now available
+2016-03-03 16:45:02,452 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-2] The primary is now available
+2016-03-03 16:45:04,588 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.repository.ElementImpl type has been registered to Morphia !
+2016-03-03 16:45:04,654 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.report.Campaign type has been registered to Morphia !
+2016-03-03 16:45:04,672 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.TestPage type has been registered to Morphia !
+2016-03-03 16:45:04,692 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine type has been registered to Morphia !
+2016-03-03 16:45:04,699 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.report.Project type has been registered to Morphia !
+2016-03-03 16:45:04,708 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.TestLine type has been registered to Morphia !
+2016-03-03 16:45:04,709 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.common.TagImpl type has been registered to Morphia !
+2016-03-03 16:45:04,790 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.team.UserImpl type has been registered to Morphia !
+2016-03-03 16:45:04,792 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine type has been registered to Morphia !
+2016-03-03 16:45:04,795 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.ComponentConfigLine type has been registered to Morphia !
+2016-03-03 16:45:04,797 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine type has been registered to Morphia !
+2016-03-03 16:45:04,800 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl type has been registered to Morphia !
+2016-03-03 16:45:04,801 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.team.GroupImpl type has been registered to Morphia !
+2016-03-03 16:48:24,598 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] Received Close message, going to close connections and moving on stage Closing
+2016-03-03 16:48:24,660 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#1308669490] is stopping.
+2016-03-03 16:48:24,672 WARN re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#1308669490] stopped.
+pe has been registered to Morphia !
+2016-03-03 16:48:47,109 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.repository.ElementImpl type has been registered to Morphia !
+2016-03-03 16:48:47,113 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.TestLine type has been registered to Morphia !
+2016-03-03 16:48:47,116 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl type has been registered to Morphia !
+2016-03-03 16:48:47,121 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.team.UserImpl type has been registered to Morphia !
+2016-03-03 16:48:47,123 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.ComponentConfigLine type has been registered to Morphia !
+2016-03-03 16:48:47,125 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine type has been registered to Morphia !
+2016-03-03 16:48:47,126 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.common.TagImpl type has been registered to Morphia !
+2016-03-03 16:48:47,136 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.TestPage type has been registered to Morphia !
+2016-03-03 16:48:47,140 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.report.Campaign type has been registered to Morphia !
+2016-03-03 16:48:47,143 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine type has been registered to Morphia !
+2016-03-03 16:48:47,144 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.team.GroupImpl type has been registered to Morphia !
+2016-03-03 16:48:47,148 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.report.Project type has been registered to Morphia !
+2016-03-03 17:09:48,093 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-4] Received Close message, going to close connections and moving on stage Closing
+2016-03-03 17:09:48,154 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-4] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#-2113152342] is stopping.
+2016-03-03 17:09:48,165 WARN re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-4] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#-2113152342] stopped.
+>>>>>>> 04e41db60c6fed64ecede397f4e450adedd48a0d
+2016-03-03 17:44:26,473 WARN re.ap.MongoDriver [ForkJoinPool-1-worker-1] No mongo-async-driver configuration found
+2016-03-03 17:46:44,204 WARN re.ap.MongoDriver [ForkJoinPool-1-worker-1] No mongo-async-driver configuration found
+2016-03-03 17:46:47,788 ERROR re.ap.Failover2 [ForkJoinPool-4-worker-1] Got an error, no more attempts to do. Completing with a failure...
+reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$: MongoError['No primary node is available!']
+	at reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$.<clinit>(actors.scala) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$pickChannel$4.apply(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$pickChannel$4.apply(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at scala.Option.getOrElse(Option.scala:121) ~[scala-library-2.11.7.jar:?]
+	at reactivemongo.core.actors.MongoDBSystem$class.pickChannel(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.LegacyDBSystem.pickChannel(actors.scala:750) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$4.applyOrElse(actors.scala:304) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:170) ~[scala-library-2.11.7.jar:?]
+	at akka.actor.Actor$class.aroundReceive(Actor.scala:467) ~[akka-actor_2.11-2.3.13.jar:?]
+	at reactivemongo.core.actors.LegacyDBSystem.aroundReceive(actors.scala:750) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:516) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:487) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:238) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:220) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:397) ~[akka-actor_2.11-2.3.13.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.7.jar:?]
+2016-03-03 17:47:00,072 ERROR re.ap.Failover2 [ForkJoinPool-4-worker-3] Got an error, no more attempts to do. Completing with a failure...
+reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$: MongoError['No primary node is available!']
+	at reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$.<clinit>(actors.scala) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$pickChannel$4.apply(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$pickChannel$4.apply(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at scala.Option.getOrElse(Option.scala:121) ~[scala-library-2.11.7.jar:?]
+	at reactivemongo.core.actors.MongoDBSystem$class.pickChannel(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.LegacyDBSystem.pickChannel(actors.scala:750) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$4.applyOrElse(actors.scala:304) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:170) ~[scala-library-2.11.7.jar:?]
+	at akka.actor.Actor$class.aroundReceive(Actor.scala:467) ~[akka-actor_2.11-2.3.13.jar:?]
+	at reactivemongo.core.actors.LegacyDBSystem.aroundReceive(actors.scala:750) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:516) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:487) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:238) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:220) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:397) ~[akka-actor_2.11-2.3.13.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.7.jar:?]
+2016-03-03 17:47:02,802 ERROR re.ap.Failover2 [ForkJoinPool-4-worker-1] Got an error, no more attempts to do. Completing with a failure...
+reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$: MongoError['No primary node is available!']
+	at reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$.<clinit>(actors.scala) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$pickChannel$4.apply(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$pickChannel$4.apply(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at scala.Option.getOrElse(Option.scala:121) ~[scala-library-2.11.7.jar:?]
+	at reactivemongo.core.actors.MongoDBSystem$class.pickChannel(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.LegacyDBSystem.pickChannel(actors.scala:750) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$4.applyOrElse(actors.scala:304) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:170) ~[scala-library-2.11.7.jar:?]
+	at akka.actor.Actor$class.aroundReceive(Actor.scala:467) ~[akka-actor_2.11-2.3.13.jar:?]
+	at reactivemongo.core.actors.LegacyDBSystem.aroundReceive(actors.scala:750) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:516) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:487) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:238) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:220) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:397) ~[akka-actor_2.11-2.3.13.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.7.jar:?]
+2016-03-03 17:47:49,880 ERROR re.ap.Failover2 [ForkJoinPool-4-worker-3] Got an error, no more attempts to do. Completing with a failure...
+reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$: MongoError['No primary node is available!']
+	at reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$.<clinit>(actors.scala) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$pickChannel$4.apply(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$pickChannel$4.apply(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at scala.Option.getOrElse(Option.scala:121) ~[scala-library-2.11.7.jar:?]
+	at reactivemongo.core.actors.MongoDBSystem$class.pickChannel(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.LegacyDBSystem.pickChannel(actors.scala:750) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$4.applyOrElse(actors.scala:304) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:170) ~[scala-library-2.11.7.jar:?]
+	at akka.actor.Actor$class.aroundReceive(Actor.scala:467) ~[akka-actor_2.11-2.3.13.jar:?]
+	at reactivemongo.core.actors.LegacyDBSystem.aroundReceive(actors.scala:750) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:516) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:487) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:238) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:220) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:397) ~[akka-actor_2.11-2.3.13.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.7.jar:?]
+2016-03-03 17:47:49,880 ERROR re.ap.Failover2 [ForkJoinPool-4-worker-1] Got an error, no more attempts to do. Completing with a failure...
+reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$: MongoError['No primary node is available!']
+	at reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$.<clinit>(actors.scala) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$pickChannel$4.apply(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$pickChannel$4.apply(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at scala.Option.getOrElse(Option.scala:121) ~[scala-library-2.11.7.jar:?]
+	at reactivemongo.core.actors.MongoDBSystem$class.pickChannel(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.LegacyDBSystem.pickChannel(actors.scala:750) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$4.applyOrElse(actors.scala:304) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:170) ~[scala-library-2.11.7.jar:?]
+	at akka.actor.Actor$class.aroundReceive(Actor.scala:467) ~[akka-actor_2.11-2.3.13.jar:?]
+	at reactivemongo.core.actors.LegacyDBSystem.aroundReceive(actors.scala:750) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:516) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:487) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:238) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:220) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:397) ~[akka-actor_2.11-2.3.13.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.7.jar:?]
+2016-03-03 17:47:49,886 ERROR re.ap.Failover2 [ForkJoinPool-4-worker-3] Got an error, no more attempts to do. Completing with a failure...
+reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$: MongoError['No primary node is available!']
+	at reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$.<clinit>(actors.scala) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$pickChannel$4.apply(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$pickChannel$4.apply(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at scala.Option.getOrElse(Option.scala:121) ~[scala-library-2.11.7.jar:?]
+	at reactivemongo.core.actors.MongoDBSystem$class.pickChannel(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.LegacyDBSystem.pickChannel(actors.scala:750) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$4.applyOrElse(actors.scala:304) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:170) ~[scala-library-2.11.7.jar:?]
+	at akka.actor.Actor$class.aroundReceive(Actor.scala:467) ~[akka-actor_2.11-2.3.13.jar:?]
+	at reactivemongo.core.actors.LegacyDBSystem.aroundReceive(actors.scala:750) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:516) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:487) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:238) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:220) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:397) ~[akka-actor_2.11-2.3.13.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.7.jar:?]
+2016-03-03 17:47:49,925 ERROR re.ap.Failover2 [ForkJoinPool-4-worker-1] Got an error, no more attempts to do. Completing with a failure...
+reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$: MongoError['No primary node is available!']
+	at reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$.<clinit>(actors.scala) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$pickChannel$4.apply(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$pickChannel$4.apply(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at scala.Option.getOrElse(Option.scala:121) ~[scala-library-2.11.7.jar:?]
+	at reactivemongo.core.actors.MongoDBSystem$class.pickChannel(actors.scala:635) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.LegacyDBSystem.pickChannel(actors.scala:750) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at reactivemongo.core.actors.MongoDBSystem$$anonfun$4.applyOrElse(actors.scala:304) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:170) ~[scala-library-2.11.7.jar:?]
+	at akka.actor.Actor$class.aroundReceive(Actor.scala:467) ~[akka-actor_2.11-2.3.13.jar:?]
+	at reactivemongo.core.actors.LegacyDBSystem.aroundReceive(actors.scala:750) ~[reactivemongo_2.11-0.11.7.jar:0.11.7]
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:516) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:487) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:238) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:220) ~[akka-actor_2.11-2.3.13.jar:?]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:397) ~[akka-actor_2.11-2.3.13.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.7.jar:?]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.7.jar:?]
+2016-03-03 17:49:09,539 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-6] Received Close message, going to close connections and moving on stage Closing
+2016-03-03 17:49:09,665 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-6] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#881718392] is stopping.
+2016-03-03 17:49:09,671 WARN re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-6] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#881718392] stopped.
+2016-03-03 17:49:09,846 WARN re.ap.MongoDriver [application-akka.actor.default-dispatcher-20] No mongo-async-driver configuration found
+2016-03-03 17:49:10,210 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-3] The node set is now available
+2016-03-03 17:49:10,253 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-3] The primary is now available
+2016-03-03 17:49:13,220 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.common.TagImpl type has been registered to Morphia !
+2016-03-03 17:49:13,231 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine type has been registered to Morphia !
+2016-03-03 17:49:13,252 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.team.GroupImpl type has been registered to Morphia !
+2016-03-03 17:49:13,257 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.repository.ElementImpl type has been registered to Morphia !
+2016-03-03 17:49:13,267 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.report.Project type has been registered to Morphia !
+2016-03-03 17:49:13,274 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.ComponentConfigLine type has been registered to Morphia !
+2016-03-03 17:49:13,276 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.team.UserImpl type has been registered to Morphia !
+2016-03-03 17:49:13,286 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.report.Campaign type has been registered to Morphia !
+2016-03-03 17:49:13,290 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine type has been registered to Morphia !
+2016-03-03 17:49:13,292 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine type has been registered to Morphia !
+2016-03-03 17:49:13,294 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.TestLine type has been registered to Morphia !
+2016-03-03 17:49:13,299 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl type has been registered to Morphia !

@@ -21,7 +21,7 @@ case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows
 case class AutoSetupConfigWithRefs(id: Option[String], name: String, cType: String, rows: Option[List[DBRef]])
 case class InspectedPage(name: String, items: List[String])
 case class InspectedScenario(name: String, steps: String)
-case class Scenario(id: Option[String], name: String, cType: String, driver: String, rows: Option[String])
+case class Scenario(id: Option[String], name: String, cType: String, driver: String, rows: Option[String], parent: Option[String])
 case class TestScript(id: Option[String], name: String, scenarii: List[Scenario])
 case class ScenarioRows(patterns: String, kind: Option[String], mappings: Option[List[ScenarioRowMapping]])
 case class ScenarioRowMapping(id: String, value: String, pos: Int)
@@ -119,21 +119,27 @@ object Scenario{
 	  (__ \ "name").read[String] and
       (__ \ "type").read[String] and
       (__ \ "driver").read[String] and
-      (__ \ "rows").readNullable[String])(Scenario.apply(_,_,_,_,_))
+      (__ \ "rows").readNullable[String] and
+      (__ \ "parent").readNullable[String])(Scenario.apply(_,_,_,_,_,_))
 
   implicit val writer: Writes[Scenario] = (
       (__ \ "id").writeNullable[String] and
       (__ \ "name").write[String] and
       (__ \ "type").write[String] and
       (__ \ "driver").write[String] and
-      (__ \ "rows").writeNullable[String])(unlift(Scenario.unapply))
+      (__ \ "rows").writeNullable[String] and
+      (__ \ "parent").writeNullable[String])(unlift(Scenario.unapply))
 
   implicit object BSONWriter extends BSONDocumentWriter[Scenario] {
     def write(scenario: Scenario): BSONDocument =
       scenario.id match {
-        case None =>  BSONDocument("name"-> scenario.name, "type"-> scenario.cType, "driver" -> scenario.driver,  "rows" -> scenario.rows.getOrElse(""))
-        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name" -> scenario.name, "type"-> scenario.cType,
-                                                  "driver" -> scenario.driver,  "rows" -> scenario.rows.getOrElse(""))
+        case None =>  BSONDocument("name"-> scenario.name, "type"-> scenario.cType, "driver" -> scenario.driver,  "rows" -> scenario.rows.getOrElse(""), "parent" -> scenario.parent.getOrElse("0"))
+        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), 
+                                                  "name" -> scenario.name, "type"-> scenario.cType,
+                                                  "driver" -> scenario.driver,    
+                                                  "rows" -> scenario.rows.getOrElse(""),
+                                                  "parent" -> scenario.parent.getOrElse("0")
+                                                  )
       }
   }
 
@@ -144,7 +150,8 @@ object Scenario{
       val scenarioType = doc.getAs[String]("type").get
       val driver = doc.getAs[String]("driver").get
       val rows = doc.getAs[String]("rows").getOrElse("")
-      Scenario(Option[String](id), name ,scenarioType, driver, Option[String](rows))
+      val parent = doc.getAs[String]("parent").getOrElse("0")
+      Scenario(Option[String](id), name ,scenarioType, driver, Option[String](rows), Option[String](parent))
     }
   }
 }

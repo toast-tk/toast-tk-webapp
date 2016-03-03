@@ -63,7 +63,12 @@ object Application extends Controller {
     val scenarioR = Json.fromJson(request.body)(Json.format[InspectedScenario])
     scenarioR.map {
       case scenario: InspectedScenario =>
-        val logInstance = Scenario(id = None, name = scenario.name, cType = "swing", driver = "connecteurSwing", rows = Some(scenario.steps))
+        val logInstance = Scenario(id = None, 
+                                  name = scenario.name, 
+                                  cType = "swing", 
+                                  driver = "connecteurSwing", 
+                                  rows = Some(scenario.steps),
+                                  parent = Some("0"))
         conn.savePlainScenario(logInstance)
         Ok("scenario saved !")
     }.recoverTotal {
