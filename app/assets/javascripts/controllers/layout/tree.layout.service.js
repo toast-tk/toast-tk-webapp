@@ -18,36 +18,43 @@ define(["angular"], function (angular) {
               var treeExplorerPromise = $q.defer();
               self.dataTree = dataTree;
               var value = 
-                webix.ready(function(){
-                 var treeExplorer = new webix.ui({
-                      container: treeContainer,
-                      rows:[
-                              {
-                                view:"text",
-                                label:"Filter scenarios",
-                                labelPosition:"top"
-                             },
-                             {
-                                view:"tree",
-                                activeTitle:true,
-                                id:"tree1",
-                                select:true,
-                                template: templateFunction,
-                                data : dataTree,
-                                type:{
-                                   folder:function(obj, common){
+              webix.ready(function(){
+               var treeExplorer = new webix.ui({
+                container: treeContainer,
+                rows:[
+                { cols:[
+                  {
+                    template:"<i class='fa fa-filter fa-lg' style='margin-top: 10px;''></i>",
+                    type: "clean",
+                    width:20
+                  },
+                  {
+                    view:"text",
+                    id:"filterField"
+                  }
+                  ]},
+                  {
+                    view:"tree",
+                    type:"lineTree",
+                    activeTitle:true,
+                    id:"tree1",
+                    select:true,
+                    template: templateFunction,
+                    data : dataTree,
+                    type:{
+                     folder:function(obj, common){
                                  //if open folder
-                                   if (obj.$count && obj.open) {
-                                        return "<div class='webix_tree_folder_open'></div>";
-                                  }
-                                 // if closed folder
-                                  else if(obj.$count || obj.type == "folder") {
-                                       return "<div class='webix_tree_folder'></div>";
-                                  }
-                                  return "<div class='webix_tree_file'></div>";
+                                 if (obj.$count && obj.open) {
+                                  return "<div class='webix_tree_folder_open'></div>";
                                 }
-                            },
-                            on:{
+                                 // if closed folder
+                                 else if(obj.$count || obj.type == "folder") {
+                                   return "<div class='webix_tree_folder'></div>";
+                                 }
+                                 return "<div class='webix_tree_file'></div>";
+                               }
+                             },
+                             on:{
                               onSelectChange:function () {
                                var selectedElementId = this.getSelectedId(true)
                                var selectedItem = this.getSelectedItem();
@@ -63,20 +70,20 @@ define(["angular"], function (angular) {
                                   }
                                 });
                                }
-                              }
-                            }
-                           }]   
-                    });
+                             }
+                           }
+                         }]   
+                       });
 
-                $$("$text1").attachEvent("onTimedKeyPress",function(){
-                    $$("tree1").filter("#value#",this.getValue());
-                })
-                webix.event(window, "resize", function(){ treeExplorer.adjust(); })
-                treeExplorerPromise.resolve(treeExplorer);
-            });
+$$("filterField").attachEvent("onTimedKeyPress",function(){
+  $$("tree1").filter("#value#",this.getValue());
+})
+webix.event(window, "resize", function(){ treeExplorer.adjust(); })
+treeExplorerPromise.resolve(treeExplorer);
+});
 
-                return treeExplorerPromise.promise;
-            }
+return treeExplorerPromise.promise;
+}
 
             /* BEGIN : save concerted node */
             /* @params : { treeExplorer : concerned tree , isParentConcerned : (boolean) to know if we want the selectednode or the parent}*/
