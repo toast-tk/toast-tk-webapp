@@ -130,12 +130,6 @@
               app.service("TreeLayoutService", treeLayoutService.TreeLayoutService);
               app.constant("ICONS", constantsFile);
               app.config(["$stateProvider", function($stateProvider){
-                  /*$routeProvider.when("/",{ templateUrl: "assets/html/login.html", controller: "LoginCtrl"});
-                  $routeProvider.when("/main",{ templateUrl: "assets/html/editor.html", controller: "MainCtrl"});
-                  $routeProvider.when("/configuration",{ templateUrl: "assets/html/configuration.html", controller: "ConfigurationCtrl"});
-                  $routeProvider.when("/scenario",{ templateUrl: "assets/html/scenario.html", controller: "ScenarioCtrl"});
-                  $routeProvider.when("/repository",{ templateUrl: "assets/html/repository.html", controller: "RepositoryCtrl"});
-                  $routeProvider.when("/project",{ templateUrl: "assets/html/project.html", controller: "ProjectCtrl"});*/
                   $stateProvider
                   .state('login', {
                       url: "/",
@@ -146,7 +140,7 @@
                         }
                       }
                   })
-                  .state('configuration', {
+                 /* .state('configuration', {
                       url: "/configuration",
                       views: {
                          'main': {
@@ -181,68 +175,64 @@
                       controller: "ProjectCtrl"
                     }
                   }
-                  })
+                  })*/
 
                   
-        .state('layout', {
-          url: "/",
-          abstract: true,
-          views: {
-            'main': {
-              templateUrl: "assets/html/layout/layout.view.html",
-              controller: "LayoutCtrl",
-            }
-          }
-        })
-        .state('main', {
-          url: "/main",
-          views: {
-           'main': {
-            templateUrl: "assets/html/editor.html", 
-            controller: "MainCtrl"
-          }
-        }
-      })
-        .state('layout.settings', {
-              url: "settings",
-              views: {
-                'content':{
-                 templateUrl: "assets/html/settings/settings.html",
-                 controller: "SettingsCtrl"
-               }
-             }
-      })
-        .state('layout.repository1', {
-              url: "repository1",
-              views: {
-                'content':{
-                 templateUrl: "assets/html/repository/repository.html",
-                 controller: "Repository1Ctrl"
-               }
-             }
-      })
-      .state('layout.scenario1', {
-          url: "scenario1",
-          views: {
-            'content':{
-             templateUrl: "assets/html/scenario/scenario1.html",
-             controller: "Scenario1Ctrl"
-           }
-         }
-      })
-      .state('layout.campaign1', {
-          url: "campaign1",
-          views: {
-            'content':{
-             templateUrl: "assets/html/campaign/campaign.html",
-             controller: "Campaign1Ctrl"
-           }
-         }
-      });
-
-/*                  $routeProvider.when("/scenario1",{ templateUrl: "assets/html/scenario1.html", controller: "ScenarioCtrl"});
-*/
-/*                  $routeProvider.otherwise("/main");*/
+                  .state('layout', {
+                    url: "/",
+                    abstract: true,
+                    views: {
+                      'main': {
+                        templateUrl: "assets/html/layout/layout.view.html",
+                        controller: "LayoutCtrl",
+                      }
+                    }
+                  })
+                  .state('main', {
+                    url: "/main",
+                    views: {
+                     'main': {
+                      templateUrl: "assets/html/editor.html", 
+                      controller: "MainCtrl"
+                    }
+                  }
+                })
+                  .state('layout.settings', {
+                    url: "settings",
+                    views: {
+                      'content':{
+                       templateUrl: "assets/html/settings/settings.html",
+                       controller: "SettingsCtrl"
+                     }
+                   }
+                 })
+                  .state('layout.repository1', {
+                    url: "repository1",
+                    views: {
+                      'content':{
+                       templateUrl: "assets/html/repository/repository.html",
+                       controller: "Repository1Ctrl"
+                     }
+                   }
+                 })
+                  .state('layout.scenario1', {
+                    url: "scenario1",
+                    views: {
+                      'content':{
+                       templateUrl: "assets/html/scenario/scenario1.html",
+                       controller: "Scenario1Ctrl"
+                     }
+                   }
+                 })
+                  .state('layout.campaign1', {
+                    url: "campaign1",
+                    views: {
+                      'content':{
+                       templateUrl: "assets/html/campaign/campaign.html",
+                       controller: "Campaign1Ctrl"
+                     }
+                   }
+                 });
               }]);
 
               app.run(function(editableOptions) {

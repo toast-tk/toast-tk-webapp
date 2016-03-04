@@ -60,10 +60,12 @@ define(["angular"], function (angular) {
                 alert("TODO: Implement disabling projects !")
             }
 
-            $scope.displayReport = function (project) {
-                var project = {};
-                project.name = "rus.3.7.campaign.script" ;
-                $window.open("/loadProjectReport/" + project.name)
+            $scope.displayReport = function (selectedProject) {
+                $scope.reportUrl = "/loadProjectReport/" + selectedProject.name ; 
+            }
+
+            $scope.openReportInNewPage = function (selectedProject) {
+                $window.open("/loadProjectReport/" + selectedProject.name);
 /*                playRoutes.controllers.ProjectController.loadProjectReport(project.name).get().then(function (response) {
                     console.log(response)
                 });*/

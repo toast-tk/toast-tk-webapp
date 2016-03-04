@@ -96,8 +96,9 @@
  						</div>
  						<!-- /.panel -->
       </tab>
-      <tab index="1" heading="Reports">
-        <button class="btn btn-primary btn-xs" data-ng-click="displayReport(project)">See Report</button>
+      <tab index="1" heading="Reports" ng-click="displayReport(selectedProject)">
+        <button class="btn btn-primary btn-xs pull-right" data-ng-click="openReportInNewPage(selectedProject)">See Report</button>
+        <iframe src="{{reportUrl}}" style="width: 100%; height: 83%;"></iframe>
       </tab>
 
     </tabset>
