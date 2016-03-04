@@ -19,6 +19,7 @@ import controllers.parsers.WebPageElementBSONWriter
 import controllers.parsers.EntityFieldBSONWriter
 import reactivemongo.bson.BSONObjectID
 import boot.AppBoot
+import play.api.Logger
 
 object MongoConnector extends App {
   def apply() = {
@@ -46,6 +47,26 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
 
   def getRepositoryCollection: BSONCollection = {
     db("repository")
+  }
+
+  def AuthenticateUser() {
+    val query = BSONDocument("username" -> "admin")
+    val collection = open_collection("users")
+
+    val userFuture =
+    collection.
+    find(query). 
+    cursor[User].
+    collect[List]()
+    Logger.info("Loging in dfef!")
+
+    userFuture.map { users =>
+      for(person <- users) {
+        val firstName = person.firstName
+        println(s"found $firstName")
+        Logger.info("Loging in after!")
+      }
+    }
   }
 
   def saveConfiguration(conf: MacroConfiguration) {
