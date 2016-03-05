@@ -4449,3 +4449,127 @@ reactivemongo.core.actors.Exceptions$PrimaryUnavailableException$: MongoError['N
 2016-03-03 18:32:55,411 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-99] class com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine type has been registered to Morphia !
 2016-03-03 18:32:55,411 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-99] class com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine type has been registered to Morphia !
 2016-03-03 18:32:55,421 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-99] class com.synaptix.toast.dao.domain.impl.test.block.line.TestLine type has been registered to Morphia !
+2016-03-04 14:11:59,277 WARN re.ap.MongoDriver [ForkJoinPool-1-worker-1] No mongo-async-driver configuration found
+2016-03-04 14:11:59,992 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-2] The node set is now available
+2016-03-04 14:12:00,007 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-2] The primary is now available
+2016-03-04 14:12:02,568 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.common.TagImpl type has been registered to Morphia !
+2016-03-04 14:12:02,586 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.test.block.line.TestLine type has been registered to Morphia !
+2016-03-04 14:12:02,714 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.repository.ElementImpl type has been registered to Morphia !
+2016-03-04 14:12:02,717 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine type has been registered to Morphia !
+2016-03-04 14:12:02,721 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.team.GroupImpl type has been registered to Morphia !
+2016-03-04 14:12:02,728 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl type has been registered to Morphia !
+2016-03-04 14:12:02,745 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.report.Project type has been registered to Morphia !
+2016-03-04 14:12:02,756 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.test.block.TestPage type has been registered to Morphia !
+2016-03-04 14:12:02,762 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.report.Campaign type has been registered to Morphia !
+2016-03-04 14:12:02,764 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine type has been registered to Morphia !
+2016-03-04 14:12:02,769 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.test.block.line.ComponentConfigLine type has been registered to Morphia !
+2016-03-04 14:12:02,772 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine type has been registered to Morphia !
+2016-03-04 14:12:02,777 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.team.UserImpl type has been registered to Morphia !
+2016-03-04 14:14:48,630 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-23] class com.synaptix.toast.dao.domain.impl.common.TagImpl type has been registered to Morphia !
+2016-03-04 14:14:48,642 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-23] class com.synaptix.toast.dao.domain.impl.test.block.line.TestLine type has been registered to Morphia !
+2016-03-04 14:14:48,646 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-23] class com.synaptix.toast.dao.domain.impl.repository.ElementImpl type has been registered to Morphia !
+2016-03-04 14:14:48,648 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-23] class com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine type has been registered to Morphia !
+2016-03-04 14:14:48,660 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-23] class com.synaptix.toast.dao.domain.impl.team.GroupImpl type has been registered to Morphia !
+2016-03-04 14:14:48,664 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-23] class com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl type has been registered to Morphia !
+2016-03-04 14:14:48,676 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-23] class com.synaptix.toast.dao.domain.impl.report.Project type has been registered to Morphia !
+2016-03-04 14:14:48,680 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-23] class com.synaptix.toast.dao.domain.impl.test.block.TestPage type has been registered to Morphia !
+2016-03-04 14:14:48,695 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-23] class com.synaptix.toast.dao.domain.impl.report.Campaign type has been registered to Morphia !
+2016-03-04 14:14:48,710 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-23] class com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine type has been registered to Morphia !
+2016-03-04 14:14:48,711 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-23] class com.synaptix.toast.dao.domain.impl.test.block.line.ComponentConfigLine type has been registered to Morphia !
+2016-03-04 14:14:48,737 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-23] class com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine type has been registered to Morphia !
+2016-03-04 18:44:13,110 WARN re.ap.MongoDriver [ForkJoinPool-2-worker-2] No mongo-async-driver configuration found
+2016-03-04 18:44:13,602 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-3] The node set is now available
+2016-03-04 18:44:13,606 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-3] The primary is now available
+2016-03-04 18:45:34,171 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-4] Received Close message, going to close connections and moving on stage Closing
+2016-03-04 18:45:34,235 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#548971485] is stopping.
+2016-03-04 18:45:34,241 WARN re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#548971485] stopped.
+impl.test.block.line.SwingPageConfigLine type has been registered to Morphia !
+2016-03-04 18:45:54,014 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.report.Project type has been registered to Morphia !
+2016-03-04 18:45:54,017 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.common.TagImpl type has been registered to Morphia !
+2016-03-04 18:45:54,022 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine type has been registered to Morphia !
+2016-03-04 18:45:54,064 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl type has been registered to Morphia !
+2016-03-04 18:45:54,069 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine type has been registered to Morphia !
+2016-03-04 18:45:54,079 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.team.UserImpl type has been registered to Morphia !
+2016-03-04 18:45:54,109 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.team.GroupImpl type has been registered to Morphia !
+2016-03-04 18:45:54,113 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.report.Campaign type has been registered to Morphia !
+2016-03-04 18:45:54,140 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.repository.ElementImpl type has been registered to Morphia !
+2016-03-04 18:45:54,160 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.TestLine type has been registered to Morphia !
+2016-03-04 18:46:27,195 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-2] Received Close message, going to close connections and moving on stage Closing
+2016-03-04 18:46:27,232 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-2] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#-1614638028] is stopping.
+2016-03-04 18:46:27,240 WARN re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-2] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#-1614638028] stopped.
+2016-03-04 18:49:02,566 WARN re.ap.MongoDriver [ForkJoinPool-1-worker-1] No mongo-async-driver configuration found
+2016-03-04 18:49:03,312 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] The node set is now available
+2016-03-04 18:49:03,316 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] The primary is now available
+2016-03-04 18:49:05,298 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl type has been registered to Morphia !
+2016-03-04 18:49:05,300 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.repository.ElementImpl type has been registered to Morphia !
+2016-03-04 18:49:05,314 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine type has been registered to Morphia !
+2016-03-04 18:49:05,317 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.team.GroupImpl type has been registered to Morphia !
+2016-03-04 18:49:05,329 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.test.block.TestPage type has been registered to Morphia !
+2016-03-04 18:49:05,331 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine type has been registered to Morphia !
+2016-03-04 18:49:05,346 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.report.Project type has been registered to Morphia !
+2016-03-04 18:49:05,352 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine type has been registered to Morphia !
+2016-03-04 18:49:05,366 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.report.Campaign type has been registered to Morphia !
+2016-03-04 18:49:05,368 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.test.block.line.ComponentConfigLine type has been registered to Morphia !
+2016-03-04 18:49:05,368 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.common.TagImpl type has been registered to Morphia !
+2016-03-04 18:49:05,372 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.team.UserImpl type has been registered to Morphia !
+2016-03-04 18:49:05,377 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.test.block.line.TestLine type has been registered to Morphia !
+2016-03-04 18:53:26,696 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-18] class com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl type has been registered to Morphia !
+2016-03-04 18:53:26,699 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-18] class com.synaptix.toast.dao.domain.impl.repository.ElementImpl type has been registered to Morphia !
+2016-03-04 18:53:26,708 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-18] class com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine type has been registered to Morphia !
+2016-03-04 18:53:26,713 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-18] class com.synaptix.toast.dao.domain.impl.team.GroupImpl type has been registered to Morphia !
+2016-03-04 18:53:26,717 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-18] class com.synaptix.toast.dao.domain.impl.test.block.TestPage type has been registered to Morphia !
+2016-03-04 18:53:26,720 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-18] class com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine type has been registered to Morphia !
+2016-03-04 18:53:26,723 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-18] class com.synaptix.toast.dao.domain.impl.report.Project type has been registered to Morphia !
+2016-03-04 18:53:26,726 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-18] class com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine type has been registered to Morphia !
+2016-03-04 18:53:26,731 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-18] class com.synaptix.toast.dao.domain.impl.report.Campaign type has been registered to Morphia !
+2016-03-04 18:53:26,733 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-18] class com.synaptix.toast.dao.domain.impl.test.block.line.ComponentConfigLine type has been registered to Morphia !
+2016-03-04 18:53:26,734 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-18] class com.synaptix.toast.dao.domain.impl.common.TagImpl type has been registered to Morphia !
+2016-03-04 18:53:26,742 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-18] class com.synaptix.toast.dao.domain.impl.team.UserImpl type has been registered to Morphia !
+2016-03-04 18:53:26,751 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [application-akka.actor.default-dispatcher-18] class com.synaptix.toast.dao.domain.impl.test.block.line.TestLine type has been registered to Morphia !
+2016-03-04 18:54:51,526 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] Received Close message, going to close connections and moving on stage Closing
+2016-03-04 18:54:51,602 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#566099169] is stopping.
+2016-03-04 18:54:51,611 WARN re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#566099169] stopped.
+2016-03-05 12:42:10,351 WARN re.ap.MongoDriver [ForkJoinPool-1-worker-1] No mongo-async-driver configuration found
+2016-03-05 12:42:12,873 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] The node set is now available
+2016-03-05 12:42:12,877 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] The primary is now available
+2016-03-05 12:42:16,583 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine type has been registered to Morphia !
+2016-03-05 12:42:16,591 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.TestLine type has been registered to Morphia !
+2016-03-05 12:42:16,596 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine type has been registered to Morphia !
+2016-03-05 12:42:16,695 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.TestPage type has been registered to Morphia !
+2016-03-05 12:42:16,708 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.report.Project type has been registered to Morphia !
+2016-03-05 12:42:16,719 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine type has been registered to Morphia !
+2016-03-05 12:42:16,749 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl type has been registered to Morphia !
+2016-03-05 12:42:16,761 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-1] class com.synaptix.toast.dao.domain.impl.common.TagImpl type has been registered to Morphia !
+2016-03-05 13:02:56,343 WARN re.ap.MongoDriver [ForkJoinPool-1-worker-1] No mongo-async-driver configuration found
+2016-03-05 13:05:44,759 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-4] The node set is now available
+2016-03-05 13:05:44,769 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-4] The primary is now available
+2016-03-05 13:05:57,793 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-5] class com.synaptix.toast.dao.domain.impl.common.TagImpl type has been registered to Morphia !
+2016-03-05 13:05:57,843 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-5] class com.synaptix.toast.dao.domain.impl.test.block.TestPage type has been registered to Morphia !
+2016-03-05 13:05:57,853 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-5] class com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine type has been registered to Morphia !
+2016-03-05 13:05:57,856 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-5] class com.synaptix.toast.dao.domain.impl.test.block.line.TestLine type has been registered to Morphia !
+2016-03-05 13:05:57,863 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-5] class com.synaptix.toast.dao.domain.impl.report.Project type has been registered to Morphia !
+2016-03-05 13:05:57,868 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-5] class com.synaptix.toast.dao.domain.impl.repository.ElementImpl type has been registered to Morphia !
+2016-03-05 13:05:57,878 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-5] class com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl type has been registered to Morphia !
+2016-03-05 13:05:57,880 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-5] class com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine type has been registered to Morphia !
+2016-03-05 13:07:31,972 WARN re.ap.MongoDriver [ForkJoinPool-1-worker-1] No mongo-async-driver configuration found
+2016-03-05 13:07:33,610 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] The node set is now available
+2016-03-05 13:07:33,615 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] The primary is now available
+2016-03-05 13:07:38,251 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.team.UserImpl type has been registered to Morphia !
+2016-03-05 13:07:38,257 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.repository.ElementImpl type has been registered to Morphia !
+2016-03-05 13:07:38,258 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.common.TagImpl type has been registered to Morphia !
+2016-03-05 13:07:38,276 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.test.block.line.ComponentConfigLine type has been registered to Morphia !
+2016-03-05 13:07:38,283 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine type has been registered to Morphia !
+2016-03-05 13:07:38,309 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.report.Campaign type has been registered to Morphia !
+2016-03-05 13:07:38,320 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl type has been registered to Morphia !
+2016-03-05 13:07:38,331 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-3] class com.synaptix.toast.dao.domain.impl.test.block.TestPage type has been registered to Morphia !
+2016-03-05 13:15:05,936 WARN re.ap.MongoDriver [ForkJoinPool-1-worker-1] No mongo-async-driver configuration found
+2016-03-05 13:15:07,791 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] The node set is now available
+2016-03-05 13:15:07,798 INFO re.co.ac.MongoDBSystem [reactivemongo-akka.actor.default-dispatcher-5] The primary is now available
+2016-03-05 13:15:10,909 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.test.block.line.TestLine type has been registered to Morphia !
+2016-03-05 13:15:10,912 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine type has been registered to Morphia !
+2016-03-05 13:15:10,917 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine type has been registered to Morphia !
+2016-03-05 13:15:10,919 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine type has been registered to Morphia !
+2016-03-05 13:15:10,956 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.report.Campaign type has been registered to Morphia !
+2016-03-05 13:15:10,961 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.team.UserImpl type has been registered to Morphia !
+2016-03-05 13:15:10,962 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.common.TagImpl type has been registered to Morphia !
+2016-03-05 13:15:10,970 INFO co.sy.to.da.se.in.MongoDefaultStarterImpl [ForkJoinPool-4-worker-7] class com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl type has been registered to Morphia !

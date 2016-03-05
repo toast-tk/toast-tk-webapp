@@ -12,7 +12,7 @@ import reactivemongo.bson.BSONDocumentWriter
 import reactivemongo.bson.BSONObjectID
 
 
-case class ConfigurationSyntax(sentence: String, typed_sentence: String)
+case class ConfigurationSyntax(sentence: String, typed_sentence: String, description: String)
 case class ConfigurationRow(group: String, name: String, syntax: List[ConfigurationSyntax])
 case class MacroConfiguration(id: Option[String], cType: String, rows: List[ConfigurationRow])
 case class ServiceEntityConfig(id: Option[String], name: String, cType: String, rows: Option[List[EntityField]])
@@ -26,7 +26,7 @@ case class TestScript(id: Option[String], name: String, scenarii: List[Scenario]
 case class ScenarioRows(patterns: String, kind: Option[String], mappings: Option[List[ScenarioRowMapping]])
 case class ScenarioRowMapping(id: String, value: String, pos: Int)
 case class DBRef(collection: String, id: BSONObjectID, db: Option[String] = None)
-case class FixtureDescriptorLine(name: String, fixtureType: String, pattern: String)
+case class FixtureDescriptorLine(name: String, fixtureType: String, pattern: String, description: String)
 case class MojoFixtureDescriptor(name: String, sentences: List[FixtureDescriptorLine])
 
 object DBRef {
@@ -61,12 +61,14 @@ object FixtureDescriptorLine {
   implicit val reader: Reads[FixtureDescriptorLine]= (
       (__ \ "name").read[String] and
       (__ \ "fixtureType").read[String] and
-      (__ \ "pattern").read[String])(FixtureDescriptorLine.apply(_,_,_))
+      (__ \ "pattern").read[String] and
+      (__ \ "description").read[String])(FixtureDescriptorLine.apply(_,_,_,_))
 
   implicit val writer: Writes[FixtureDescriptorLine] = (
       (__ \ "name").write[String] and
       (__ \ "fixtureType").write[String] and
-      (__ \ "pattern").write[String])(unlift(FixtureDescriptorLine.unapply))
+      (__ \ "pattern").write[String] and
+      (__ \ "description").write[String])(unlift(FixtureDescriptorLine.unapply))
 }
 
 object ScenarioRowMapping{
@@ -302,24 +304,28 @@ object ConfigurationSyntax {
 
   implicit val configSyntaxReader: Reads[ConfigurationSyntax] = (
     (__ \ "sentence").read[String]
-    and (__ \ "typed_sentence").read[String])(ConfigurationSyntax.apply(_,_))
+    and (__ \ "typed_sentence").read[String]
+    and (__ \ "description").read[String])(ConfigurationSyntax.apply(_,_,_))
 
   implicit val configSyntaxWriter: Writes[ConfigurationSyntax] = (
     (__ \ "sentence").write[String] and
-    (__ \ "typed_sentence").write[String])(unlift(ConfigurationSyntax.unapply))
+    (__ \ "typed_sentence").write[String] and
+    (__ \ "description").write[String])(unlift(ConfigurationSyntax.unapply))
 
   implicit object ConfigurationSyntaxReader extends BSONDocumentReader[ConfigurationSyntax] {
     def read(doc: BSONDocument): ConfigurationSyntax = {
       val sentence = doc.getAs[String]("sentence").get
       val typed_sentence = doc.getAs[String]("typed_sentence").get
-      ConfigurationSyntax(sentence, typed_sentence)
+      val description = doc.getAs[String]("description").get
+      ConfigurationSyntax(sentence, typed_sentence, description)
     }
   }
 
   implicit object ConfigurationSyntaxWriter extends BSONDocumentWriter[ConfigurationSyntax] {
     def write(configurationSyntax: ConfigurationSyntax): BSONDocument = BSONDocument(
       "sentence" -> configurationSyntax.sentence,
-      "typed_sentence" -> configurationSyntax.typed_sentence)
+      "typed_sentence" -> configurationSyntax.typed_sentence,
+      "description" -> configurationSyntax.description)
   }
 
 }

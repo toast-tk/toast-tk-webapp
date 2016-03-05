@@ -5,7 +5,7 @@ import play.api.libs.json.Reads._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import reactivemongo.api.{MongoDriver, _}
-import reactivemongo.bson.BSONDocument
+import reactivemongo.bson.{BSONObjectID, BSONDocument}
 import reactivemongo.api.commands.UpdateWriteResult
 import reactivemongo.bson.Producer.nameValue2Producer
 import reactivemongo.api.collections.bson.BSONCollection
@@ -17,7 +17,6 @@ import controllers.parsers.EntityField
 import controllers.parsers.WebPageElement
 import controllers.parsers.WebPageElementBSONWriter
 import controllers.parsers.EntityFieldBSONWriter
-import reactivemongo.bson.BSONObjectID
 import boot.AppBoot
 
 object MongoConnector extends App {
@@ -50,13 +49,12 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
 
   def saveConfiguration(conf: MacroConfiguration) {
     val collection = open_collection("configuration")
-    if(conf.id == null){
-      collection.insert(conf).onComplete {
+    conf.id match {
+      case None => collection.insert(conf).onComplete {
         case Failure(e) => throw e
-        case Success(_) => println("successfully inserted configuration !")
+        case Success(_) => println("[+] successfully inserted configuration !")
       }
-    }else{
-      collection.update(BSONDocument("_id" -> BSONObjectID(conf.id.get)), conf, upsert=true).onComplete {
+      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(conf.id.get)), conf, upsert=true).onComplete {
         case Failure(e) => throw e
         case Success(_) => println("successfully saved configuration !")
       }

@@ -42,11 +42,32 @@
                           		</div>
                           		<div class="panel-body" style="height: 100%; overflow-y: auto; overflow-x: hidden;">
                           			<ul class="list-group">
-                          				<li class="list-group-item row"  ng-repeat="syntax in selectedConfig.syntax">
-                          					{{syntax.sentence}} 
-                          					<button class="btn btn-default btn-xs pull-right" data-ng-click="deleteSentenceLine(syntax, sentence)">
-                          						<i class="fa fa-trash"></i>
-                          					</button>
+                          				<li class="list-group-item row" ng-repeat="syntax in selectedConfig.syntax">
+                                    <div class="" style="border: #ccc solid 1px; border-top: none;">
+                                        <div class="panel panel-default" style="margin-bottom: 11px;">
+                                          <div class="panel-heading" style="padding: 3px;" role="tab" id="headingOne">
+                                            <h4 class="panel-title" style="font-size:14px;">
+                                              <a role="button" 
+                                                  data-toggle="collapse" 
+                                                  data-parent="#accordion" 
+                                                  href="#collapseOne" aria-expanded="false" a
+                                                  ria-controls="collapseOne">
+                                                  {{syntax.sentence}} 
+                                              </a>
+                                              <button class="btn btn-default btn-xs pull-right" 
+                                                      data-ng-click="deleteSentenceLine(syntax, sentence)">
+                                                <i class="fa fa-trash"></i>
+                                              </button>
+                                            </h4>
+                                            
+                                          </div>
+                                          <div id="collapseOne" 
+                                              class="panel-collapse collapse in" 
+                                              role="tabpanel" aria-labelledby="headingOne">
+                                            <div class="panel-body">
+                                              {{syntax.description}} 
+                                            </div>
+                                      </div>
                           				</li>
                           			</ul>
                           			<hr ng-show="selectedConfig != undefined"/>
