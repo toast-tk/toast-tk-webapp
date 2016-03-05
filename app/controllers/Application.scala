@@ -28,6 +28,8 @@ object Application extends Controller {
 
   def login() = Action(parse.json) { implicit request =>
     //Check credentials and so on...
+    conn.AuthenticateUser()
+
     Logger.info(s"[+] Loging in !")
     Ok(views.html.index()).withSession(request2session + ("connected" -> "user goes here !"))
   }

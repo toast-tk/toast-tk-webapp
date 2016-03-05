@@ -28,6 +28,7 @@ case class ScenarioRowMapping(id: String, value: String, pos: Int)
 case class DBRef(collection: String, id: BSONObjectID, db: Option[String] = None)
 case class FixtureDescriptorLine(name: String, fixtureType: String, pattern: String, description: String)
 case class MojoFixtureDescriptor(name: String, sentences: List[FixtureDescriptorLine])
+case class User(id: Option[String], username: String, password: String, firstName: String, lastName: String, email: String, team :  Option[String], isActive : Boolean, lastConnection : String)
 
 object DBRef {
   implicit object DBRefReader extends BSONDocumentReader[DBRef] {
@@ -390,3 +391,41 @@ object MacroConfiguration {
   }
 }
 
+object User{
+  implicit val reader: Reads[User]= (
+      (__ \ "id").readNullable[String] and
+    (__ \ "username").read[String] and
+      (__ \ "password").read[String] and
+      (__ \ "firstName").read[String] and
+      (__ \ "lastName").read[String] and
+      (__ \ "email").read[String] and
+      (__ \ "teams").readNullable[String] and
+      (__ \ "isActive").read[Boolean] and
+      (__ \ "lastConnection").read[String])(User.apply(_,_,_,_,_,_,_,_,_))
+
+  implicit val writer: Writes[User] = (
+      (__ \ "id").writeNullable[String] and
+      (__ \ "username").write[String] and
+      (__ \ "password").write[String] and
+      (__ \ "firstName").write[String] and
+      (__ \ "lastName").write[String] and
+      (__ \ "email").write[String] and
+      (__ \ "teams").writeNullable[String] and
+      (__ \ "isActive").write[Boolean] and
+      (__ \ "lastConnection").write[String])(unlift(User.unapply))
+
+  implicit object BSONReader extends BSONDocumentReader[User] {
+    def read(doc: BSONDocument): User = {
+      val id = doc.getAs[BSONObjectID]("_id").get.stringify
+      val username = doc.getAs[String]("username").get
+      val password = doc.getAs[String]("password").get
+      val firstName = doc.getAs[String]("firstName").get
+      val lastName = doc.getAs[String]("lastName").get
+      val email = doc.getAs[String]("email").get
+      val teams = doc.getAs[String]("teams").getOrElse("")
+      val isActive = doc.getAs[Boolean]("isActive").get
+      val lastConnection = doc.getAs[String]("lastConnection").get
+      User(Option[String](id), username ,password, firstName, lastName, email, Option[String](teams), isActive, lastConnection)
+    }
+  }
+}
