@@ -99,12 +99,11 @@ object AppBoot extends play.api.GlobalSettings {
         val fixtureName: String = descriptor.name
         val fixturePattern: String = descriptor.pattern
         val key = fixtureType +":"+fixtureName
-        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(fixturePattern, fixturePattern)
+        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(fixturePattern, fixturePattern, descriptor.description)
         val syntaxRows = congifMap.getOrElse(key, List[ConfigurationSyntax]())
         val newSyntaxRows =  newConfigurationSyntax :: syntaxRows
         congifMap = congifMap + (key -> newSyntaxRows)
       }
-
       val configurationRows = for ((k,v) <- congifMap) yield( ConfigurationRow(k.split(":")(0),k.split(":")(1),v) )
       conn.saveConfiguration(MacroConfiguration(confId, "default", configurationRows.toList))
     }

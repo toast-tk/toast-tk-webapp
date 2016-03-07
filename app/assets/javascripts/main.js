@@ -181,6 +181,7 @@
                   .state('layout', {
                     url: "/",
                     abstract: true,
+                    cache: false,
                     views: {
                       'main': {
                         templateUrl: "assets/html/layout/layout.view.html",
@@ -190,6 +191,7 @@
                   })
                   .state('main', {
                     url: "/main",
+                    cache: false,
                     views: {
                      'main': {
                       templateUrl: "assets/html/editor.html", 
@@ -199,6 +201,7 @@
                 })
                   .state('layout.settings', {
                     url: "settings",
+                    cache: false,
                     views: {
                       'content':{
                        templateUrl: "assets/html/settings/settings.html",
@@ -208,6 +211,7 @@
                  })
                   .state('layout.repository1', {
                     url: "repository1",
+                    cache: false,
                     views: {
                       'content':{
                        templateUrl: "assets/html/repository/repository.html",
@@ -217,6 +221,7 @@
                  })
                   .state('layout.scenario1', {
                     url: "scenario1",
+                    cache: false,
                     views: {
                       'content':{
                        templateUrl: "assets/html/scenario/scenario1.html",
@@ -226,6 +231,7 @@
                  })
                   .state('layout.campaign1', {
                     url: "campaign1",
+                    cache: false,
                     views: {
                       'content':{
                        templateUrl: "assets/html/campaign/campaign.html",

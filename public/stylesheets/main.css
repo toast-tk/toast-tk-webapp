@@ -261,6 +261,12 @@
 .panel>.list-group .list-group-item, .panel>.panel-collapse>.list-group .list-group-item{
   margin: 0; /*to override "row" class margin (to avoid horizontal scrollbar)*/
 }
+
+.navbar-inverse .dropdown-menu>li>a, .navbar-inverse .dropdown-menu>li>a:focus {
+    background-color: #222;
+    color: #fff;
+}
+
 /* END : bootstrap overriding */
 
 /* webix overriding */

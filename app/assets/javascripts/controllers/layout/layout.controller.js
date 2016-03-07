@@ -5,9 +5,9 @@ define(["angular"], function(angular) {
     	}
 
 
-	LayoutCtrl.$inject = ['$scope','$sideSplit'];
+	LayoutCtrl.$inject = ['$scope','$sideSplit','$state','$http','$timeout'];
 
-	function LayoutCtrl($scope, $sideSplit) {
+	function LayoutCtrl($scope, $sideSplit, $state, $http, $timeout) {
 				$scope.isCollapsed = false;
 
 		$sideSplit.open({ 
@@ -22,8 +22,14 @@ define(["angular"], function(angular) {
 				$scope.isCollapsed = !$scope.isCollapsed ;
 		});
 
-		/*console.log("hello");
 
+		$scope.logout = function(){
+				$http.get('/logout').then(function(){
+					$state.transitionTo($state.current, {}, {location : "replace", reload: true});
+			});
+		}
+
+		/*
 		$scope.collapse = function(){
 			 $sideSplit.close({ 
                              id: angular.element('#sidebarmenu'),

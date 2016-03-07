@@ -31,8 +31,14 @@ object Application extends Controller {
     Logger.info(s"Loging ${request.body}")
      request.body.validate[InspectedUser].map {
       case user: InspectedUser =>
-      conn.AuthenticateUser(user)
-      Ok(views.html.index()).withSession(request2session + ("connected" -> "user goes here !"))
+      var value = conn.AuthenticateUser(user) ;
+      Logger.info(s"Loging result $value")
+      if(value == true){
+         Ok(views.html.index()).withSession(request2session + ("connected" -> "user goes here !"))  
+      } else {
+         Unauthorized("Bad credentials")
+      }
+        
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
     }
@@ -72,7 +78,7 @@ object Application extends Controller {
         val logInstance = Scenario(id = None, 
                                   name = scenario.name, 
                                   cType = "swing", 
-                                  driver = "connecteurSwing", 
+                                  driver = "swing", 
                                   rows = Some(scenario.steps),
                                   parent = Some("0"))
         conn.savePlainScenario(logInstance)
@@ -212,7 +218,7 @@ object Application extends Controller {
         val fixturePattern: String = descriptor.pattern
         
         val key = fixtureType +":"+fixtureName
-        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(fixturePattern, fixturePattern)
+        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(fixturePattern, fixturePattern, descriptor.description)
         val syntaxRows = congifMap.getOrElse(key, List[ConfigurationSyntax]())
         val newSyntaxRows =  newConfigurationSyntax :: syntaxRows
         congifMap = congifMap + (key -> newSyntaxRows)
