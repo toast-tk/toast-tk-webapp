@@ -28,7 +28,8 @@ case class ScenarioRowMapping(id: String, value: String, pos: Int)
 case class DBRef(collection: String, id: BSONObjectID, db: Option[String] = None)
 case class FixtureDescriptorLine(name: String, fixtureType: String, pattern: String)
 case class MojoFixtureDescriptor(name: String, sentences: List[FixtureDescriptorLine])
-case class User(id: Option[String], username: String, password: String, firstName: String, lastName: String, email: String, team :  Option[String], isActive : Boolean, lastConnection : String)
+case class InspectedUser(login: String, password: String)
+case class User(id: Option[String], login: String, password: String, firstName: String, lastName: String, email: String, team :  Option[String], isActive : Boolean, lastConnection : String)
 
 object DBRef {
   implicit object DBRefReader extends BSONDocumentReader[DBRef] {
@@ -388,7 +389,7 @@ object MacroConfiguration {
 object User{
   implicit val reader: Reads[User]= (
       (__ \ "id").readNullable[String] and
-    (__ \ "username").read[String] and
+      (__ \ "login").read[String] and
       (__ \ "password").read[String] and
       (__ \ "firstName").read[String] and
       (__ \ "lastName").read[String] and
@@ -399,7 +400,7 @@ object User{
 
   implicit val writer: Writes[User] = (
       (__ \ "id").writeNullable[String] and
-      (__ \ "username").write[String] and
+      (__ \ "login").write[String] and
       (__ \ "password").write[String] and
       (__ \ "firstName").write[String] and
       (__ \ "lastName").write[String] and
@@ -411,7 +412,7 @@ object User{
   implicit object BSONReader extends BSONDocumentReader[User] {
     def read(doc: BSONDocument): User = {
       val id = doc.getAs[BSONObjectID]("_id").get.stringify
-      val username = doc.getAs[String]("username").get
+      val login = doc.getAs[String]("login").get
       val password = doc.getAs[String]("password").get
       val firstName = doc.getAs[String]("firstName").get
       val lastName = doc.getAs[String]("lastName").get
@@ -419,7 +420,17 @@ object User{
       val teams = doc.getAs[String]("teams").getOrElse("")
       val isActive = doc.getAs[Boolean]("isActive").get
       val lastConnection = doc.getAs[String]("lastConnection").get
-      User(Option[String](id), username ,password, firstName, lastName, email, Option[String](teams), isActive, lastConnection)
+      User(Option[String](id), login ,password, firstName, lastName, email, Option[String](teams), isActive, lastConnection)
     }
   }
+}
+
+object InspectedUser{
+  implicit val reader: Reads[InspectedUser]= (
+      (__ \ "login").read[String] and
+      (__ \ "password").read[String])(InspectedUser.apply(_,_))
+
+  implicit val writer: Writes[InspectedUser] = (
+      (__ \ "login").write[String] and
+      (__ \ "password").write[String])(unlift(InspectedUser.unapply))
 }

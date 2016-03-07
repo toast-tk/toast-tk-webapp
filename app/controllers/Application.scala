@@ -28,10 +28,14 @@ object Application extends Controller {
 
   def login() = Action(parse.json) { implicit request =>
     //Check credentials and so on...
-    conn.AuthenticateUser()
-
-    Logger.info(s"[+] Loging in !")
-    Ok(views.html.index()).withSession(request2session + ("connected" -> "user goes here !"))
+    Logger.info(s"Loging ${request.body}")
+     request.body.validate[InspectedUser].map {
+      case user: InspectedUser =>
+      conn.AuthenticateUser(user)
+      Ok(views.html.index()).withSession(request2session + ("connected" -> "user goes here !"))
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toJson(e))
+    }
   }
 
   def logout() = Action {

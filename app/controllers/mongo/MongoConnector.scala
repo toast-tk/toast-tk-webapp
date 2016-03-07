@@ -49,8 +49,8 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     db("repository")
   }
 
-  def AuthenticateUser() {
-    val query = BSONDocument("username" -> "admin")
+  def AuthenticateUser(user : InspectedUser) {
+    val query = BSONDocument("login" -> user.login, "password" -> user.password)
     val collection = open_collection("users")
 
     val userFuture =
