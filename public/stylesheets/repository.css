@@ -66,3 +66,20 @@
     line-height: 1.5;
     border-radius: 0;
 }
+
+/* angucomplete*/
+.angu-step-row {
+    padding: 2px;
+    margin-bottom: 1px;
+    font-size: 12px;
+    clear: both;
+}
+
+.angu-step-drop {
+	max-height: 205px;
+    overflow: auto;
+}
+
+.angu-step-droptop {
+	bottom: 40px;
+}

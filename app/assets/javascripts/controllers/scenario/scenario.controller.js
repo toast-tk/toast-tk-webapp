@@ -30,8 +30,16 @@ define(["angular"], function (angular) {
 
             __init__(true);
             
+            function setDropListPositionClass(){
+                if($scope.scenario.rows.length > 4){
+                    $scope.dropListPosition = "angu-step-droptop";
+                } else {
+                    $scope.dropListPosition = "";
+                }
+            }
             function editScenario(scenario){
-                $scope.scenario = scenario; 
+                $scope.scenario = scenario;
+                setDropListPositionClass();
                 swaptToDefaultRow();
             }
 
@@ -50,6 +58,7 @@ define(["angular"], function (angular) {
                     if(!angular.isDefined(newScenario.data) && newScenario.type !="folder"){
                         $scope.scenarii.push(newScenario);
                         $scope.scenario = newScenario;
+                        setDropListPositionClass();
                         $scope.stepType = selectedType;
                     }
                     save(newScenario);
@@ -77,6 +86,7 @@ define(["angular"], function (angular) {
                 newStepPromise.promise.then(function(step){
                     console.log("   adding ;", angular.copy(step));
                     $scope.scenario.rows.push(angular.copy(step));
+                    setDropListPositionClass();
                     $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "fast");
                     $scope.$broadcast('angucomplete-alt:clearInput', 'newStepAutocomplete');
                 });
@@ -360,6 +370,7 @@ define(["angular"], function (angular) {
 
 TreeLayoutService.addSelectedNodeCallback("toastScenariosTreeExplorer", function(selectedScenario){
     $scope.scenario = selectedScenario ;
+    setDropListPositionClass();
     $timeout(function(){
         $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
     },500);
