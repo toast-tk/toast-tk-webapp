@@ -139,45 +139,7 @@
                       controller: "LoginCtrl"
                         }
                       }
-                  })
-                 /* .state('configuration', {
-                      url: "/configuration",
-                      views: {
-                         'main': {
-                      templateUrl: "assets/html/configuration.html",
-                      controller: "ConfigurationCtrl"
-                          }
-                      }
-                  })
-                  .state('scenario', {
-                      url: "/scenario",
-                      views: {
-                         'main': {
-                      templateUrl: "assets/html/scenario.html",
-                       controller: "ScenarioCtrl"
-                        }
-                      }
-                  })
-                  .state('repository', {
-                      url: "/repository",
-                      views: {
-                         'main': {
-                      templateUrl: "assets/html/repository.html",
-                      controller: "RepositoryCtrl"
-                        }
-                     }
-                  })
-                  .state('project', {
-                      url: "/project",
-                      views: {
-                         'main': {
-                      templateUrl: "assets/html/project.html",
-                      controller: "ProjectCtrl"
-                    }
-                  }
-                  })*/
-
-                  
+                  }) 
                   .state('layout', {
                     url: "/",
                     abstract: true,
@@ -239,8 +201,8 @@
                      }
                    }
                  });
-                 // $urlRouterProvider.when('/','/login');
-                 // $urlRouterProvider.otherwise('/login');
+                 $urlRouterProvider.when('','/scenario1');
+                 $urlRouterProvider.otherwise('/scenario1');
               }]);
 
               app.run(function(editableOptions) {

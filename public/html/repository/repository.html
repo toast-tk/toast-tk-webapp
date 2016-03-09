@@ -10,13 +10,13 @@
                             <div width="280"> 
                              <div class="panel panel-default" style="margin-bottom: 4px;">
                               <div class="panel-heading">
-                                <div class="panel-title">
-                                <div class="input-group">
-                                    <div class="btn btn-primary btn-xs" ng-click="addNewObject()"><i class="fa fa-plus"></i></div>
-                          
+                                <h3 class="panel-title">
+                                <h3 class="panel-title"><i class="fa fa-files-o fa-fw"></i> Object List
+                                <div class="input-group pull-right">
+                                    <div class="btn btn-primary btn-xs" ng-click="addNewObject()"><i class="fa fa-plus"></i> </div>
                                 </div>
 
-                                </div>
+                                </h3>
                               </div>
                               </div>
                              <div class="panel panel-default">
@@ -38,7 +38,7 @@
                                         {{autoset.name}}
                                       </div>
                                       <a class="pull-right btn btn-primary btn-xs" data-nodrag="" ng-click="deleteObject(autoset)">
-                                        <span class="glyphicon glyphicon-remove"></span>
+                                        <span class="fa fa-trash"></span>
                                       </a>
                                     </div>
                                   </li>

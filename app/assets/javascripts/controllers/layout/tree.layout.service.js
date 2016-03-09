@@ -5,6 +5,7 @@ define(["angular"], function (angular) {
           var self = this ;
           self.concernedTreeNodePromise = $q.defer() ;
           self.selectedNodeCallback = []; 
+          self.concernedNode = 0 ;
             return {
               saveConcernedNode : saveConcernedNode,
               build : build,
@@ -56,17 +57,17 @@ define(["angular"], function (angular) {
                              },
                              on:{
                               onSelectChange:function () {
-                               var selectedElementId = this.getSelectedId(true)
-                               var selectedItem = this.getSelectedItem();
-
+                               var selectedElementId = this.getSelectedId(true);
+                               self.selectedItem = this.getSelectedItem();
+                               self.selectedElementId = selectedElementId[0];
                                var text = "Selected: " + this.getSelectedId(true).join();
                                 // document.getElementById(treeContainer).innerHTML = text;
                                 if(angular.isDefined(self.selectedNodeCallback[treeContainer])){
                                  angular.forEach(self.selectedNodeCallback[treeContainer], function(callback){
-                                  if(angular.isDefined(callback[1]) && callback[1](selectedElementId,selectedItem) === true){
-                                    callback[0](selectedItem);
+                                  if(angular.isDefined(callback[1]) && callback[1](self.selectedElementId,self.selectedItem) === true){
+                                    callback[0](self.selectedItem);
                                   } else if (!angular.isDefined(callback[1])){
-                                    callback[0](selectedItem);
+                                    callback[0](self.selectedItem);
                                   }
                                 });
                                }
@@ -90,13 +91,12 @@ return treeExplorerPromise.promise;
             function saveConcernedNode(treeExplorer, isParentConcerned){
                self.concernedTreeNodePromise = $q.defer() ;
                webix.ready(function(){
-                      var tree = treeExplorer.getChildViews()[1];
-                      self.selectedTree  = treeExplorer.getChildViews()[1];
-                      var parentId=  self.selectedTree.getSelectedId();
-                      var selectedItem =  self.selectedTree.getSelectedItem();
+                      self.selectedTree  = $$("tree1");
+                      var parentId  = self.selectedElementId;
+                      var selectedItem  = self.selectedItem;
                         if(parentId){
                           if(isParentConcerned(selectedItem) === true){
-                             self.concernedNode = tree.getParentId(parentId);
+                             self.concernedNode = self.selectedTree.getParentId(parentId) || 0;
                           } else {
                              self.concernedNode = parentId;
                            /* tree.add({value: newElementValue}, 0, tree.getParentId(parentId));*/
@@ -110,7 +110,13 @@ return treeExplorerPromise.promise;
             }
 
             function add(newElementValue){
-              self.selectedTree.add( newElementValue, 0, self.concernedNode);
+              console.log("adding:", newElementValue, self.concernedNode);
+              if(self.concernedNode != 0){
+                  self.selectedTree.add( newElementValue, 0, self.concernedNode);  
+              } else {
+                   self.selectedTree.add( newElementValue, 0);  
+              }
+              
             }
 
             /* BEGIN : addSelectedNodeCallback */
