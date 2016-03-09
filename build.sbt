@@ -4,7 +4,7 @@ version := "1.3-rc4"
 
 scalaVersion := "2.11.7"
 
-resolvers += "Synaptix" at "http://nexus.synaptix-labs.com/content/repositories/snapshots/"
+resolvers += "Synaptix" at "http://nexus.talanlabs.com/content/repositories/snapshots/"
 
 resolvers += "Typesafe" at "http://repo.typesafe.com/typesafe/releases/"
 

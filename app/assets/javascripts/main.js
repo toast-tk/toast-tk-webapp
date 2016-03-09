@@ -129,7 +129,7 @@
               app.service("LayoutService", layoutService.LayoutService);
               app.service("TreeLayoutService", treeLayoutService.TreeLayoutService);
               app.constant("ICONS", constantsFile);
-              app.config(["$stateProvider", function($stateProvider){
+              app.config(["$stateProvider", "$urlRouterProvider", function($stateProvider, $urlRouterProvider){
                   $stateProvider
                   .state('login', {
                       url: "/",
@@ -239,6 +239,8 @@
                      }
                    }
                  });
+                 // $urlRouterProvider.when('/','/login');
+                 // $urlRouterProvider.otherwise('/login');
               }]);
 
               app.run(function(editableOptions) {

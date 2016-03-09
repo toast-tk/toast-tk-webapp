@@ -14,7 +14,7 @@
  								<h3 class="panel-title">
  									<i class="fa fa-folder-open"></i>
  									Projects
- 									<button class="btn btn-primary btn-xs  pull-right" style="margin: -5px;" data-ng-click="addProjectBlock()">+ Add a new project </button>
+ 									<!--<button class="btn btn-primary btn-xs  pull-right" style="margin: -5px;" data-ng-click="addProjectBlock()">+</button>-->
  								</h3>
  							</div>
  						</div>
@@ -39,7 +39,7 @@
  						<tabset active="activeForm">
 	     					 <tab index="0" heading="Campaigns">
 	       						<div class="" style="border: #ccc solid 1px; border-top: none;">
-	 							<div class="panel panel-default" style="margin-bottom: 11px;">
+	 							<!--<div class="panel panel-default" style="margin-bottom: 11px;">
 	 								<div class="panel-heading" style="padding: 3px;" role="tab" id="headingOne">
 	 									<h4 class="panel-title" style="font-size:14px;">
 	 										<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -59,16 +59,16 @@
 	 										</div>
 	 									</div>
 	 								</div>
-	 							</div>
+	 							</div>-->
 	 							<div ng-repeat="campaign in selectedProject.campaigns" class="campaign">
 	 								<div class="panel panel-default" style="margin-bottom: 11px;">
 	 									<div class="panel-heading" style="padding: 3px;" role="tab" id="headingOne">  				Campaign name: <input type="text" ng-model="campaign.name"> 
-	 										<span>
+<!-- 	 										<span>
 	 											<button class="btn btn-primary btn-xs" data-ng-click="addScenarioToCampaign(campaign)">
 	 												+ Add a new scenario
 	 											</button>
-	 										</span>
-	 										<button class="btn btn-xs pull-right" data-ng-click="deleteCampaign(campaign, selectedProject)"><i class="fa fa-trash"></i></button> 
+	 										</span> -->
+	 										<!-- <button class="btn btn-xs pull-right" data-ng-click="deleteCampaign(campaign, selectedProject)"><i class="fa fa-trash"></i></button>  -->
 	 									</div>
 	 									<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 	 										<div class="panel-body">
@@ -78,10 +78,10 @@
 	 														Scenario Name:
 	 														<select ng-model="scenario.name" 
 	 																ng-options="reference.name as reference.name for reference in scenarii"/>
-	 														<button class="btn btn-xs" 
+<!-- 	 														<button class="btn btn-xs" 
 	 																data-ng-click="deleteScenario(scenario, campaign)">
 	 															<i class="fa fa-trash"></i>
-	 														</button>
+	 														</button> -->
 	 													</li>
 	 												</ul>
 	 											</div>
