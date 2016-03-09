@@ -45,7 +45,9 @@ object Application extends Controller {
   }
 
   def logout() = Action {
-    Ok("").withNewSession
+    Ok("").withNewSession.flashing(
+    "success" -> "You've been logged out"
+  )
   }
   
   /**

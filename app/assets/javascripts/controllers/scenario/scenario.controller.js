@@ -28,7 +28,7 @@ define(["angular"], function (angular) {
             $scope.deleteScenarii = deleteScenarii;
             $scope.addRowBefore = addRowBefore;
 
-            __init__();
+            __init__(true);
             
             function editScenario(scenario){
                 $scope.scenario = scenario; 
@@ -40,16 +40,19 @@ define(["angular"], function (angular) {
                     var scenarioDescriptor = response.data;
                     var newScenario = {
                         name: selectedName,
-                        parent: parentId,
+                        parent: parentId.toString(),
                         type: selectedType,
                         driver: selectedType, //related service
                         columns: scenarioDescriptor,
                         rows: []
                     }
-                    $scope.scenarii.push(newScenario);
-                    $scope.scenario = newScenario;
-                    $scope.stepType = selectedType;
-                    save();
+                    
+                    if(!angular.isDefined(newScenario.data) && newScenario.type !="folder"){
+                        $scope.scenarii.push(newScenario);
+                        $scope.scenario = newScenario;
+                        $scope.stepType = selectedType;
+                    }
+                    save(newScenario);
                 });
             };
 
@@ -90,13 +93,13 @@ define(["angular"], function (angular) {
                 scenario.rows.splice(scenario.rows.indexOf(row), 1);
             };
 
-            function save() {
-                var scenarioCopy = angular.copy($scope.scenario);
+            function save(scenario) {
+                var scenarioCopy = angular.copy(scenario);
                 scenarioCopy.rows = JSON.stringify(scenarioCopy.rows);
                 delete scenarioCopy.columns;
                 delete scenarioCopy.id;
                 playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function () {
-                    __init__();
+                    __init__(false);
                 });
             };
 
@@ -105,14 +108,14 @@ define(["angular"], function (angular) {
                 scenarioCopy.rows = JSON.stringify(scenarioCopy.rows);
                 delete scenarioCopy.columns;
                 playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function () {
-                    __init__();
+                    __init__(false);
                 });
 
             }
 
             function deleteScenarii(scenario){
                 playRoutes.controllers.ScenarioController.deleteScenarii().post(angular.toJson(scenario.id)).then(function () {
-                    __init__();
+                    __init__(false);
                 });
             }
 
@@ -258,13 +261,15 @@ define(["angular"], function (angular) {
             for (var i = 0; i < nodes.length; i++) {
               var n = nodes[i];
               if (!(n.parent == 0 || n.parent == null)) {
+                    if(angular.isDefined(lookupList[n.parent])){
                   lookupList[n.parent].data = lookupList[n.parent].data.concat([n]);
+              }
               }
             }
             return toplevelNodes;
          }
 
-         function __init__() {
+         function __init__(doBuildTree) {
             for(var i =0 ; i < $scope.scenario_types.length; i++){
                 var scenariiKind = $scope.scenario_types[i];
                 ClientService.loadRegexList(scenariiKind, function(scenariiKind, list){
@@ -304,9 +309,14 @@ define(["angular"], function (angular) {
                     }
                     return scenario;
                 });
-
+                console.log("all scenarii", $scope.scenarii);
                 $scope.scenarii = data;
-                $scope.senariiTree = toTreeDataList(data);
+                if(angular.isDefined($scope.scenarii) && $scope.scenarii.length != 0){
+                    $scope.senariiTree = toTreeDataList(data);    
+                } else {
+                    console.warn("no scenarii", $scope.scenarii);
+                }
+                
 
                 /* begin : adjusting page content size */
                 $scope.effectContentWidth = LayoutService.reAdjustContentSize();
@@ -315,48 +325,51 @@ define(["angular"], function (angular) {
                 /* end : adjusting page content size */
 
                 /* begin : generation de la tree */
+                if(doBuildTree === true){
+                    var treeExplorerPromise =  TreeLayoutService.build("toastScenariosTreeExplorer", $scope.senariiTree,
+                        function(obj, common){
+                            if(!angular.isDefined(obj.image) || obj.image == null){
+                                obj.image = ICONS[obj.type];         
+                            }
+                            return common.icon(obj,common)+ "<i class='"+ obj.image +"' style='float:left; margin:3px 4px 0px 1px;'> </i>" + obj.name;
+                        });
 
-                var treeExplorerPromise =  TreeLayoutService.build("toastScenariosTreeExplorer", $scope.senariiTree,
-                    function(obj, common){
-                        if(!angular.isDefined(obj.image) || obj.image == null){
-                            obj.image = ICONS[obj.type];         
+                    treeExplorerPromise.then(function(treeExplorer){
+                        TreeLayoutService.adjustTreeSize(treeExplorer);
+                        $scope.addNodeToParent = function(nodeType){
+                            TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
+                                return (!angular.isDefined(selectedItem.data) && selectedItem.type !="folder"); /*selectedItem.type !="folder"*/
+                            }).then(function(){
+                                var modalScope = $scope.$new(true);
+                                modalScope.newNodeType = nodeType;
+                                var modalInstance = $modal.open({
+                                    animation: $scope.animationsEnabled,
+                                    templateUrl: 'assets/html/scenario/newstep.modal.scenario.html',
+                                    controller:'newStepModalCtrl',
+                                    scope : modalScope
+                                });
+
+                                modalInstance.result.then(function(newScenario){
+
+                                 add(newScenario.type, newScenario.name, newScenario.$parent);
+                             });
+                            });    
                         }
-                     return common.icon(obj,common)+ "<i class='"+ obj.image +"' style='float:left; margin:3px 4px 0px 1px;'> </i>" + obj.name;
-                });
+                    });
+/* end : generation de la tree */
 
-                treeExplorerPromise.then(function(treeExplorer){
-                    TreeLayoutService.adjustTreeSize(treeExplorer);
-                    $scope.addNodeToParent = function(nodeType){
-                        TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
-                            return (!angular.isDefined(selectedItem.data)); /*selectedItem.type !="folder"*/
-                        }).then(function(){
-                            var modalScope = $scope.$new(true);
-                            modalScope.newNodeType = nodeType;
-                            var modalInstance = $modal.open({
-                                animation: $scope.animationsEnabled,
-                                templateUrl: 'assets/html/scenario/newstep.modal.scenario.html',
-                                controller:'newStepModalCtrl',
-                                scope : modalScope
-                            });
+TreeLayoutService.addSelectedNodeCallback("toastScenariosTreeExplorer", function(selectedScenario){
+    $scope.scenario = selectedScenario ;
+    $timeout(function(){
+        $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
+    },500);
+    $scope.$apply();
+}, function(selectedElementId,selectedItem){
+    return selectedElementId && selectedItem.type!="folder";
+});
 
-                            modalInstance.result.then(function(newScenario){
-
-                               add(newScenario.type, newScenario.name, newScenario.$parent);
-                            });
-                        });    
-                    }
-                });
-                /* end : generation de la tree */
-
-                TreeLayoutService.addSelectedNodeCallback("toastScenariosTreeExplorer", function(selectedScenario){
-                    $scope.scenario = selectedScenario ;
-                    $timeout(function(){
-                        $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
-                    },500);
-                    $scope.$apply();
-                }, function(selectedElementId,selectedItem){
-                    return selectedElementId && selectedItem.type!="folder";
-                });
+}   
+/* end: doBuildTree */
             });
         }
     }
