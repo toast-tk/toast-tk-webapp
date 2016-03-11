@@ -72,6 +72,22 @@ Await.result(userFuture.map { users =>
     isAuthenticated
   }
 
+  def saveUser(user: User) {
+    val collection = open_collection("users")
+         println(s"[+] successfully gooottt user $user !")
+
+    user.id match {
+      case None => collection.insert(user).onComplete {
+        case Failure(e) => throw e
+        case Success(_) => println("[+] successfully inserted ${user.id} and $user !")
+      }
+      case Some(_) => collection.update(BSONDocument("_id" -> BSONObjectID(user.id.get)), user, upsert=true).onComplete {
+        case Failure(e) => throw e
+        case Success(_) => println("successfully saved user !")
+      }
+    }
+  }
+
   def saveConfiguration(conf: MacroConfiguration) {
     val collection = open_collection("configuration")
     conf.id match {
@@ -323,6 +339,17 @@ Await.result(userFuture.map { users =>
         case Success(_) => println("successfully saved scanario !")
       }
     }
+  }
+
+  def loadDefaultSuperAdminUser(): Future[Option[User]] = {
+    loadUser("admin")
+  }
+
+  def loadUser(login: String): Future[Option[User]] = {
+    val collection = open_collection("users")
+    val query = BSONDocument("login" -> login)
+    val user = collection.find(query).one[User]
+    user
   }
 
   def loadConfiguration(): Future[List[MacroConfiguration]] = {
