@@ -3,6 +3,7 @@ package boot
 import controllers.mongo._
 import java.util.logging.{ Logger => JLogger }
 import play.api.Logger
+import play.api.libs.Codecs
 import java.io.IOException
 import de.flapdoodle.embed.mongo.{ Command, MongodStarter, MongodProcess, MongodExecutable }
 import de.flapdoodle.embed.process.distribution.GenericVersion
@@ -92,7 +93,8 @@ object AppBoot extends play.api.GlobalSettings {
     Logger.info(s"[+] Initializing DB settings...")
     
     def persistDefaultSuperAdminUser() = {
-      conn.saveUser(User(None,"admin", "admin", "administrateur", "user", "admin@toastWebApp.com", None, true, None))
+      var adminPwd = Codecs.sha1("admin")
+      conn.saveUser(User(None,"admin", adminPwd, "administrateur", "user", "admin@toastWebApp.com", None, true, None))
 
     }
 
