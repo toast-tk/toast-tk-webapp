@@ -5,11 +5,13 @@ define(["angular"], function (angular) {
           var self = this ;
           self.concernedTreeNodePromise = $q.defer() ;
           self.selectedNodeCallback = []; 
+          self.selectedNode = 0 ;
           self.concernedNode = 0 ;
             return {
               saveConcernedNode : saveConcernedNode,
               build : build,
               add : add,
+              removeSelectedNode : removeSelectedNode,
               addSelectedNodeCallback : addSelectedNodeCallback,  
               adjustTreeSize : adjustTreeSize
             }
@@ -92,13 +94,13 @@ return treeExplorerPromise.promise;
                self.concernedTreeNodePromise = $q.defer() ;
                webix.ready(function(){
                       self.selectedTree  = $$("tree1");
-                      var parentId  = self.selectedElementId;
+                      self.selectedNode  = self.selectedElementId;
                       var selectedItem  = self.selectedItem;
-                        if(parentId){
+                        if(self.selectedNode){
                           if(isParentConcerned(selectedItem) === true){
-                             self.concernedNode = self.selectedTree.getParentId(parentId) || 0;
+                             self.concernedNode = self.selectedTree.getParentId(self.selectedNode) || 0;
                           } else {
-                             self.concernedNode = parentId;
+                             self.concernedNode = self.selectedNode;
                            /* tree.add({value: newElementValue}, 0, tree.getParentId(parentId));*/
                           }
                         } else {
@@ -108,6 +110,7 @@ return treeExplorerPromise.promise;
                    });
                 return self.concernedTreeNodePromise.promise ;
             }
+            /* END : save concerted node */
 
             function add(newElementValue){
               console.log("adding:", newElementValue, self.concernedNode);
@@ -118,6 +121,17 @@ return treeExplorerPromise.promise;
               }
               
             }
+
+            /* BEGIN : remove the selected node */
+            function removeSelectedNode(){
+              console.log("removing:", self.selectedNode);
+              if(self.selectedNode != 0){
+                  self.selectedTree.remove(self.selectedNode);  
+              } else {
+                   console.log("select a node:");
+              } 
+            }
+            /* END : remove the selected node */
 
             /* BEGIN : addSelectedNodeCallback */
             /* @params : {treeContainer : treeId , callback : function to execute on click , selectedItemConditionFn : (optional) callback excecution condition }*/

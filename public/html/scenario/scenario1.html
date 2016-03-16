@@ -42,8 +42,8 @@
                                 <input type="text" ng-if="isEditScenarioName===true" ng-model="scenario.name"/>
                                 <div class="pull-right" style="margin: -5px;">
                                   <button class="btn btn-default btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
-                                  <button class="btn btn-default btn-xs" data-ng-click="save()"> <i class="fa fa-floppy-o"></i> Save</button>
-                                  <button class="btn btn-default btn-xs" data-ng-click="save()"><i class="fa fa-trash"></i></button>
+                                  <button class="btn btn-default btn-xs" data-ng-click="save(scenario)"> <i class="fa fa-floppy-o"></i> Save</button>
+                                  <button class="btn btn-default btn-xs" data-ng-click="deleteScenarii(scenario)"><i class="fa fa-trash"></i></button>
                                 </div>
                               </h3>
                             </div>
