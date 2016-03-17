@@ -126,8 +126,10 @@ return treeExplorerPromise.promise;
             /* BEGIN : edit the selected node */
             function editSelectedNodeName(newName){
               var nodeObj = $$("tree1").getItem(self.selectedNode);
-              nodeObj.name = newName;
-              $$("tree1").updateItem(self.selectedNode, nodeObj);
+              if(angular.isDefined(nodeObj)){
+                  nodeObj.name = newName;
+                  $$("tree1").updateItem(self.selectedNode, nodeObj);  
+              }
             }
             /* END : edit the selected node */
 
