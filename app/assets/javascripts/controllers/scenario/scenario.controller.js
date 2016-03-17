@@ -20,6 +20,7 @@ define(["angular"], function (angular) {
             $scope.addNewStep = addNewStep;
             $scope.newStepSelected = newStepSelected;
             $scope.save = save;
+            $scope.saveScenarii = saveScenarii;
             $scope.deleteRow = deleteRow;
             $scope.importScenario = importScenario;
             $scope.onPatternValueChange = onPatternValueChange;
