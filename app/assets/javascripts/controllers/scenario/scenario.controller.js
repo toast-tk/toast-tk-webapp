@@ -89,14 +89,14 @@ define(["angular"], function (angular) {
                         columns: scenarioDescriptor,
                         rows: []
                     }
-                    
+                    save(newScenario);
+
                     if(!angular.isDefined(newScenario.data) && newScenario.type !="folder"){
                         $scope.scenarii.push(newScenario);
-                        $scope.scenario = newScenario;
+                        // $scope.scenario = newScenario;
                         setDropListPositionClass();
                         $scope.stepType = selectedType;
                     }
-                    save(newScenario);
                     toastr.success('Scenario created !');
                 });
             };
@@ -182,8 +182,12 @@ define(["angular"], function (angular) {
                 var toImport = scenario.imp;
                 if (mode == "prepend") {
                     scenario.rows = angular.copy(toImport.rows).concat(scenario.rows);
+                    toastr.success(" Scenario imported (prepend) !");
                 } else if (mode == "append") {
                     scenario.rows = scenario.rows.concat(angular.copy(toImport.rows));
+                    toastr.success(" Scenario imported (append) !");
+                } else {
+                    toastr.error("Could not import Scenario !");
                 }
                 delete scenario.imp;
                 delete scenario.selectedImportMode;
@@ -367,13 +371,18 @@ define(["angular"], function (angular) {
                     }
                     return scenario;
                 });
-console.log("all scenarii", $scope.scenarii);
-$scope.scenarii = data;
-if(angular.isDefined($scope.scenarii) && $scope.scenarii.length != 0){
-    $scope.senariiTree = toTreeDataList(data);    
-} else {
-    console.warn("no scenarii", $scope.scenarii);
-}
+    console.log("all scenarii", $scope.scenarii, data);
+    $scope.scenarii= [];
+    angular.forEach(data, function(dataRow){
+        if(dataRow.type!="folder"){
+            $scope.scenarii.push(dataRow);    
+        }
+    })
+    if(angular.isDefined($scope.scenarii) && $scope.scenarii.length != 0){
+        $scope.senariiTree = toTreeDataList(data);    
+    } else {
+        console.warn("no scenarii", $scope.scenarii);
+    }
 
 
 /* begin : adjusting page content size */
