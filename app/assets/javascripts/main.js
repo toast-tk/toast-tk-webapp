@@ -131,7 +131,21 @@
               app.service("LayoutService", layoutService.LayoutService);
               app.service("TreeLayoutService", treeLayoutService.TreeLayoutService);
               app.constant("ICONS", constantsFile);
-              app.config(["$stateProvider", "$urlRouterProvider", function($stateProvider, $urlRouterProvider){
+              app.config(["$stateProvider", "$urlRouterProvider", "toastrConfig", function($stateProvider, $urlRouterProvider, toastrConfig){
+
+                   angular.extend(toastrConfig, {
+                    autoDismiss: false,
+                    timeOut: 2000,
+                    extendedTimeOut: 300,
+                    containerId: 'toast-container',
+                    maxOpened: 0,    
+                    newestOnTop: true,
+                    positionClass: 'toast-top-center',
+                    preventDuplicates: false,
+                    preventOpenDuplicates: false,
+                    target: 'body'
+                  });
+
                   $stateProvider
                   .state('login', {
                       url: "/",

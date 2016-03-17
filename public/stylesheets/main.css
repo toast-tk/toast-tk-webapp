@@ -283,3 +283,15 @@
 .angucomplete-selected-row {
      color: #000 !important; 
 }
+
+/* angular toastr */
+
+.toast {
+    margin-top: 8px !important;
+}
+
+#toast-container>div {
+    padding: 6px 6px 6px 50px !important;
+    width: 300px !important;
+}
+

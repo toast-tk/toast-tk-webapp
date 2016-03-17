@@ -6,7 +6,6 @@ define(["angular"], function (angular) {
             $scope.isCollapsed = false;
             $scope.ICONS = ICONS ;
             //plain json data, based on objects
-            
             $scope.newRow = {};
             $scope.scenario_types = ["swing", "service", "web"];
             $scope.selectedType = "";
@@ -98,6 +97,7 @@ define(["angular"], function (angular) {
                         $scope.stepType = selectedType;
                     }
                     save(newScenario);
+                    toastr.success('Scenario created !');
                 });
             };
 
@@ -155,6 +155,9 @@ define(["angular"], function (angular) {
                 delete scenarioCopy.columns;
                 playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function () {
                     __init__(false);
+                    toastr.success('Saved !');
+                }, function(){
+                    toastr.error('Could Not save changed details !');
                 });
 
             }
@@ -167,6 +170,7 @@ define(["angular"], function (angular) {
                             return (!angular.isDefined(selectedItem.data) && selectedItem.type !="folder"); 
                         }).then(function(){
                             TreeLayoutService.removeSelectedNode();
+                             toastr.success("deleted: \'"+ $scope.scenario.name + "\' !");
                              $scope.scenario = null;
                         })
                     });
