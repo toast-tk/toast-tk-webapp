@@ -53,6 +53,14 @@ define(["angular"], function (angular) {
                      });
                     });    
                 }
+
+                $scope.$watch('scenario.name',function(newValue){
+                    TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
+                        return (!angular.isDefined(selectedItem.data) && selectedItem.type !="folder");
+                    }).then(function(){
+                        TreeLayoutService.editSelectedNodeName(newValue);
+                    });
+                })
             });
 
             __init__(true);
