@@ -16,10 +16,8 @@ define(["angular"], function (angular) {
             $scope.scenario = undefined;
             $scope.stepType = "";
 
-            $scope.add = add;
             $scope.addNewStep = addNewStep;
             $scope.newStepSelected = newStepSelected;
-            $scope.save = save;
             $scope.saveScenarii = saveScenarii;
             $scope.deleteRow = deleteRow;
             $scope.importScenario = importScenario;
@@ -49,7 +47,7 @@ define(["angular"], function (angular) {
 
                         modalInstance.result.then(function(newScenario){
 
-                         add(newScenario.type, newScenario.name, newScenario.$parent);
+                         add(newScenario);
                      });
                     });    
                 }
@@ -78,27 +76,16 @@ define(["angular"], function (angular) {
                 swaptToDefaultRow();
             }
 
-            function add(selectedType, selectedName, parentId) {
-                playRoutes.controllers.ScenarioController.loadScenarioCtx(selectedType).get().then(function (response) {
-                    var scenarioDescriptor = response.data;
-                    var newScenario = {
-                        name: selectedName,
-                        parent: parentId.toString(),
-                        type: selectedType,
-                        driver: selectedType, //related service
-                        columns: scenarioDescriptor,
-                        rows: []
-                    }
-                    save(newScenario);
-
-                    if(!angular.isDefined(newScenario.data) && newScenario.type !="folder"){
+            function add(newScenario) {
+                __init__(false);
+                if(!angular.isDefined(newScenario.data) && newScenario.type !="folder"){
                         $scope.scenarii.push(newScenario);
-                        // $scope.scenario = newScenario;
+                        /*delete newScenario.id ;*/
+                        $scope.scenario = newScenario;
                         setDropListPositionClass();
-                        $scope.stepType = selectedType;
+                        $scope.stepType = newScenario.type;
                     }
-                    toastr.success('Scenario created !');
-                });
+                toastr.success('Scenario created !');
             };
 
             /* BEGIN : new step adding through autocomplete */
@@ -137,16 +124,6 @@ define(["angular"], function (angular) {
             function deleteRow(scenario, row) {
                 //ajax call directly, if not new !
                 scenario.rows.splice(scenario.rows.indexOf(row), 1);
-            };
-
-            function save(scenario) {
-                var scenarioCopy = angular.copy(scenario);
-                scenarioCopy.rows = JSON.stringify(scenarioCopy.rows);
-                delete scenarioCopy.columns;
-                delete scenarioCopy.id;
-                playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function () {
-                    __init__(false);
-                });
             };
 
             function saveScenarii(scenarii){

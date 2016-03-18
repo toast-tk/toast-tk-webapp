@@ -116,11 +116,12 @@ return treeExplorerPromise.promise;
             function add(newElementValue){
               console.log("adding:", newElementValue, self.concernedNode);
               if(self.concernedNode != 0){
-                  self.selectedTree.add( newElementValue, 0, self.concernedNode);  
+                  var newId = self.selectedTree.add( newElementValue, 0, self.concernedNode);  
               } else {
-                   self.selectedTree.add( newElementValue, 0);  
+                  var newId = self.selectedTree.add( newElementValue, 0);  
               }
-              
+              self.selectedNode = newId;
+              $$("tree1").select(self.selectedNode);
             }
 
             /* BEGIN : edit the selected node */
