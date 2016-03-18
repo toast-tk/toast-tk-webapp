@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        SettingsCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $sideSplit, LayoutService, TreeLayoutService, $modal, ICONS) {
+        SettingsCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $sideSplit, LayoutService, TreeLayoutService, $modal, ICONS, toastr) {
             var vm = $scope;
             $scope.ICONS = ICONS;
             
@@ -36,6 +36,7 @@ define(["angular"], function (angular) {
 
             function saveConfig() {
                 playRoutes.controllers.ConfigurationController.saveConfiguration().post($scope.configurations).then(function (response) {
+                    toastr.success("saved settings !")
                     load();
                 });
             };

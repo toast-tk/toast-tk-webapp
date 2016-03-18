@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $timeout, $modal, $sideSplit, LayoutService) {
+        RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $timeout, $modal, $sideSplit, LayoutService, toastr) {
             $scope.run_config_types = [ "swing page", "web page", "service entity"];
             $scope.autosetups = [];
             $scope.newAutoSetupRow = {};
@@ -35,6 +35,7 @@ define(["angular"], function (angular) {
 
                     modalInstance.result.then(function(newObject){
                         addAutoSetupConfig(newObject);
+                        toastr.success('Object List created !');
                     });   
             }
             
