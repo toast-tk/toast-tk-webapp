@@ -7,7 +7,7 @@ define(["angular"], function(angular) {
 
 	LayoutCtrl.$inject = ['$scope','$sideSplit','$state','$http','$timeout'];
 
-	function LayoutCtrl($scope, $sideSplit, $state, $http, $timeout) {
+	function LayoutCtrl($scope, $sideSplit, $state, $http, $timeout, LoginService) {
 				$scope.isCollapsed = false;
 
 		$sideSplit.open({ 
@@ -24,9 +24,12 @@ define(["angular"], function(angular) {
 
 
 		$scope.logout = function(){
-				$http.get('/logout').then(function(){
+			LoginService.logout();
+			$state.go('login');
+				/*$http.get('/logout').then(function(){
+
 					$state.transitionTo($state.current, {}, {location : "replace", reload: true});
-			});
+			});*/
 		}
 
 		/*

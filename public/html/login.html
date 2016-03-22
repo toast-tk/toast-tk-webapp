@@ -1,11 +1,23 @@
-<div data-ng-cloak>
-  <div data-ng-switch="loggedIn">
-    <div data-ng-switch-when="false">
-      <form>
-        <input type="text" data-ng-model="credentials.user" placeholder="Username" /><br />
-        <input type="text" data-ng-model="credentials.password" placeholder="Password" /><br />
-        <button data-ng-click="login(credentials)">Log In</button>
-      </form>
-    </div>
-  </div>
+    <div class="vertical-offset-100" style="margin: auto; margin-bottom: 50px; padding-top: 200px; padding-bottom: 200px; background-color: #222;">
+    	<div style="width: 450px; margin: auto;">
+    		<div class="panel panel-default">
+			  	<div class="panel-heading">
+			    	<h3 class="panel-title">Please sign in</h3>
+			 	</div>
+			  	<div class="panel-body">
+			    	<form accept-charset="UTF-8" role="form">
+                    <fieldset>
+			    	  	<div class="form-group">
+			    		    <input id="email" class="form-control" ng-model="credentials.login" placeholder="E-mail" name="email" type="text">
+			    		</div>
+			    		<div class="form-group">
+			    			<input id="password"  class="form-control" ng-model="credentials.password" placeholder="Password" name="password" type="password" value="">
+			    		</div>
+			    		<input id="login" ng-click="login(credentials)" class="btn btn-lg btn-success btn-block" type="button" value="Login">
+			    	</fieldset>
+			      	</form>
+			    </div>
+			</div>
+		</div>
+	</div>
 </div>

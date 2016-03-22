@@ -8,18 +8,14 @@ import play.api.libs.json.Writes._
 import play.api.libs.json._
 import play.api.mvc._
 import controllers.parsers.WebPageElement
-
+import pdi.jwt._
 
 object Application extends Controller {
   private val conn = AppBoot.conn
   private val jnlpHost = AppBoot.jnlpHost
 
   def index = Action {  request =>
-    request.session.get("connected").map { user =>
-      Ok(views.html.index())
-    }.getOrElse {
-      Ok(views.html.parallax_login_form())
-    }
+     Ok(views.html.index())
   }
 
   def loadEnvConfiguration() = Action{
@@ -31,10 +27,11 @@ object Application extends Controller {
     Logger.info(s"Loging ${request.body}")
      request.body.validate[InspectedUser].map {
       case user: InspectedUser =>
-      var value = conn.AuthenticateUser(user) ;
-      Logger.info(s"Loging result $value")
-      if(value == true){
-         Ok(views.html.index()).withSession(request2session + ("connected" -> "user goes here !"))  
+      var authUser : Option[User] = conn.AuthenticateUser(user) ;
+      val token = authUser map {_.token} getOrElse("")
+      Logger.info(s"Loging result {$authUser}")
+      if(token != ""){  
+        Ok.addingToJwtSession("user", Json.toJson(authUser)) 
       } else {
          Unauthorized("Bad credentials")
       }

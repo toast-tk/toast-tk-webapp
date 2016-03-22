@@ -78,6 +78,9 @@
         "angular-toastr": ['libs/angular-toastr.tpls.min'],
         "sidesplit": ['libs/angular-sidesplit.provider'],
         "angucomplete": ['libs/angucomplete-alt.min'],
+        "loginCtrl" : ['auth/login'],
+        "loginService" : ['auth/login.service'],
+        "loginResolverService" : ['auth/login.resolver.service'],
         "sidebarmenu": ['controllers/layout/sidebar.menu.controller'],
         "layout": ['controllers/layout/layout.controller'],
         "layoutService" :  ['controllers/layout/layout.service'],
@@ -92,7 +95,7 @@
   });
 
   require(["angular", "./services/playRoutes", "./controllers/layout/tree.layout.service" ,
-            "./controllers/login", "./controllers/editor", "./controllers/scenario", "SettingsCtrl", "newSettingsModalCtrl", "Repository1Ctrl", "Scenario1Ctrl", "Campaign1Ctrl",
+            "loginCtrl", "loginService", "loginResolverService", "./controllers/editor", "./controllers/scenario", "SettingsCtrl", "newSettingsModalCtrl", "Repository1Ctrl", "Scenario1Ctrl", "Campaign1Ctrl",
             "./controllers/configuration","./controllers/repository", "./controllers/home",
             "./controllers/layout/sidebar.menu.controller", "layout", "layoutService", "newObjectModalCtrl", "newStepModalCtrl", "json!config/icon.constants.config.json",
 
@@ -100,7 +103,7 @@
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
             "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "angular-toastr", "webix"], 
-          function(a, b, treeLayoutService, login, editor, scenario, settingsCtrl, newSettingsModalCtrl, repository1, scenario1, campaign1, configuration, repository, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepModalCtrl, constantsFile) {
+          function(a, b, treeLayoutService, login, loginService, loginResolverService, editor, scenario, settingsCtrl, newSettingsModalCtrl, repository1, scenario1, campaign1, configuration, repository, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepModalCtrl, constantsFile) {
 
               var app = angular.module("app", 
                 ['ngRoute', 'ui.router', "play.routing", "ngAnimate",
@@ -128,6 +131,9 @@
               app.controller("newObjectModalCtrl", newObjectModalCtrl.newObjectModalCtrl);
               app.controller("newStepModalCtrl", newStepModalCtrl.newStepModalCtrl);
 
+              app.service("LoginService", loginService.LoginService);
+              app.service("LoginResolverService", loginResolverService.ResolversService);
+
               app.service("LayoutService", layoutService.LayoutService);
               app.service("TreeLayoutService", treeLayoutService.TreeLayoutService);
               app.constant("ICONS", constantsFile);
@@ -152,7 +158,12 @@
                        views: {
                            'main': {
                       templateUrl: "assets/html/login.html", 
-                      controller: "LoginCtrl"
+                      controller: "LoginCtrl",
+                      resolve:{
+                        checkLoggedLogin : ["LoginResolverService", function (LoginResolverService){
+                          return LoginResolverService.checkLoggedLoginResolve() ;
+                        }]
+                      }
                         }
                       }
                   }) 
@@ -164,6 +175,11 @@
                       'main': {
                         templateUrl: "assets/html/layout/layout.view.html",
                         controller: "LayoutCtrl",
+                        resolve:{
+                          checkLoggedAndGetUser : ["LoginResolverService", function (LoginResolverService){
+                            return LoginResolverService.checkLoggedAndGetUserResolve() ;
+                          }]
+                        }
                       }
                     }
                   })
@@ -217,8 +233,8 @@
                      }
                    }
                  });
-                 $urlRouterProvider.when('','/scenario1');
-                 $urlRouterProvider.otherwise('/scenario1');
+                 $urlRouterProvider.when('','/login');
+                 $urlRouterProvider.otherwise('/login');
               }]);
 
               app.run(function(editableOptions) {

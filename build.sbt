@@ -19,7 +19,8 @@ libraryDependencies ++= Seq(
   "com.synaptix.toast" % "toast-tk-runtime" % "1.0.0-SNAPSHOT",
   "com.synaptix.toast" % "toast-tk-fest-plugin" % "1.0.0-SNAPSHOT",
   "com.synaptix.toast" % "toast-tk-selenium-plugin" % "1.0.0-SNAPSHOT",
-  "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0"	
+  "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0",
+  "com.pauldijou" %% "jwt-play" % "0.5.1"
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)

@@ -19,6 +19,10 @@ import controllers.parsers.WebPageElementBSONWriter
 import controllers.parsers.EntityFieldBSONWriter
 import boot.AppBoot
 import play.api.Logger
+import controllers.mongo.User.{BSONWriter => UserBSONWriter} 
+import controllers.mongo.User.{BSONReader => UserBSONReader} 
+import scala.util._
+import java.security.SecureRandom
 
 object MongoConnector extends App {
   def apply() = {
@@ -27,6 +31,22 @@ object MongoConnector extends App {
   def apply(url:String) = {
     new MongoConnector(new MongoDriver(),List(url), "play_db")
   }
+}
+
+object BearerTokenGenerator {
+  
+  val TOKEN_LENGTH = 32
+  val TOKEN_CHARS = 
+     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._"
+  val secureRandom = new SecureRandom()
+    
+  def generateToken:String =  
+    generateToken(TOKEN_LENGTH)   
+  
+  def generateToken(tokenLength: Int): String =
+    if(tokenLength == 0) "" else TOKEN_CHARS(secureRandom.nextInt(TOKEN_CHARS.length())) + 
+     generateToken(tokenLength - 1)
+  
 }
 
 
@@ -48,28 +68,42 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     db("repository")
   }
 
-  def AuthenticateUser(user : InspectedUser) : Boolean = {
+  def AuthenticateUser(user : InspectedUser) : Option[User] = {
     var isAuthenticated = false
-
     val query = BSONDocument("login" -> user.login, "password" -> user.password)
     val collection = open_collection("users")
-
+    var authPersonOpt: Option[User]  = None;
+    var token:Option[String] = None ;
     val userFuture =
     collection.
     find(query). 
     cursor[User]().
     collect[List]()
     Logger.info("Loging in dfef!")
-Await.result(userFuture.map { users =>
+    Await.result(userFuture.map { users =>
       for(person <- users) {
-        val firstName = person.firstName
+        token = Some(BearerTokenGenerator.generateToken)
+        val authPerson = User(person.id,
+          person.login,
+          person.password,
+          person.firstName,
+          person.lastName,
+          person.email,
+          person.teams,
+          token,
+          true,
+          None)
+        authPersonOpt = Some(authPerson)
+        println(s"dataobj Token ----> ${authPersonOpt}")
+        saveUser(authPerson)
+        val firstName = authPerson.firstName
         isAuthenticated = true
         println(s"found $firstName $isAuthenticated")
-        Logger.info("Loging in after!")
+        authPersonOpt
       }
     }, 5 seconds)
     println(s"just here $isAuthenticated")
-    isAuthenticated
+    authPersonOpt
   }
 
   def saveUser(user: User) {

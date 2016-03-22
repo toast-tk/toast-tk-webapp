@@ -29,7 +29,7 @@ case class DBRef(collection: String, id: BSONObjectID, db: Option[String] = None
 case class FixtureDescriptorLine(name: String, fixtureType: String, pattern: String, description: String)
 case class MojoFixtureDescriptor(name: String, sentences: List[FixtureDescriptorLine])
 case class InspectedUser(login: String, password: String)
-case class User(id: Option[String], login: String, password: String, firstName: String, lastName: String, email: String, teams:  Option[String], isActive : Boolean, lastConnection : Option[String])
+case class User(id: Option[String], login: String, password: String, firstName: String, lastName: String, email: String, teams:  Option[String], token : Option[String], isActive : Boolean, lastConnection : Option[String])
 
 object DBRef {
   implicit object DBRefReader extends BSONDocumentReader[DBRef] {
@@ -135,9 +135,11 @@ object Scenario{
       (__ \ "parent").writeNullable[String])(unlift(Scenario.unapply))
 
   implicit object BSONWriter extends BSONDocumentWriter[Scenario] {
-    def write(scenario: Scenario): BSONDocument =
+    def write(scenario: Scenario): BSONDocument ={
+      val genId = BSONObjectID.generate
+      println("genId "+ scenario.id +"--> " + genId.stringify)
       scenario.id match {
-        case None =>  BSONDocument("name"-> scenario.name, "type"-> scenario.cType, "driver" -> scenario.driver,  "rows" -> scenario.rows.getOrElse(""), "parent" -> scenario.parent.getOrElse("0"))
+        case None =>  BSONDocument("_id" -> genId, "name"-> scenario.name, "type"-> scenario.cType, "driver" -> scenario.driver,  "rows" -> scenario.rows.getOrElse(""), "parent" -> scenario.parent.getOrElse("0"))
         case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), 
                                                   "name" -> scenario.name, "type"-> scenario.cType,
                                                   "driver" -> scenario.driver,    
@@ -145,6 +147,7 @@ object Scenario{
                                                   "parent" -> scenario.parent.getOrElse("0")
                                                   )
       }
+    }
   }
 
   implicit object BSONReader extends BSONDocumentReader[Scenario] {
@@ -401,8 +404,9 @@ object User{
       (__ \ "lastName").read[String] and
       (__ \ "email").read[String] and
       (__ \ "teams").readNullable[String] and
+      (__ \ "token").readNullable[String] and
       (__ \ "isActive").read[Boolean] and
-      (__ \ "lastConnection").readNullable[String])(User.apply(_,_,_,_,_,_,_,_,_))
+      (__ \ "lastConnection").readNullable[String])(User.apply(_,_,_,_,_,_,_,_,_,_))
 
   implicit val writer: Writes[User] = (
       (__ \ "id").writeNullable[String] and
@@ -412,9 +416,12 @@ object User{
       (__ \ "lastName").write[String] and
       (__ \ "email").write[String] and
       (__ \ "teams").writeNullable[String] and
+      (__ \ "token").writeNullable[String] and
       (__ \ "isActive").write[Boolean] and
       (__ \ "lastConnection").writeNullable[String])(unlift(User.unapply))
 
+  implicit val userFormat = Json.format[User]
+  
   implicit object BSONReader extends BSONDocumentReader[User] {
     def read(doc: BSONDocument): User = {
       val id = doc.getAs[BSONObjectID]("_id").get.stringify
@@ -424,9 +431,10 @@ object User{
       val lastName = doc.getAs[String]("lastName").get
       val email = doc.getAs[String]("email").get
       val teams = doc.getAs[String]("teams").getOrElse("")
+      val token = doc.getAs[String]("token").getOrElse("")
       val isActive = doc.getAs[Boolean]("isActive").getOrElse(false)
       val lastConnection = doc.getAs[String]("lastConnection").getOrElse("11/11/1111")
-      User(Option[String](id), login ,password, firstName, lastName, email, Option[String](teams), isActive, Option[String](lastConnection))
+      User(Option[String](id), login ,password, firstName, lastName, email, Option[String](teams), Option[String](token), isActive, Option[String](lastConnection))
     }
   }
 
@@ -438,7 +446,8 @@ object User{
                                    "firstName"-> user.firstName,
                                    "lastName" -> user.lastName,    
                                    "email" -> user.email,
-                                   "teams" -> user.teams.getOrElse(""))
+                                   "teams" -> user.teams.getOrElse(""),
+                                   "token" -> user.token.getOrElse(""))
         case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get),
                                                   "login" -> user.login,
                                                   "password" -> user.password,
@@ -446,6 +455,7 @@ object User{
                                                   "lastName" -> user.lastName,    
                                                   "email" -> user.email,
                                                   "teams" -> user.teams.getOrElse(""),
+                                                  "token" -> user.token.getOrElse(""),
                                                   "isActive" -> user.isActive,
                                                   "lastConnection" -> user.lastConnection.getOrElse("11/11/1111")
                                                   )

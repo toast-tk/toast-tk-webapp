@@ -348,7 +348,7 @@ define(["angular"], function (angular) {
                     }
                     return scenario;
                 });
-    console.log("all scenarii", $scope.scenarii, data);
+/*    console.log("all scenarii", $scope.scenarii, data);*/
     $scope.scenarii= [];
     angular.forEach(data, function(dataRow){
         if(dataRow.type!="folder"){
