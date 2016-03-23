@@ -233,8 +233,8 @@
                      }
                    }
                  });
-                 $urlRouterProvider.when('','/login');
-                 $urlRouterProvider.otherwise('/login');
+                 $urlRouterProvider.when('','/');
+                 $urlRouterProvider.otherwise('/');
               }]);
 
               app.run(function(editableOptions) {

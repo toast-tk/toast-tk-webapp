@@ -16,7 +16,7 @@ body {
 
 @media(min-width:768px) {
     body {
-        margin-top: 50px;
+      /*  margin-top: 50px;*/
     }
 }
 
@@ -38,6 +38,7 @@ body {
 @media(min-width:768px) {
     #wrapper {
       /*  padding-left: 225px;*/
+        margin-top: 50px;
     }
 
     .wrapper {
@@ -50,8 +51,8 @@ body {
 
     #page-wrapper {
         /*padding: 10px;*/
-        margin-top: -21px;
-    }
+/*        margin-top: -21px;
+*/    }
 
     .page-wrapper{
         padding-left: 225px;
