@@ -154,11 +154,13 @@ define(["angular"], function (angular) {
                     __init__(false);
                     treeExplorerPromise.promise.then(function(treeExplorer){
                         TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
-                            return (!angular.isDefined(selectedItem.data) && selectedItem.type !="folder"); 
+                            return (!angular.isDefined(selectedItem.data)); 
                         }).then(function(){
                             TreeLayoutService.removeSelectedNode();
-                             toastr.success("deleted: \'"+ $scope.scenario.name + "\' !");
+                            var node =$scope.scenario || $scope.folder;
+                             toastr.success("deleted: \'"+ node.name + "\' !");
                              $scope.scenario = null;
+                             $scope.folder = null;
                         })
                     });
                 });
@@ -365,10 +367,10 @@ define(["angular"], function (angular) {
             $scope.scenarii.push(dataRow);    
         }
     })
-    if(angular.isDefined($scope.scenarii) && $scope.scenarii.length != 0){
+    if(angular.isDefined(data) && data.length != 0){
         $scope.senariiTree = toTreeDataList(data);    
     } else {
-        console.warn("no scenarii", $scope.scenarii);
+        console.warn("no data nodes");
     }
 
 

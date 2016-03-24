@@ -43,9 +43,9 @@
                                 <span ng-if="isEditScenarioName===false">{{folder.name}}</span>
                                 <input type="text" ng-if="isEditScenarioName===true" ng-model="folder.name"/>
                                 <div class="pull-right" style="margin: -5px;">
-                                  <button class="btn btn-default btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
-                                  <button class="btn btn-default btn-xs" data-ng-click="saveScenarii(folder)"> <i class="fa fa-floppy-o"></i> Save</button>
-                                  <button class="btn btn-default btn-xs" data-ng-click="deleteScenarii(folder)"><i class="fa fa-trash"></i></button>
+                                  <button class="btn btn-default btn-warning btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
+                                  <button class="btn btn-default btn-primary btn-xs" data-ng-click="saveScenarii(folder)"> <i class="fa fa-floppy-o"></i> Save</button>
+                                  <button class="btn btn-default btn-danger btn-xs" data-ng-click="deleteScenarii(folder)"><i class="fa fa-trash"></i> Delete</button>
                                 </div>
                               </h3>
                             </div>
@@ -63,9 +63,9 @@
                                 <span ng-if="isEditScenarioName===false">{{scenario.name}}</span>
                                 <input type="text" ng-if="isEditScenarioName===true" ng-model="scenario.name"/>
                                 <div class="pull-right" style="margin: -5px;">
-                                  <button class="btn btn-default btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
-                                  <button class="btn btn-default btn-xs" data-ng-click="saveScenarii(scenario)"> <i class="fa fa-floppy-o"></i> Save</button>
-                                  <button class="btn btn-default btn-xs" data-ng-click="deleteScenarii(scenario)"><i class="fa fa-trash"></i></button>
+                                  <button class="btn btn-default btn-warning btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
+                                  <button class="btn btn-default btn-primary btn-xs" data-ng-click="saveScenarii(scenario)"> <i class="fa fa-floppy-o"></i> Save</button>
+                                  <button class="btn btn-default btn-danger btn-xs" data-ng-click="deleteScenarii(scenario)"><i class="fa fa-trash"></i> Delete</button>
                                 </div>
                               </h3>
                             </div>

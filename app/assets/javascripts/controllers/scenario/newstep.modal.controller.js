@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        newStepModalCtrl: function ($scope,  $modalInstance, TreeLayoutService,ICONS, playRoutes) {
+        newStepModalCtrl: function ($scope,  $modalInstance, TreeLayoutService,ICONS, playRoutes, toastr) {
             $scope.ICONS = ICONS;
              var newNode = {};
 
@@ -48,7 +48,10 @@ define(["angular"], function (angular) {
                 delete scenarioCopy.columns;
                 delete scenarioCopy.id;
                 playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function () {
-                     $modalInstance.close();
+                    $modalInstance.close(scenario);
+                },function(){
+                    toastr.error('Could Not save new node !');
+                    //TODO; #fix should remove added node here
                 });
             };
     }
