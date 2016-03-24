@@ -46,18 +46,28 @@ define(["angular"], function (angular) {
                         });
 
                         modalInstance.result.then(function(newScenario){
-
                          add(newScenario);
                      });
                     });    
                 }
 
                 $scope.$watch('scenario.name',function(newValue){
-                    TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
-                        return (!angular.isDefined(selectedItem.data) && selectedItem.type !="folder");
-                    }).then(function(){
-                        TreeLayoutService.editSelectedNodeName(newValue);
-                    });
+                    if(angular.isDefined(newValue)){
+                        TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
+                            return (!angular.isDefined(selectedItem.data) && selectedItem.type !="folder");
+                        }).then(function(){
+                            TreeLayoutService.editSelectedNodeName(newValue);
+                        });
+                    }
+                })
+                $scope.$watch('folder.name',function(newValue){
+                    if(angular.isDefined(newValue)){
+                        TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
+                            return (!angular.isDefined(selectedItem.data) && selectedItem.type =="folder");
+                        }).then(function(){
+                            TreeLayoutService.editSelectedNodeName(newValue);
+                        });
+                    }
                 })
             });
 
@@ -384,6 +394,7 @@ if(doBuildTree === true){
 
     TreeLayoutService.addSelectedNodeCallback("toastScenariosTreeExplorer", function(selectedScenario){
         $scope.scenario = selectedScenario ;
+        $scope.folder = null;
         setDropListPositionClass();
         $timeout(function(){
             $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
@@ -391,6 +402,14 @@ if(doBuildTree === true){
         $scope.$apply();
     }, function(selectedElementId,selectedItem){
         return selectedElementId && selectedItem.type!="folder";
+    });
+
+    TreeLayoutService.addSelectedNodeCallback("toastScenariosTreeExplorer", function(selectedFolder){
+        $scope.scenario = null ;
+        $scope.folder = selectedFolder;
+        $scope.$apply();
+    }, function(selectedElementId,selectedItem){
+        return selectedElementId && selectedItem.type=="folder";
     });
 
 }   

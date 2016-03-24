@@ -3,12 +3,12 @@ define(["angular"], function (angular) {
     return {
         newStepModalCtrl: function ($scope,  $modalInstance, TreeLayoutService,ICONS, playRoutes) {
             $scope.ICONS = ICONS;
-             var newScenario = {};
+             var newNode = {};
 
             if($scope.newNodeType === "folder"){
-                newScenario.type = "folder";
-                newScenario.image = ICONS["folder"];
-                newScenario.data = [];
+                newNode.type = "folder";
+                newNode.image = ICONS["folder"];
+                newNode.data = [];
             }
 
             $scope.scenarioTypeDropdownLabel = "Select type ..";
@@ -20,25 +20,25 @@ define(["angular"], function (angular) {
 
          $scope.createNewNode = function(){
 
-            playRoutes.controllers.ScenarioController.loadScenarioCtx(newScenario.type).get().then(function (response) {
+            playRoutes.controllers.ScenarioController.loadScenarioCtx(newNode.type).get().then(function (response) {
 
                 var scenarioCtxDescriptor = response.data;
-                newScenario.name = $scope.scenarioName;
-                newScenario.value = $scope.scenarioName;
-                newScenario.driver =  newScenario.type;
-                newScenario.columns = scenarioCtxDescriptor;
-                newScenario.parent = newScenario.$parent ;
-                newScenario.rows = [];
-                console.log("scenario:", newScenario);
-                TreeLayoutService.add(newScenario);
-                    save(newScenario);
-                        
+                newNode.name = $scope.scenarioName;
+                newNode.value = $scope.scenarioName;
+                newNode.driver =  newNode.type;
+                newNode.columns = scenarioCtxDescriptor;
+                newNode.rows = [];
+                TreeLayoutService.add(newNode).then(function(newId){
+                    newNode.parent = newNode.$parent || "0" ;
+                    save(newNode);
+
                 });
+            });
         }
 
         $scope.swapToType = function(type){
             $scope.scenarioTypeDropdownLabel = type;
-            newScenario.type = type;
+            newNode.type = type;
         }
 
         /**/
@@ -48,7 +48,7 @@ define(["angular"], function (angular) {
                 delete scenarioCopy.columns;
                 delete scenarioCopy.id;
                 playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function () {
-                    $modalInstance.close(newScenario);
+                     $modalInstance.close();
                 });
             };
     }

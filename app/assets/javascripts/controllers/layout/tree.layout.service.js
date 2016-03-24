@@ -114,14 +114,21 @@ return treeExplorerPromise.promise;
             /* END : save concerted node */
 
             function add(newElementValue){
-              console.log("adding:", newElementValue, self.concernedNode);
+              var createdPromise = $q.defer();
+              console.log("adding:", newElementValue, "concerned", self.concernedNode);
               if(self.concernedNode != 0){
                   var newId = self.selectedTree.add( newElementValue, 0, self.concernedNode);  
               } else {
                   var newId = self.selectedTree.add( newElementValue, 0);  
               }
-              self.selectedNode = newId;
-              $$("tree1").select(self.selectedNode);
+              if(newId != null){
+                self.selectedNode = newId;
+                $$("tree1").select(self.selectedNode);
+                createdPromise.resolve(newId);
+              } else{
+                createdPromise.reject("could not create and catch id");
+              }
+              return createdPromise.promise;
             }
 
             /* BEGIN : edit the selected node */
