@@ -1,4 +1,4 @@
- 
+
 package controllers
 
 import boot.AppBoot
@@ -16,7 +16,7 @@ import play.api.libs.json.Writes._
 import play.api.libs.json._
 import play.api.mvc._
 import controllers.parsers.WebPageElement
-
+import reactivemongo.bson.{BSONObjectID, BSONDocument}
 
 import scala.collection.immutable.StringOps
 import scala.util.matching.Regex
@@ -137,8 +137,27 @@ object ScenarioController extends Controller {
   def saveScenarii() = Action(parse.json) { implicit request =>
     request.body.validate[Scenario].map {
       case scenario: Scenario =>
-        conn.saveScenario(scenario)
-        Ok("scenario saved !")
+      scenario.id match {
+        case None => {
+          val scenarioWithId :Scenario = Scenario(Some(BSONObjectID.generate.stringify),
+                                                  scenario.name,
+                                                  scenario.cType,
+                                                  scenario.driver,
+                                                  scenario.rows,
+                                                  scenario.parent
+                                                  )
+           conn.saveScenario(scenarioWithId)
+           def extendedObject(obj: JsObject) = {
+          obj + ("columns" -> DomainController.scenarioDescriptorProvider((obj \ "type").as[String]))
+        }
+        val flatResponse = extendedObject(Json.toJson(scenarioWithId).as[JsObject])
+          Ok(Json.toJson(flatResponse))
+        }
+        case _ => {
+          conn.saveScenario(scenario)
+          Ok(Json.toJson(scenario))
+        }
+      }
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
     }

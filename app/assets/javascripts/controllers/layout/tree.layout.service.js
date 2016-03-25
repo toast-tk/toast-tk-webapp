@@ -9,6 +9,8 @@ define(["angular"], function (angular) {
           self.concernedNode = 0 ;
             return {
               saveConcernedNode : saveConcernedNode,
+              getConcernedNode : getConcernedNode,
+              getSelectedNode : getSelectedNode,
               build : build,
               add : add,
               editSelectedNodeName : editSelectedNodeName,
@@ -181,6 +183,14 @@ return treeExplorerPromise.promise;
               });
            }
 
+           /**/
+           function getConcernedNode(){
+            return self.concernedNode;
+           }
+
+           function getSelectedNode(){
+            return self.concernedNode;
+           }
 }
 }
 });

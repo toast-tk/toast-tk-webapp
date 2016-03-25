@@ -46,6 +46,7 @@ define(["angular"], function (angular) {
                         });
 
                         modalInstance.result.then(function(newScenario){
+                         newScenario.rows = angular.isObject(newScenario.rows) ? newScenario.rows : JSON.parse(newScenario.rows);
                          add(newScenario);
                      });
                     });    

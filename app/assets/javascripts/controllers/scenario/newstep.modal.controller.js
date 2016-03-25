@@ -28,11 +28,8 @@ define(["angular"], function (angular) {
                 newNode.driver =  newNode.type;
                 newNode.columns = scenarioCtxDescriptor;
                 newNode.rows = [];
-                TreeLayoutService.add(newNode).then(function(newId){
-                    newNode.parent = newNode.$parent || "0" ;
-                    save(newNode);
-
-                });
+                newNode.parent = TreeLayoutService.getConcernedNode() || "0" ;
+                 save(newNode);        
             });
         }
 
@@ -47,8 +44,11 @@ define(["angular"], function (angular) {
                 scenarioCopy.rows = JSON.stringify(scenarioCopy.rows);
                 delete scenarioCopy.columns;
                 delete scenarioCopy.id;
-                playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function () {
-                    $modalInstance.close(scenario);
+                playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function (savedScenario) {
+                    TreeLayoutService.add(savedScenario.data).then(function(newId){
+                        console.log("saved scenario", savedScenario.data);
+                        $modalInstance.close(savedScenario.data);
+                    });
                 },function(){
                     toastr.error('Could Not save new node !');
                     //TODO; #fix should remove added node here
