@@ -135,6 +135,7 @@ define(["angular"], function (angular) {
             function deleteRow(scenario, row) {
                 //ajax call directly, if not new !
                 scenario.rows.splice(scenario.rows.indexOf(row), 1);
+                setDropListPositionClass();
             };
 
             function saveScenarii(scenarii){
