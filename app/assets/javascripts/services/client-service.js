@@ -6,7 +6,31 @@ define(["angular"], function (angular) {
 
   	module.factory('ClientService', function(playRoutes){
   		var factory = {};
+
+        var socket = new WebSocket('ws://localhost:9000/socket/stream');
+
+        // When the connection is open, send some data to the server
+        socket.onopen = function (event) {
+            factory.socketIsActive = true;
+            console.log(event)
+        };
+
+        socket.onclose = function (error) {
+            factory.socketIsActive = false;
+        };
+
+        socket.onerror = function (error) {
+            factory.socketIsActive = false;
+        };
+
+        socket.onmessage = function (event) {
+            console.log(event)
+        };
+
   		factory.ACTION_ITEM_REGEX = /{{([\w:]+)}}/gi;
+        factory.recorders = [];
+        factory.socketIsActive = false;
+        factory.recorderListeners = [];
   		factory.regexList = [];
   		factory.regexMap = {};
   		factory.init = function(){

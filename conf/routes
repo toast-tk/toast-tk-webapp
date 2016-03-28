@@ -30,7 +30,9 @@ GET         /loadWikifiedRepository                       controllers.Applicatio
 GET         /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
 GET         /loadSentences/:confType                      controllers.Application.loadSentences(confType:String)
 POST        /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
-POST        /susbcribeDriver                              controller.DriverController.subscribeDriver()
+GET         /susbcribe/:host                              controllers.DriverController.subscribeDriver(host:String)
+GET         /socket/stream                                controllers.DriverController.registerFrontWebsocketService()
+POST        /record                                       controllers.DriverController.publishRecordedSentence()
 
 # Ajax routes: Configuration Controller
 GET         /loadConfiguration                            controllers.ConfigurationController.loadConfiguration()

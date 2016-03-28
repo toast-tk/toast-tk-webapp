@@ -1,3 +1,4 @@
+import scala.collection.mutable
 import scala.util.matching.Regex
 
 println("blah")
@@ -12,5 +13,9 @@ splittedPattern.foreach { word =>
       println ("not word: " + x)
   }
 }
+
+
+val a = mutable.Stack[String]()
+a.push("Sal");
 
 
