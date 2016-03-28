@@ -1,5 +1,5 @@
-    <div class="vertical-offset-100" style="margin: auto; margin-bottom: 50px; padding-top: 200px; padding-bottom: 200px; background-color: #222;">
-    	<div style="width: 450px; margin: auto;">
+    <div id="login" class="vertical-offset-100 login-page-div">
+    	<div class="login-box">
     		<div class="panel panel-default">
 			  	<div class="panel-heading">
 			    	<h3 class="panel-title">Please sign in</h3>
@@ -13,7 +13,7 @@
 			    		<div class="form-group">
 			    			<input id="password"  class="form-control" ng-model="credentials.password" placeholder="Password" name="password" type="password" value="">
 			    		</div>
-			    		<input id="login" ng-click="login(credentials)" class="btn btn-lg btn-success btn-block" type="button" value="Login">
+			    		<input id="login_input" ng-click="login(credentials)" class="btn btn-lg btn-primary btn-block" type="button" value="Login">
 			    	</fieldset>
 			      	</form>
 			    </div>

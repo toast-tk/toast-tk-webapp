@@ -41,7 +41,7 @@ trait InnerDomainController {
   def autoSetupCtxProvider(setupType: String): JsArray = {
     setupType match {
       case "web page" => Json.arr(Json.obj("name" -> "name", "descriptor" -> Json.obj()),
-        Json.obj("name" -> "type", "descriptor" -> Json.obj("type" -> Json.arr("button", "link", "input"))),
+        Json.obj("name" -> "type", "descriptor" -> Json.obj("type" -> Json.arr("button", "link"))),
         Json.obj("name" -> "locator", "descriptor" -> Json.obj()),
         Json.obj("name" -> "method", "descriptor" -> Json.obj("type" -> Json.arr("CSS", "XPATH", "ID"))),
         Json.obj("name" -> "position", "descriptor" -> Json.obj()))

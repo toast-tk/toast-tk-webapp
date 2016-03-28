@@ -1,0 +1,19 @@
+#login.login-page-div{
+	height: 100%;
+    background-color: #222;
+}
+
+#login .login-box{
+	width: 450px;
+    margin: auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-top: -220px;
+    margin-left: -220px;
+}
+
+#login:has(> body){
+
+    margin-top: -50px !important; 
+}

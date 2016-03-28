@@ -45,7 +45,7 @@ object WebPageElement{
       val name = doc.getAs[String]("name").get
       val cType = doc.getAs[String]("type").get
       val locator = doc.getAs[String]("locator").get
-      val method = doc.getAs[String]("method").getOrElse("CSS")
+      val method = doc.getAs[String]("method").getOrElse("")
       val position = doc.getAs[Int]("position").getOrElse(0)
       WebPageElement(Some(id), name, cType, locator, Some(method) ,Some(position))
     }

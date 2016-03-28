@@ -46,18 +46,29 @@ define(["angular"], function (angular) {
                         });
 
                         modalInstance.result.then(function(newScenario){
-
+                         newScenario.rows = angular.isObject(newScenario.rows) ? newScenario.rows : JSON.parse(newScenario.rows);
                          add(newScenario);
                      });
                     });    
                 }
 
                 $scope.$watch('scenario.name',function(newValue){
-                    TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
-                        return (!angular.isDefined(selectedItem.data) && selectedItem.type !="folder");
-                    }).then(function(){
-                        TreeLayoutService.editSelectedNodeName(newValue);
-                    });
+                    if(angular.isDefined(newValue)){
+                        TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
+                            return (!angular.isDefined(selectedItem.data) && selectedItem.type !="folder");
+                        }).then(function(){
+                            TreeLayoutService.editSelectedNodeName(newValue);
+                        });
+                    }
+                })
+                $scope.$watch('folder.name',function(newValue){
+                    if(angular.isDefined(newValue)){
+                        TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
+                            return (!angular.isDefined(selectedItem.data) && selectedItem.type =="folder");
+                        }).then(function(){
+                            TreeLayoutService.editSelectedNodeName(newValue);
+                        });
+                    }
                 })
             });
 
@@ -124,6 +135,7 @@ define(["angular"], function (angular) {
             function deleteRow(scenario, row) {
                 //ajax call directly, if not new !
                 scenario.rows.splice(scenario.rows.indexOf(row), 1);
+                setDropListPositionClass();
             };
 
             function saveScenarii(scenarii){
@@ -144,11 +156,13 @@ define(["angular"], function (angular) {
                     __init__(false);
                     treeExplorerPromise.promise.then(function(treeExplorer){
                         TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
-                            return (!angular.isDefined(selectedItem.data) && selectedItem.type !="folder"); 
+                            return (!angular.isDefined(selectedItem.data)); 
                         }).then(function(){
                             TreeLayoutService.removeSelectedNode();
-                             toastr.success("deleted: \'"+ $scope.scenario.name + "\' !");
+                            var node =$scope.scenario || $scope.folder;
+                             toastr.success("deleted: \'"+ node.name + "\' !");
                              $scope.scenario = null;
+                             $scope.folder = null;
                         })
                     });
                 });
@@ -355,10 +369,10 @@ define(["angular"], function (angular) {
             $scope.scenarii.push(dataRow);    
         }
     })
-    if(angular.isDefined($scope.scenarii) && $scope.scenarii.length != 0){
+    if(angular.isDefined(data) && data.length != 0){
         $scope.senariiTree = toTreeDataList(data);    
     } else {
-        console.warn("no scenarii", $scope.scenarii);
+        console.warn("no data nodes");
     }
 
 
@@ -384,6 +398,7 @@ if(doBuildTree === true){
 
     TreeLayoutService.addSelectedNodeCallback("toastScenariosTreeExplorer", function(selectedScenario){
         $scope.scenario = selectedScenario ;
+        $scope.folder = null;
         setDropListPositionClass();
         $timeout(function(){
             $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
@@ -391,6 +406,14 @@ if(doBuildTree === true){
         $scope.$apply();
     }, function(selectedElementId,selectedItem){
         return selectedElementId && selectedItem.type!="folder";
+    });
+
+    TreeLayoutService.addSelectedNodeCallback("toastScenariosTreeExplorer", function(selectedFolder){
+        $scope.scenario = null ;
+        $scope.folder = selectedFolder;
+        $scope.$apply();
+    }, function(selectedElementId,selectedItem){
+        return selectedElementId && selectedItem.type=="folder";
     });
 
 }   

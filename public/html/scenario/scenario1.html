@@ -1,5 +1,5 @@
 
-                      <div style="width:{{effectContentWidth}}px; height:99%; overflow: hidden;">
+                      <div style="width:{{effectContentWidth}}px; height:94%; overflow: hidden;">
                         <div webix-ui id="contentWebixLayout"> <!--layout rows with type "space" are created-->
                           <div height="51" >
                             <h3 class="page-header" >
@@ -34,6 +34,28 @@
                          </div>
                          <div view="resizer"></div>
                          <div view="cols">
+                         <div>
+                         <!-- folder selection -->
+                          <div class="panel panel-default" ng-show="folder != undefined">
+                            <div class="panel-heading">
+                              <h3 class="panel-title" >
+                                <i class="fa fa-folder-open fa-fw"></i>
+                                <span ng-if="isEditScenarioName===false">{{folder.name}}</span>
+                                <input type="text" ng-if="isEditScenarioName===true" ng-model="folder.name"/>
+                                <div class="pull-right" style="margin: -5px;">
+                                  <button class="btn btn-default btn-warning btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
+                                  <button class="btn btn-default btn-primary btn-xs" data-ng-click="saveScenarii(folder)"> <i class="fa fa-floppy-o"></i> Save</button>
+                                  <button class="btn btn-default btn-danger btn-xs" data-ng-click="deleteScenarii(folder)"><i class="fa fa-trash"></i> Delete</button>
+                                </div>
+                              </h3>
+                            </div>
+                            <div class="panel-body">
+                              <!-- /. effect content -->
+                              <i class="fa fa-folder-open fa-5x"></i>
+                            </div>
+                          </div>
+                          <!-- /. folder selection -->
+
                           <div class="panel panel-default"  ng-show="scenario != undefined">
                             <div class="panel-heading">
                               <h3 class="panel-title" >
@@ -41,9 +63,9 @@
                                 <span ng-if="isEditScenarioName===false">{{scenario.name}}</span>
                                 <input type="text" ng-if="isEditScenarioName===true" ng-model="scenario.name"/>
                                 <div class="pull-right" style="margin: -5px;">
-                                  <button class="btn btn-default btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
-                                  <button class="btn btn-default btn-xs" data-ng-click="saveScenarii(scenario)"> <i class="fa fa-floppy-o"></i> Save</button>
-                                  <button class="btn btn-default btn-xs" data-ng-click="deleteScenarii(scenario)"><i class="fa fa-trash"></i></button>
+                                  <button class="btn btn-default btn-warning btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
+                                  <button class="btn btn-default btn-primary btn-xs" data-ng-click="saveScenarii(scenario)"> <i class="fa fa-floppy-o"></i> Save</button>
+                                  <button class="btn btn-default btn-danger btn-xs" data-ng-click="deleteScenarii(scenario)"><i class="fa fa-trash"></i> Delete</button>
                                 </div>
                               </h3>
                             </div>
@@ -120,6 +142,7 @@
                     </div>
                   </div>
                   <!-- /.panel -->
+                  </div>
                 </div>
               </div>
             </div>

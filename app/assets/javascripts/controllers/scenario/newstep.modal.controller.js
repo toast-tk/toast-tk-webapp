@@ -1,14 +1,14 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        newStepModalCtrl: function ($scope,  $modalInstance, TreeLayoutService,ICONS, playRoutes) {
+        newStepModalCtrl: function ($scope,  $modalInstance, TreeLayoutService,ICONS, playRoutes, toastr) {
             $scope.ICONS = ICONS;
-             var newScenario = {};
+             var newNode = {};
 
             if($scope.newNodeType === "folder"){
-                newScenario.type = "folder";
-                newScenario.image = ICONS["folder"];
-                newScenario.data = [];
+                newNode.type = "folder";
+                newNode.image = ICONS["folder"];
+                newNode.data = [];
             }
 
             $scope.scenarioTypeDropdownLabel = "Select type ..";
@@ -20,25 +20,22 @@ define(["angular"], function (angular) {
 
          $scope.createNewNode = function(){
 
-            playRoutes.controllers.ScenarioController.loadScenarioCtx(newScenario.type).get().then(function (response) {
+            playRoutes.controllers.ScenarioController.loadScenarioCtx(newNode.type).get().then(function (response) {
 
                 var scenarioCtxDescriptor = response.data;
-                newScenario.name = $scope.scenarioName;
-                newScenario.value = $scope.scenarioName;
-                newScenario.driver =  newScenario.type;
-                newScenario.columns = scenarioCtxDescriptor;
-                newScenario.parent = newScenario.$parent ;
-                newScenario.rows = [];
-                console.log("scenario:", newScenario);
-                TreeLayoutService.add(newScenario);
-                    save(newScenario);
-                        
-                });
+                newNode.name = $scope.scenarioName;
+                newNode.value = $scope.scenarioName;
+                newNode.driver =  newNode.type;
+                newNode.columns = scenarioCtxDescriptor;
+                newNode.rows = [];
+                newNode.parent = TreeLayoutService.getConcernedNode() || "0" ;
+                 save(newNode);        
+            });
         }
 
         $scope.swapToType = function(type){
             $scope.scenarioTypeDropdownLabel = type;
-            newScenario.type = type;
+            newNode.type = type;
         }
 
         /**/
@@ -47,8 +44,14 @@ define(["angular"], function (angular) {
                 scenarioCopy.rows = JSON.stringify(scenarioCopy.rows);
                 delete scenarioCopy.columns;
                 delete scenarioCopy.id;
-                playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function () {
-                    $modalInstance.close(newScenario);
+                playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function (savedScenario) {
+                    TreeLayoutService.add(savedScenario.data).then(function(newId){
+                        console.log("saved scenario", savedScenario.data);
+                        $modalInstance.close(savedScenario.data);
+                    });
+                },function(){
+                    toastr.error('Could Not save new node !');
+                    //TODO; #fix should remove added node here
                 });
             };
     }

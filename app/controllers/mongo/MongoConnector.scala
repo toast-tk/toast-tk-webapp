@@ -350,16 +350,27 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   def saveScenario(scenario: Scenario) {
     val collection = open_collection("scenarii")
     scenario.id match {
-      case None => collection.insert(updateScenario(scenario)).onComplete {
-        case Failure(e) => throw e
-        case Success(_) => println("[+] successfully inserted scanario !")
-      }
-      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(scenario.id.get)), updateScenario(scenario), upsert=true).onComplete {
-        case Failure(e) => throw e
-        case Success(_) => println("successfully saved scanario !")
+      case None => {
+        val query = BSONDocument("name" -> scenario.name, "parent" -> scenario.parent)
+        collection.find(query).one[Scenario].map {
+         case scenario => scenario match {
+          case None => {
+            collection.insert(updateScenario(scenario.get)).onComplete {
+            case Failure(e) => throw e
+            case Success(_) => println("[+] successfully inserted scanario !")
+          }
+        }
+        case Some(scenario) => {
+        }
       }
     }
   }
+  case _ => collection.update(BSONDocument("_id" -> BSONObjectID(scenario.id.get)), updateScenario(scenario), upsert=true).onComplete {
+    case Failure(e) => throw e
+    case Success(_) => println("successfully saved scanario !")
+  }
+}
+}
 
   def savePlainScenario(scenario: Scenario) {
     val collection = open_collection("scenarii")
