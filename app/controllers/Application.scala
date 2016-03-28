@@ -1,24 +1,21 @@
 package controllers
 
 import boot.AppBoot
+import play.api.Logger
 import controllers.mongo._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import play.api.mvc._
 import controllers.parsers.WebPageElement
-
+import pdi.jwt._
 
 object Application extends Controller {
   private val conn = AppBoot.conn
   private val jnlpHost = AppBoot.jnlpHost
 
   def index = Action {  request =>
-    request.session.get("connected").map { user =>
-      Ok(views.html.index())
-    }.getOrElse {
-      Ok(views.html.parallax_login_form())
-    }
+     Ok(views.html.index())
   }
 
   def loadEnvConfiguration() = Action{
@@ -27,11 +24,27 @@ object Application extends Controller {
 
   def login() = Action(parse.json) { implicit request =>
     //Check credentials and so on...
-    Ok(views.html.index()).withSession(request2session + ("connected" -> "user goes here !"))
+    Logger.info(s"Loging ${request.body}")
+     request.body.validate[InspectedUser].map {
+      case user: InspectedUser =>
+      var authUser : Option[User] = conn.AuthenticateUser(user) ;
+      val token = authUser map {_.token} getOrElse("")
+      Logger.info(s"Loging result {$authUser}")
+      if(token != ""){  
+        Ok.addingToJwtSession("user", Json.toJson(authUser)) 
+      } else {
+         Unauthorized("Bad credentials")
+      }
+        
+    }.recoverTotal {
+      e => BadRequest("Detected error:" + JsError.toJson(e))
+    }
   }
 
   def logout() = Action {
-    Ok("").withNewSession
+    Ok("").withNewSession.flashing(
+    "success" -> "You've been logged out"
+  )
   }
   
   /**
@@ -61,7 +74,12 @@ object Application extends Controller {
     val scenarioR = Json.fromJson(request.body)(Json.format[InspectedScenario])
     scenarioR.map {
       case scenario: InspectedScenario =>
-        val logInstance = Scenario(id = None, name = scenario.name, cType = "swing", driver = "connecteurSwing", rows = Some(scenario.steps))
+        val logInstance = Scenario(id = None, 
+                                  name = scenario.name, 
+                                  cType = "swing", 
+                                  driver = "swing", 
+                                  rows = Some(scenario.steps),
+                                  parent = Some("0"))
         conn.savePlainScenario(logInstance)
         Ok("scenario saved !")
     }.recoverTotal {
@@ -199,7 +217,7 @@ object Application extends Controller {
         val fixturePattern: String = descriptor.pattern
         
         val key = fixtureType +":"+fixtureName
-        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(fixturePattern, fixturePattern)
+        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(fixturePattern, fixturePattern, descriptor.description)
         val syntaxRows = congifMap.getOrElse(key, List[ConfigurationSyntax]())
         val newSyntaxRows =  newConfigurationSyntax :: syntaxRows
         congifMap = congifMap + (key -> newSyntaxRows)

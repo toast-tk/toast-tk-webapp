@@ -116,7 +116,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 								tag = regex.exec(patternValue);
 							}
 							if(tags.length == 0){
-								element.append($("<span>" + patternValue + "</span>"));
+								element.append($("<span><div  style='width: 100%; word-wrap: break-word;'>" + patternValue + "</div></span>"));
 							}
 						}
 	        		}
@@ -299,6 +299,6 @@ define(["angular", "qTags"], function (angular, qTags) {
 	    };
 	});
 	
-
+	
   	return module;
 });

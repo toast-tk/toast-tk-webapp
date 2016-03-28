@@ -670,7 +670,7 @@
 
 /* Button 5 */
 .btn-5 {
-	background: #823aa0;
+	background: #006687;
 	color: #fff;
 	height: 70px;
 	min-width: 260px;
@@ -683,7 +683,7 @@
 }
 
 .btn-5:active {
-	background: #9053a9;
+	background: #008cba;
 	top: 2px;
 }
 

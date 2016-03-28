@@ -192,13 +192,7 @@
 	float: right;
 }
 
-.table-striped>tbody>tr:nth-child(odd)>td, .table-striped>tbody>tr:nth-child(odd)>th {
-  background-color: #DDDDDD;
-}
-
 .scenario {
-  border: 1px solid black;
-  padding: 10px;
   margin-bottom: 10px;
 }
 
@@ -208,13 +202,6 @@
 
 .table-striped > tbody > tr:hover > td {
   background-color: #efefef;
-}
-
-.dictionnary-block {
-  border: 1px solid black;
-  border-radius: 5px; 
-  padding: 5px;
-  margin-bottom: 10px;
 }
 
 /* Lib integration*/
@@ -236,7 +223,7 @@
 
 .angular-ui-tree-node div.title {
   cursor: pointer;
-  background: #f8faff;
+/*  background: #f8faff;*/
   border: 1px solid #dae2ea;
   color: #7c9eb2;
   padding: 10px 10px;
@@ -252,3 +239,59 @@
   top: 30px;
   position: relative;
 }
+
+
+/* BEGIN : bootstrap overriding */
+.panel-default {
+    border: none !important;
+}
+.panel-body {
+    padding: 8px !important;
+}
+
+.table-striped>tbody>tr:nth-child(odd)>td, .table-striped>tbody>tr:nth-child(odd)>th {
+  background-color: #DDDDDD;
+}
+
+.list-striped>li:nth-child(odd), 
+.list-striped>li:nth-child(odd) {
+    background-color: #DDDDDD;
+}
+
+.panel>.list-group .list-group-item, .panel>.panel-collapse>.list-group .list-group-item{
+  margin: 0; /*to override "row" class margin (to avoid horizontal scrollbar)*/
+}
+
+.navbar-inverse .dropdown-menu>li>a, .navbar-inverse .dropdown-menu>li>a:focus {
+    background-color: #222;
+    color: #fff;
+}
+
+/* END : bootstrap overriding */
+
+/* webix overriding */
+.webix_tree_item.webix_selected {
+    background: #ddd !important;
+    color: #000;
+}
+
+/* angucomplete overriding*/
+
+.angucomplete-dropdown {
+    width: 100% !important;
+  }
+.angucomplete-selected-row {
+     color: #000 !important; 
+}
+
+/* angular toastr */
+
+.toast {
+    margin-top: 8px !important;
+}
+
+#toast-container>div {
+    padding: 6px 6px 6px 50px !important;
+    width: 300px !important;
+}
+

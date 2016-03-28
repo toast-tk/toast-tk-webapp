@@ -34,6 +34,7 @@ define(["angular", "jsRoutes", "../libs/ngProgress.min"], function (angular, jsR
         var routeObject = playFunction.apply(this, arguments);
         var httpMethod = routeObject.method.toLowerCase();
         var url = routeObject.url;
+        console.log("url",url);
         var res = {
           method: httpMethod,
           url: url,

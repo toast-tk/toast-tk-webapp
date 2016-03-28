@@ -1,0 +1,86 @@
+                <div style="width:{{effectContentWidth}}px; height:94%; overflow: hidden;">
+
+                	<div webix-ui id="contentWebixLayout"> <!--layout rows with type "space" are created-->
+                		<div height="51" >
+                			<h3 class="page-header" >
+                				<i class="fa fa-fw fa-gear"></i>  Settings <small> (configuration) </small>
+                				<button class="btn btn-default btn-sm pull-right" style="margin-top : -5px; " data-ng-click="saveConfig()">Save</button>
+                			</h3>
+                		</div>
+                		<div view="cols"> <!--Webix layout cols are initialized-->
+                			<div width="350" id="treeTemplateContainer"> 
+                				<div class="panel panel-default">
+                					<div class="panel-heading">
+                						<h3 class="panel-title"><i class="fa fa-files-o fa-fw"></i> Explorer
+                              		<span class="dropdown pull-right">
+                              			<button class="btn btn-primary btn-xs dropdown-toggle" style="margin: -5px;" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                              				<i class="fa fa-plus"></i> 
+                              				<span class="caret"></span>
+                              			</button>
+                              			<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                              				<li><a ng-click="addNodeToParent('settings set')">
+                              					<i class="{{ICONS['settings set']}} fa-fw"></i> Settings set</a></li>
+                              					<li><a ng-click="addNodeToParent('settings')"><i class="{{ICONS['settings']}} fa-fw"></i> settings</a></li>
+                              				</ul>
+                              			</span>
+                              		</h3>
+
+                              	</div>
+                              	<div class="panel-body">
+                              		 <div view="tree" id="toastConfigTreeExplorer" style='width:100%; height:90%;'></div>
+                              	</div>
+                              </div>
+                          </div>
+                          <div view="resizer"></div>
+                          <div view="cols">
+                          	<div class="panel panel-default" style="height: 95%;" ng-show="selectedConfig != undefined">
+                          		<div class="panel-heading">
+                          			<h3 class="panel-title" >
+                          				Sentences
+                          			</h3>
+                          		</div>
+                          		<div class="panel-body" style="height: 100%; overflow-y: auto; overflow-x: hidden;">
+                          			<ul class="list-group">
+                          				<li class="list-group-item row" ng-repeat="syntax in selectedConfig.syntax">
+                                    <div class="" style="border: #ccc solid 1px; border-top: none;">
+                                        <div class="panel panel-default" style="margin-bottom: 11px;">
+                                          <div class="panel-heading" style="padding: 3px;" role="tab" id="headingOne">
+                                            <h4 class="panel-title" style="font-size:14px;">
+                                              <a role="button" 
+                                                  data-toggle="collapse" 
+                                                  data-parent="#accordion" 
+                                                  href="#collapseOne" aria-expanded="false" a
+                                                  ria-controls="collapseOne">
+                                                  {{syntax.sentence}} 
+                                              </a>
+                                              <button class="btn btn-default btn-xs pull-right" 
+                                                      data-ng-click="deleteSentenceLine(syntax, sentence)">
+                                                <i class="fa fa-trash"></i>
+                                              </button>
+                                            </h4>
+                                            
+                                          </div>
+                                          <div id="collapseOne" 
+                                              class="panel-collapse collapse in" 
+                                              role="tabpanel" aria-labelledby="headingOne">
+                                            <div class="panel-body">
+                                              {{syntax.description}} 
+                                            </div>
+                                      </div>
+                          				</li>
+                          			</ul>
+                          			<hr ng-show="selectedConfig != undefined"/>
+                          			<div ng-show="selectedConfig != undefined">
+                          				<div class="row">
+                          					<div class="col-md-11">
+                          						<sentence on-add="addNewSentence(a,b)"></sentence> 
+                          					</div>
+                          				</div>
+                          			</div>
+                          		</div>
+                          	</div>
+                          	<!-- /.panel -->
+                          </div>
+                      </div>
+                  </div>
+              </div>

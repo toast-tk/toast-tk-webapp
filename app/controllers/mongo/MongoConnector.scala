@@ -5,7 +5,7 @@ import play.api.libs.json.Reads._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import reactivemongo.api.{MongoDriver, _}
-import reactivemongo.bson.BSONDocument
+import reactivemongo.bson.{BSONObjectID, BSONDocument}
 import reactivemongo.api.commands.UpdateWriteResult
 import reactivemongo.bson.Producer.nameValue2Producer
 import reactivemongo.api.collections.bson.BSONCollection
@@ -17,8 +17,12 @@ import controllers.parsers.EntityField
 import controllers.parsers.WebPageElement
 import controllers.parsers.WebPageElementBSONWriter
 import controllers.parsers.EntityFieldBSONWriter
-import reactivemongo.bson.BSONObjectID
 import boot.AppBoot
+import play.api.Logger
+import controllers.mongo.User.{BSONWriter => UserBSONWriter} 
+import controllers.mongo.User.{BSONReader => UserBSONReader} 
+import scala.util._
+import java.security.SecureRandom
 
 object MongoConnector extends App {
   def apply() = {
@@ -27,6 +31,22 @@ object MongoConnector extends App {
   def apply(url:String) = {
     new MongoConnector(new MongoDriver(),List(url), "play_db")
   }
+}
+
+object BearerTokenGenerator {
+  
+  val TOKEN_LENGTH = 32
+  val TOKEN_CHARS = 
+     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._"
+  val secureRandom = new SecureRandom()
+    
+  def generateToken:String =  
+    generateToken(TOKEN_LENGTH)   
+  
+  def generateToken(tokenLength: Int): String =
+    if(tokenLength == 0) "" else TOKEN_CHARS(secureRandom.nextInt(TOKEN_CHARS.length())) + 
+     generateToken(tokenLength - 1)
+  
 }
 
 
@@ -48,15 +68,68 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     db("repository")
   }
 
+  def AuthenticateUser(user : InspectedUser) : Option[User] = {
+    var isAuthenticated = false
+    val query = BSONDocument("login" -> user.login, "password" -> user.password)
+    val collection = open_collection("users")
+    var authPersonOpt: Option[User]  = None;
+    var token:Option[String] = None ;
+    val userFuture =
+    collection.
+    find(query). 
+    cursor[User]().
+    collect[List]()
+    Logger.info("Loging in dfef!")
+    Await.result(userFuture.map { users =>
+      for(person <- users) {
+        token = Some(BearerTokenGenerator.generateToken)
+        val authPerson = User(person.id,
+          person.login,
+          person.password,
+          person.firstName,
+          person.lastName,
+          person.email,
+          person.teams,
+          token,
+          true,
+          None)
+        authPersonOpt = Some(authPerson)
+        println(s"dataobj Token ----> ${authPersonOpt}")
+        saveUser(authPerson)
+        val firstName = authPerson.firstName
+        isAuthenticated = true
+        println(s"found $firstName $isAuthenticated")
+        authPersonOpt
+      }
+    }, 5 seconds)
+    println(s"just here $isAuthenticated")
+    authPersonOpt
+  }
+
+  def saveUser(user: User) {
+    val collection = open_collection("users")
+         println(s"[+] successfully gooottt user $user !")
+
+    user.id match {
+      case None => collection.insert(user).onComplete {
+        case Failure(e) => throw e
+        case Success(_) => println("[+] successfully inserted ${user.id} and $user !")
+      }
+      case Some(_) => collection.update(BSONDocument("_id" -> BSONObjectID(user.id.get)), user, upsert=true).onComplete {
+        case Failure(e) => throw e
+        case Success(_) => println("successfully saved user !")
+      }
+    }
+  }
+
   def saveConfiguration(conf: MacroConfiguration) {
     val collection = open_collection("configuration")
-    if(conf.id == null){
-      collection.insert(conf).onComplete {
+    conf.id match {
+      case None => collection.insert(conf).onComplete {
         case Failure(e) => throw e
-        case Success(_) => println("successfully inserted configuration !")
+        case Success(_) => println("[+] successfully inserted configuration !")
       }
-    }else{
-      collection.update(BSONDocument("_id" -> BSONObjectID(conf.id.get)), conf, upsert=true).onComplete {
+      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(conf.id.get)), conf, upsert=true).onComplete {
         case Failure(e) => throw e
         case Success(_) => println("successfully saved configuration !")
       }
@@ -70,7 +143,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
       // BIG OPERATION !! to improve, for instance open a new future
       // and consume the database as a stream
       val query = BSONDocument()
-      val scenariiFuture = collection.find(query).cursor[Scenario].collect[List]()
+      val scenariiFuture = collection.find(query).cursor[Scenario]().collect[List]()
       scenariiFuture.map{
         scenarii => {
           for {
@@ -145,7 +218,12 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
     val jsonRowsAsString = Json.stringify(Json.toJson(outputRows.reverse)) 
      println(jsonRowsAsString)
-    Scenario(id = scenario.id, name= scenario.name, cType = scenario.cType, driver = scenario.driver, rows = Some(jsonRowsAsString))
+    Scenario(id = scenario.id, 
+             name= scenario.name, 
+             cType = scenario.cType, 
+             driver = scenario.driver, 
+             rows = Some(jsonRowsAsString),
+             parent= scenario.parent)
   }
 
   def refactorScenario(scenario: Scenario, config: AutoSetupConfig):  Scenario = {  
@@ -166,7 +244,12 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
       outputRows = ScenarioRows(patterns = row.patterns, kind = row.kind, mappings = Some(outputMappings)) :: outputRows
     }
     val jsonRowsAsString = Json.stringify(Json.toJson(outputRows)) 
-    Scenario(id = scenario.id, name= scenario.name, cType = scenario.cType, driver = scenario.driver, rows = Some(jsonRowsAsString))
+    Scenario(id = scenario.id, 
+            name= scenario.name, 
+            cType = scenario.cType, 
+            driver = scenario.driver, 
+            rows = Some(jsonRowsAsString),
+            parent= scenario.parent)
   }
 
   def saveServiceEntityConfiguration(conf: ServiceEntityConfig) {
@@ -267,16 +350,27 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   def saveScenario(scenario: Scenario) {
     val collection = open_collection("scenarii")
     scenario.id match {
-      case None => collection.insert(updateScenario(scenario)).onComplete {
-        case Failure(e) => throw e
-        case Success(_) => println("[+] successfully inserted scanario !")
-      }
-      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(scenario.id.get)), updateScenario(scenario), upsert=true).onComplete {
-        case Failure(e) => throw e
-        case Success(_) => println("successfully saved scanario !")
+      case None => {
+        val query = BSONDocument("name" -> scenario.name, "parent" -> scenario.parent)
+        collection.find(query).one[Scenario].map {
+         case scenario => scenario match {
+          case None => {
+            collection.insert(updateScenario(scenario.get)).onComplete {
+            case Failure(e) => throw e
+            case Success(_) => println("[+] successfully inserted scanario !")
+          }
+        }
+        case Some(scenario) => {
+        }
       }
     }
   }
+  case _ => collection.update(BSONDocument("_id" -> BSONObjectID(scenario.id.get)), updateScenario(scenario), upsert=true).onComplete {
+    case Failure(e) => throw e
+    case Success(_) => println("successfully saved scanario !")
+  }
+}
+}
 
   def savePlainScenario(scenario: Scenario) {
     val collection = open_collection("scenarii")
@@ -292,17 +386,28 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
   }
 
+  def loadDefaultSuperAdminUser(): Future[Option[User]] = {
+    loadUser("admin")
+  }
+
+  def loadUser(login: String): Future[Option[User]] = {
+    val collection = open_collection("users")
+    val query = BSONDocument("login" -> login)
+    val user = collection.find(query).one[User]
+    user
+  }
+
   def loadConfiguration(): Future[List[MacroConfiguration]] = {
     val collection = open_collection("configuration")
     val query = BSONDocument()
-    val configurations = collection.find(query).cursor[MacroConfiguration].collect[List]()
+    val configurations = collection.find(query).cursor[MacroConfiguration]().collect[List]()
     configurations
   }
 
   def loadScenarii(): Future[List[Scenario]] = {
     val collection = open_collection("scenarii")
     val query = BSONDocument()
-    val scenarii = collection.find(query).cursor[Scenario].collect[List]()
+    val scenarii = collection.find(query).cursor[Scenario]().collect[List]()
     scenarii
   }
 
@@ -320,7 +425,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
 
   def loadServiceAutoConfiguration(query: BSONDocument): Future[List[ServiceEntityConfig]] = {
     val collection = open_collection("repository")
-    val configurationWithRefs: Future[List[ServiceEntityConfigWithRefs]] = collection.find(query).sort(BSONDocument("name" -> 1)).cursor[ServiceEntityConfigWithRefs].collect[List]()
+    val configurationWithRefs: Future[List[ServiceEntityConfigWithRefs]] = collection.find(query).sort(BSONDocument("name" -> 1)).cursor[ServiceEntityConfigWithRefs]().collect[List]()
     // re-compute as configurations
     def convertItems(configurationWithRef: ServiceEntityConfigWithRefs): Future[ServiceEntityConfig] = {
       configurationWithRef.rows match {
@@ -345,7 +450,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
 
   def loadAutoConfiguration(query: BSONDocument): Future[List[AutoSetupConfig]] = {
     val collection = open_collection("repository")
-    val configurationWithRefs: Future[List[AutoSetupConfigWithRefs]] = collection.find(query).sort(BSONDocument("name" -> 1)).cursor[AutoSetupConfigWithRefs].collect[List]()
+    val configurationWithRefs: Future[List[AutoSetupConfigWithRefs]] = collection.find(query).sort(BSONDocument("name" -> 1)).cursor[AutoSetupConfigWithRefs]().collect[List]()
     // re-compute as configurations
     def convertItems(configurationWithRef: AutoSetupConfigWithRefs): Future[AutoSetupConfig] = {
       configurationWithRef.rows match {
@@ -389,7 +494,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     val collection = open_collection("scenarii")
     val query = BSONDocument("type" -> scenarioType, "driver" -> driver)
     val filter = BSONDocument("_id" -> 0, "rows" -> 1)
-    collection.find(query, filter).cursor[BSONDocument].collect[List]().map{
+    collection.find(query, filter).cursor[BSONDocument]().collect[List]().map{
       documents => for(document <- documents) yield document.getAs[String]("rows").get
     }
   }
@@ -420,7 +525,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   def loadConfigurationSentences(confType:String): Future[List[MacroConfiguration]] = {
     val collection = open_collection("configuration")
     val query = BSONDocument("rows" -> BSONDocument("$elemMatch" -> BSONDocument("type" -> confType)));
-    val configurations = collection.find(query).cursor[MacroConfiguration].collect[List]()
+    val configurations = collection.find(query).cursor[MacroConfiguration]().collect[List]()
     configurations
   }
 }

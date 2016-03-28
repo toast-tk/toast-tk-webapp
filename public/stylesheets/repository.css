@@ -1,0 +1,85 @@
+#repository .panel-body {
+    padding: 0 !important;
+}
+
+#repository .angular-ui-tree-node div.title {
+    cursor: pointer;
+    border: none; 
+    color: #222; 
+    padding: 6px 6px;
+}
+
+
+
+
+/**/
+
+.item-wrapper{
+    display: inline;
+    position: relative;
+}
+ .item-wrapper form{
+/*	position: relative;
+*/	background: #ffffff;
+	border: 1px solid #aaa;
+	top :-11px;
+    margin-left: 33px;
+}
+.item-wrapper form:after, .item-wrapper form:before {
+	right: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.item-wrapper  form:after {
+	border-color: rgba(255, 255, 255, 0);
+	border-right-color: #ffffff;
+	border-width: 10px;
+	margin-top: -10px;
+	left: -20px;
+}
+.item-wrapper  form:before {
+	border-color: rgba(5, 5, 5, 0);
+	border-right-color: #aaa;
+	border-width: 11px;
+	margin-top: -11px;
+	left: -22px;
+}
+
+.editable-wrap .editable-controls>input, .editable-wrap .editable-controls>select, .editable-wrap .editable-controls>textarea {
+	max-width: 200px;
+	height: 30px !important;
+    line-height: 8px;
+    font-size: 12px;
+    padding: 2px;
+}
+
+/*btn-sm*/
+ .item-wrapper form button{
+ 	padding: 8px 12px;
+ 	 font-size: 12px;
+    line-height: 1.5;
+    border-radius: 0;
+}
+
+/* angucomplete*/
+.angu-step-row {
+    padding: 2px;
+    margin-bottom: 1px;
+    font-size: 12px;
+    clear: both;
+}
+
+.angu-step-drop {
+	max-height: 205px;
+    overflow: auto;
+}
+
+.angu-step-droptop {
+	bottom: 40px;
+}

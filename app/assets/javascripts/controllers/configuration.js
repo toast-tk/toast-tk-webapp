@@ -27,7 +27,7 @@ define(["angular"], function (angular) {
 
             function saveConfig() {
                 playRoutes.controllers.ConfigurationController.saveConfiguration().post($scope.configurations).then(function (response) {
-                    __init__();
+                    load();
                 });
             };
 

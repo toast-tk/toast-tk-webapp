@@ -2,6 +2,8 @@ define(["angular"], function (angular) {
     "use strict";
     return {
         ScenarioCtrl: function ($rootScope, $scope, playRoutes, ngProgress, ClientService) {
+
+            //plain json data, based on objects
             $scope.newRow = {};
             $scope.scenario_types = ["swing", "service", "web"];
             $scope.selectedType = "";

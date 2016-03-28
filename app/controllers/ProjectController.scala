@@ -44,7 +44,6 @@ object ProjectController  extends Controller {
       }
       prjs = Prj(Some(project.getId().toString()), project.getName(), Some(project.getIteration()) , cmpgs) :: prjs
     }
-
     Ok(Json.toJson(prjs))
   }
 

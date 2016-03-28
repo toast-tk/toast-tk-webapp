@@ -3,6 +3,7 @@ package boot
 import controllers.mongo._
 import java.util.logging.{ Logger => JLogger }
 import play.api.Logger
+import play.api.libs.Codecs
 import java.io.IOException
 import de.flapdoodle.embed.mongo.{ Command, MongodStarter, MongodProcess, MongodExecutable }
 import de.flapdoodle.embed.process.distribution.GenericVersion
@@ -17,28 +18,28 @@ import toast.engine.ToastRuntimeJavaWrapper
 import controllers.DomainController
 
 object MongoExeFactory {
-	def apply(port: Int, versionNumber: String, dataPath:String) = {
+  def apply(port: Int, versionNumber: String, dataPath:String) = {
       val command = Command.MongoD
-    	val runtimeConfig = new RuntimeConfigBuilder()
-      		.defaultsWithLogger(command, JLogger.getLogger("embed.mongo"))
+      val runtimeConfig = new RuntimeConfigBuilder()
+          .defaultsWithLogger(command, JLogger.getLogger("embed.mongo"))
           .artifactStore(new ArtifactStoreBuilder()
                               .defaults(command)
                               .tempDir(new UserTempDirInPlatformTempDir())
                               .executableNaming(new UserTempNaming())
                               .download(new DownloadConfigBuilder().defaultsForCommand(command))
                         )
-      		.processOutput(ProcessOutput.getDefaultInstanceSilent())
-      		.build()
-    	val runtime = MongodStarter.getInstance(runtimeConfig)
-    	val replication = new Storage(dataPath,null,0)
-    	val config = new MongodConfigBuilder()
-      		.version(Versions.withFeatures(new GenericVersion(versionNumber)))
-      		.replication(replication)
-      		.net(new Net("localhost", port, Network.localhostIsIPv6())).build()
+          .processOutput(ProcessOutput.getDefaultInstanceSilent())
+          .build()
+      val runtime = MongodStarter.getInstance(runtimeConfig)
+      val replication = new Storage(dataPath,null,0)
+      val config = new MongodConfigBuilder()
+          .version(Versions.withFeatures(new GenericVersion(versionNumber)))
+          .replication(replication)
+          .net(new Net("localhost", port, Network.localhostIsIPv6())).build()
       val distribution = Distribution.detectFor(config.version())
-    	val files = runtimeConfig.getArtifactStore().extractFileSet(distribution)
+      val files = runtimeConfig.getArtifactStore().extractFileSet(distribution)
       Logger("play-embed-mongo").info(s"Starting MongoDB on port $port. This might take a while the first time due to the download of MongoDB.")
-    	(runtime.prepare(config) , files.executable())
+      (runtime.prepare(config) , files.executable())
   }
 }
 
@@ -48,18 +49,18 @@ object AppBoot extends play.api.GlobalSettings {
   val KeyPort = "embed.mongo.port"
   val KeyMongoDbVersion = "embed.mongo.dbversion"
   val KeyJnlpAddr= "jnlp.host"
-	
+  
   var conn: MongoConnector = _
   var jnlpHost: String = "" 
-	private var _mongoExe: MongodExecutable = _
+  private var _mongoExe: MongodExecutable = _
   private var process: MongodProcess = _
 
   
-	override def beforeStart(app: play.api.Application): Unit = {
+  override def beforeStart(app: play.api.Application): Unit = {
     Logger.info(s"[+] Preparing Toast Tk Web App environment..")
     val conf: play.api.Configuration = app.configuration
     jnlpHost = conf.getString(KeyJnlpAddr).getOrElse(throw new RuntimeException(s"$KeyJnlpAddr is missing in your configuration"))
-		if (app.mode.equals(play.api.Mode.Dev)) {
+    if (app.mode.equals(play.api.Mode.Dev)) {
       val enabled = conf.getBoolean("embed.mongo.enabled").getOrElse(false);
        if(enabled){
           startLocalMongoInstance(app) 
@@ -86,11 +87,17 @@ object AppBoot extends play.api.GlobalSettings {
       case conn: MongoConnector => Logger.info(s"[+] DB connection established..")
       case _ => Logger.error(s"[-] DB connection not established..")
     }
-	}
+  }
 
   override def onStart(app: play.api.Application): Unit = {
     Logger.info(s"[+] Initializing DB settings...")
     
+    def persistDefaultSuperAdminUser() = {
+      var adminPwd = Codecs.sha1("admin")
+      conn.saveUser(User(Some("111111111111111111111111"),"admin", adminPwd, "administrateur", "user", "admin@toastWebApp.com", None, None, true, None))
+
+    }
+
     def persistDefaultConfiguration(confId: Option[String]) = {
       var congifMap = Map[String, List[ConfigurationSyntax]]()
       val fixtureDescriptorList = ToastRuntimeJavaWrapper.actionAdapterSentenceList
@@ -99,17 +106,26 @@ object AppBoot extends play.api.GlobalSettings {
         val fixtureName: String = descriptor.name
         val fixturePattern: String = descriptor.pattern
         val key = fixtureType +":"+fixtureName
-        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(fixturePattern, fixturePattern)
+        val newConfigurationSyntax: ConfigurationSyntax = ConfigurationSyntax(fixturePattern, fixturePattern, descriptor.description)
         val syntaxRows = congifMap.getOrElse(key, List[ConfigurationSyntax]())
         val newSyntaxRows =  newConfigurationSyntax :: syntaxRows
         congifMap = congifMap + (key -> newSyntaxRows)
       }
-
       val configurationRows = for ((k,v) <- congifMap) yield( ConfigurationRow(k.split(":")(0),k.split(":")(1),v) )
       conn.saveConfiguration(MacroConfiguration(confId, "default", configurationRows.toList))
     }
 
     import scala.concurrent.ExecutionContext.Implicits.global
+    conn.loadDefaultSuperAdminUser().map { 
+      user => user match {
+        case None => {
+          persistDefaultSuperAdminUser()
+        }
+        case Some(user) => {
+           persistDefaultSuperAdminUser()
+        }
+      }
+    }
     conn.loadDefaultConfiguration().map { 
       configuration => configuration match {
         case None => {
@@ -122,26 +138,26 @@ object AppBoot extends play.api.GlobalSettings {
     }
   }
 
-	override def onStop(app: play.api.Application): Unit = {
-		conn.close()
-		stopMongo()
-	}
+  override def onStop(app: play.api.Application): Unit = {
+    conn.close()
+    stopMongo()
+  }
 
- 	def stopMongo() {
-  	try {
-    		if (_mongoExe != null) {
+  def stopMongo() {
+    try {
+        if (_mongoExe != null) {
           Logger.info(s"[+] Stopping MongoExe.")
           _mongoExe.stop()
         }
-  	} finally {
-    		if (process != null){
+    } finally {
+        if (process != null){
           Logger.info(s"[+] Stopping MongoD.")
           process.stop()
         } 
-  	}
-	}
+    }
+  }
 
-	def startLocalMongoInstance(app: play.api.Application): Unit = {
+  def startLocalMongoInstance(app: play.api.Application): Unit = {
       Logger.info("[+] Loading local mongo instance...");
       val conf: play.api.Configuration = app.configuration
       val port = conf.getInt(KeyPort).getOrElse(throw new RuntimeException(s"$KeyPort is missing in your configuration"))
