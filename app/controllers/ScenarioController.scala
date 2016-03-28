@@ -26,7 +26,7 @@ object ScenarioController extends Controller {
 
   implicit val scenarioRowsFormat = Json.format[ScenarioRows]
   private val conn = AppBoot.conn
-  private lazy val regex = """@\[\[\d+:[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+:[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+\]\]""".r
+  private lazy val regex = """\{\{([\.\w:]+)\}\}""".r
 
   private def populatePatterns(rows: String): List[String] = {
     def replacePatterns(pattern: String, mapping: List[JsValue]): String = {
@@ -35,7 +35,7 @@ object ScenarioController extends Controller {
       val splittedPattern = pattern.split("\\s+")
       splittedPattern.foreach { word =>
         word match {
-          case regex() =>
+          case regex(word) =>
             var replacementWord = "";
             for (jsonMapping <- mapping) {
               val pos = (jsonMapping \ "pos").as[Int]
@@ -72,7 +72,7 @@ object ScenarioController extends Controller {
             val sentence = zippedScenari._1
             zippedScenari._2 match {
               case "" => "| " + sentence + " |\n"
-              case kind:String => "| @" + kind + " " + sentence + " |\n"
+              case kind:String => "| " + sentence + " |\n"
             }
           }
         }

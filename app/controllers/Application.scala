@@ -113,6 +113,30 @@ object Application extends Controller {
   }
 
   /**
+   * load to wiki repository configuration
+   * case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: List[WebPageElement])
+   * WebPageElement(name: String, elementType: String, locator: String, method: String, position: Int)
+   */
+  def loadWebWikifiedWebRepository() = Action.async {
+    conn.loadWebPageRepository.map {
+      repository => {
+        def wikifiedObject(page: AutoSetupConfig): JsValue = {
+          var res = "page id:" + page.id.get + "\n"
+          res = res + "|| setup || " +  page.cType + " || " + page.name + " ||\n"
+          res = res + "| name | type | locator | method | position |\n"
+          for (row <- page.rows.getOrElse(List())) {
+            res = res + "|" + row.name + "|" + row.elementType + "|" + row.locator + "|" + row.method.getOrElse("CSS") + "|" + row.position.getOrElse(0) + "|\n"
+          }
+          res = res + "\n"
+          JsString(res)
+        }
+        val response = for (page <- repository) yield wikifiedObject(page)
+        Ok(Json.toJson(response))
+      }
+    }
+  }
+
+  /**
    * load services json descriptors
    */
   def loadServiceDescriptors(serviceType: String, driverName: String) = Action.async {
@@ -222,8 +246,7 @@ object Application extends Controller {
         val newSyntaxRows =  newConfigurationSyntax :: syntaxRows
         congifMap = congifMap + (key -> newSyntaxRows)
       }
-      
-      println(formerConfiguration)
+
       val configurationRows = for ((k,v) <- congifMap) yield(ConfigurationRow(k.split(":")(0),k.split(":")(1),v) )
     
       formerConfiguration match {
@@ -233,8 +256,7 @@ object Application extends Controller {
         case Some(conf) => {
           val rows = for {
             macroConfigurationRow <- conf.rows
-            if(!macroConfigurationRow.name.equals(configurationRows.head.name)
-             && !macroConfigurationRow.group.equals(configurationRows.head.group))
+            if(!macroConfigurationRow.name.equals(configurationRows.head.name))
           } yield(macroConfigurationRow)
           val rowsToPersist = configurationRows.head :: rows
           conn.saveConfiguration(MacroConfiguration(conf.id, fixtureDescriptor.name, rowsToPersist.toList))

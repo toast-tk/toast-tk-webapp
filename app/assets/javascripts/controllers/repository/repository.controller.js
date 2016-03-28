@@ -6,7 +6,7 @@ define(["angular"], function (angular) {
             $scope.autosetups = [];
             $scope.newAutoSetupRow = {};
             $scope.selectedAutoSetupConfigType = "";
-            $scope.autoSetupConfigFilter = $scope.run_config_types[0];
+            $scope.autoSetupConfigFilter = $scope.run_config_types[1];
             $scope.autosetups = [];
             $scope.autosetup = undefined;
 

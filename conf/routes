@@ -21,12 +21,13 @@ GET         /logout                                       controllers.Applicatio
 GET         /loadAutoSetupCtx/:setupType                  controllers.Application.loadAutoSetupCtx(setupType: String)
 GET         /loadCtxTagData/:itemName                     controllers.Application.loadCtxTagData(itemName: String)
 GET         /loadCtxSentences/:confType                   controllers.Application.loadCtxSentences(confType:String)
-GET			/typeDescriptor								  controllers.DomainController.typeDescriptor()
+GET         /typeDescriptor                               controllers.DomainController.typeDescriptor()
 
 # Ajax for API controller
 POST        /postConnector                                controllers.Application.onConnectorReceived()
 POST        /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
 GET         /loadWikifiedRepository                       controllers.Application.loadWikifiedRepository()
+GET         /loadWebWikifiedRepository                    controllers.Application.loadWebWikifiedWebRepository()
 GET         /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
 GET         /loadSentences/:confType                      controllers.Application.loadSentences(confType:String)
 POST        /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
@@ -37,14 +38,14 @@ POST        /saveConfiguration                            controllers.Configurat
 
 # Ajax routes: Repository Controller
 GET         /loadAutoConfiguration                        controllers.RepositoryController.loadAutoConfiguration()
-GET			/loadServiceEntityRepository				  controllers.RepositoryController.loadServiceEntityRepository()
-GET			/loadWebPageRepository						  controllers.RepositoryController.loadWebPageRepository()
+GET         /loadServiceEntityRepository                  controllers.RepositoryController.loadServiceEntityRepository()
+GET         /loadWebPageRepository                        controllers.RepositoryController.loadWebPageRepository()
 POST        /saveAutoSetupConfiguration                   controllers.RepositoryController.saveAutoConfig()
-POST        /saveServiceConfigBlock						  controllers.RepositoryController.saveServiceConfigBlock()	
+POST        /saveServiceConfigBlock                       controllers.RepositoryController.saveServiceConfigBlock()
 POST        /saveAutoConfigBlock                          controllers.RepositoryController.saveAutoConfigBlock()
 GET         /loadRepository                               controllers.RepositoryController.loadRepository()
 POST        /saveRepository                               controllers.RepositoryController.saveRepository()
-POST        /deleteObject								  controllers.RepositoryController.deleteObject()
+POST        /deleteObject                                 controllers.RepositoryController.deleteObject()
 
 # Ajax routes: Scenarii Controller
 GET         /loadScenariiList                             controllers.ScenarioController.loadScenariiList()
