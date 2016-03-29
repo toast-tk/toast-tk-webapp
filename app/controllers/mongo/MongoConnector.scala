@@ -347,7 +347,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
   }
 
-  def insertScenario(scenario: Scenario) {
+  def insertScenario(scenario: Scenario) : Future[Boolean] = {
     val collection = open_collection("scenarii")
     val query = BSONDocument("name" -> scenario.name, "parent" -> scenario.parent.get)
     collection.find(query).one[Scenario].map {
@@ -356,9 +356,11 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
             case Failure(e) => throw e
             case Success(_) => println("[+] successfully inserted scanario !")
           }
+      true
       }
       case Some(foundScenario) => {
       println("[+] ERROR; scenario existe deja!")
+      false
       }
   }
 }
@@ -367,20 +369,8 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     val collection = open_collection("scenarii")
     scenario.id match {
       case None => {
-/*        val query = BSONDocument("name" -> scenario.name, "parent" -> scenario.parent)
-        collection.find(query).one[Scenario].map {
-         case scenario => scenario match {
-          case None => {
-            collection.insert(updateScenario(scenario.get)).onComplete {
-            case Failure(e) => throw e
-            case Success(_) => println("[+] successfully inserted scanario !")
-          }
-        }
-        case Some(scenario) => {
-        }
+          insertScenario(scenario) //to check:probably not reached
       }
-    }*/
-  }
   case _ => collection.update(BSONDocument("_id" -> BSONObjectID(scenario.id.get)), updateScenario(scenario), upsert=true).onComplete {
     case Failure(e) => throw e
     case Success(_) => println("successfully saved scanario !")

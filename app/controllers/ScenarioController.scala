@@ -146,8 +146,23 @@ object ScenarioController extends Controller {
                                                   scenario.rows,
                                                   scenario.parent
                                                   )
-           conn.insertScenario(scenarioWithId)
-           def extendedObject(obj: JsObject) = {
+          val result = conn.insertScenario(scenarioWithId)
+/*          .flatMap{
+            case isInserted: Boolean =>
+            isInserted match {
+              case false => {
+                scala.concurrent.Future{BadRequest("could not insert")}
+              }
+              case true => {
+               def extendedObject(obj: JsObject) = {
+                obj + ("columns" -> DomainController.scenarioDescriptorProvider((obj \ "type").as[String]))
+              }
+              val flatResponse = extendedObject(Json.toJson(scenarioWithId).as[JsObject])
+              scala.concurrent.Future{Ok(Json.toJson(flatResponse))}
+            }
+          }
+        }*/
+        def extendedObject(obj: JsObject) = {
           obj + ("columns" -> DomainController.scenarioDescriptorProvider((obj \ "type").as[String]))
         }
         val flatResponse = extendedObject(Json.toJson(scenarioWithId).as[JsObject])
