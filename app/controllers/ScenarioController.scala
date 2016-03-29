@@ -137,18 +137,18 @@ object ScenarioController extends Controller {
   /**
    * Save scenarii
    */
-  def saveScenarii() = Action(parse.json) { implicit request =>
+   def saveScenarii() = Action(parse.json) { implicit request =>
     request.body.validate[Scenario].map {
       case scenario: Scenario =>
       scenario.id match {
         case None => {
           val scenarioWithId :Scenario = Scenario(Some(BSONObjectID.generate.stringify),
-                                                  scenario.name,
-                                                  scenario.cType,
-                                                  scenario.driver,
-                                                  scenario.rows,
-                                                  scenario.parent
-                                                  )
+            scenario.name,
+            scenario.cType,
+            scenario.driver,
+            scenario.rows,
+            scenario.parent
+            )
           Await.ready(conn.insertScenario(scenarioWithId), Duration.Inf).value.get match {
             case Failure(e) => throw e
             case Success(isInserted) => {
@@ -165,15 +165,24 @@ object ScenarioController extends Controller {
           }
         }
       }
-        case _ => {
-          conn.saveScenario(scenario)
-          Ok(Json.toJson(scenario))
+      case _ => {
+        Await.ready(conn.saveScenario(scenario), Duration.Inf).value.get match {
+          case Failure(e) => throw e
+          case Success(isInserted) => {
+           isInserted match {
+            case true => {
+              Ok(Json.toJson(scenario))
+            }
+            case false => { BadRequest("save err: Node already exists")}
+          }
         }
       }
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
+  }.recoverTotal {
+    e => BadRequest("Detected error:" + JsError.toJson(e))
+  }
+}
 
 
   /**
