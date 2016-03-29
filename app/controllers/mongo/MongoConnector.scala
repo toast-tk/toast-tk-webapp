@@ -339,13 +339,33 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
   }
 
-  def deleteScenarii(scenarioId: String) {
+  def deleteScenarii(scenarioId: String) : Future[Boolean] ={
     val collection = open_collection("scenarii")
     /*val childList = findChildNodes(scenarioId)*/
-    collection.remove(BSONDocument("_id" -> BSONObjectID(scenarioId))).onComplete {
-      case Failure(e) => throw e
-      case Success(_) => println(s"[+] successfully removed scanario: $scenarioId")
-    }
+    hasChildNodes(scenarioId).map {
+      case false => {
+        collection.remove(BSONDocument("_id" -> BSONObjectID(scenarioId))).onComplete {
+          case Failure(e) => throw e
+          case Success(_) => println(s"[+] successfully removed scanario: $scenarioId")
+        }
+        true
+      }
+       case true => {
+        false
+       }
+     }
+  }
+
+  def hasChildNodes(nodeId : String): Future[Boolean] ={
+     val collection = open_collection("scenarii")
+     collection.find(BSONDocument("parent" -> nodeId)).one[Scenario].map{
+      case None => {
+        false
+      }
+      case Some(childNode) => {
+        true
+      }
+     }
   }
 
 /*  def findChildNodes(nodeId : String): Future[List[Scenario]] ={

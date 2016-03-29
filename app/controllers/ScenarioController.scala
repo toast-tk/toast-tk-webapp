@@ -127,8 +127,19 @@ object ScenarioController extends Controller {
   def deleteScenarii() = Action(parse.json) { implicit request =>
     request.body.validate[String].map {
       case scenariiId: String =>
-        conn.deleteScenarii(scenariiId)
-        Ok("scenario deleted !")
+       Await.ready(conn.deleteScenarii(scenariiId), Duration.Inf).value.get match {
+            case Failure(e) => throw e
+            case Success(hasNode) => {
+              hasNode match {
+              case true => {
+                Ok("scenario deleted !")
+              }
+              case false => {
+                BadRequest("Error: selected has child Node")
+              }
+            }
+          }
+        }
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
     }

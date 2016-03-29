@@ -165,6 +165,8 @@ define(["angular"], function (angular) {
                              $scope.folder = null;
                         })
                     });
+                }, function(){
+                     toastr.error("Error: has child node!");
                 });
             }
 
