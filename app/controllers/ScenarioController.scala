@@ -17,7 +17,10 @@ import play.api.libs.json._
 import play.api.mvc._
 import controllers.parsers.WebPageElement
 
+import scala.concurrent._
+import scala.concurrent.duration.Duration
 import reactivemongo.bson.{BSONObjectID, BSONDocument}
+  import scala.util.{Try, Success, Failure}
 import scala.collection.immutable.StringOps
 import scala.util.matching.Regex
 
@@ -146,28 +149,22 @@ object ScenarioController extends Controller {
                                                   scenario.rows,
                                                   scenario.parent
                                                   )
-          val result = conn.insertScenario(scenarioWithId)
-/*          .flatMap{
-            case isInserted: Boolean =>
-            isInserted match {
-              case false => {
-                scala.concurrent.Future{BadRequest("could not insert")}
-              }
+          Await.ready(conn.insertScenario(scenarioWithId), Duration.Inf).value.get match {
+            case Failure(e) => throw e
+            case Success(isInserted) => {
+             isInserted match {
               case true => {
-               def extendedObject(obj: JsObject) = {
-                obj + ("columns" -> DomainController.scenarioDescriptorProvider((obj \ "type").as[String]))
+                def extendedObject(obj: JsObject) = {
+                  obj + ("columns" -> DomainController.scenarioDescriptorProvider((obj \ "type").as[String]))
+                }
+                val flatResponse = extendedObject(Json.toJson(scenarioWithId).as[JsObject])
+                Ok(Json.toJson(flatResponse))
               }
-              val flatResponse = extendedObject(Json.toJson(scenarioWithId).as[JsObject])
-              scala.concurrent.Future{Ok(Json.toJson(flatResponse))}
+              case false => { BadRequest("Node already exists")}
             }
           }
-        }*/
-        def extendedObject(obj: JsObject) = {
-          obj + ("columns" -> DomainController.scenarioDescriptorProvider((obj \ "type").as[String]))
         }
-        val flatResponse = extendedObject(Json.toJson(scenarioWithId).as[JsObject])
-          Ok(Json.toJson(flatResponse))
-        }
+      }
         case _ => {
           conn.saveScenario(scenario)
           Ok(Json.toJson(scenario))
