@@ -26,7 +26,11 @@ define(["angular"], function (angular) {
             $scope.editScenario = editScenario;
             $scope.deleteScenarii = deleteScenarii;
             $scope.addRowBefore = addRowBefore;
+            $scope.selectNode = selectNode;
 
+            function selectNode(id){
+                TreeLayoutService.selectNode(id);
+            }
             /* tree build promise */
             var treeExplorerPromise = $q.defer();
 
@@ -413,6 +417,7 @@ if(doBuildTree === true){
     TreeLayoutService.addSelectedNodeCallback("toastScenariosTreeExplorer", function(selectedFolder){
         $scope.scenario = null ;
         $scope.folder = selectedFolder;
+        $scope.folderContents = TreeLayoutService.getAllChildNodes(selectedFolder.id);
         $scope.$apply();
     }, function(selectedElementId,selectedItem){
         return selectedElementId && selectedItem.type=="folder";

@@ -16,7 +16,9 @@ define(["angular"], function (angular) {
               editSelectedNodeName : editSelectedNodeName,
               removeSelectedNode : removeSelectedNode,
               addSelectedNodeCallback : addSelectedNodeCallback,  
-              adjustTreeSize : adjustTreeSize
+              adjustTreeSize : adjustTreeSize,
+              getAllChildNodes: getAllChildNodes,
+              selectNode: selectNode
             }
 
             /**/
@@ -190,6 +192,21 @@ return treeExplorerPromise.promise;
 
            function getSelectedNode(){
             return self.concernedNode;
+           }
+
+           /* BEGIN : getting first level node */
+           function getAllChildNodes(id){
+            var childNodes = [];
+            $$("tree1").data.eachChild(id, function(obj){ 
+                childNodes.push(obj);
+              console.log(obj.id); 
+            });
+            return childNodes ;
+           }
+           /* END : getting first level node */
+
+           function selectNode(id){
+            $$("tree1").select(id);
            }
 }
 }
