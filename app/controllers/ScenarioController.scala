@@ -146,7 +146,7 @@ object ScenarioController extends Controller {
                                                   scenario.rows,
                                                   scenario.parent
                                                   )
-           conn.saveScenario(scenarioWithId)
+           conn.insertScenario(scenarioWithId)
            def extendedObject(obj: JsObject) = {
           obj + ("columns" -> DomainController.scenarioDescriptorProvider((obj \ "type").as[String]))
         }
