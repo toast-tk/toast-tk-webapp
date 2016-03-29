@@ -1,4 +1,4 @@
-
+ 
 package controllers
 
 import boot.AppBoot
@@ -16,8 +16,8 @@ import play.api.libs.json.Writes._
 import play.api.libs.json._
 import play.api.mvc._
 import controllers.parsers.WebPageElement
-import reactivemongo.bson.{BSONObjectID, BSONDocument}
 
+import reactivemongo.bson.{BSONObjectID, BSONDocument}
 import scala.collection.immutable.StringOps
 import scala.util.matching.Regex
 
