@@ -415,7 +415,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
           insertScenario(scenario) //to check:probably not reached
           Future{false} //looks like not reached
         }
-        case _ => findOneScenarioBy(BSONDocument("_id" -> BSONDocument("$ne" -> scenario.id), "name" -> scenario.name, "parent" -> scenario.parent.get)).map{
+        case _ => findOneScenarioBy(BSONDocument("_id" -> BSONDocument("$ne" -> BSONObjectID(scenario.id.get)), "name" -> scenario.name, "parent" -> scenario.parent.get)).map{
           case None => {          
             collection.update(BSONDocument("_id" -> BSONObjectID(scenario.id.get)), updateScenario(scenario), upsert=true).onComplete {
               case Failure(e) => throw e
