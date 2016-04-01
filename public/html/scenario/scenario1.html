@@ -117,7 +117,7 @@
                                 pattern-context="{{scenario.type}}"
                                 on-pattern-change="onPatternValueChange(row, position, identifier, value)">
                               </span>
-                              <div ng-if="editableStepIndex == $index"  class="col-md-10"
+                              <div ng-if="editableStepIndex == $index"  class="col-md-11"
                               angucomplete-alt id="newStepAutocomplete"
                               ng-keyup="$event.keyCode == 13 && changeEditedStep()"
                               ng-model="newStepModel"
@@ -153,7 +153,6 @@
                               placeholder="Type here.."
                               maxlength="50"
                               pause="100"
-                              selected-object="selectedSentence"
                               local-data="regexFullList"
                               search-fields="sentence"
                               description-field="kind"
