@@ -43,7 +43,7 @@
                                 <span ng-if="isEditScenarioName===false">{{folder.name}}</span>
                                 <input type="text" ng-if="isEditScenarioName===true" ng-model="folder.name"/>
                                 <div class="pull-right" style="margin: -5px;">
-                                  <button class="btn btn-default btn-warning btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
+                                  <button class="btn btn-default btn-edit btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
                                   <button class="btn btn-default btn-primary btn-xs" data-ng-click="saveScenarii(folder)"> <i class="fa fa-floppy-o"></i> Save</button>
                                   <button class="btn btn-default btn-danger btn-xs" data-ng-click="deleteScenarii(folder)"><i class="fa fa-trash"></i> Delete</button>
                                 </div>
@@ -73,7 +73,7 @@
                                 <span ng-if="isEditScenarioName===false">{{scenario.name}}</span>
                                 <input type="text" ng-if="isEditScenarioName===true" ng-model="scenario.name"/>
                                 <div class="pull-right" style="margin: -5px;">
-                                  <button class="btn btn-default btn-warning btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
+                                  <button class="btn btn-default btn-edit btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
                                   <button class="btn btn-default btn-primary btn-xs" data-ng-click="saveScenarii(scenario)"> <i class="fa fa-floppy-o"></i> Save</button>
                                   <button class="btn btn-default btn-danger btn-xs" data-ng-click="deleteScenarii(scenario)"><i class="fa fa-trash"></i> Delete</button>
                                 </div>
@@ -102,13 +102,13 @@
                              <div id="importActionsPanel" class="panel panel-default" style="height: 86%; overflow-y: scroll;">
                                <ul class="list-group list-striped" ui-sortable ng-model="scenario.rows">
                                 <li class="list-group-item row" ng-repeat="r in scenario.rows">
-                                    <span class="col-md-1"  style="width: 5%; padding-left: 6px; padding-right: 6px;">
+                                    <span ng-if="editableStepIndex !== $index" class="col-md-1"  style="width: 5%; padding-left: 6px; padding-right: 6px;">
                                         <i
                                           class="{{ICONS[r.kind]}} fa-2x"
                                           tooltip="{{r.kind}}" tooltip-trigger="mouseenter" tooltip-placement="right"/>
                                     </span>  
 
-                                <span class="col-md-10" ng-if="scenario.columns[0].name === 'patterns'"
+                                <span ng-if="editableStepIndex !== $index" class="col-md-10" ng-if="scenario.columns[0].name === 'patterns'"
                                 pattern style="width: 85%; padding-left: 6px; padding-right: 6px;"
                                 pattern-value="{{r[scenario.columns[0].name]}}" 
                                 pattern-post="{{scenario.columns[0].post}}"
@@ -117,11 +117,28 @@
                                 pattern-context="{{scenario.type}}"
                                 on-pattern-change="onPatternValueChange(row, position, identifier, value)">
                               </span>
-                              <span class="pull-right col-md-1" style="padding-left: 6px; padding-right: 6px; width: 9%;">
-                                <button class="btn btn-default btn-xs" data-ng-click="">
+                              <div ng-if="editableStepIndex == $index"  class="col-md-10"
+                              angucomplete-alt id="newStepAutocomplete"
+                              ng-keyup="$event.keyCode == 13 && changeEditedStep()"
+                              ng-model="newStepModel"
+                              selected-object="newStepSelected"
+                              initial-value="r['patterns']"
+                              template-url="/assets/html/editstep.angucomplete.template.html"
+                              placeholder="Type here.."
+                              maxlength="50"
+                              pause="100"
+                              local-data="regexFullList"
+                              search-fields="sentence"
+                              description-field="kind"
+                              title-field="sentence"
+                              minlength="1"
+                              input-class="form-control form-control-small"
+                              match-class="highlight"></div>
+                              <span class="pull-right col-md-1" style="padding: 0px; width: 8%;">
+                                <button  ng-if="editableStepIndex !== $index"  class="btn btn-default btn-xs btn-edit1" ng-click="setEditableStep($index, r)">
                                   <i class="fa fa-edit"></i>
                                 </button>
-                                <button class="btn btn-default btn-xs" data-ng-click="deleteRow(scenario, r)">
+                                <button class="pull-right btn btn-default btn-xs btn-danger1" data-ng-click="deleteRow(scenario, r)">
                                   <i class="fa fa-trash"></i>
                                 </button>
                               </span>
@@ -130,6 +147,7 @@
                               <!-- {{regexMap}} {{regexList}} -->
                               <div angucomplete-alt id="newStepAutocomplete"
                               ng-keyup="$event.keyCode == 13 && addNewStep()"
+                              ng-model="newStepModel"
                               selected-object="newStepSelected"
                               template-url="/assets/html/action.angucomplete.template.html"
                               placeholder="Type here.."

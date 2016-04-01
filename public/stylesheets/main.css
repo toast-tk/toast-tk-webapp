@@ -269,6 +269,31 @@
 
 /* END : bootstrap overriding */
 
+/* Buttons */
+.btn-danger1 {
+    color: #FA3414;
+    background-color: #F5E9E7;
+    border-color: #F36E58;  
+}
+
+.btn-edit{
+    color: #ffffff;
+    background-color: #079140;
+    border-color: #006C2D;
+}
+
+.btn-edit:hover{
+    color: #ffffff;
+    background-color: #006C2D;
+    border-color: #333333;
+}
+
+.btn-edit1{
+      color: #006C2D;
+    background-color: #CFFFCF;
+    border-color: #89AD98;
+}
+
 /* webix overriding */
 .webix_tree_item.webix_selected {
     background: #ddd !important;

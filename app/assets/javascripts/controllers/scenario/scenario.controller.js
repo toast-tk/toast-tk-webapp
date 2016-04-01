@@ -103,34 +103,91 @@ define(["angular"], function (angular) {
                 toastr.success('Scenario created !');
             };
 
-            /* BEGIN : new step adding through autocomplete */
-            var newStepPromise = $q.defer();
-            function newStepSelected(newStep){
+            /* BEGIN : step structure builder for edit and add */
+            function buildSelectedStep(newStep){
+             var promise = $q.defer();
+             var isResolved ;                
              var step =  {};
              step.kind = $scope.scenario.type ;
              if(angular.isDefined(newStep)){
-                /*console.log("here",newStep);*/
                 step['patterns'] = newStep.originalObject.typed_sentence;
                 step.kind = newStep.description ;
-                } else { //step vide ou ne fait pas partie de la liste
-                    step['patterns'] = "";
-                    newStepPromise.resolve(step);
+                promise.resolve(step);
+                isResolved  = true;
+                }else{
+                    step['patterns'] ="";
+                    promise.resolve(step);
+                    isResolved  = true;
                 }
-                newStepPromise = $q.defer();
-                newStepPromise.resolve(step);
+                return {promise: promise,
+                        isResolved :isResolved};
+            }
+
+            function buildCustomStep(newCustomStep){
+                var promise = $q.defer();                
+                var step =  {};
+                step.kind = $scope.scenario.type ;
+                step['patterns'] = newCustomStep;
+                promise.resolve(step);
+                return promise;
+            }
+            /* BEGIN : step structure builder for edit and add */
+
+            /* BEGIN : new step adding through autocomplete */
+            var newStepPromise = $q.defer();
+            var isNewStepResolved = false;
+            function newStepSelected(newStep){
+             var response = buildSelectedStep(newStep);
+             newStepPromise = response.promise;
+             isNewStepResolved = (response.isResolved == true) ? response.isResolved : isNewStepResolved;
+            }
+
+            function newCustomStepSelected(newCustomStep){
+                newStepPromise = buildCustomStep(newCustomStep);
+                isNewStepResolved = true;
             }
 
             function addNewStep(){
+                if(isNewStepResolved==false){
+                    console.log("eef ", $scope.newStepModel)
+                    newCustomStepSelected("");
+                }
+
                 newStepPromise.promise.then(function(step){
+                    isNewStepResolved = false;
                     console.log("   adding ;", angular.copy(step));
                     $scope.scenario.rows.push(angular.copy(step));
                     setDropListPositionClass();
                     $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "fast");
                     $scope.$broadcast('angucomplete-alt:clearInput', 'newStepAutocomplete');
                 });
-                
             }
             /* END : new step adding through autocomplete */
+
+            /* BEGIN : step editing */
+            $scope.editableStepIndex; // TODO : init when change scenario
+            $scope.setEditableStep = setEditableStep ;
+            var currentStep ;
+            function setEditableStep(stepIndex, row){
+                $scope.editableStepIndex = stepIndex;
+                currentStep= row;
+            }
+
+            $scope.changeEditedStep= changeEditedStep ;
+            function changeEditedStep(){
+                if(isNewStepResolved==false){
+                    newCustomStepSelected(currentStep['patterns']);
+                }
+
+                newStepPromise.promise.then(function(step){
+                    isNewStepResolved = false;
+                    console.log("editing :", angular.copy(step));
+                    $scope.scenario.rows[$scope.editableStepIndex] = step;
+                    $scope.editableStepIndex = null;
+                });    
+            }
+
+            /*END : step editing */
 
             function addRowBefore(scenario, newRow, currentRow) {
 
