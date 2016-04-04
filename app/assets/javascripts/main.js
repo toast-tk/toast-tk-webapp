@@ -91,11 +91,13 @@
         "Campaign1Ctrl": ["./controllers/campaign/campaign.controller"],
         "newStepService": ["./controllers/scenario/newstep.service"],
         "newStepModalCtrl": ["./controllers/scenario/newstep.modal.controller"],
-        "newObjectModalCtrl": ["./controllers/repository/newobject.modal.controller"]
+        "newObjectModalCtrl": ["./controllers/repository/newobject.modal.controller"],
+        "routerConfig": ["./main.routes"],
+        "configConfig": ["./main.config"]
     }
   });
 
-  require(["angular", "./services/playRoutes", "./controllers/layout/tree.layout.service" ,
+  require(["angular", "./services/playRoutes",  "routerConfig", "configConfig", "./controllers/layout/tree.layout.service" ,
             "loginCtrl", "loginService", "loginResolverService", "./controllers/editor", "./controllers/scenario", "SettingsCtrl", "newSettingsModalCtrl", "Repository1Ctrl", "Scenario1Ctrl", "Campaign1Ctrl",
             "./controllers/configuration","./controllers/repository", "./controllers/home",
             "./controllers/layout/sidebar.menu.controller", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!config/icon.constants.config.json",
@@ -104,12 +106,13 @@
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
             "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "angular-toastr", "webix"], 
-          function(a, b, treeLayoutService, login, loginService, loginResolverService, editor, scenario, settingsCtrl, newSettingsModalCtrl, repository1, scenario1, campaign1, configuration, repository, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile) {
+          function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, editor, scenario, settingsCtrl, newSettingsModalCtrl, repository1, scenario1, campaign1, configuration, repository, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile) {
 
               var app = angular.module("app", 
                 ['ngRoute', 'ui.router', "play.routing", "ngAnimate",
                 "tk.components", "tk.services",
                 "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable", "sidesplit", "webix","angucomplete-alt","toastr"]);
+              
               app.controller("LoginCtrl", login.LoginCtrl);
               app.controller("MainCtrl", home.MainCtrl);
               app.controller("ConfigurationCtrl", configuration.ConfigurationCtrl);
@@ -139,105 +142,9 @@
               app.service("LayoutService", layoutService.LayoutService);
               app.service("TreeLayoutService", treeLayoutService.TreeLayoutService);
               app.constant("ICONS", constantsFile);
-              app.config(["$stateProvider", "$urlRouterProvider", "toastrConfig", function($stateProvider, $urlRouterProvider, toastrConfig){
 
-                   angular.extend(toastrConfig, {
-                    autoDismiss: false,
-                    timeOut: 2000,
-                    extendedTimeOut: 300,
-                    containerId: 'toast-container',
-                    maxOpened: 0,    
-                    newestOnTop: true,
-                    positionClass: 'toast-top-center',
-                    preventDuplicates: false,
-                    preventOpenDuplicates: false,
-                    target: 'body'
-                  });
-
-                  $stateProvider
-                  .state('login', {
-                      url: "/",
-                       views: {
-                           'main': {
-                      templateUrl: "assets/html/login.html", 
-                      controller: "LoginCtrl",
-                      resolve:{
-                        checkLoggedLogin : ["LoginResolverService", function (LoginResolverService){
-                          return LoginResolverService.checkLoggedLoginResolve() ;
-                        }]
-                      }
-                        }
-                      }
-                  }) 
-                  .state('layout', {
-                    url: "/",
-                    abstract: true,
-                    cache: false,
-                    views: {
-                      'main': {
-                        templateUrl: "assets/html/layout/layout.view.html",
-                        controller: "LayoutCtrl",
-                        resolve:{
-                          checkLoggedAndGetUser : ["LoginResolverService", function (LoginResolverService){
-                            return LoginResolverService.checkLoggedAndGetUserResolve() ;
-                          }]
-                        }
-                      }
-                    }
-                  })
-                  .state('main', {
-                    url: "/main",
-                    cache: false,
-                    views: {
-                     'main': {
-                      templateUrl: "assets/html/editor.html", 
-                      controller: "MainCtrl"
-                    }
-                  }
-                })
-                  .state('layout.settings', {
-                    url: "settings",
-                    cache: false,
-                    views: {
-                      'content':{
-                       templateUrl: "assets/html/settings/settings.html",
-                       controller: "SettingsCtrl"
-                     }
-                   }
-                 })
-                  .state('layout.repository1', {
-                    url: "repository1",
-                    cache: false,
-                    views: {
-                      'content':{
-                       templateUrl: "assets/html/repository/repository.html",
-                       controller: "Repository1Ctrl"
-                     }
-                   }
-                 })
-                  .state('layout.scenario1', {
-                    url: "scenario1",
-                    cache: false,
-                    views: {
-                      'content':{
-                       templateUrl: "assets/html/scenario/scenario1.html",
-                       controller: "Scenario1Ctrl"
-                     }
-                   }
-                 })
-                  .state('layout.campaign1', {
-                    url: "campaign1",
-                    cache: false,
-                    views: {
-                      'content':{
-                       templateUrl: "assets/html/campaign/campaign.html",
-                       controller: "Campaign1Ctrl"
-                     }
-                   }
-                 });
-                 $urlRouterProvider.when('','/');
-                 $urlRouterProvider.otherwise('/');
-              }]);
+              app.config(routerConfig.RouterConfig);
+              app.config(configConfig.ConfigConfig);
 
               app.run(function(editableOptions) {
                 editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
