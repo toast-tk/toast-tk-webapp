@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        ScenarioCtrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $modal, TreeLayoutService, ICONS, LayoutService, NewStepService, toastr) {
+        ScenarioCtrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $modal, TreeLayoutService, ICONS, LayoutService, NewStepService, UtilsScenarioService, toastr) {
             $scope.isEditScenarioName = false;
             $scope.isCollapsed = false;
             $scope.ICONS = ICONS ;
@@ -271,19 +271,19 @@ define(["angular"], function (angular) {
                 var scenarioSentenceWithValues = scenarioRow.patterns;
                 scenarioRow.patterns = typeSentence;
                 var patternValue = pattern;
-                var tag = getRegexTag(patternValue);
+                var tag = UtilsScenarioService.getRegexTag(patternValue);
                 var tags = [];
                 var tagPosition = 0;
                 while (tag != null) {
                     tags.push(tag);
                     var tagName = tags[tagPosition][0];
                     var varType = tags[tagPosition][3];
-                    var mappingValue = scenarioSentenceWithValues.split(" ")[getIndex(pattern.split(" "), tagName)];
-                    patternValue = replaceIndex(patternValue, tagName,  tags[tagPosition].index , mappingValue);
+                    var mappingValue = scenarioSentenceWithValues.split(" ")[UtilsScenarioService.getIndex(pattern.split(" "), tagName)];
+                    patternValue = UtilsScenarioService.replaceIndex(patternValue, tagName,  tags[tagPosition].index , mappingValue);
                     mappingValue = mappingValue.replace(/\*/g, '');
                     onPatternValueChange(scenarioRow, tagPosition, varType == "component" ? varType : tagPosition.toString(), mappingValue);
                     tagPosition = tagPosition + 1;
-                    tag = getRegexTag(patternValue);
+                    tag = UtilsScenarioService.getRegexTag(patternValue);
                 }
             }
 
@@ -307,56 +307,7 @@ define(["angular"], function (angular) {
                 }
             }
 
-
-
-            /** util functions */
-            function getRegexTag(sentence){
-                var tagRegex = /(@)\[\[(\d+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+)\]\]/gi
-                var tag = tagRegex.exec(sentence);
-                return tag;
-            }
-
-            function getIndex(array, word){
-                for(var i = 0 ; i< array.length; i++){
-                    if(array[i] == word){
-                        return i;
-                    }
-                }
-            }
-
-            function replaceIndex(string, regex, at, repl) {
-               return string.replace(regex, function(match, i) {
-                if( i === at ) return repl;
-                return match;
-            });
-           }                    
-
-           $scope.regexFullList=[];
-
-           function toTreeDataList(flat){
-            var nodes = [];
-            var toplevelNodes = [];
-            var lookupList = {};
-
-            for (var i = 0; i < flat.length; i++) {
-                flat[i].data = []
-                lookupList[flat[i].id] = flat[i];
-                nodes.push(flat[i]);
-                if (flat[i].parent == null || flat[i].parent == 0) {
-                    toplevelNodes.push(flat[i]);
-                }
-            }
-
-            for (var i = 0; i < nodes.length; i++) {
-              var n = nodes[i];
-              if (!(n.parent == 0 || n.parent == null)) {
-                if(angular.isDefined(lookupList[n.parent])){
-                  lookupList[n.parent].data = lookupList[n.parent].data.concat([n]);
-              }
-          }
-      }
-      return toplevelNodes;
-  }
+   $scope.regexFullList=[];
 
   function __init__(doBuildTree) {
     for(var i =0 ; i < $scope.scenario_types.length; i++){
@@ -406,7 +357,7 @@ define(["angular"], function (angular) {
         }
     })
     if(angular.isDefined(data) && data.length != 0){
-        $scope.senariiTree = toTreeDataList(data);    
+        $scope.senariiTree = UtilsScenarioService.toTreeDataList(data);    
     } else {
         console.warn("no data nodes");
     }
@@ -433,6 +384,7 @@ if(doBuildTree === true){
     /* end : generation de la tree */
 
     TreeLayoutService.addSelectedNodeCallback("toastScenariosTreeExplorer", function(selectedScenario){
+        $scope.editableStepIndex = null;
         $scope.scenario = selectedScenario ;
         $scope.folder = null;
         setDropListPositionClass();
