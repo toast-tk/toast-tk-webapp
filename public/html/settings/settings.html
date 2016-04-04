@@ -4,7 +4,7 @@
                 		<div height="51" >
                 			<h3 class="page-header" >
                 				<i class="fa fa-fw fa-gear"></i>  Settings <small> (configuration) </small>
-                				<button class="btn btn-default btn-sm pull-right" style="margin-top : -5px; " data-ng-click="saveConfig()">Save</button>
+                				<button class="btn btn-sm btn-primary pull-right" style="margin-top : -5px; " data-ng-click="saveConfig()"><i class="fa fa-floppy-o"></i> Save</button>
                 			</h3>
                 		</div>
                 		<div view="cols"> <!--Webix layout cols are initialized-->
@@ -40,12 +40,9 @@
                           			</h3>
                           		</div>
                           		<div class="panel-body" style="height: 100%; overflow-y: auto; overflow-x: hidden;">
-                          			<ul class="list-group">
-                          				<li class="list-group-item row" ng-repeat="syntax in selectedConfig.syntax">
-                                    <div class="" style="border: #ccc solid 1px; border-top: none;">
-                                        <div class="panel panel-default" style="margin-bottom: 11px;">
+                                        <div ng-repeat="syntax in selectedConfig.syntax" class="panel panel-default" style="margin-bottom: 11px;">
                                           <div class="panel-heading" style="padding: 3px;" role="tab" id="headingOne">
-                                            <h4 class="panel-title" style="font-size:14px;">
+                                            <h4 class="panel-title" style="font-size:14px;     height: 21px;">
                                               <a role="button" 
                                                   data-toggle="collapse" 
                                                   data-parent="#accordion" 
@@ -53,22 +50,21 @@
                                                   ria-controls="collapseOne">
                                                   {{syntax.sentence}} 
                                               </a>
-                                              <button class="btn btn-default btn-xs pull-right" 
+                                              <button class="btn btn-default btn-xs pull-right btn-danger1" 
                                                       data-ng-click="deleteSentenceLine(syntax, sentence)">
                                                 <i class="fa fa-trash"></i>
                                               </button>
                                             </h4>
                                             
                                           </div>
-                                          <div id="collapseOne" 
+                                          <div ng-if="syntax.description != null" id="collapseOne" 
                                               class="panel-collapse collapse in" 
                                               role="tabpanel" aria-labelledby="headingOne">
                                             <div class="panel-body">
                                               {{syntax.description}} 
                                             </div>
                                       </div>
-                          				</li>
-                          			</ul>
+                                      </div>
                           			<hr ng-show="selectedConfig != undefined"/>
                           			<div ng-show="selectedConfig != undefined">
                           				<div class="row">
