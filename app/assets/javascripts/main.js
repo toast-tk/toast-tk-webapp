@@ -89,6 +89,7 @@
         "Repository1Ctrl": ["./controllers/repository/repository.controller"],
         "Scenario1Ctrl": ["./controllers/scenario/scenario.controller"],
         "Campaign1Ctrl": ["./controllers/campaign/campaign.controller"],
+        "newStepService": ["./controllers/scenario/newstep.service"],
         "newStepModalCtrl": ["./controllers/scenario/newstep.modal.controller"],
         "newObjectModalCtrl": ["./controllers/repository/newobject.modal.controller"]
     }
@@ -97,13 +98,13 @@
   require(["angular", "./services/playRoutes", "./controllers/layout/tree.layout.service" ,
             "loginCtrl", "loginService", "loginResolverService", "./controllers/editor", "./controllers/scenario", "SettingsCtrl", "newSettingsModalCtrl", "Repository1Ctrl", "Scenario1Ctrl", "Campaign1Ctrl",
             "./controllers/configuration","./controllers/repository", "./controllers/home",
-            "./controllers/layout/sidebar.menu.controller", "layout", "layoutService", "newObjectModalCtrl", "newStepModalCtrl", "json!config/icon.constants.config.json",
+            "./controllers/layout/sidebar.menu.controller", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!config/icon.constants.config.json",
 
             "./services/client-service",
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
             "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "angular-toastr", "webix"], 
-          function(a, b, treeLayoutService, login, loginService, loginResolverService, editor, scenario, settingsCtrl, newSettingsModalCtrl, repository1, scenario1, campaign1, configuration, repository, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepModalCtrl, constantsFile) {
+          function(a, b, treeLayoutService, login, loginService, loginResolverService, editor, scenario, settingsCtrl, newSettingsModalCtrl, repository1, scenario1, campaign1, configuration, repository, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile) {
 
               var app = angular.module("app", 
                 ['ngRoute', 'ui.router', "play.routing", "ngAnimate",
@@ -129,6 +130,7 @@
               app.controller("LayoutCtrl", layout.LayoutCtrl);
               
               app.controller("newObjectModalCtrl", newObjectModalCtrl.newObjectModalCtrl);
+              app.service("NewStepService", newStepService.NewStepService);
               app.controller("newStepModalCtrl", newStepModalCtrl.newStepModalCtrl);
 
               app.service("LoginService", loginService.LoginService);

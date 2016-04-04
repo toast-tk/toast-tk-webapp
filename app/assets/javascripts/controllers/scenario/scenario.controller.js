@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        Scenario1Ctrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $modal, TreeLayoutService, ICONS, LayoutService, toastr) {
+        Scenario1Ctrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $modal, TreeLayoutService, ICONS, LayoutService, NewStepService, toastr) {
             $scope.isEditScenarioName = false;
             $scope.isCollapsed = false;
             $scope.ICONS = ICONS ;
@@ -103,50 +103,24 @@ define(["angular"], function (angular) {
                 toastr.success('Scenario created !');
             };
 
-            /* BEGIN : step structure builder for edit and add */
-            function buildSelectedStep(newStep){
-             var promise = $q.defer();
-             var isResolved ;                
-             var step =  {};
-             step.kind = $scope.scenario.type ;
-             if(angular.isDefined(newStep)){
-                step['patterns'] = newStep.originalObject.typed_sentence;
-                step.kind = newStep.description ;
-                promise.resolve(step);
-                isResolved  = true;
-                }else{
-                    step['patterns'] ="";
-                    promise.resolve(step);
-                    isResolved  = true;
-                }
-                return {promise: promise,
-                        isResolved :isResolved};
-            }
-
-            function buildCustomStep(newCustomStep){
-                var promise = $q.defer();                
-                var step =  {};
-                step.kind = $scope.scenario.type ;
-                step['patterns'] = newCustomStep;
-                promise.resolve(step);
-                return promise;
-            }
-            /* BEGIN : step structure builder for edit and add */
-
-            /* BEGIN : new step adding through autocomplete */
+            /* BEGIN : autocomplete step manipulation */
             var newStepPromise = $q.defer();
             var isNewStepResolved = false;
             function newStepSelected(newStep){
-             var response = buildSelectedStep(newStep);
+             var response = NewStepService.buildSelectedStep(newStep, $scope.scenario.type);
              newStepPromise = response.promise;
              isNewStepResolved = (response.isResolved == true) ? response.isResolved : isNewStepResolved;
             }
 
             function newCustomStepSelected(newCustomStep){
-                newStepPromise = buildCustomStep(newCustomStep);
+                 var step = { kind : $scope.scenario.type ,
+                                patterns : newCustomStep};
+                newStepPromise = NewStepService.buildCustomStep(step);
                 isNewStepResolved = true;
             }
+            /* END : autocomplete step manipulation */
 
+            /* BEGIN : new step adding through autocomplete */
             function addNewStep(){
                 if(isNewStepResolved==false){
                     console.log("eef ", $scope.newStepModel)
@@ -186,7 +160,6 @@ define(["angular"], function (angular) {
                     $scope.editableStepIndex = null;
                 });    
             }
-
             /*END : step editing */
 
             function addRowBefore(scenario, newRow, currentRow) {
