@@ -86,9 +86,9 @@
         "layoutService" :  ['controllers/layout/layout.service'],
         "SettingsCtrl" :  ['controllers/settings/settings.controller'],
         "newSettingsModalCtrl": ["./controllers/settings/newSettings.modal.controller"],
-        "Repository1Ctrl": ["./controllers/repository/repository.controller"],
-        "Scenario1Ctrl": ["./controllers/scenario/scenario.controller"],
-        "Campaign1Ctrl": ["./controllers/campaign/campaign.controller"],
+        "RepositoryCtrl": ["./controllers/repository/repository.controller"],
+        "ScenarioCtrl": ["./controllers/scenario/scenario.controller"],
+        "CampaignCtrl": ["./controllers/campaign/campaign.controller"],
         "newStepService": ["./controllers/scenario/newstep.service"],
         "newStepModalCtrl": ["./controllers/scenario/newstep.modal.controller"],
         "newObjectModalCtrl": ["./controllers/repository/newobject.modal.controller"],
@@ -98,15 +98,15 @@
   });
 
   require(["angular", "./services/playRoutes",  "routerConfig", "configConfig", "./controllers/layout/tree.layout.service" ,
-            "loginCtrl", "loginService", "loginResolverService", "./controllers/editor", "./controllers/scenario", "SettingsCtrl", "newSettingsModalCtrl", "Repository1Ctrl", "Scenario1Ctrl", "Campaign1Ctrl",
-            "./controllers/configuration","./controllers/repository", "./controllers/home",
+            "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "ScenarioCtrl", "CampaignCtrl",
+            "./controllers/home",
             "./controllers/layout/sidebar.menu.controller", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!config/icon.constants.config.json",
 
             "./services/client-service",
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
             "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "angular-toastr", "webix"], 
-          function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, editor, scenario, settingsCtrl, newSettingsModalCtrl, repository1, scenario1, campaign1, configuration, repository, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile) {
+          function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile) {
 
               var app = angular.module("app", 
                 ['ngRoute', 'ui.router', "play.routing", "ngAnimate",
@@ -115,19 +115,15 @@
               
               app.controller("LoginCtrl", login.LoginCtrl);
               app.controller("MainCtrl", home.MainCtrl);
-              app.controller("ConfigurationCtrl", configuration.ConfigurationCtrl);
+
               app.controller("ScenarioCtrl", scenario.ScenarioCtrl);
-              app.controller("Scenario1Ctrl", scenario1.Scenario1Ctrl);
               
               app.controller("SettingsCtrl", settingsCtrl.SettingsCtrl);
               app.controller("NewSettingsModalCtrl", newSettingsModalCtrl.NewSettingsModalCtrl);
               
-
               app.controller("RepositoryCtrl", repository.RepositoryCtrl);
-              app.controller("Repository1Ctrl", repository1.RepositoryCtrl);
 
-              app.controller("ProjectCtrl", editor.ProjectCtrl);
-              app.controller("Campaign1Ctrl", campaign1.CampaignCtrl);
+              app.controller("CampaignCtrl", campaign.CampaignCtrl);
               
               app.controller("SidebarMenuCtrl", sidebarmenu.SidebarMenuCtrl);
               app.controller("LayoutCtrl", layout.LayoutCtrl);

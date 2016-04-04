@@ -56,33 +56,33 @@ define(["angular", "exports"], function (angular, exports) {
                      }
                    }
                  })
-                  .state('layout.repository1', {
-                    url: "repository1",
+                  .state('layout.repository', {
+                    url: "repository",
                     cache: false,
                     views: {
                       'content':{
                        templateUrl: "assets/html/repository/repository.html",
-                       controller: "Repository1Ctrl"
+                       controller: "RepositoryCtrl"
                      }
                    }
                  })
-                  .state('layout.scenario1', {
-                    url: "scenario1",
+                  .state('layout.scenario', {
+                    url: "scenario",
                     cache: false,
                     views: {
                       'content':{
-                       templateUrl: "assets/html/scenario/scenario1.html",
-                       controller: "Scenario1Ctrl"
+                       templateUrl: "assets/html/scenario/scenario.html",
+                       controller: "ScenarioCtrl"
                      }
                    }
                  })
-                  .state('layout.campaign1', {
-                    url: "campaign1",
+                  .state('layout.campaign', {
+                    url: "campaign",
                     cache: false,
                     views: {
                       'content':{
                        templateUrl: "assets/html/campaign/campaign.html",
-                       controller: "Campaign1Ctrl"
+                       controller: "CampaignCtrl"
                      }
                    }
                  });
