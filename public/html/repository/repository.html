@@ -37,7 +37,7 @@
                                        <div class="col-md-9 wrap-word">
                                         {{autoset.name}}
                                       </div>
-                                      <a class="pull-right btn btn-primary btn-xs" data-nodrag="" ng-click="deleteObject(autoset)">
+                                      <a class="pull-right btn btn-danger1 btn-xs" data-nodrag="" ng-click="deleteObject(autoset)">
                                         <span class="fa fa-trash"></span>
                                       </a>
                                     </div>
@@ -52,10 +52,11 @@
                           <div class="panel panel-default"  ng-show="autosetup != undefined">
                             <div class="panel-heading">
                               <h3 class="panel-title" >
-                                <i class="{{ICONS[scenario.type]}} fa-fw"></i>
-                                <span > Type: <label>{{ autosetup.type }}</label> Name: <input type="text" placeholder="name" ng-model="autosetup.name"/></span>
+                              <i class="{{ICONS[autosetup.type]}} fa-fw"
+                                          tooltip="{{autosetup.type}}" tooltip-trigger="mouseenter" tooltip-placement="right"/>
+                              Name: <input type="text" placeholder="name" ng-model="autosetup.name"/></span>
                                 <div class="pull-right" style="margin: -5px;">
-                                  <button class="btn btn-default btn-xs"  data-ng-click="saveAutoConfigBlock(autosetup)"> <i class="fa fa-floppy-o"></i> Save</button>
+                                  <button class="btn btn-primary btn-xs"  data-ng-click="saveAutoConfigBlock(autosetup)"> <i class="fa fa-floppy-o"></i> Save</button>
                                 </div>
                               </h3>
                             </div>
@@ -75,13 +76,14 @@
                                       <td ng-repeat="c in autosetup.columns">
                                         <span ng-model="r[c.name]">
                                           <ng-switch on="isArray(c.descriptor.type)">
-                                          <select ng-switch-when="array" ng-model="r[c.name]" ng-options="type for type in c.descriptor.type" style="width: 100%;" placeholder="{{c.name}}"/>
-                                          <input ng-switch-default type="text" ng-model="r[c.name]" style="width: 100%;" placeholder="{{c.name}}"/>
+                                          <select ng-switch-when="array" ng-model="r[c.name]" ng-options="type for type in c.descriptor.type" style="width: 100%;  height: 29px;" placeholder="{{c.name}}"/>
+                                          <input ng-if="c.name != 'position'" ng-switch-default type="text" ng-model="r[c.name]" style="width: 100%;  height: 29px;" placeholder="{{c.name}}"/>
+                                          <input ng-if="c.name == 'position'" type="number" min="0" ng-switch-default type="text" ng-model="r[c.name]" style="width: 100%;  height: 29px;" placeholder="{{c.name}}"/>
                                         </ng-switch>
                                       </span>
                                     </td>
                                     <td>
-                                      <button class="btn btn-xs" data-ng-click="deleteRow(r,autosetup)">
+                                      <button class="btn btn-xs btn-danger1" data-ng-click="deleteRow(r,autosetup)">
                                         <i class="fa fa-trash"></i>
                                       </button>
                                     </td>
@@ -90,13 +92,14 @@
                                     <td ng-repeat="c in autosetup.columns">
                                       <span ng-model="newAutoSetupRow[c.name]">
                                         <ng-switch on="isArray(c.descriptor.type)">
-                                        <select ng-switch-when="array" ng-model="newAutoSetupRow[c.name]" ng-options="type for type in c.descriptor.type" style="width: 100%;" placeholder="{{c.name}}"/>
-                                        <input ng-switch-default type="text" ng-model="newAutoSetupRow[c.name]" style="width: 100%;" placeholder="{{c.name}}"/>
+                                        <select ng-switch-when="array" ng-model="newAutoSetupRow[c.name]" ng-options="type for type in c.descriptor.type" style="width: 100%;  height: 29px;" placeholder="{{c.name}}"/>
+                                        <input ng-if="c.name != 'position'" ng-switch-default type="text" ng-model="newAutoSetupRow[c.name]" style="width: 100%; height: 29px;" placeholder="{{c.name}}"/>
+                                        <input ng-if="c.name == 'position'" type="number" min="0" ng-switch-default type="text" ng-model="newAutoSetupRow[c.name]" style="width: 100%;  height: 29px;" placeholder="{{c.name}}"/>
                                       </ng-switch>
                                     </span>
                                   </td>
                                   <td>
-                                    <button class="btn btn-primary btn-xs" data-ng-click="addAutoSetupRow(autosetup,newAutoSetupRow)"><i class="fa fa-plus"></i></button>
+                                    <button class="btn btn-edit1 btn-xs" data-ng-click="addAutoSetupRow(autosetup,newAutoSetupRow)"><i class="fa fa-plus"></i></button>
                                   </td>
                                 </tr>
                               </table>

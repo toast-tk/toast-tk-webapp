@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $timeout, $modal, $sideSplit, LayoutService, toastr) {
+        RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $timeout, $modal, $sideSplit, LayoutService, toastr, ICONS) {
             $scope.run_config_types = [ "swing page", "web page", "service entity"];
             $scope.autosetups = [];
             $scope.newAutoSetupRow = {};
@@ -10,6 +10,7 @@ define(["angular"], function (angular) {
             $scope.autosetups = [];
             $scope.autosetup = undefined;
 
+            $scope.ICONS = ICONS;
             $scope.editRepositoryObject = editRepositoryObject;
 
             $scope.$watch("autoSetupConfigFilter", function(oldValue, newValue){
@@ -87,10 +88,12 @@ define(["angular"], function (angular) {
                 if(deepCopy.type === "service entity"){
                     playRoutes.controllers.RepositoryController.saveServiceConfigBlock().post(deepCopy).then(function (response) {
                          __init__();
+                         toastr.success('Saved Objet repository elements !');
                     });            
                 }else{
                     playRoutes.controllers.RepositoryController.saveAutoConfigBlock().post(deepCopy).then(function (response) {
                          __init__();
+                         toastr.success('Saved Objet repository elements !');
                     });
                 }
             };
