@@ -94,7 +94,8 @@
         "newStepModalCtrl": ["./features/scenario/newstep.modal.controller"],
         "newObjectModalCtrl": ["./features/repository/newobject.modal.controller"],
         "routerConfig": ["./main.routes"],
-        "configConfig": ["./main.config"]
+        "configConfig": ["./main.config"],
+        "addUserCtrl" : ["./admin/accounts/adduser.controller"]
     }
   });
 
@@ -102,12 +103,14 @@
             "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "ScenarioCtrl", "CampaignCtrl", "utilsScenarioService", 
             "./features/home",
             "./features/layout/sidebar.menu.controller", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!config/icon.constants.config.json",
+            "addUserCtrl",
+
 
             "./services/client-service",
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
             "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "angular-toastr", "webix"], 
-          function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, utilsScenarioService, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile) {
+          function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, utilsScenarioService, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile, addUserCtrl) {
 
               var app = angular.module("app", 
                 ['ngRoute', 'ui.router', "play.routing", "ngAnimate",
@@ -142,6 +145,8 @@
               app.service("TreeLayoutService", treeLayoutService.TreeLayoutService);
               app.constant("ICONS", constantsFile);
 
+              app.controller("AddUserCtrl", addUserCtrl.AddUserCtrl);
+              
               app.config(routerConfig.RouterConfig);
               app.config(configConfig.ConfigConfig);
 

@@ -85,7 +85,17 @@ define(["angular", "exports"], function (angular, exports) {
                        controller: "CampaignCtrl"
                      }
                    }
-                 });
+                 })
+                  .state('administration', {
+                    url: "/administration",
+                    cache: false,
+                    views: {
+                      'main': {
+                        templateUrl: "assets/html/admin/accounts/adduser.html",
+                        controller: "AddUserCtrl"
+                      }
+                    }
+                  });
                  $urlRouterProvider.when('','/');
                  $urlRouterProvider.otherwise('/');
     }

@@ -1,0 +1,26 @@
+{
+  "name": "assets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "karma.conf.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "angular-mocks": "^1.5.3",
+    "karma-jasmine": "^0.3.8",
+    "jasmine-core": "^2.4.1",
+    "angular": "^1.5.3",
+    "karma": "^0.13.22"
+  },
+  "devDependencies": {
+    "requirejs": "^2.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "private": true,
+  "license": "ISC"
+}
