@@ -1,7 +1,7 @@
-define(['angular','angular-mocks','jquery', 'requirejs', 'addUserCtrl'], function(angular,angularMocks,$, requirejs, AddUserCtrl) {
+define(['angular','angular-mocks', 'addUserCtrl'], function(angular,angularMocks, AddUserCtrl) {
     'use strict';
 describe('AddUserCtrl', function() {
-    console.log("herllo its test");
+    console.log("---- Starting : AddUserCtrl test ----");
     var $controller,
     displayParams,
     scope,

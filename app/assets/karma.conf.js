@@ -12,20 +12,12 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine', 'requirejs'],
 
-/*            plugins: [
-                'karma-chrome-launcher',
-                'karma-jasmine',
-                'karma-requirejs'
-            ],*/
-
     // list of files / patterns to load in the browser
     files: [
      {pattern:  'node_modules/jquery/dist/jquery.js', watch: false, included: false},
-      {pattern: 'node_modules/angular/angular.min.js',  watch: false, included: false},
-      {pattern: 'node_modules/angular-mocks/*.js',  watch: false, included: false},
-      {pattern: 'node_modules/angular-ui-router/release/*.js',  watch: false, included: false},
-
-      {pattern: 'node_modules/**/*.js',  watch: false, included: false},
+     {pattern: 'node_modules/angular/angular.min.js',  watch: false, included: false},
+     {pattern: 'node_modules/angular-mocks/*.js',  watch: false, included: false},
+     {pattern: 'node_modules/**/*.js',  watch: false, included: false},
 
       {pattern: 'javascripts/main.js', included: false},
       {pattern: 'javascripts/*.js', included: false},

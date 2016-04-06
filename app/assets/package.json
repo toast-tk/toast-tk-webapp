@@ -7,17 +7,14 @@
     "test": "tests"
   },
   "dependencies": {
-    "angular-mocks": "^1.5.3",
-    "karma-jasmine": "^0.3.8",
-    "jasmine-core": "^2.4.1",
     "angular": "^1.5.3",
-    "karma": "^0.13.22"
+    "angular-mocks": "^1.5.3",
+    "jasmine-core": "^2.4.1",
+    "jquery": "^2.2.3",
+    "karma": "^0.13.22",
+    "karma-jasmine": "^0.3.8"
   },
   "devDependencies": {
-    "angular-ui-router": "^1.0.0-alpha.4",
-    "domready": "^1.0.8",
-    "inherits-js": "^0.1.1",
-    "jquery": "^2.2.3",
     "requirejs": "^2.2.0"
   },
   "scripts": {
