@@ -23,6 +23,7 @@ db.mongo.host="localhost"
 * 3- Run Javascript tests : 
 
 ```
+> cd app\assets\
 > npm install
 > gulp
 > karma start karma.conf.js
