@@ -17,10 +17,10 @@ requirejs.config({
     baseUrl: '/base',
 
     paths: {
-        'jquery': '../base/node_modules/jquery/dist/jquery',
-        'requirejs': '../base/node_modules/requirejs/require',
-        'angular': '../base/node_modules/angular/angular',
-        'angular-mocks': '../base/node_modules/angular-mocks/angular-mocks',
+        'jquery': '../base/libs/jquery/dist/jquery',
+        'requirejs': '../base/libs/requirejs/require',
+        'angular': '../base/libs/angular/angular',
+        'angular-mocks': '../base/libs/angular-mocks/angular-mocks',
 
         'addUserCtrl' : '../base/javascripts/admin/accounts/adduser.controller'
     },
