@@ -20,7 +20,18 @@ mongo.db.url="localhost:27017"
 db.mongo.host="localhost"
 ```
 
-* 3- Create data base and insert your collections : 
+* 3- Run Javascript tests : 
+
+```
+> npm install
+> gulp
+> karma start karma.conf.js
+> gulp clean-node
+```
+
+
+
+* 4- Create data base and insert your collections : 
 
 ```
 > use play_db
