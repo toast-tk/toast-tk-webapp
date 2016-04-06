@@ -5,12 +5,12 @@ module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: './',
 
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'requirejs'],
 
 /*            plugins: [
                 'karma-chrome-launcher',
@@ -20,21 +20,21 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      {pattern: './node_modules/angular/angular.min.js', included: false},
-      {pattern: './node_modules/angular-mocks/*.js', included: false},
-      {pattern: './node_modules/requirejs/**/*.js', included: false},
-      {pattern: './node_modules/requirejs/*.js', included: false},
-      {pattern: './node_modules/**/*.js', included: false},
+     {pattern:  'node_modules/jquery/dist/jquery.js', watch: false, included: false},
+      {pattern: 'node_modules/angular/angular.min.js',  watch: false, included: false},
+      {pattern: 'node_modules/angular-mocks/*.js',  watch: false, included: false},
+      {pattern: 'node_modules/angular-ui-router/release/*.js',  watch: false, included: false},
 
+      {pattern: 'node_modules/**/*.js',  watch: false, included: false},
+
+      {pattern: 'javascripts/main.js', included: false},
       {pattern: 'javascripts/*.js', included: false},
       {pattern: 'javascripts/**/*.js', included: false},
       {pattern: 'javascripts/**/**/*.js', included: false},
-      './tests/*test.js',
-      './tests/**/*test.js',
-      {pattern: './tests/*test.js', included: false},
-      {pattern: './tests/**/*test.js', included: false}
-/*      ,
-        'tests/test-main.js'*/
+
+      {pattern: 'tests/*test.js', included: false},
+      {pattern: 'tests/**/*test.js', included: false},
+      'tests/test-main.js'
     ],
 
 

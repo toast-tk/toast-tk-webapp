@@ -113,7 +113,7 @@
           function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, utilsScenarioService, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile, addUserCtrl) {
 
               var app = angular.module("app", 
-                ['ngRoute', 'ui.router', "play.routing", "ngAnimate",
+                ['ui.router', "play.routing", "ngAnimate",
                 "tk.components", "tk.services",
                 "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable", "sidesplit", "webix","angucomplete-alt","toastr"]);
               
