@@ -320,3 +320,27 @@
     width: 300px !important;
 }
 
+
+
+/* sb menu overriding*/
+.side-nav>li>ul>li>a.collapsedSubmenu{
+padding-top: 12px;
+    padding-bottom: 12px;
+    padding: 10px 15px;  
+}
+
+.side-nav>li>ul>li>a {
+    color: #fff;
+}
+
+.side-nav>li>ul>li.active {
+    outline: none;
+    color: #ffffff;
+    background-color: #006687 !important;
+}
+
+.side-nav>li>ul>li>a:focus {
+    outline: none;
+    color: #ffffff;
+    background-color: #006687 !important;
+}

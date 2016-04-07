@@ -95,6 +95,8 @@
         "newObjectModalCtrl": ["./features/repository/newobject.modal.controller"],
         "routerConfig": ["./main.routes"],
         "configConfig": ["./main.config"],
+        "adminLayoutCtrl" :  ["./admin/layout/layout.controller"],
+        "adminSidebarmenu": ['./admin/layout/sidebar.menu.controller'],
         "addUserCtrl" : ["./admin/accounts/adduser.controller"]
     }
   });
@@ -103,14 +105,15 @@
             "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "ScenarioCtrl", "CampaignCtrl", "utilsScenarioService", 
             "./features/home",
             "./features/layout/sidebar.menu.controller", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!config/icon.constants.config.json",
-            "addUserCtrl",
+            "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl",
 
 
             "./services/client-service",
             "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
             "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "angular-toastr", "webix"], 
-          function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, utilsScenarioService, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile, addUserCtrl) {
+          function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, utilsScenarioService, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile,
+           adminLayoutCtrl, adminSidebarmenu, addUserCtrl) {
 
               var app = angular.module("app", 
                 ['ui.router', "play.routing", "ngAnimate",
@@ -145,6 +148,9 @@
               app.service("TreeLayoutService", treeLayoutService.TreeLayoutService);
               app.constant("ICONS", constantsFile);
 
+              /* admin */
+              app.controller("AdminLayoutCtrl", adminLayoutCtrl.AdminLayoutCtrl);
+              app.controller("AdminSidebarMenuCtrl", adminSidebarmenu.AdminSidebarMenuCtrl);
               app.controller("AddUserCtrl", addUserCtrl.AddUserCtrl);
               
               app.config(routerConfig.RouterConfig);

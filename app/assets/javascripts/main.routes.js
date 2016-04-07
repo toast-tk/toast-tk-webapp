@@ -86,11 +86,26 @@ define(["angular", "exports"], function (angular, exports) {
                      }
                    }
                  })
-                  .state('administration', {
-                    url: "/administration",
+                  .state('adminLayout', {
+                    url: "/panel",
                     cache: false,
                     views: {
                       'main': {
+                        templateUrl: "assets/html/admin/layout/layout.view.html",
+                        controller: "AdminLayoutCtrl",
+                        resolve:{
+                          checkLoggedAndGetUser : ["LoginResolverService", function (LoginResolverService){
+                            return LoginResolverService.checkLoggedAndGetUserResolve() ;
+                          }]
+                        }
+                      }
+                    }
+                  })
+                  .state('adminLayout.addUser', {
+                    url: "/user",
+                    cache: false,
+                    views: {
+                      'content': {
                         templateUrl: "assets/html/admin/accounts/adduser.html",
                         controller: "AddUserCtrl"
                       }
