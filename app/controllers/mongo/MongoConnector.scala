@@ -241,7 +241,8 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
           }
         }
       }
-      outputRows = ScenarioRows(patterns = row.patterns, kind = row.kind, mappings = Some(outputMappings)) :: outputRows
+      outputRows = outputRows :+ ScenarioRows(patterns = row.patterns, kind = row.kind, mappings = Some(outputMappings))
+
     }
     val jsonRowsAsString = Json.stringify(Json.toJson(outputRows)) 
     Scenario(id = scenario.id, 
