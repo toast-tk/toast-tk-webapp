@@ -31,6 +31,7 @@ case class MojoFixtureDescriptor(name: String, sentences: List[FixtureDescriptor
 case class InspectedUser(login: String, password: String)
 case class User(id: Option[String], login: String, password: String, firstName: String, lastName: String, email: String, teams:  Option[String], token : Option[String], isActive : Boolean, lastConnection : Option[String])
 
+
 object DBRef {
   implicit object DBRefReader extends BSONDocumentReader[DBRef] {
     def read(bson: BSONDocument) =

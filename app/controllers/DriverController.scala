@@ -1,22 +1,24 @@
 package controllers
 
-import javax.inject.Inject
 
-import akka.actor.ActorSystem
-import play.api.libs.concurrent.Promise
+import com.synaptix.toast.swing.agent.interpret.MongoRepositoryCacheWrapper
+import play.api.Logger
+import play.api.libs.json.{JsError, JsResult, Json}
 import play.api.mvc._
 import play.api.libs.iteratee._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import akka.pattern.after
 import scala.collection.mutable
-import scala.concurrent.Future
-import scala.concurrent.duration._
+import com.synaptix.toast.core.agent.interpret.WebEventRecord
+import com.synaptix.toast.action.interpret.web.{InterpretationProvider, IActionInterpret}
 
 
 object DriverController extends Controller{
 
+
   val drivers: mutable.Stack[String] = mutable.Stack[String]();
-  val sentences: mutable.Stack[String] = mutable.Stack[String]();
+  var channel: Option[Concurrent.Channel[String]] = None
+  val mongoCacheWrapper:MongoRepositoryCacheWrapper = new MongoRepositoryCacheWrapper()
+  val interpretationProvider:InterpretationProvider = new InterpretationProvider(mongoCacheWrapper)
 
   /**
    * register the front end socket channel to publish
@@ -25,24 +27,7 @@ object DriverController extends Controller{
    */
   def registerFrontWebsocketService =  WebSocket.using[String] {
     request => {
-      val out: Enumerator[String] = Enumerator.generateM[String] {
-        Promise.timeout({
-
-          val output: Option[String] = sentences match {
-            case mutable.Stack(x:String, _*) => {
-              val sentence =  sentences.reverse.pop()
-              Some(sentence)
-            }
-            case mutable.Stack() => {
-              sentences.push("Nothing received")
-              None
-            }
-
-          }
-          output
-        }, 500);
-      };
-
+      val out: Enumerator[String] = Concurrent.unicast(c => channel = Some(c))
       (Iteratee.ignore[String], out);
     }
   }
@@ -56,7 +41,7 @@ object DriverController extends Controller{
   def subscribeDriver(host: String) = Action {
     request => {
       drivers.push(host);
-      sentences.push("Type *val* in *page.item*")
+      channel.foreach(_.push("driver:" + host))
       Ok("driver registred: " + host)
     }
   }
@@ -66,11 +51,31 @@ object DriverController extends Controller{
    *
    * @return
    */
-  def publishRecordedSentence = Action(parse.json) {
+  def publishRecordedAction = Action(parse.json) {
     implicit request => {
-      sentences.push("Type *val* in *page.recorditem*");
-      Ok("sentence processed !")
+      val webEventRecord:JsResult[WebEventRecord] = Json.fromJson(request.body)(Json.format[WebEventRecord])
+      webEventRecord.map {
+        case eventRecord: WebEventRecord =>
+          val sentence = buildFormat(webEventRecord.get)
+          sentence match{
+            case Some(s) => channel.foreach(_.push(s))
+            case None =>
+              Logger.info(s"No sentence for ${webEventRecord.get}")
+              _
+          }
+          Ok("event processed !")
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toJson(e))
+      }
     }
+  }
+
+  def buildFormat(eventRecord:WebEventRecord): Option[String] = {
+    val interpret:IActionInterpret  = interpretationProvider.getSentenceBuilder(eventRecord.component);
+    if (interpret == null)
+      None
+    else
+      Some(interpret.getSentence(eventRecord));
   }
 
 }
