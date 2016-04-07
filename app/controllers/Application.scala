@@ -112,6 +112,25 @@ object Application extends Controller {
     }
   }
 
+  def loadWebWikifiedWebRepository() = Action.async {
+    conn.loadWebPageRepository().map {
+      repository => {
+        def wikifiedObject(page: AutoSetupConfig): JsValue = {
+          var res = "page id:" + page.id.get + "\n"
+          res = res + "|| setup || " +  page.cType + " || " + page.name + " ||\n"
+          res = res + "| name | type | locator | method | position |\n"
+          for (row <- page.rows.getOrElse(List())) {
+            res = res + "|" + row.name + "|" + row.elementType + "|" + row.locator + "|" + row.method.getOrElse("CSS") + "|" + row.position.getOrElse(0) + "|\n"
+          }
+          res = res + "\n"
+          JsString(res)
+        }
+        val response = for (page <- repository) yield wikifiedObject(page)
+        Ok(Json.toJson(response))
+      }
+    }
+  }
+
   /**
    * load services json descriptors
    */
