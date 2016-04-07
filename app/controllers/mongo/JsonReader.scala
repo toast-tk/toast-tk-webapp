@@ -30,7 +30,36 @@ case class FixtureDescriptorLine(name: String, fixtureType: String, pattern: Str
 case class MojoFixtureDescriptor(name: String, sentences: List[FixtureDescriptorLine])
 case class InspectedUser(login: String, password: String)
 case class User(id: Option[String], login: String, password: String, firstName: String, lastName: String, email: String, teams:  Option[String], token : Option[String], isActive : Boolean, lastConnection : Option[String])
+case class MappedWebEventRecord (
+                              id: String,
+                              value: String,
+                              componentName: String,
+                              component: String,
+                              eventType: String,
+                              target: String,
+                              parent: String
+                            )
 
+
+object MappedWebEventRecord {
+  implicit val reader: Reads[MappedWebEventRecord] = (
+    (__ \ "id").read[String] and
+      (__ \ "value").read[String] and
+      (__ \ "componentName").read[String] and
+      (__ \ "component").read[String] and
+      (__ \ "type").read[String] and
+      (__ \ "target").read[String] and
+      (__ \ "parent").read[String])(MappedWebEventRecord.apply(_, _, _, _, _, _, _))
+
+  implicit val writer: Writes[MappedWebEventRecord] = (
+    (__ \ "id").write[String] and
+      (__ \ "value").write[String] and
+      (__ \ "componentName").write[String] and
+      (__ \ "component").write[String] and
+      (__ \ "type").write[String] and
+      (__ \ "target").write[String] and
+      (__ \ "parent").write[String])(unlift(MappedWebEventRecord.unapply))
+}
 
 object DBRef {
   implicit object DBRefReader extends BSONDocumentReader[DBRef] {

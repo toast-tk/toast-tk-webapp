@@ -1,7 +1,9 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        Scenario1Ctrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $modal, TreeLayoutService, ICONS, LayoutService, toastr) {
+        Scenario1Ctrl: function ($rootScope, $scope, $q, playRoutes, ngProgress,
+                                 ClientService, $sideSplit, $timeout, $modal, TreeLayoutService,
+                                 ICONS, LayoutService, toastr) {
             $scope.isEditScenarioName = false;
             $scope.isCollapsed = false;
             $scope.ICONS = ICONS ;
@@ -26,6 +28,19 @@ define(["angular"], function (angular) {
             $scope.editScenario = editScenario;
             $scope.deleteScenarii = deleteScenarii;
             $scope.addRowBefore = addRowBefore;
+            $scope.recordActions= recordActions;
+            $scope.driver = undefined;
+
+
+            /**
+             * ClientService
+             */
+            ClientService.setDriverListener(function(data){
+                $scope.$apply(function(){
+                    $scope.driver = data;
+                })
+            });
+
 
             /* tree build promise */
             var treeExplorerPromise = $q.defer();
@@ -81,10 +96,18 @@ define(["angular"], function (angular) {
                     $scope.dropListPosition = "";
                 }
             }
+
             function editScenario(scenario){
                 $scope.scenario = scenario;
                 setDropListPositionClass();
                 swaptToDefaultRow();
+            }
+
+            function recordActions(){
+                ClientService.setSentenceListener(function(data){
+                    toastr.success(data);
+                    console.log("received: " + data);
+                });
             }
 
             function add(newScenario) {

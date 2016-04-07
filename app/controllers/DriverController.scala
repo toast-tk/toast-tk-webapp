@@ -2,6 +2,7 @@ package controllers
 
 
 import com.synaptix.toast.swing.agent.interpret.MongoRepositoryCacheWrapper
+import controllers.mongo.MappedWebEventRecord
 import play.api.Logger
 import play.api.libs.json.{JsError, JsResult, Json}
 import play.api.mvc._
@@ -18,7 +19,9 @@ object DriverController extends Controller{
   val drivers: mutable.Stack[String] = mutable.Stack[String]();
   var channel: Option[Concurrent.Channel[String]] = None
   val mongoCacheWrapper:MongoRepositoryCacheWrapper = new MongoRepositoryCacheWrapper()
+  //mongoCacheWrapper.initCache("localhost", "9000");
   val interpretationProvider:InterpretationProvider = new InterpretationProvider(mongoCacheWrapper)
+
 
   /**
    * register the front end socket channel to publish
@@ -53,15 +56,17 @@ object DriverController extends Controller{
    */
   def publishRecordedAction = Action(parse.json) {
     implicit request => {
-      val webEventRecord:JsResult[WebEventRecord] = Json.fromJson(request.body)(Json.format[WebEventRecord])
+      implicit val recordFormat = Json.format[MappedWebEventRecord]
+      val webEventRecord:JsResult[MappedWebEventRecord] = Json.fromJson(request.body)
       webEventRecord.map {
-        case eventRecord: WebEventRecord =>
+        case eventRecord: MappedWebEventRecord =>
           val sentence = buildFormat(webEventRecord.get)
           sentence match{
             case Some(s) => channel.foreach(_.push(s))
-            case None =>
+            case None =>{
               Logger.info(s"No sentence for ${webEventRecord.get}")
-              _
+            }
+
           }
           Ok("event processed !")
       }.recoverTotal {
@@ -70,12 +75,26 @@ object DriverController extends Controller{
     }
   }
 
-  def buildFormat(eventRecord:WebEventRecord): Option[String] = {
-    val interpret:IActionInterpret  = interpretationProvider.getSentenceBuilder(eventRecord.component);
-    if (interpret == null)
+  def getRecord(record: MappedWebEventRecord): WebEventRecord = {
+    val eventRecord:WebEventRecord = new WebEventRecord();
+    eventRecord.setId(record.id)
+    eventRecord.setComponent(record.component)
+    eventRecord.setComponentName(record.componentName)
+    eventRecord.setParent(record.parent)
+    eventRecord.setValue(record.value)
+    eventRecord.setType(record.eventType)
+    eventRecord
+  }
+
+  def buildFormat(mappedEventRecord:MappedWebEventRecord): Option[String] = {
+    val interpret:IActionInterpret  = interpretationProvider.getSentenceBuilder(mappedEventRecord.component);
+    if (interpret == null){
       None
-    else
-      Some(interpret.getSentence(eventRecord));
+    }
+    else{
+      val eventRecord:WebEventRecord = getRecord(mappedEventRecord)
+      Some(interpret.getSentence(eventRecord))
+    }
   }
 
 }

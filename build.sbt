@@ -19,6 +19,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "webjars-play" % "2.1.0-1",
   "org.webjars" % "bootstrap" % "3.2.0-1",
   "com.synaptix.toast" % "toast-tk-runtime" % "0.1.2-SNAPSHOT",
+  "com.synaptix.toast" % "toast-tk-dao-api" % "0.1.2-SNAPSHOT",
   "com.synaptix.toast" % "toast-tk-fest-plugin" % "0.1.2-SNAPSHOT",
   "com.synaptix.toast" % "toast-tk-selenium-plugin" % "0.1.2-SNAPSHOT",
   "com.synaptix.toast" % "toast-tk-interpret" % "0.1.2-SNAPSHOT",
