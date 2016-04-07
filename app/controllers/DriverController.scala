@@ -11,6 +11,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.collection.mutable
 import com.synaptix.toast.core.agent.interpret.WebEventRecord
 import com.synaptix.toast.action.interpret.web.{InterpretationProvider, IActionInterpret}
+import toast.engine.ToastRuntimeJavaWrapper
 
 
 object DriverController extends Controller{
@@ -19,7 +20,7 @@ object DriverController extends Controller{
   val drivers: mutable.Stack[String] = mutable.Stack[String]();
   var channel: Option[Concurrent.Channel[String]] = None
   val mongoCacheWrapper:MongoRepositoryCacheWrapper = new MongoRepositoryCacheWrapper()
-  //mongoCacheWrapper.initCache("localhost", "9000");
+  mongoCacheWrapper.initCache(ToastRuntimeJavaWrapper.repositoryDaoService);
   val interpretationProvider:InterpretationProvider = new InterpretationProvider(mongoCacheWrapper)
 
 
@@ -57,14 +58,14 @@ object DriverController extends Controller{
   def publishRecordedAction = Action(parse.json) {
     implicit request => {
       implicit val recordFormat = Json.format[MappedWebEventRecord]
-      val webEventRecord:JsResult[MappedWebEventRecord] = Json.fromJson(request.body)
-      webEventRecord.map {
-        case eventRecord: MappedWebEventRecord =>
-          val sentence = buildFormat(webEventRecord.get)
+
+      request.body.validate[MappedWebEventRecord].map {
+        case webEventRecord:MappedWebEventRecord =>
+          val sentence = buildFormat(webEventRecord)
           sentence match{
-            case Some(s) => channel.foreach(_.push(s))
+            case Some(s) => channel.foreach(_.push("sentence: "+s))
             case None =>{
-              Logger.info(s"No sentence for ${webEventRecord.get}")
+              Logger.info(s"No sentence for provided")
             }
 
           }
@@ -82,6 +83,7 @@ object DriverController extends Controller{
     eventRecord.setComponentName(record.componentName)
     eventRecord.setParent(record.parent)
     eventRecord.setValue(record.value)
+    eventRecord.setTarget(record.target)
     eventRecord.setType(record.eventType)
     eventRecord
   }
@@ -93,7 +95,8 @@ object DriverController extends Controller{
     }
     else{
       val eventRecord:WebEventRecord = getRecord(mappedEventRecord)
-      Some(interpret.getSentence(eventRecord))
+      val sentence:String = interpret.getSentence(eventRecord)
+      Some(sentence)
     }
   }
 

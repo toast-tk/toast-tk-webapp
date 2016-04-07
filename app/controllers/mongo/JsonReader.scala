@@ -47,7 +47,7 @@ object MappedWebEventRecord {
       (__ \ "value").read[String] and
       (__ \ "componentName").read[String] and
       (__ \ "component").read[String] and
-      (__ \ "type").read[String] and
+      (__ \ "eventType").read[String] and
       (__ \ "target").read[String] and
       (__ \ "parent").read[String])(MappedWebEventRecord.apply(_, _, _, _, _, _, _))
 
@@ -56,7 +56,7 @@ object MappedWebEventRecord {
       (__ \ "value").write[String] and
       (__ \ "componentName").write[String] and
       (__ \ "component").write[String] and
-      (__ \ "type").write[String] and
+      (__ \ "eventType").write[String] and
       (__ \ "target").write[String] and
       (__ \ "parent").write[String])(unlift(MappedWebEventRecord.unapply))
 }
