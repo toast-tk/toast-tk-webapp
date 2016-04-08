@@ -30,7 +30,21 @@ case class FixtureDescriptorLine(name: String, fixtureType: String, pattern: Str
 case class MojoFixtureDescriptor(name: String, sentences: List[FixtureDescriptorLine])
 case class InspectedUser(login: String, password: String)
 case class User(id: Option[String], login: String, password: String, firstName: String, lastName: String, email: String, teams:  Option[String], token : Option[String], isActive : Boolean, lastConnection : Option[String])
-
+case class MappedWebEventRecord (
+                                  component: Option[String],
+                                  eventType: Option[String],
+                                  target: Option[String],
+                                  keyCode: Option[Int],
+                                  charCode: Option[Int],
+                                  button: Option[Int],
+                                  altKey: Option[Boolean],
+                                  ctrlKey: Option[Boolean],
+                                  shiftKey: Option[Boolean],
+                                  id: Option[String],
+                                  value: Option[String],
+                                  componentName: Option[String],
+                                  parent: Option[String]
+                            )
 object DBRef {
   implicit object DBRefReader extends BSONDocumentReader[DBRef] {
     def read(bson: BSONDocument) =

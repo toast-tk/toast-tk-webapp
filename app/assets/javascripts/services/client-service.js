@@ -6,10 +6,60 @@ define(["angular"], function (angular) {
 
   	module.factory('ClientService', function(playRoutes){
   		var factory = {};
-  		factory.ACTION_ITEM_REGEX = /{{([\w:]+)}}/gi;
-  		factory.regexList = [];
-  		factory.regexMap = {};
-  		factory.init = function(){
+
+        factory.ACTION_ITEM_REGEX = /{{([\w:]+)}}/gi;
+        factory.recorders = [];
+        factory.socketIsActive = false;
+        factory.recorderListener = null;
+        factory.sentenceListener = null;
+        factory.regexList = [];
+        factory.regexMap = {};
+
+        var socket = new WebSocket('ws://localhost:9000/socket/stream');
+
+        // When the connection is open, send some data to the server
+        socket.onopen = function (event) {
+            factory.socketIsActive = true;
+            console.log(event)
+        };
+
+        socket.onclose = function (error) {
+            factory.socketIsActive = false;
+        };
+
+        socket.onerror = function (error) {
+            factory.socketIsActive = false;
+        };
+
+        socket.onmessage = function (event) {
+            var data = event.data;
+            if(data.startsWith("driver:")){
+                if(factory.recorderListener){
+                    factory.recorderListener(data);
+                }
+                console.log("No driver listener defined")
+            }
+            if(data.startsWith("sentence: ")){
+                var sentenceRecord = angular.fromJson(data.substring("sentence: ".length))
+                if(factory.sentenceListener){
+                    factory.sentenceListener(sentenceRecord);
+                }else{
+                    console.log("No sentence listener defined")
+                }
+            }
+            console.log(event.data)
+        };
+
+
+        factory.setDriverListener = function(listener){
+            factory.recorderListener = listener;
+        }
+
+        factory.setSentenceListener = function(listener){
+            factory.sentenceListener = listener;
+        }
+
+        factory.init = function(){
 			playRoutes.controllers.DomainController.typeDescriptor().get().then(function(response){
 				factory.typeDescriptor = response.data || [];
 	    	});	

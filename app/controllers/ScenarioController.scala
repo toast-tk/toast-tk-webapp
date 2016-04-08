@@ -29,7 +29,7 @@ object ScenarioController extends Controller {
 
   implicit val scenarioRowsFormat = Json.format[ScenarioRows]
   private val conn = AppBoot.conn
-  private lazy val regex = """@\[\[\d+:[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+:[\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+\]\]""".r
+  private lazy val regex = """\{\{[\w:]+\}\}""".r
 
   private def populatePatterns(rows: String): List[String] = {
     def replacePatterns(pattern: String, mapping: List[JsValue]): String = {

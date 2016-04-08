@@ -24,7 +24,18 @@ define(["angular"], function (angular) {
             $scope.editScenario = editScenario;
             $scope.deleteScenarii = deleteScenarii;
             $scope.addRowBefore = addRowBefore;
-            $scope.selectNode = selectNode;
+            $scope.recordActions= recordActions;
+            $scope.driver = undefined;
+
+
+            /**
+             * ClientService
+             */
+            ClientService.setDriverListener(function(data){
+                $scope.$apply(function(){
+                    $scope.driver = data;
+                })
+            });
 
             function selectNode(id){
                 TreeLayoutService.selectNode(id);
@@ -83,10 +94,18 @@ define(["angular"], function (angular) {
                     $scope.dropListPosition = "";
                 }
             }
+
             function editScenario(scenario){
                 $scope.scenario = scenario;
                 setDropListPositionClass();
                 swaptToDefaultRow();
+            }
+
+            function recordActions(){
+                ClientService.setSentenceListener(function(data){
+                    toastr.success(data);
+                    console.log("received: " + data);
+                });
             }
 
             function add(newScenario) {
