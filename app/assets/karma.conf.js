@@ -6,7 +6,7 @@ module.exports = function(config) {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: './',
-
+browserNoActivityTimeout: 100000,
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -24,9 +24,16 @@ module.exports = function(config) {
      {pattern: 'libs/angular/angular.min.js',  watch: false, included: false},
      {pattern: 'libs/angular-mocks/*.js',  watch: false, included: false},
      {pattern: 'libs/**/*.js',  watch: false, included: false},
+     {pattern: 'bower_components/**/*.js',  watch: false, included: false},
+     {pattern: 'bower_components/**/**/*.js',  watch: false, included: false},
       
-      {pattern: 'javascripts/main.js', included: false},
-      {pattern: 'javascripts/*.js', included: false},
+      /*{pattern: 'javascripts/main.app.js', included: false},*/
+      'javascripts/main.app.js',
+      /*'javascripts/main.js',*/
+/*      {pattern: 'javascripts/main.js', included: false},*/
+      {pattern: 'javascripts/main.config.js', included: false},
+      {pattern: 'javascripts/main.routes.js', included: false},
+      {pattern: 'javascripts/config/icon.constants.config.json', watched: true, included: false, served: true},
       {pattern: 'javascripts/**/*.js', included: false},
       {pattern: 'javascripts/**/**/*.js', included: false},
 

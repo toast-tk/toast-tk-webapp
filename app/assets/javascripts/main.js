@@ -33,6 +33,10 @@
       'ui.router':{
         deps: ['angular']
       },
+      'ngProgress': {
+        deps: ['angular'],
+        exports: 'ngProgress'
+      },
       'angular-toastr':  ['angular'],
       'sidesplit':{
         deps: ['angular']
@@ -65,10 +69,11 @@
         "jquery-ui" : "//code.jquery.com/ui/1.9.2/jquery-ui.min",
         "angular": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular",
         "angularRoute": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route",
+        "ngProgress" : "./libs/ngProgress.min",
 	      "ui-sortable" : ['./libs/sortable'],
         "underscore" : "//underscorejs.org/underscore",
         "qTags": ['./libs/jquery-textntags'],
-        "angular-ui-tree": ['/libs/angular-ui-tree.min'],
+        "angular-ui-tree": ['./libs/angular-ui-tree.min'],
         "angular-animate":['libs/angular-animate.min'],
         "bootstrap":['libs/bootstrap.min'],
         "ui.bootstrap": ['libs/ui-bootstrap-tpls-0.12.1'],
@@ -78,12 +83,18 @@
         "angular-toastr": ['libs/angular-toastr.tpls.min'],
         "sidesplit": ['libs/angular-sidesplit.provider'],
         "angucomplete": ['libs/angucomplete-alt.min'],
+        'playRoutes': './services/playRoutes',
+        'clientService': "./services/client-service",
+        "componentsDir" : './directives/components',
+        "sortable": "./libs/sortable",
+        "homeCtrl": ['./features/home'],
         "loginCtrl" : ['auth/login'],
         "loginService" : ['auth/login.service'],
         "loginResolverService" : ['auth/login.resolver.service'],
         "sidebarmenu": ['features/layout/sidebar.menu.controller'],
         "layout": ['features/layout/layout.controller'],
         "layoutService" :  ['features/layout/layout.service'],
+        "treeLayoutService": ['./features/layout/tree.layout.service'],
         "SettingsCtrl" :  ['features/settings/settings.controller'],
         "newSettingsModalCtrl": ["./features/settings/newSettings.modal.controller"],
         "RepositoryCtrl": ["./features/repository/repository.controller"],
@@ -101,17 +112,17 @@
     }
   });
 
-  require(["angular", "./services/playRoutes",  "routerConfig", "configConfig", "./features/layout/tree.layout.service" ,
+  require(["angular", "playRoutes",  "routerConfig", "configConfig", "treeLayoutService" ,
             "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "ScenarioCtrl", "CampaignCtrl", "utilsScenarioService", 
-            "./features/home",
-            "./features/layout/sidebar.menu.controller", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!config/icon.constants.config.json",
+            "homeCtrl",
+            "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!config/icon.constants.config.json",
             "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl",
 
 
-            "./services/client-service",
-            "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
-            "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
-            "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "angular-toastr", "webix"], 
+            "clientService",
+            "componentsDir", "sortable", "ngProgress", 
+            "angular-ui-tree", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
+            "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix"], 
           function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, utilsScenarioService, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile,
            adminLayoutCtrl, adminSidebarmenu, addUserCtrl) {
 
