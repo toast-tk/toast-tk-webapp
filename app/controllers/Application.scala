@@ -112,7 +112,8 @@ object Application extends Controller {
     }
   }
 
-  def loadWebWikifiedWebRepository() = Action.async {
+
+  def loadWebWikifiedRepository() = Action.async {
     conn.loadWebPageRepository().map {
       repository => {
         def wikifiedObject(page: AutoSetupConfig): JsValue = {

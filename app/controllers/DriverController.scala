@@ -1,22 +1,33 @@
 package controllers
 
-import javax.inject.Inject
 
-import akka.actor.ActorSystem
-import play.api.libs.concurrent.Promise
+import scala.collection.JavaConversions._
+
+import com.synaptix.toast.dao.domain.impl.repository.{ElementImpl, RepositoryImpl}
+import com.synaptix.toast.swing.agent.interpret.MongoRepositoryCacheWrapper
+import controllers.mongo.MappedWebEventRecord
+import play.api.Logger
+import play.api.libs.json.{JsError, JsResult, Json}
 import play.api.mvc._
 import play.api.libs.iteratee._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import akka.pattern.after
 import scala.collection.mutable
-import scala.concurrent.Future
-import scala.concurrent.duration._
+import com.synaptix.toast.core.agent.interpret.WebEventRecord
+import com.synaptix.toast.action.interpret.web.{InterpretationProvider, IActionInterpret}
+import toast.engine.ToastRuntimeJavaWrapper
 
+
+case class RecordedSentence(sentence:String, ids:List[String])
 
 object DriverController extends Controller{
 
+
   val drivers: mutable.Stack[String] = mutable.Stack[String]();
-  val sentences: mutable.Stack[String] = mutable.Stack[String]();
+  var channel: Option[Concurrent.Channel[String]] = None
+  val mongoCacheWrapper:MongoRepositoryCacheWrapper = new MongoRepositoryCacheWrapper()
+  mongoCacheWrapper.initCache(ToastRuntimeJavaWrapper.repositoryDaoService);
+  val interpretationProvider:InterpretationProvider = new InterpretationProvider(mongoCacheWrapper)
+
 
   /**
    * register the front end socket channel to publish
@@ -25,24 +36,7 @@ object DriverController extends Controller{
    */
   def registerFrontWebsocketService =  WebSocket.using[String] {
     request => {
-      val out: Enumerator[String] = Enumerator.generateM[String] {
-        Promise.timeout({
-
-          val output: Option[String] = sentences match {
-            case mutable.Stack(x:String, _*) => {
-              val sentence =  sentences.reverse.pop()
-              Some(sentence)
-            }
-            case mutable.Stack() => {
-              sentences.push("Nothing received")
-              None
-            }
-
-          }
-          output
-        }, 500);
-      };
-
+      val out: Enumerator[String] = Concurrent.unicast(c => channel = Some(c))
       (Iteratee.ignore[String], out);
     }
   }
@@ -56,7 +50,7 @@ object DriverController extends Controller{
   def subscribeDriver(host: String) = Action {
     request => {
       drivers.push(host);
-      sentences.push("Type *val* in *page.item*")
+      channel.foreach(_.push("driver:" + host))
       Ok("driver registred: " + host)
     }
   }
@@ -66,10 +60,60 @@ object DriverController extends Controller{
    *
    * @return
    */
-  def publishRecordedSentence = Action(parse.json) {
+  def publishRecordedAction = Action(parse.json) {
     implicit request => {
-      sentences.push("Type *val* in *page.recorditem*");
-      Ok("sentence processed !")
+      implicit val recordFormat = Json.format[MappedWebEventRecord]
+
+      request.body.validate[MappedWebEventRecord].map {
+        case webEventRecord:MappedWebEventRecord =>
+          val sentence = buildFormat(webEventRecord)
+          sentence match{
+            case Some(s) => channel.foreach(_.push("sentence: "+s))
+            case None =>{
+              Logger.info(s"No sentence for provided")
+            }
+
+          }
+          Ok("event processed !")
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toJson(e))
+      }
+    }
+  }
+
+  def getRecord(record: MappedWebEventRecord): WebEventRecord = {
+    val eventRecord:WebEventRecord = new WebEventRecord();
+    eventRecord.setId(record.id.getOrElse(""))
+    eventRecord.setComponent(record.component.getOrElse(""))
+    eventRecord.setComponentName(record.componentName.getOrElse(""))
+    eventRecord.setParent(record.parent.getOrElse(""))
+    eventRecord.setValue(record.value.getOrElse(""))
+    eventRecord.setTarget(record.target.getOrElse(""))
+    eventRecord.setEventType(record.eventType.getOrElse(""))
+    eventRecord
+  }
+
+  def buildFormat(mappedEventRecord:MappedWebEventRecord): Option[String] = {
+    val interpret:IActionInterpret  = interpretationProvider.getSentenceBuilder(mappedEventRecord.component.getOrElse(""));
+    if (interpret == null){
+      None
+    }
+    else{
+      implicit val recordFormat = Json.format[RecordedSentence]
+      val eventRecord:WebEventRecord = getRecord(mappedEventRecord)
+      val sentence:String = interpret.getSentence(eventRecord)
+      if(mongoCacheWrapper.getLastKnownContainer != null){
+        val sentencePage:RepositoryImpl = mongoCacheWrapper.saveLastKnownContainer()
+        val rows:List[ElementImpl] = sentencePage.rows.toList
+        val ids:List[String] = rows.map(e => e.getIdAsString)
+        val record: RecordedSentence = RecordedSentence(sentence, ids)
+        val recordAsJson:String = Json.toJson(record).toString()
+        Some(recordAsJson)
+      }else{
+        val record: RecordedSentence = RecordedSentence(sentence, List())
+        val recordAsJson:String = Json.toJson(record).toString()
+        Some(recordAsJson)
+      }
     }
   }
 

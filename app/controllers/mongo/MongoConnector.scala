@@ -241,7 +241,8 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
           }
         }
       }
-      outputRows = ScenarioRows(patterns = row.patterns, kind = row.kind, mappings = Some(outputMappings)) :: outputRows
+      outputRows = outputRows :+ ScenarioRows(patterns = row.patterns, kind = row.kind, mappings = Some(outputMappings))
+
     }
     val jsonRowsAsString = Json.stringify(Json.toJson(outputRows)) 
     Scenario(id = scenario.id, 
@@ -339,38 +340,96 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
   }
 
-  def deleteScenarii(scenarioId: String) {
+  def deleteScenarii(scenarioId: String) : Future[Boolean] ={
     val collection = open_collection("scenarii")
-    collection.remove(BSONDocument("_id" -> BSONObjectID(scenarioId))).onComplete {
-      case Failure(e) => throw e
-      case Success(_) => println(s"[+] successfully removed scanario: $scenarioId")
-    }
+    /*val childList = findChildNodes(scenarioId)*/
+    hasChildNodes(scenarioId).map {
+      case false => {
+        collection.remove(BSONDocument("_id" -> BSONObjectID(scenarioId))).onComplete {
+          case Failure(e) => throw e
+          case Success(_) => println(s"[+] successfully removed scanario: $scenarioId")
+        }
+        true
+      }
+       case true => {
+        false
+       }
+     }
   }
 
-  def saveScenario(scenario: Scenario) {
-    val collection = open_collection("scenarii")
-    scenario.id match {
+  def hasChildNodes(nodeId : String): Future[Boolean] ={
+     val collection = open_collection("scenarii")
+     collection.find(BSONDocument("parent" -> nodeId)).one[Scenario].map{
       case None => {
-        val query = BSONDocument("name" -> scenario.name, "parent" -> scenario.parent)
-        collection.find(query).one[Scenario].map {
-         case scenario => scenario match {
-          case None => {
-            collection.insert(updateScenario(scenario.get)).onComplete {
-            case Failure(e) => throw e
-            case Success(_) => println("[+] successfully inserted scanario !")
-          }
+        false
+      }
+      case Some(childNode) => {
+        true
+      }
+     }
+  }
+
+/*  def findChildNodes(nodeId : String): Future[List[Scenario]] ={
+     val collection = open_collection("scenarii")
+    val query = BSONDocument("parent" -> nodeId)
+    var NodeList : List[Scenario] = List()
+    var childNodes = collection.find(query).cursor[Scenario]().collect[List]()
+      childNodes.map {
+      nodes => {
+
+        NodeList = for (node <- nodes) yield {
+          var result = Await.result(findChildNodes(node.id.get), 0 nanos)
+          NodeList :: result
         }
-        case Some(scenario) => {
+
+      }
+    }
+    childNodes
+  }*/
+
+  def findOneScenarioBy(query: BSONDocument): Future[Option[Scenario]] = {
+    val collection = open_collection("scenarii")
+    collection.find(query).one[Scenario]
+  }
+
+  def insertScenario(scenario: Scenario) : Future[Boolean] = {
+    val collection = open_collection("scenarii")
+    findOneScenarioBy(BSONDocument("name" -> scenario.name, "parent" -> scenario.parent.get)).map {
+      case None => {
+        collection.insert(updateScenario(scenario)).onComplete {
+          case Failure(e) => throw e
+          case Success(_) => println("[+] successfully inserted scanario !")
         }
+        true
+      }
+      case Some(foundScenario) => {
+        println("[+] ERROR; scenario existe deja!")
+        false
       }
     }
   }
-  case _ => collection.update(BSONDocument("_id" -> BSONObjectID(scenario.id.get)), updateScenario(scenario), upsert=true).onComplete {
-    case Failure(e) => throw e
-    case Success(_) => println("successfully saved scanario !")
-  }
-}
-}
+
+  def saveScenario(scenario: Scenario) : Future[Boolean] = {
+    val collection = open_collection("scenarii")
+    scenario.id match {
+      case None => {
+          insertScenario(scenario) //to check:probably not reached
+          Future{false} //looks like not reached
+        }
+        case _ => findOneScenarioBy(BSONDocument("_id" -> BSONDocument("$ne" -> BSONObjectID(scenario.id.get)), "name" -> scenario.name, "parent" -> scenario.parent.get)).map{
+          case None => {          
+            collection.update(BSONDocument("_id" -> BSONObjectID(scenario.id.get)), updateScenario(scenario), upsert=true).onComplete {
+              case Failure(e) => throw e
+              case Success(_) => println("successfully saved scanario !")
+            }
+            true
+          }
+          case Some(foundScenario) => {
+            false
+          }
+        }
+      }
+    }
 
   def savePlainScenario(scenario: Scenario) {
     val collection = open_collection("scenarii")
