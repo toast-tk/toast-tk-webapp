@@ -39,9 +39,10 @@ define(["angular"], function (angular) {
                 }
                 console.log("No driver listener defined")
             }
-            if(data.startsWith("sentence:")){
+            if(data.startsWith("sentence: ")){
+                var sentenceRecord = angular.fromJson(data.substring("sentence: ".length))
                 if(factory.sentenceListener){
-                    factory.sentenceListener(data);
+                    factory.sentenceListener(sentenceRecord);
                 }else{
                     console.log("No sentence listener defined")
                 }

@@ -1,6 +1,9 @@
 package controllers
 
 
+import scala.collection.JavaConversions._
+
+import com.synaptix.toast.dao.domain.impl.repository.{ElementImpl, RepositoryImpl}
 import com.synaptix.toast.swing.agent.interpret.MongoRepositoryCacheWrapper
 import controllers.mongo.MappedWebEventRecord
 import play.api.Logger
@@ -13,6 +16,8 @@ import com.synaptix.toast.core.agent.interpret.WebEventRecord
 import com.synaptix.toast.action.interpret.web.{InterpretationProvider, IActionInterpret}
 import toast.engine.ToastRuntimeJavaWrapper
 
+
+case class RecordedSentence(sentence:String, ids:List[String])
 
 object DriverController extends Controller{
 
@@ -78,25 +83,37 @@ object DriverController extends Controller{
 
   def getRecord(record: MappedWebEventRecord): WebEventRecord = {
     val eventRecord:WebEventRecord = new WebEventRecord();
-    eventRecord.setId(record.id)
-    eventRecord.setComponent(record.component)
-    eventRecord.setComponentName(record.componentName)
-    eventRecord.setParent(record.parent)
-    eventRecord.setValue(record.value)
-    eventRecord.setTarget(record.target)
-    eventRecord.setType(record.eventType)
+    eventRecord.setId(record.id.getOrElse(""))
+    eventRecord.setComponent(record.component.getOrElse(""))
+    eventRecord.setComponentName(record.componentName.getOrElse(""))
+    eventRecord.setParent(record.parent.getOrElse(""))
+    eventRecord.setValue(record.value.getOrElse(""))
+    eventRecord.setTarget(record.target.getOrElse(""))
+    eventRecord.setEventType(record.eventType.getOrElse(""))
     eventRecord
   }
 
   def buildFormat(mappedEventRecord:MappedWebEventRecord): Option[String] = {
-    val interpret:IActionInterpret  = interpretationProvider.getSentenceBuilder(mappedEventRecord.component);
+    val interpret:IActionInterpret  = interpretationProvider.getSentenceBuilder(mappedEventRecord.component.getOrElse(""));
     if (interpret == null){
       None
     }
     else{
+      implicit val recordFormat = Json.format[RecordedSentence]
       val eventRecord:WebEventRecord = getRecord(mappedEventRecord)
       val sentence:String = interpret.getSentence(eventRecord)
-      Some(sentence)
+      if(mongoCacheWrapper.getLastKnownContainer != null){
+        val sentencePage:RepositoryImpl = mongoCacheWrapper.saveLastKnownContainer()
+        val rows:List[ElementImpl] = sentencePage.rows.toList
+        val ids:List[String] = rows.map(e => e.getIdAsString)
+        val record: RecordedSentence = RecordedSentence(sentence, ids)
+        val recordAsJson:String = Json.toJson(record).toString()
+        Some(recordAsJson)
+      }else{
+        val record: RecordedSentence = RecordedSentence(sentence, List())
+        val recordAsJson:String = Json.toJson(record).toString()
+        Some(recordAsJson)
+      }
     }
   }
 

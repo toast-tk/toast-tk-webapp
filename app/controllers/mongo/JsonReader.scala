@@ -31,36 +31,20 @@ case class MojoFixtureDescriptor(name: String, sentences: List[FixtureDescriptor
 case class InspectedUser(login: String, password: String)
 case class User(id: Option[String], login: String, password: String, firstName: String, lastName: String, email: String, teams:  Option[String], token : Option[String], isActive : Boolean, lastConnection : Option[String])
 case class MappedWebEventRecord (
-                              id: String,
-                              value: String,
-                              componentName: String,
-                              component: String,
-                              eventType: String,
-                              target: String,
-                              parent: String
+                                  component: Option[String],
+                                  eventType: Option[String],
+                                  target: Option[String],
+                                  keyCode: Option[Int],
+                                  charCode: Option[Int],
+                                  button: Option[Int],
+                                  altKey: Option[Boolean],
+                                  ctrlKey: Option[Boolean],
+                                  shiftKey: Option[Boolean],
+                                  id: Option[String],
+                                  value: Option[String],
+                                  componentName: Option[String],
+                                  parent: Option[String]
                             )
-
-
-object MappedWebEventRecord {
-  implicit val reader: Reads[MappedWebEventRecord] = (
-    (__ \ "id").read[String] and
-      (__ \ "value").read[String] and
-      (__ \ "componentName").read[String] and
-      (__ \ "component").read[String] and
-      (__ \ "eventType").read[String] and
-      (__ \ "target").read[String] and
-      (__ \ "parent").read[String])(MappedWebEventRecord.apply(_, _, _, _, _, _, _))
-
-  implicit val writer: Writes[MappedWebEventRecord] = (
-    (__ \ "id").write[String] and
-      (__ \ "value").write[String] and
-      (__ \ "componentName").write[String] and
-      (__ \ "component").write[String] and
-      (__ \ "eventType").write[String] and
-      (__ \ "target").write[String] and
-      (__ \ "parent").write[String])(unlift(MappedWebEventRecord.unapply))
-}
-
 object DBRef {
   implicit object DBRefReader extends BSONDocumentReader[DBRef] {
     def read(bson: BSONDocument) =
