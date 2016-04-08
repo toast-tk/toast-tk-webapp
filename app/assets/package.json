@@ -18,6 +18,9 @@
     "del": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-filter": "^4.0.0",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^0.2.3",
+    "karma-requirejs": "^0.2.6",
     "mkdirp": "^0.5.1",
     "requirejs": "^2.2.0"
   },

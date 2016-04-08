@@ -11,11 +11,9 @@ define(["angular"], function (angular) {
             $scope.selectedType = "";
             $scope.importModes = ["prepend", "append"];
             $scope.scenarii = [];
-            $scope.regexList = [];
-            $scope.regexMap = [];
+            var regexMap = [];
             $scope.scenario = undefined;
             $scope.stepType = "";
-
             $scope.addNewStep = addNewStep;
             $scope.newStepSelected = newStepSelected;
             $scope.saveScenarii = saveScenarii;
@@ -225,7 +223,7 @@ define(["angular"], function (angular) {
                 for(var i = 0 ; i < newScenarioTemplate.rows.length ; i++){
                     var actionType = getActionType(newScenarioTemplate, newScenarioTemplate.rows[i]) || 'swing';
                     newScenarioTemplate.rows[i].kind = actionType;
-                    var regexList = $scope.regexMap[actionType]; 
+                    var regexList = regexMap[actionType]; 
                     var sentence = removeHeadAnnotation(newScenarioTemplate.rows[i].patterns);
                     for(var j=0; j < regexList.length; j++){
                         var replacedSentence = ClientService.convertToRegexSentence(regexList[j].typed_sentence);
@@ -313,8 +311,7 @@ define(["angular"], function (angular) {
     for(var i =0 ; i < $scope.scenario_types.length; i++){
         var scenariiKind = $scope.scenario_types[i];
         ClientService.loadRegexList(scenariiKind, function(scenariiKind, list){
-            $scope.regexList = $scope.regexList.concat(list || []);
-            $scope.regexMap[scenariiKind] = list;
+            regexMap[scenariiKind] = list;
             angular.forEach(list,function(value,key){
                 value.kind = scenariiKind;
                 $scope.regexFullList.push(value);
@@ -325,17 +322,20 @@ define(["angular"], function (angular) {
     playRoutes.controllers.ScenarioController.loadScenarii().get().then(function (response) {
         var data = response.data || [];
         data.map(function (scenario) {
-            scenario.template = isTemplate;
                         scenario.value = scenario.name; // todo : fix: pour la recherche 
                         try{
                             scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
-                            var isTemplate = true;
-                            for(var i = 0 ; i < scenario.rows.length ; i++){
-                                if(angular.isDefined(scenario.rows[i].mappings) && scenario.rows[i].mappings.length > 0){
-                                    isTemplate = false;
-                                    break;
+                            scenario.template  = true;
+                            if(scenario.rows>0){
+                                for(var i = 0 ; i < scenario.rows.length ; i++){
+                                    if(angular.isDefined(scenario.rows[i].mappings) && scenario.rows[i].mappings.length > 0){
+                                        scenario.template  = false;
+                                        break;
+                                    }
                                 }
-                            }
+                            } else {
+                               scenario.template  = false;
+                           }
                         }catch(e){
                             if(!angular.isObject(scenario.rows)){
                             //convert it into rows
@@ -353,7 +353,7 @@ define(["angular"], function (angular) {
     $scope.scenarii= [];
     angular.forEach(data, function(dataRow){
         if(dataRow.type!="folder"){
-            $scope.scenarii.push(dataRow);    
+            $scope.scenarii.push(dataRow);
         }
     })
     if(angular.isDefined(data) && data.length != 0){
@@ -370,7 +370,13 @@ $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(){Layou
 /* end : adjusting page content size */
 
 /* begin : generation de la tree */
+// FIX TODO : l'initiatisation crée une boucle infinie 
 if(doBuildTree === true){
+    $scope.scenarii.map(function (scenario) {
+        if(scenario.template === true ){
+            convertToTemplate(scenario);
+        }
+    });
     TreeLayoutService.build("toastScenariosTreeExplorer", $scope.senariiTree,
         function(obj, common){
             if(!angular.isDefined(obj.image) || obj.image == null){

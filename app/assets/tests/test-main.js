@@ -22,6 +22,10 @@ requirejs.config({
         'angular': '../base/libs/angular/angular',
         'angular-mocks': '../base/libs/angular-mocks/angular-mocks',
 
+        'jsRoutes' : '127.0.0.1:9000/jsroutes',
+        'ngProgress' : '../base/javascripts/libs/ngProgress.min',
+        'playRoutes': '../base/javascripts/services/playRoutes',
+        'scenarioCtrl': '../base/javascripts/features/scenario/scenario.controller',
         'addUserCtrl' : '../base/javascripts/admin/accounts/adduser.controller'
     },
 
@@ -32,6 +36,10 @@ requirejs.config({
         'angular': { deps: ['jquery'], exports: 'angular'},
         'angular-mocks': {deps: ['angular'], 'exports': 'angular-mocks'},
 
+        'jsRoutes': {deps: ['angular'], exports: 'jsRoutes'},
+        'ngProgress': {deps: ['angular'], exports: 'ngProgress'},
+        'playRoutes': {deps: ['angular'], exports: 'playRoutes'},
+        'scenarioCtrl': {deps: ['angular','playRoutes'], exports: 'scenarioCtrl'},
         'addUserCtrl': {deps: ['angular'], exports: 'addUserCtrl'}
     },
 
