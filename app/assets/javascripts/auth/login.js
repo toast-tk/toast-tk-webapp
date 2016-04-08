@@ -13,7 +13,7 @@ define(["angular"], function(angular) {
                     };
 
                     LoginService.login(creds).then(function (user) {
-                      $state.go("layout.scenario1");
+                      $state.go("layout.scenario");
                     }, function (error) {
                       toastr.error('Invalid username or password!');
                     });

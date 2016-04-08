@@ -17,7 +17,10 @@ import play.api.libs.json._
 import play.api.mvc._
 import controllers.parsers.WebPageElement
 
-
+import scala.concurrent._
+import scala.concurrent.duration.Duration
+import reactivemongo.bson.{BSONObjectID, BSONDocument}
+  import scala.util.{Try, Success, Failure}
 import scala.collection.immutable.StringOps
 import scala.util.matching.Regex
 
@@ -124,8 +127,19 @@ object ScenarioController extends Controller {
   def deleteScenarii() = Action(parse.json) { implicit request =>
     request.body.validate[String].map {
       case scenariiId: String =>
-        conn.deleteScenarii(scenariiId)
-        Ok("scenario deleted !")
+       Await.ready(conn.deleteScenarii(scenariiId), Duration.Inf).value.get match {
+            case Failure(e) => throw e
+            case Success(hasNode) => {
+              hasNode match {
+              case true => {
+                Ok("scenario deleted !")
+              }
+              case false => {
+                BadRequest("Error: selected has child Node")
+              }
+            }
+          }
+        }
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
     }
@@ -134,15 +148,52 @@ object ScenarioController extends Controller {
   /**
    * Save scenarii
    */
-  def saveScenarii() = Action(parse.json) { implicit request =>
+   def saveScenarii() = Action(parse.json) { implicit request =>
     request.body.validate[Scenario].map {
       case scenario: Scenario =>
-        conn.saveScenario(scenario)
-        Ok("scenario saved !")
-    }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toJson(e))
+      scenario.id match {
+        case None => {
+          val scenarioWithId :Scenario = Scenario(Some(BSONObjectID.generate.stringify),
+            scenario.name,
+            scenario.cType,
+            scenario.driver,
+            scenario.rows,
+            scenario.parent
+            )
+          Await.ready(conn.insertScenario(scenarioWithId), Duration.Inf).value.get match {
+            case Failure(e) => throw e
+            case Success(isInserted) => {
+             isInserted match {
+              case true => {
+                def extendedObject(obj: JsObject) = {
+                  obj + ("columns" -> DomainController.scenarioDescriptorProvider((obj \ "type").as[String]))
+                }
+                val flatResponse = extendedObject(Json.toJson(scenarioWithId).as[JsObject])
+                Ok(Json.toJson(flatResponse))
+              }
+              case false => { BadRequest("Node already exists")}
+            }
+          }
+        }
+      }
+      case _ => {
+        Await.ready(conn.saveScenario(scenario), Duration.Inf).value.get match {
+          case Failure(e) => throw e
+          case Success(isInserted) => {
+           isInserted match {
+            case true => {
+              Ok(Json.toJson(scenario))
+            }
+            case false => { BadRequest("save err: Node already exists")}
+          }
+        }
+      }
     }
   }
+  }.recoverTotal {
+    e => BadRequest("Detected error:" + JsError.toJson(e))
+  }
+}
 
 
   /**

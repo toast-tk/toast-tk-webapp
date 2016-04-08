@@ -20,3 +20,4 @@ bin/*
 /.target/
 /bin/
 toast-logs.log
+/app/assets/node_modules/*

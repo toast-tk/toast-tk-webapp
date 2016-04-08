@@ -1,0 +1,29 @@
+          <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+                <ul id="side-nav" class="nav navbar-nav side-nav" ng-class="{'side-nav-collapsed': isCollapsed === true}">
+<!--                     <li>
+                        <a href="#/main"><i class="fa fa-fw fa-home fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Home</span></a>
+                    </li> -->
+                    <li>
+                        <a href="javascript:;" data-toggle="collapse" data-target="#demo">
+                        <i class="fa fa-users fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
+                            <span  ng-if="isCollapsed===false">Accounts</span>
+                            <i class="fa fa-fw fa-caret-down"></i>
+                        </a>
+                        <ul id="demo" class="collapse">
+                            <li ng-class="{'active' : currentState === 'adminLayout.addUser'}">
+                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.addUser')">
+                                    <i class="fa fa-user-plus fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
+                                    <span  ng-if="isCollapsed===false">Add account</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                     <li style="position: fixed; bottom: 0;">
+                        <a ng-click="collapse()">
+                        <i  ng-if="isCollapsed===false" style="width: 100%;" class="btn fa fa-lg fa-chevron-circle-left" ng-class="{'fa-2x': isCollapsed === true}"></i>
+                        <i  ng-if="isCollapsed===true" class="fa fa-lg fa-chevron-circle-right" ng-class="{'fa-2x': isCollapsed === true}"></i>
+                        </a>
+                    </li>
+                </ul>
+            <!-- /.navbar-collapse -->

@@ -12,7 +12,7 @@ define(["angular"], function (angular) {
 		function checkLoggedLoginResolve() {
 			LoginService.sync()
 			if (LoginService.isAuthenticated()) {
-				$state.go("layout.scenario1");
+				$state.go("layout.scenario");
 			}
 		}
 		
