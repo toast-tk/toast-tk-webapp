@@ -1,3 +1,16 @@
+  require(["angular", "playRoutes",  "routerConfig", "configConfig", "treeLayoutService" ,
+            "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "ScenarioCtrl", "CampaignCtrl", "utilsScenarioService", 
+            "homeCtrl",
+            "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!javascripts/config/icon.constants.config.json",
+            "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl",
+
+
+            "clientService",
+            "componentsDir", "sortable", "ngProgress", 
+            "angular-ui-tree", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
+            "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix"], 
+          function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, utilsScenarioService, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile,
+           adminLayoutCtrl, adminSidebarmenu, addUserCtrl) {
 
               var app = angular.module("app", 
                 ['ui.router', "play.routing", "ngAnimate",
@@ -46,3 +59,4 @@
               });
 
               angular.bootstrap(document, ["app"]);
+          });
