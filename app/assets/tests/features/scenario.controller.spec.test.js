@@ -1,4 +1,4 @@
-define(['angular','angular-mocks', 'scenarioCtrl'], function(angular,angularMocks, scenarioCtrl) {
+define(['angular','angular-mocks', 'scenarioCtrl','features','treeLayoutService'], function(angular,angularMocks, scenarioCtrl,features,treeLayoutService) {
     'use strict';
 describe('ScenarioCtrl', function() {
     console.log("---- Starting : ScenarioCtrl test ----");
@@ -6,6 +6,16 @@ describe('ScenarioCtrl', function() {
     displayParams,
     scope,
     DashListService;
+
+
+beforeEach(module('app'));
+ beforeEach(module('play.routing'));
+ beforeEach(module('ui.bootstrap'));
+beforeEach(module('sidesplit'));
+beforeEach(module('tk.services'));
+/* beforeEach(module('app'));
+*/ 
+//
 
     beforeEach(inject(function(_$controller_, $rootScope){
         $controller = _$controller_;
@@ -15,7 +25,7 @@ describe('ScenarioCtrl', function() {
 
     describe('verify exact tempalate function', function() {
         it('verify exactitude', function () {
-            var scenario = {
+            scope.scenario = {
                 "_id" : ObjectId("56eae1756f94b87799b10369"),
                 "name" : "web1",
                 "type" : "web",
@@ -24,7 +34,7 @@ describe('ScenarioCtrl', function() {
                 "parent" : "0"
             }
 
-            scope.convertToTemplate(scenario);
+            scope.convertToTemplate(scope.scenario);
 
         });
     });

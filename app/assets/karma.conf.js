@@ -6,7 +6,7 @@ module.exports = function(config) {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: './',
-
+//browserNoActivityTimeout: 100000,
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -21,23 +21,38 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
      {pattern:  'libs/jquery/dist/jquery.js', watch: false, included: false},
-     {pattern: 'libs/angular/angular.min.js',  watch: false, included: false},
-     {pattern: 'libs/angular-mocks/*.js',  watch: false, included: false},
-     {pattern: 'libs/**/*.js',  watch: false, included: false},
+     {pattern: 'libs/angular/angular.js',  watch: false, included: false},
+     {pattern: 'libs/angular-mocks/angular-mocks.js',  watch: false, included: false},
+     {pattern: 'libs/underscore/underscore-min.js',  watch: false, included: false},
+     {pattern: 'libs/jquery-ui/jquery-ui.js',  watch: false, included: false},
+     {pattern: 'libs/angular-route/angular-route.min.js',  watch: false, included: false},
+     
+     {pattern: 'libs/libs/*.js',  watch: false, included: false},
+
+  //   {pattern: 'bower_components/**/*.js',  watch: false, included: false},
+    // {pattern: 'bower_components/**/**/*.js',  watch: false, included: false},
       
-      {pattern: 'javascripts/main.js', included: false},
-      {pattern: 'javascripts/*.js', included: false},
+      /*{pattern: 'javascripts/main.app.js', included: false},*/
+    /*  'javascripts/main.app.js',*/
+      /*'javascripts/main.js',*/
+/*      {pattern: 'javascripts/main.js', included: false},*/
+      'tests/test-main.js',
+//{pattern: 'javascripts/main.module.js', included: false},
+{pattern: 'javascripts/main.app.js', included: false},
+      {pattern: 'javascripts/main.config.js', included: false},
+      {pattern: 'javascripts/main.routes.js', included: false},
+      {pattern: 'javascripts/config/icon.constants.config.json', watched: true, included: false, served: true},
       {pattern: 'javascripts/**/*.js', included: false},
       {pattern: 'javascripts/**/**/*.js', included: false},
 
       {pattern: 'tests/*test.js', included: false},
-      {pattern: 'tests/**/*test.js', included: false},
-      'tests/test-main.js'
+      {pattern: 'tests/**/*test.js', included: false}
     ],
 
 
     // list of files to exclude
     exclude: [
+    'javascripts/main.js'
     ],
 
 

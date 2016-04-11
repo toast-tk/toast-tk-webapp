@@ -1,0 +1,147 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'D:\\apps\\NodeJS\\\\node.exe',
+1 verbose cli   'D:\\apps\\NodeJS\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'angular-ui-sortable',
+1 verbose cli   '--save-dev' ]
+2 info using npm@2.10.1
+3 info using node@v0.12.4
+4 verbose install initial load of D:\toast-tk-play-webapp\app\assets\package.json
+5 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\angular\package.json
+6 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\angular-animate\package.json
+7 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\angular-mocks\package.json
+8 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\angular-route\package.json
+9 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable\package.json
+10 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\del\package.json
+11 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\gulp\package.json
+12 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\gulp-filter\package.json
+13 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\jasmine-core\package.json
+14 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\jquery\package.json
+15 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\jquery-ui\package.json
+16 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\karma\package.json
+17 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\karma-jasmine\package.json
+18 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\mkdirp\package.json
+19 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\requirejs\package.json
+20 verbose installManyTop reading scoped package data from D:\toast-tk-play-webapp\app\assets\node_modules\underscore\package.json
+21 info package.json jquery-ui@1.10.5 No license field.
+22 verbose readDependencies loading dependencies from D:\toast-tk-play-webapp\app\assets\package.json
+23 silly cache add args [ 'angular-ui-sortable', null ]
+24 verbose cache add spec angular-ui-sortable
+25 silly cache add parsed spec { raw: 'angular-ui-sortable',
+25 silly cache add   scope: null,
+25 silly cache add   name: 'angular-ui-sortable',
+25 silly cache add   rawSpec: '',
+25 silly cache add   spec: '*',
+25 silly cache add   type: 'range' }
+26 silly addNamed angular-ui-sortable@*
+27 verbose addNamed "*" is a valid semver range for angular-ui-sortable
+28 silly addNameRange { name: 'angular-ui-sortable', range: '*', hasData: false }
+29 silly mapToRegistry name angular-ui-sortable
+30 silly mapToRegistry using default registry
+31 silly mapToRegistry registry https://registry.npmjs.org/
+32 silly mapToRegistry uri https://registry.npmjs.org/angular-ui-sortable
+33 verbose addNameRange registry:https://registry.npmjs.org/angular-ui-sortable not in flight; fetching
+34 verbose get https://registry.npmjs.org/angular-ui-sortable not expired, no request
+35 silly addNameRange number 2 { name: 'angular-ui-sortable', range: '*', hasData: true }
+36 silly addNameRange versions [ 'angular-ui-sortable',
+36 silly addNameRange   [ '0.12.5', '0.13.3', '0.13.4', '0.14.0' ] ]
+37 silly addNamed angular-ui-sortable@0.14.0
+38 verbose addNamed "0.14.0" is a plain semver version for angular-ui-sortable
+39 silly cache afterAdd angular-ui-sortable@0.14.0
+40 verbose afterAdd C:\Users\PJCA04891\AppData\Roaming\npm-cache\angular-ui-sortable\0.14.0\package\package.json not in flight; writing
+41 verbose afterAdd C:\Users\PJCA04891\AppData\Roaming\npm-cache\angular-ui-sortable\0.14.0\package\package.json written
+42 silly install resolved [ { name: 'angular-ui-sortable',
+42 silly install resolved     version: '0.14.0',
+42 silly install resolved     description: 'This directive allows you to jQueryUI Sortable.',
+42 silly install resolved     author: { name: 'https://github.com/angular-ui/ui-sortable/graphs/contributors' },
+42 silly install resolved     license: 'MIT',
+42 silly install resolved     homepage: 'http://angular-ui.github.com',
+42 silly install resolved     main: './src/sortable.js',
+42 silly install resolved     dependencies: {},
+42 silly install resolved     devDependencies:
+42 silly install resolved      { 'angular-ui-publisher': '1.2.x',
+42 silly install resolved        grunt: '~0.4.x',
+42 silly install resolved        'grunt-contrib-connect': '0.5.x',
+42 silly install resolved        'grunt-contrib-jshint': '0.8.x',
+42 silly install resolved        'grunt-contrib-uglify': '0.2.x',
+42 silly install resolved        'grunt-contrib-watch': '0.5.x',
+42 silly install resolved        'grunt-conventional-changelog': '~1.0.0',
+42 silly install resolved        'grunt-karma': '^0.12.1',
+42 silly install resolved        'grunt-ngmin': '0.0.x',
+42 silly install resolved        'grunt-surround': '0.1.x',
+42 silly install resolved        'jasmine-core': '^2.4.1',
+42 silly install resolved        karma: '^0.13.22',
+42 silly install resolved        'karma-chrome-launcher': '0.1.x',
+42 silly install resolved        'karma-coffee-preprocessor': '^0.3.0',
+42 silly install resolved        'karma-coverage': '^0.5.5',
+42 silly install resolved        'karma-coveralls': '~0.1.4',
+42 silly install resolved        'karma-firefox-launcher': '0.1.x',
+42 silly install resolved        'karma-html2js-preprocessor': '^0.1.0',
+42 silly install resolved        'karma-jasmine': '^0.3.7',
+42 silly install resolved        'karma-junit-reporter': '^0.4.0',
+42 silly install resolved        'karma-phantomjs-launcher': '^1.0.0',
+42 silly install resolved        'karma-requirejs': '^0.2.5',
+42 silly install resolved        'karma-script-launcher': '^0.2.0',
+42 silly install resolved        'load-grunt-tasks': '0.2.x',
+42 silly install resolved        requirejs: '2.1.x',
+42 silly install resolved        wiredep: '1.8.x' },
+42 silly install resolved     scripts: {},
+42 silly install resolved     repository:
+42 silly install resolved      { type: 'git',
+42 silly install resolved        url: 'git://github.com/angular-ui/ui-sortable.git' },
+42 silly install resolved     gitHead: 'fd27899ae81db41febbdeba2b722630335974ea7',
+42 silly install resolved     bugs: { url: 'https://github.com/angular-ui/ui-sortable/issues' },
+42 silly install resolved     _id: 'angular-ui-sortable@0.14.0',
+42 silly install resolved     _shasum: 'e68cbc56918a7c3f0518c53595a8cbf0c1b309ad',
+42 silly install resolved     _from: 'angular-ui-sortable@*',
+42 silly install resolved     _npmVersion: '2.14.9',
+42 silly install resolved     _nodeVersion: '0.12.12',
+42 silly install resolved     _npmUser: { name: 'thgreasi', email: 'thgreasi@gmail.com' },
+42 silly install resolved     maintainers: [ [Object], [Object] ],
+42 silly install resolved     dist:
+42 silly install resolved      { shasum: 'e68cbc56918a7c3f0518c53595a8cbf0c1b309ad',
+42 silly install resolved        tarball: 'https://registry.npmjs.org/angular-ui-sortable/-/angular-ui-sortable-0.14.0.tgz' },
+42 silly install resolved     _npmOperationalInternal:
+42 silly install resolved      { host: 'packages-16-east.internal.npmjs.com',
+42 silly install resolved        tmp: 'tmp/angular-ui-sortable-0.14.0.tgz_1459198679300_0.30814891401678324' },
+42 silly install resolved     directories: {},
+42 silly install resolved     _resolved: 'https://registry.npmjs.org/angular-ui-sortable/-/angular-ui-sortable-0.14.0.tgz',
+42 silly install resolved     readme: 'ERROR: No README data found!' } ]
+43 info install angular-ui-sortable@0.14.0 into D:\toast-tk-play-webapp\app\assets
+44 info installOne angular-ui-sortable@0.14.0
+45 verbose installOne of angular-ui-sortable to D:\toast-tk-play-webapp\app\assets not in flight; installing
+46 verbose lock using C:\Users\PJCA04891\AppData\Roaming\npm-cache\_locks\angular-ui-sortable-069df428653e4359.lock for D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable
+47 silly install write writing angular-ui-sortable 0.14.0 to D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable
+48 verbose unbuild node_modules\angular-ui-sortable
+49 silly gentlyRm D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable is being purged from base D:\toast-tk-play-webapp\app\assets
+50 verbose gentlyRm don't care about contents; nuking D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable
+51 silly vacuum-fs purging D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable
+52 silly vacuum-fs quitting because other entries in D:\toast-tk-play-webapp\app\assets\node_modules
+53 verbose tar unpack C:\Users\PJCA04891\AppData\Roaming\npm-cache\angular-ui-sortable\0.14.0\package.tgz
+54 verbose tar unpacking to D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable
+55 silly gentlyRm D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable is being purged
+56 verbose gentlyRm don't care about contents; nuking D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable
+57 silly vacuum-fs Error: EPERM, lstat 'D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable'
+57 silly vacuum-fs     at Error (native)
+58 verbose unlock done using C:\Users\PJCA04891\AppData\Roaming\npm-cache\_locks\angular-ui-sortable-069df428653e4359.lock for D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable
+59 verbose stack Error: EPERM, lstat 'D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable'
+59 verbose stack     at Error (native)
+60 verbose cwd D:\toast-tk-play-webapp\app\assets
+61 error Windows_NT 6.1.7601
+62 error argv "D:\\apps\\NodeJS\\\\node.exe" "D:\\apps\\NodeJS\\node_modules\\npm\\bin\\npm-cli.js" "install" "angular-ui-sortable" "--save-dev"
+63 error node v0.12.4
+64 error npm  v2.10.1
+65 error path D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable
+66 error code EPERM
+67 error errno -4048
+68 error Error: EPERM, lstat 'D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable'
+68 error     at Error (native)
+68 error  { [Error: EPERM, lstat 'D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable']
+68 error   errno: -4048,
+68 error   code: 'EPERM',
+68 error   path: 'D:\\toast-tk-play-webapp\\app\\assets\\node_modules\\angular-ui-sortable' }
+69 error Please try running this command again as root/Administrator.
+70 verbose exit [ -4048, true ]
+71 verbose unbuild node_modules\angular-ui-sortable
+72 silly gentlyRm D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable is being purged from base D:\toast-tk-play-webapp\app\assets
+73 verbose gentlyRm don't care about contents; nuking D:\toast-tk-play-webapp\app\assets\node_modules\angular-ui-sortable
