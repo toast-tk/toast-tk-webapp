@@ -12,7 +12,7 @@
  * }}}
  * @author Marius Soutier, 2013
  */
-define(["angular", "jsRoutes", "../libs/ngProgress.min"], function (angular, jsRoutes) {
+define(["angular", "jsRoutes", "ngProgress"], function (angular, jsRoutes) {
   "use strict";
 
   // The module - will be referenced by other modules
