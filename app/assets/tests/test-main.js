@@ -5,7 +5,7 @@ var pathToModule = function(path) {
 };
 
 for (var file in window.__karma__.files) {
-  console.log(file);
+  //console.log(file);
   if (window.__karma__.files.hasOwnProperty(file)) {
     if (/spec\.test\.js$/.test(file)) {
       tests.push(file);

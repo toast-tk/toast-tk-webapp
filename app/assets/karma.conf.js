@@ -15,7 +15,8 @@ module.exports = function(config) {
     plugins: [
       "karma-chrome-launcher",
       "karma-jasmine",
-      "karma-requirejs"
+      "karma-requirejs",
+      'karma-ng-html2js-preprocessor'
     ],
 
     // list of files / patterns to load in the browser
@@ -35,6 +36,7 @@ module.exports = function(config) {
     {pattern: 'javascripts/**/**/*.js', included: false},
     {pattern: 'javascripts/main.app.js', included: false},
 
+    //'../../public/html/**/*.html',
     'tests/test-main.js',
     {pattern: 'tests/*test.js', included: false},
     {pattern: 'tests/**/*test.js', included: false}
@@ -50,6 +52,10 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+        '../../public/html/**/*.html': ['ng-html2js']
+    },
+
+    ngHtml2JsPreprocessor: {
     },
 
 

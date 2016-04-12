@@ -280,7 +280,7 @@ define(["angular"], function (angular) {
                            }
                         }catch(e){
                             if(!angular.isObject(scenario.rows)){
-                            //convert it into rows
+                            /*convert it into rows*/
                             var lines = scenario.rows.split( "\n" );
                             scenario.template = true;
                             scenario.rows = [];
