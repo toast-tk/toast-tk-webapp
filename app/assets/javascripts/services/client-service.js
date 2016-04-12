@@ -3,8 +3,8 @@ define(["angular"], function (angular) {
 
   	// The module - will be referenced by other modules
   	var module = angular.module("tk.services", ["play.routing"]);
-
-  	module.factory('ClientService', function(playRoutes){
+    module.constant('webSocket', WebSocket);
+  	module.factory('ClientService', function(playRoutes,webSocket){
   		var factory = {};
 
         factory.ACTION_ITEM_REGEX = /{{([\w:]+)}}/gi;
@@ -15,7 +15,7 @@ define(["angular"], function (angular) {
         factory.regexList = [];
         factory.regexMap = {};
 
-        var socket = new WebSocket('ws://localhost:9000/socket/stream');
+        var socket = new webSocket('ws://localhost:9000/socket/stream');
 
         // When the connection is open, send some data to the server
         socket.onopen = function (event) {
