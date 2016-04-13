@@ -4,9 +4,10 @@ var mkdirp = require('mkdirp');
 var del = require('del');
 
  var destLib = 'libs'
- var srcLib = ['node_modules/**/**', 
+ var srcLib = ['node_modules/**/**',
+ 'bower_components/**/**',
  '!node_modules/**/node_modules/**',
- '!node_modules/**/lib/**',
+ //'!node_modules/**/lib/**',
  '!node_modules/**/test/**',
  '!node_modules/**/examples/**',
  ];

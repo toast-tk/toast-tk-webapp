@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        ScenarioCtrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $modal, TreeLayoutService, ICONS, LayoutService, NewStepService, UtilsScenarioService, toastr) {
+        ScenarioCtrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $uibModal, TreeLayoutService, ICONS, LayoutService, NewStepService, UtilsScenarioService, toastr) {
             $scope.isEditScenarioName = false;
             $scope.isCollapsed = false;
             $scope.ICONS = ICONS ;
@@ -50,7 +50,7 @@ define(["angular"], function (angular) {
                     }).then(function(){
                         var modalScope = $scope.$new(true);
                         modalScope.newNodeType = nodeType;
-                        var modalInstance = $modal.open({
+                        var modalInstance = $uibModal.open({
                             animation: $scope.animationsEnabled,
                             templateUrl: 'assets/html/scenario/newstep.modal.scenario.html',
                             controller:'newStepModalCtrl',
@@ -353,7 +353,7 @@ if(doBuildTree === true){
         $scope.scenario = null ;
         $scope.folder = selectedFolder;
         $scope.folderContents = TreeLayoutService.getAllChildNodes(selectedFolder.id);
-        $scope.$apply();
+        //$scope.$apply();
     }, function(selectedElementId,selectedItem){
         return selectedElementId && selectedItem.type=="folder";
     });
