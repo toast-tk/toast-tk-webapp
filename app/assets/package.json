@@ -20,6 +20,7 @@
     "del": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-filter": "^4.0.0",
+    "jasmine-jquery": "^2.1.1",
     "jquery-ui": "^1.10.5",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^0.2.3",

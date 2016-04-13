@@ -1,0 +1,8 @@
+{
+	"_id" : "5594ee040e7ea83143e68c6d",
+	"name" : "Première_scénario",
+	"type" : "swing",
+	"driver" : "connecteurSwing",
+	"parent" : "0",
+	"rows" : "Affichage dialogue 'Connexion'\nClick on *Connexion.Mémoriser_mon_nom_d_utilisateur*\nClick on *Connexion.Mémoriser_mon_mot_de_passe*\nClick on *Connexion.Mémoriser_mon_nom_d_utilisateur*\nClick on *Connexion.Connexion*\nSelection Fenetre 'RUSProd'\nAffichage dialogue 'Notes de version 3.5-beta1'\nwait 20s\nClick on *Notes_de_version_3.5-beta1.Fermer*\nAffichage dialogue 'Choisir une période'\nClick on *Choisir_une_période.OK*\n"
+}

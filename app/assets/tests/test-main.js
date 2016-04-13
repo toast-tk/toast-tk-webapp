@@ -22,6 +22,7 @@ requirejs.config({
         'requirejs': '../base/libs/requirejs/require',
         'angular': '../base/libs/angular/angular',
         'angular-mocks': '../base/libs/angular-mocks/angular-mocks',
+        'jasmine-jquery': '../base/libs/jasmine-jquery/lib/jasmine-jquery',
 
         /*'jsRoutes' : '127.0.0.1:9000/jsroutes',*/
         'jsRoutes' : '../base/tests/jsroutes.test',
@@ -86,7 +87,7 @@ requirejs.config({
         
 /*        'angular': { deps: ['jquery'], exports: 'angular'},
 */        'angular-mocks': {deps: ['angular'], 'exports': 'angular-mocks'},
-
+          'jasmine-jquery': {deps: ['jquery'], 'exports': 'jasmine-jquery'},
 
 
          'jsRoutes': {

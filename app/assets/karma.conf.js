@@ -27,6 +27,7 @@ module.exports = function(config) {
     {pattern: 'libs/underscore/underscore-min.js',  watch: false, included: false},
     {pattern: 'libs/jquery-ui/jquery-ui.js',  watch: false, included: false},
     {pattern: 'libs/angular-route/angular-route.min.js',  watch: false, included: false},
+    {pattern: 'libs/jasmine-jquery/lib/jasmine-jquery.js',  watch: false, included: false},
 
     {pattern: 'libs/libs/*.js',  watch: false, included: false},
     {pattern: 'javascripts/main.config.js', included: false},
@@ -38,6 +39,7 @@ module.exports = function(config) {
 
     //'../../public/html/**/*.html',
     'tests/test-main.js',
+    {pattern: 'mocks/*.json', watched: true, served: true, included: false},
     {pattern: 'tests/*test.js', included: false},
     {pattern: 'tests/**/*test.js', included: false}
     ],
