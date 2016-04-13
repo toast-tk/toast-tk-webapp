@@ -102,9 +102,14 @@ define(["angular"], function (angular) {
 
             function recordActions(){
                 ClientService.setSentenceListener(function(data){
-                    toastr.success(data);
-                    UtilsScenarioService.templatizeRow(data.sentence, UtilsScenarioService.getActionType($scope.scenario, data), data.ids);
-                    console.log("received: " + data);
+                    if(!angular.isObject(data.sentence)){
+                        data.row = {
+                            "patterns" : data.sentence
+                        }
+                        UtilsScenarioService.templatizeRow(data.row, "web", data.ids);
+                        console.log("data.row : ", JSON.stringify(data.row));
+                        $scope.scenario.rows.push(angular.copy(data.row));
+                    }
                 });
             }
 

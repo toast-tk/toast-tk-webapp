@@ -47,17 +47,17 @@ define(["angular"], function (angular) {
 
       /* BEGIN : get action type or scenario type  */
       function getActionType(scenario, row){
-        if(row.patterns.startsWith("@service")){
+        if(angular.isDefined(row.patterns) && row.patterns.startsWith("@service")){
           return "service";
         }
-        else if (row.patterns.startsWith("@web")){
-          return "service";
+        else if (angular.isDefined(row.patterns) && row.patterns.startsWith("@web")){
+          return "web";
         }
-        else if (row.patterns.startsWith("@swing")){
+        else if (angular.isDefined(row.patterns) && row.patterns.startsWith("@swing")){
           return "swing";
         }
         else {
-          return scenario.type;
+          return scenario.type || "web";
         }
       }
       /* END : get action type or scenario type  */
@@ -127,16 +127,24 @@ define(["angular"], function (angular) {
         var tag = getRegexTag(patternValue);
         var tags = [];
         var tagPosition = 0;
+        var componentPosition = 0;
         while (tag != null) {
           tags.push(tag);
           var tagName = tags[tagPosition][0];
           var mappingValue = scenarioSentenceWithValues.split(" ")[getIndex(pattern.split(" "), tagName)];
           patternValue = replaceIndex(patternValue, tagName,  tags[tagPosition].index , mappingValue);
           mappingValue = mappingValue.replace(/\*/g, '');
+           var varType = tags[tagPosition][3];
           if(MapElementsIds != null){
-            onPatternValueChange(scenarioRow, tagPosition, MapElementsIds[tagPosition], mappingValue);    
+            if(varType == "component"){
+                onPatternValueChange(scenarioRow, tagPosition, MapElementsIds[componentPosition], mappingValue);
+                componentPosition = componentPosition + 1;
+            }else{
+               onPatternValueChange(scenarioRow, tagPosition, tagPosition.toString(), mappingValue);
+            }
+                
           } else {
-            var varType = tags[tagPosition][3];
+           
             onPatternValueChange(scenarioRow, tagPosition, varType == "component" ? varType : tagPosition.toString(), mappingValue);
           }
           tagPosition = tagPosition + 1;
@@ -157,8 +165,8 @@ define(["angular"], function (angular) {
       /* END : remove head annotation */
 
       function getRegexTag(sentence){
-        /*var tagRegex = /(@)\[\[(\d+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+)\]\]/gi*/
-        var tagRegex = /\{\{[\w:]+\}\}/gi;
+        var tagRegex = /(@)\[\[(\d+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+)\]\]/gi
+        /*var tagRegex = /\{\{[\w:]+\}\}/gi;*/
         var tag = tagRegex.exec(sentence);
         return tag;
       }
