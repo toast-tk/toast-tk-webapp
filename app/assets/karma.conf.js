@@ -28,6 +28,7 @@ module.exports = function(config) {
     {pattern: 'libs/jquery-ui/jquery-ui.js',  watch: false, included: false},
     {pattern: 'libs/angular-route/angular-route.min.js',  watch: false, included: false},
     {pattern: 'libs/jasmine-jquery/lib/jasmine-jquery.js',  watch: false, included: false},
+    {pattern: 'libs/**/**.js',  watch: false, included: false},
 
     {pattern: 'libs/libs/*.js',  watch: false, included: false},
     {pattern: 'javascripts/main.config.js', included: false},
