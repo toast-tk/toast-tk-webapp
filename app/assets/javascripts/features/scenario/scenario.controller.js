@@ -344,7 +344,7 @@ if(doBuildTree === true){
         $timeout(function(){
             $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
         },500);
-        $scope.$apply();
+        // $scope.$apply();
     }, function(selectedElementId,selectedItem){
         return selectedElementId && selectedItem.type!="folder";
     });
