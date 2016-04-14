@@ -37,6 +37,9 @@
         deps: ['angular'],
         exports: 'ngProgress'
       },
+      'xeditable': {
+        deps: ['angular']
+      },
       'angular-toastr':  ['angular'],
       'sidesplit':{
         deps: ['angular']
@@ -78,11 +81,10 @@
         "angucomplete": ['../libs/angucomplete-alt/dist/angucomplete-alt.min'],
         "angular-ui-tree": ['../libs/angular-ui-tree/dist/angular-ui-tree.min'],
         "ui.bootstrap": ['../libs/angular-bootstrap/ui-bootstrap-tpls.min'],
-        /*"ngProgress" : "../libs/ngprogress/build/ngprogress.min",*/
+        "ngProgress" : "../libs/ngprogress/build/ngprogress.min",
+        "xeditable": ['../libs/angular-xeditable/dist/js/xeditable.min'],
 
-        "ngProgress" : "./libs/ngProgress.min",
         "qTags": ['./libs/jquery-textntags'],
-        "xeditable": ['libs/xeditable'],
         "webix": ['libs/webix'],
         "sidesplit": ['libs/angular-sidesplit.provider'],
 
