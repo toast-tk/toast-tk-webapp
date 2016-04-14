@@ -134,6 +134,13 @@ define(["angular"], function (angular) {
              isNewStepResolved = (response.isResolved == true) ? response.isResolved : isNewStepResolved;
             }
 
+            var newCostomStep ;
+            $scope.newStepChanged = function(customTypedStep){
+                console.log("newStep", customTypedStep);
+                newCostomStep = customTypedStep ;
+
+            }
+
             function newCustomStepSelected(newCustomStep){
                  var step = { kind : $scope.scenario.type ,
                                 patterns : newCustomStep};
@@ -146,10 +153,14 @@ define(["angular"], function (angular) {
             function addNewStep(){
                 if(isNewStepResolved==false){
                     console.log("eef ", $scope.newStepModel)
-                    newCustomStepSelected("");
+                    newCustomStepSelected(newCostomStep);
                 }
 
                 newStepPromise.promise.then(function(step){
+                    if(step.patterns === ""){
+                        step.patterns = newCostomStep ;
+                    }
+                    newCostomStep = "";
                     isNewStepResolved = false;
                     console.log("   adding ;", angular.copy(step));
                     $scope.scenario.rows.push(angular.copy(step));
@@ -176,6 +187,10 @@ define(["angular"], function (angular) {
                 }
 
                 newStepPromise.promise.then(function(step){
+                    if(step.patterns === ""){
+                        step.patterns = newCostomStep ;
+                    }
+                    newCostomStep = "";
                     isNewStepResolved = false;
                     console.log("editing :", angular.copy(step));
                     $scope.scenario.rows[$scope.editableStepIndex] = step;
