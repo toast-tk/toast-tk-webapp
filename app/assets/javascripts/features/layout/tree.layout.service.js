@@ -25,32 +25,33 @@ define(["angular"], function (angular) {
             function build(treeContainer, dataTree , templateFunction){
               var treeExplorerPromise = $q.defer();
               self.dataTree = dataTree;
-              var value = 
-              webix.ready(function(){
-               var treeExplorer = new webix.ui({
-                container: treeContainer,
-                rows:[
-                { cols:[
-                  {
-                    template:"<i class='fa fa-filter fa-lg' style='margin-top: 10px;''></i>",
-                    type: "clean",
-                    width:20
-                  },
-                  {
-                    view:"text",
-                    id:"filterField"
-                  }
-                  ]},
-                  {
-                    view:"tree",
-                    type:"lineTree",
-                    activeTitle:true,
-                    id:"tree1",
-                    select:true,
-                    template: templateFunction,
-                    data : dataTree,
-                    type:{
-                     folder:function(obj, common){
+              if(angular.element('#'+ treeContainer).length){
+                var value = 
+                webix.ready(function(){
+                 var treeExplorer = new webix.ui({
+                  container: treeContainer,
+                  rows:[
+                  { cols:[
+                    {
+                      template:"<i class='fa fa-filter fa-lg' style='margin-top: 10px;''></i>",
+                      type: "clean",
+                      width:20
+                    },
+                    {
+                      view:"text",
+                      id:"filterField"
+                    }
+                    ]},
+                    {
+                      view:"tree",
+                      type:"lineTree",
+                      activeTitle:true,
+                      id:"tree1",
+                      select:true,
+                      template: templateFunction,
+                      data : dataTree,
+                      type:{
+                       folder:function(obj, common){
                                  //if open folder
                                  if (obj.$count && obj.open) {
                                   return "<div class='webix_tree_folder_open'></div>";
@@ -83,15 +84,17 @@ define(["angular"], function (angular) {
                          }]   
                        });
 
-$$("filterField").attachEvent("onTimedKeyPress",function(){
-  $$("tree1").filter("#value#",this.getValue());
-})
-webix.event(window, "resize", function(){ treeExplorer.adjust(); })
-treeExplorerPromise.resolve(treeExplorer);
-});
-
-return treeExplorerPromise.promise;
-}
+                 $$("filterField").attachEvent("onTimedKeyPress",function(){
+                  $$("tree1").filter("#value#",this.getValue());
+                })
+                 webix.event(window, "resize", function(){ treeExplorer.adjust(); })
+                 treeExplorerPromise.resolve(treeExplorer);
+               });
+              } else {
+                console.log("could not build tree");
+              }
+              return treeExplorerPromise.promise;
+            }
 
             /* BEGIN : save concerted node */
             /* @params : { treeExplorer : concerned tree , isParentConcerned : (boolean) to know if we want the selectednode or the parent}*/

@@ -5,7 +5,7 @@ var pathToModule = function(path) {
 };
 
 for (var file in window.__karma__.files) {
-  console.log(file);
+  //console.log(file);
   if (window.__karma__.files.hasOwnProperty(file)) {
     if (/spec\.test\.js$/.test(file)) {
       tests.push(file);
@@ -19,41 +19,42 @@ requirejs.config({
     waitSeconds: 200,
     paths: {
         'jquery': '../base/libs/jquery/dist/jquery',
+        "jquery-ui" : "../base/libs/jquery-ui/jquery-ui",
+        "underscore" : "../base/libs/underscore/underscore-min",
         'requirejs': '../base/libs/requirejs/require',
+        text : '../base/libs/requirejs-plugins/lib/text',
+        json : '../base/libs/requirejs-plugins/src/json',
+        "bootstrap":['../base/libs/bootstrap/dist/js/bootstrap.min'],
+        
         'angular': '../base/libs/angular/angular',
+        "angularRoute": "../base/libs/angular-route/angular-route.min",
+        "ui.router": ['../base/libs/angular-ui-router/release/angular-ui-router.min'],
+        "angular-animate":['../base/libs/angular-animate/angular-animate.min'],
+        "ui-sortable" : ['../base/libs/angular-ui-sortable/sortable.min'],
+        "angular-toastr": ['../base/libs/angular-toastr/dist/angular-toastr.tpls.min'],
+        "angucomplete": ['../base/libs/angucomplete-alt/dist/angucomplete-alt.min'],
+        "angular-ui-tree": ['../base/libs/angular-ui-tree/dist/angular-ui-tree.min'],
+        "ui.bootstrap": ['../base/libs/angular-bootstrap/ui-bootstrap-tpls.min'],
+        "ngProgress" : "../base/libs/ngprogress/build/ngProgress.min",
+        "xeditable": ['../base/libs/angular-xeditable/dist/js/xeditable.min'],
+        
         'angular-mocks': '../base/libs/angular-mocks/angular-mocks',
+        'jasmine-jquery': '../base/libs/jasmine-jquery/lib/jasmine-jquery',
 
+        "qTags": ['../base/javascripts/libs/jquery-textntags'],
+        "webix": ['../base/javascripts/libs/webix'],
+        "sidesplit": '../base/javascripts/libs/angular-sidesplit.provider',
+        "sortable": "../base/javascripts/libs/sortable",
+        
         /*'jsRoutes' : '127.0.0.1:9000/jsroutes',*/
         'jsRoutes' : '../base/tests/jsroutes.test',
-        /*'ngProgress' : '../base/bower_components/ngprogress/build/ngprogress.min',*/
-        'ngProgress' : '../base/javascripts/libs/ngProgress.min',
+
         'playRoutes': '../base/javascripts/services/playRoutes',
-        "sidesplit": '../base/javascripts/libs/angular-sidesplit.provider',
-        "ui.bootstrap": ['../base/javascripts/libs/ui-bootstrap-tpls-0.12.1'],
         "features": ['../base/javascripts/main.app'],
         'clientService': "./javascripts/services/client-service",
         'scenarioCtrl': '../base/javascripts/features/scenario/scenario.controller',
         'addUserCtrl' : '../base/javascripts/admin/accounts/adduser.controller',
         "componentsDir" : '../base/javascripts/directives/components',
-        "sortable": "../base/javascripts/libs/sortable",
-
-
-        text : '../base/javascripts/libs/require-plugins/text',
-        json : '../base/javascripts/libs/require-plugins/json',
-        "jquery-ui" : "../base/libs/jquery-ui/jquery-ui",
-        "angularRoute": "../base/libs/angular-route/angular-route.min",
-        //"angularRoute1" : "../base/javascripts/libs/angular-ui-router.min",
-          "ui-sortable" : ['../base/javascripts/libs/sortable'],
-        "underscore" : "../base/libs/underscore/underscore-min",
-        "qTags": ['../base/javascripts/libs/jquery-textntags'],
-        "angular-ui-tree": ['../base/javascripts/libs/angular-ui-tree.min'],
-        "angular-animate":['../base/javascripts/libs/angular-animate.min'],
-        "bootstrap":['../base/javascripts/libs/bootstrap.min'],
-        "xeditable": ['../base/javascripts/libs/xeditable'],
-        "ui.router": ['../base/javascripts/libs/angular-ui-router.min'],
-        "webix": ['../base/javascripts/libs/webix'],
-        "angular-toastr": ['../base/javascripts/libs/angular-toastr.tpls.min'],
-        "angucomplete": ['../base/javascripts/libs/angucomplete-alt.min'],
         "loginCtrl" : ['../base/javascripts/auth/login'],
         "loginService" : ['../base/javascripts/auth/login.service'],
         "loginResolverService" : ['../base/javascripts/auth/login.resolver.service'],
@@ -86,7 +87,7 @@ requirejs.config({
         
 /*        'angular': { deps: ['jquery'], exports: 'angular'},
 */        'angular-mocks': {deps: ['angular'], 'exports': 'angular-mocks'},
-
+          'jasmine-jquery': {deps: ['jquery'], 'exports': 'jasmine-jquery'},
 
 
          'jsRoutes': {
@@ -122,6 +123,9 @@ requirejs.config({
       'ngProgress': {
         deps: ['angular'],
         exports: 'ngProgress'
+      },
+      'xeditable': {
+        deps: ['angular']
       },
       'angular-toastr':  ['angular'],
       'sidesplit':{

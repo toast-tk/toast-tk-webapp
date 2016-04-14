@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $timeout, $modal, $sideSplit, LayoutService, toastr, ICONS) {
+        RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $timeout, $uibModal, $sideSplit, LayoutService, toastr, ICONS) {
             $scope.run_config_types = [ "swing page", "web page", "service entity"];
             $scope.autosetups = [];
             $scope.newAutoSetupRow = {};
@@ -28,7 +28,7 @@ define(["angular"], function (angular) {
             /* BEGIN : open & add object modal */
             $scope.addNewObject = function(){
                 var modalScope = $scope.$new(true);
-                    var modalInstance = $modal.open({
+                    var modalInstance = $uibModal.open({
                         animation: $scope.animationsEnabled,
                         templateUrl: 'assets/html/repository/newobject.modal.repository.html',
                         controller:'newObjectModalCtrl'
