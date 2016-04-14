@@ -17,10 +17,17 @@ var del = require('del');
  	del(['node_modules'], cb);
  });
 
+ gulp.task('clean-bower', function (cb) {
+ 	del(['bower_components'], cb);
+ });
+
  /* for resteing libs copy */
  gulp.task('clean-libs', function (cb) {
  	del(['libs'], cb);
  });
+
+  gulp.task('clean-all',['clean-libs','clean-bower','clean-node']);
+
 
  /* default tasks */
  gulp.task('mkdir', function() {

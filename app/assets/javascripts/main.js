@@ -81,7 +81,7 @@
         "angucomplete": ['../libs/angucomplete-alt/dist/angucomplete-alt.min'],
         "angular-ui-tree": ['../libs/angular-ui-tree/dist/angular-ui-tree.min'],
         "ui.bootstrap": ['../libs/angular-bootstrap/ui-bootstrap-tpls.min'],
-        "ngProgress" : "../libs/ngprogress/build/ngprogress.min",
+        "ngProgress" : "../libs/ngprogress/build/ngProgress.min",
         "xeditable": ['../libs/angular-xeditable/dist/js/xeditable.min'],
 
         "qTags": ['./libs/jquery-textntags'],

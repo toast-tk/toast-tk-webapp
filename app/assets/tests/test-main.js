@@ -35,7 +35,7 @@ requirejs.config({
         "angucomplete": ['../base/libs/angucomplete-alt/dist/angucomplete-alt.min'],
         "angular-ui-tree": ['../base/libs/angular-ui-tree/dist/angular-ui-tree.min'],
         "ui.bootstrap": ['../base/libs/angular-bootstrap/ui-bootstrap-tpls.min'],
-        "ngProgress" : "../base/libs/ngprogress/build/ngprogress.min",
+        "ngProgress" : "../base/libs/ngprogress/build/ngProgress.min",
         "xeditable": ['../base/libs/angular-xeditable/dist/js/xeditable.min'],
         
         'angular-mocks': '../base/libs/angular-mocks/angular-mocks',
