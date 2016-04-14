@@ -27,7 +27,7 @@ GET         /typeDescriptor                               controllers.DomainCont
 POST        /postConnector                                controllers.Application.onConnectorReceived()
 POST        /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
 GET         /loadWikifiedRepository                       controllers.Application.loadWikifiedRepository()
-GET         /loadwebWikifiedRepository                    controllers.Application.loadWebWikifiedRepository()
+GET         /loadWebWikifiedRepository                    controllers.Application.loadWebWikifiedRepository()
 GET         /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
 GET         /loadSentences/:confType                      controllers.Application.loadSentences(confType:String)
 POST        /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
