@@ -103,11 +103,12 @@ object DriverController extends Controller{
       val eventRecord:WebEventRecord = getRecord(mappedEventRecord)
       val sentence:String = interpret.getSentence(eventRecord)
       if(mongoCacheWrapper.getLastKnownContainer != null){
-        val sentencePage:RepositoryImpl = mongoCacheWrapper.saveLastKnownContainer()
-        val rows:List[ElementImpl] = sentencePage.rows.toList
+        mongoCacheWrapper.saveLastKnownContainer()
+        val rows:List[ElementImpl] = interpret.getElements().toList
         val ids:List[String] = rows.map(e => e.getIdAsString)
         val record: RecordedSentence = RecordedSentence(sentence, ids)
         val recordAsJson:String = Json.toJson(record).toString()
+        interpret.clearElements()
         Some(recordAsJson)
       }else{
         val record: RecordedSentence = RecordedSentence(sentence, List())

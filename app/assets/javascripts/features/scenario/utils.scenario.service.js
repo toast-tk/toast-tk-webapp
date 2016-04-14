@@ -134,7 +134,7 @@ define(["angular"], function (angular) {
           var mappingValue = scenarioSentenceWithValues.split(" ")[getIndex(pattern.split(" "), tagName)];
           patternValue = replaceIndex(patternValue, tagName,  tags[tagPosition].index , mappingValue);
           mappingValue = mappingValue.replace(/\*/g, '');
-           var varType = tags[tagPosition][3];
+          var varType = ClientService.actionItemType(tagName).category;
           if(MapElementsIds != null){
             if(varType == "component"){
                 onPatternValueChange(scenarioRow, tagPosition, MapElementsIds[componentPosition], mappingValue);
@@ -144,7 +144,7 @@ define(["angular"], function (angular) {
             }
                 
           } else {
-           
+
             onPatternValueChange(scenarioRow, tagPosition, varType == "component" ? varType : tagPosition.toString(), mappingValue);
           }
           tagPosition = tagPosition + 1;
@@ -165,8 +165,7 @@ define(["angular"], function (angular) {
       /* END : remove head annotation */
 
       function getRegexTag(sentence){
-        var tagRegex = /(@)\[\[(\d+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+):([\w\s@\.,-\/#!$%\^&\*;:{}=\-_`~()]+)\]\]/gi
-        /*var tagRegex = /\{\{[\w:]+\}\}/gi;*/
+        var tagRegex = /\{\{[\w:]+\}\}/gi;
         var tag = tagRegex.exec(sentence);
         return tag;
       }

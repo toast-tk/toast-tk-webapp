@@ -102,14 +102,16 @@ define(["angular"], function (angular) {
 
             function recordActions(){
                 ClientService.setSentenceListener(function(data){
-                    if(!angular.isObject(data.sentence)){
-                        data.row = {
-                            "patterns" : data.sentence
+                    $scope.$apply(function(){
+                        if(!angular.isObject(data.sentence)){
+                            data.row = {
+                                "patterns" : data.sentence
+                            }
+                            UtilsScenarioService.templatizeRow(data.row, "web", data.ids);
+                            console.log("data.row : ", JSON.stringify(data.row));
+                            $scope.scenario.rows.push(angular.copy(data.row));
                         }
-                        UtilsScenarioService.templatizeRow(data.row, "web", data.ids);
-                        console.log("data.row : ", JSON.stringify(data.row));
-                        $scope.scenario.rows.push(angular.copy(data.row));
-                    }
+                    });
                 });
             }
 
@@ -248,8 +250,8 @@ define(["angular"], function (angular) {
                 });
             }
 
-            function onPatternValueChange(scenarioRow, pattern, typeSentence){
-                UtilsScenarioService.onPatternValueChange(scenarioRow, pattern, typeSentence, null);
+            function onPatternValueChange(scenarioRow, position, identifier, value){
+                UtilsScenarioService.onPatternValueChange(scenarioRow, position, identifier, value);
             }
 
    $scope.regexFullList=[];

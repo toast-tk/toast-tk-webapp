@@ -25,7 +25,8 @@ var configConfig = require("configConfig");
 var app = angular.module("app", 
   ['ui.router', "play.routing", "ngAnimate",
   "tk.components", "tk.services",
-  "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable", "sidesplit", "webix","angucomplete-alt","toastr"]);
+  "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap",
+      "xeditable", "sidesplit", "webix","angucomplete-alt","toastr"]);
 
 app.controller("LoginCtrl", login.LoginCtrl);
 app.controller("MainCtrl", home.MainCtrl);
