@@ -30,7 +30,6 @@ module.exports = function(config) {
     {pattern: 'libs/jasmine-jquery/lib/jasmine-jquery.js',  watch: false, included: false},
     {pattern: 'libs/**/**.js',  watch: false, included: false},
 
-    {pattern: 'libs/libs/*.js',  watch: false, included: false},
     {pattern: 'javascripts/main.config.js', included: false},
     {pattern: 'javascripts/main.routes.js', included: false},
     {pattern: 'javascripts/config/icon.constants.config.json', watched: true, included: false, served: true},

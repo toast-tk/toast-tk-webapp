@@ -1,44 +1,50 @@
 Toast TK - Web App 
 =======
 
-## Environment pre-requisites:
+# Toast Tk webapp Run instructions :
 
-- sbt 0.13.8
-- Scala 2.10.3
-- Play 2.2.3
-- Java 7
-- sbt-plugins: play
-
-
-## Local Mongo DB config : 
-
-* 1- Install and Launch a local Mongo Database
-* 2- in application.conf file, check the DB configuration. It should be :
+# 0- Clone The project
+# 1- Install and Launch a local Mongo Database
+* in application.conf file, check the DB configuration. It should be :
 
 ```
 mongo.db.url="localhost:27017"
 db.mongo.host="localhost"
 ```
 
-* 3- Run Javascript tests : 
+## 3- Install dependecies & setup front end : 
 
 ```
 > cd app\assets\
-> npm install
-> gulp
-> karma start karma.conf.js
-> gulp clean-node
+> npm run setup
+```
+
+## 4- Run playframework backend : 
+
+```
+> cd ../..
+> sbt clean 
+> sbt reload 
+> sbt compile 
+> sbt run
+```
+
+## 5- Run Front End angular tests :
+
+```
+> cd app\assets\
+> sbt run test
 ```
 
 
+# for more information :
 
-* 4- Create data base and insert your collections : 
+## Environment pre-requisites:
+- sbt 0.13.8
+- Scala 2.10.3
+- Play 2.2.3
+- Java 7
+- sbt-plugins: play
 
-```
-> use play_db
-
-> db.createCollection("scenarii");
-> db.createCollection("configuration");
-> db.createCollection("elements");
-> db.createCollection("repository");
-```
+# About
+Proudly developed by TalanLabs
