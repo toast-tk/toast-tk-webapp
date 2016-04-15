@@ -33,7 +33,7 @@ db.mongo.host="localhost"
 
 ```
 > cd app\assets\
-> sbt run test
+> npm run test
 ```
 
 
