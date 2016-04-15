@@ -36,6 +36,7 @@ define(["angular"], function (angular) {
                 })
             });
 
+            $scope.selectNode =selectNode ;
             function selectNode(id){
                 TreeLayoutService.selectNode(id);
             }
@@ -361,7 +362,9 @@ if(doBuildTree === true){
         $timeout(function(){
             $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
         },500);
-        // $scope.$apply();
+        if(!$scope.$$phase) {
+            $scope.$apply();
+        }
     }, function(selectedElementId,selectedItem){
         return selectedElementId && selectedItem.type!="folder";
     });
@@ -370,7 +373,9 @@ if(doBuildTree === true){
         $scope.scenario = null ;
         $scope.folder = selectedFolder;
         $scope.folderContents = TreeLayoutService.getAllChildNodes(selectedFolder.id);
-        //$scope.$apply();
+        if(!$scope.$$phase) {
+            $scope.$apply();
+        }
     }, function(selectedElementId,selectedItem){
         return selectedElementId && selectedItem.type=="folder";
     });
