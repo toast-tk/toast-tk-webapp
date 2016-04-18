@@ -1,4 +1,4 @@
-define(["angular"], function(angular) {
+define(["angular","CryptoJS"], function(angular, CryptoJS) {
   "use strict";
 
   return {

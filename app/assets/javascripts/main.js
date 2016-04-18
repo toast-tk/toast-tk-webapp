@@ -23,6 +23,14 @@
       	deps: [],
       	exports: '_'
       },
+      'jwtClient': {
+        deps: [],
+        exports: 'jwtClient'
+      },
+      'CryptoJS': {
+        deps: [],
+        exports: 'CryptoJS'
+      },
       'angular-ui-tree':{
         deps: ['angular']
       },
@@ -83,6 +91,8 @@
         "ui.bootstrap": ['../libs/angular-bootstrap/ui-bootstrap-tpls.min'],
         "ngProgress" : "../libs/ngprogress/build/ngProgress.min",
         "xeditable": ['../libs/angular-xeditable/dist/js/xeditable.min'],
+        "jwtClient" : ['../libs/jwt-client/jwt-client'],
+        "CryptoJS" : ["../libs/sha1/index"],
 
         "qTags": ['./libs/jquery-textntags'],
         "webix": ['libs/webix'],
@@ -123,13 +133,13 @@
             "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "ScenarioCtrl", "CampaignCtrl", "utilsScenarioService", 
             "homeCtrl",
             "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!config/icon.constants.config.json",
-            "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl",
+            "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl", 
 
 
             "clientService",
             "componentsDir", "sortable", "ngProgress", 
             "angular-ui-tree", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
-            "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix"], 
+            "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix", "jwtClient"], 
           function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, utilsScenarioService, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile,
            adminLayoutCtrl, adminSidebarmenu, addUserCtrl) {
 

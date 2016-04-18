@@ -29,5 +29,9 @@
   },
   "resolutions": {
     "angular": "1.5.3"
+  },
+  "devDependencies": {
+    "jwt-client": "~0.2.1",
+    "sha1": "https://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js"
   }
 }

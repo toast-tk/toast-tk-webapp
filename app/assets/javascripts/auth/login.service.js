@@ -1,4 +1,4 @@
-define(["angular"], function (angular) {
+define(["angular","jwtClient"], function (angular, JWT) {
   "use strict";
   return {
     LoginService: function ($state, playRoutes) {
