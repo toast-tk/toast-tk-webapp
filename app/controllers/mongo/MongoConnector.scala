@@ -158,11 +158,41 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
   }
 
+  def disconnectUser(id : String) : Future[Boolean] = {
+    val collection = open_collection("users")
+    findUserBy(
+          BSONDocument(
+            "_id" -> BSONObjectID(id)
+            )
+       ).map{
+        case None => {
+          println(s"[+] User not found, could not disconnect properly !")
+          false
+        }
+        case Some(user) => {
+          println(s"[+] disconnecting ${id} ${user.id} and $user !")
+          collection.update(BSONDocument("_id" -> BSONObjectID(id)), 
+              BSONDocument(
+                "$set" -> BSONDocument(
+                     "isActive" -> false
+                  )
+              ),
+              upsert=false
+            ).onComplete {
+            case Failure(e) => throw e
+            case Success(_) => println("successfully saved configuration !")
+          }
+          true
+        }
+      }
+  }
 
   def findUserBy(query: BSONDocument): Future[Option[User]] = {
     val collection = open_collection("users")
     collection.find(query).one[User]
   }
+
+
 
   def saveConfiguration(conf: MacroConfiguration) {
     val collection = open_collection("configuration")

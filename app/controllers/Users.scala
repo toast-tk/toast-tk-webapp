@@ -13,13 +13,26 @@ import scala.concurrent.duration.Duration
 import scala.util.{Try, Success, Failure}
 
 object Users extends Controller {
-	
+
   private val conn = AppBoot.conn
 
 	def user(id: Long) = Action {
 		Ok(Json.obj("firstName" -> "Sallah", "lastName" -> "Kokaina", "age" -> 31))
 	}
 
+	def logout(id: String) = Action {
+		Await.ready(conn.disconnectUser(id), Duration.Inf).value.get match {
+			case Failure(e) => throw e
+			case Success(isInserted) => {
+				isInserted match {
+					case true => {
+						Ok("Successfully Disconnected")
+					}
+					case false => { BadRequest("User not found, Could not disconnect properly !")}
+				}
+			}
+		}
+	}
 
 	def saveUser() = Action(parse.json) { implicit request =>
 		request.body.validate[User].map {
