@@ -55,6 +55,9 @@
       'angular-animate':{
         deps: ['angular']
       },
+      'ngTagsInput':{
+        deps: ['angular']
+      },
       'bootstrap': {
         deps: ['jquery']
       },
@@ -93,6 +96,7 @@
         "xeditable": ['../libs/angular-xeditable/dist/js/xeditable.min'],
         "jwtClient" : ['../libs/jwt-client/jwt-client'],
         "CryptoJS" : ["../libs/sha1/index"],
+        "ngTagsInput" : ["../libs/ng-tags-input/ng-tags-input.min"],
 
         "qTags": ['./libs/jquery-textntags'],
         "webix": ['libs/webix'],
@@ -133,20 +137,20 @@
             "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "ScenarioCtrl", "CampaignCtrl", "utilsScenarioService", 
             "homeCtrl",
             "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!config/icon.constants.config.json",
-            "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl", 
+            "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl",
 
 
             "clientService",
             "componentsDir", "sortable", "ngProgress", 
             "angular-ui-tree", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
-            "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix", "jwtClient"], 
+            "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix", "jwtClient", "ngTagsInput"], 
           function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, utilsScenarioService, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile,
            adminLayoutCtrl, adminSidebarmenu, addUserCtrl) {
 
               var app = angular.module("app", 
                 ['ui.router', "play.routing", "ngAnimate",
                 "tk.components", "tk.services",
-                "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable", "sidesplit", "webix","angucomplete-alt","toastr"]);
+                "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable", "sidesplit", "webix","angucomplete-alt","toastr","ngTagsInput"]);
               
               app.controller("LoginCtrl", login.LoginCtrl);
               app.controller("MainCtrl", home.MainCtrl);

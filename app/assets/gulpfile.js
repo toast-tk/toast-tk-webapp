@@ -49,8 +49,15 @@ var del = require('del');
  	.pipe(gulp.dest(destLib));
  });
 
+ gulp.task('css', function() {
+ 	 gulp.src(srcLib)
+ 	.pipe(filter('**/*.css'))
+ 	.pipe(gulp.dest(destLib));
+ });
+
+
 // Default Task
-gulp.task('default', ['mkdir','js']);
+gulp.task('default', ['mkdir','js','css']);
 
 // reset and copy
 gulp.task('reset-default', ['clean-libs','mkdir','js']);

@@ -20,7 +20,7 @@ import controllers.parsers.WebPageElement
 import scala.concurrent._
 import scala.concurrent.duration.Duration
 import reactivemongo.bson.{BSONObjectID, BSONDocument}
-  import scala.util.{Try, Success, Failure}
+import scala.util.{Try, Success, Failure}
 import scala.collection.immutable.StringOps
 import scala.util.matching.Regex
 

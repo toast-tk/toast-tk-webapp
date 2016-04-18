@@ -25,7 +25,8 @@
     "ngprogress": "~1.0.7",
     "jquery-ui": "~1.11.4",
     "angular": "~1.5.3",
-    "angular-xeditable": "~0.1.11"
+    "angular-xeditable": "~0.1.11",
+    "ng-tags-input": "~3.0.0"
   },
   "resolutions": {
     "angular": "1.5.3"

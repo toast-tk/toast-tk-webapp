@@ -5,10 +5,11 @@ define(["angular"], function(angular) {
     	}
 
 
-	LayoutCtrl.$inject = ['$scope','$sideSplit','$state','$http','$timeout'];
+	LayoutCtrl.$inject = ['$scope','$sideSplit','$state','$http','$timeout',"checkLoggedAndGetUser"];
 
-	function LayoutCtrl($scope, $sideSplit, $state, $http, $timeout, LoginService) {
-				$scope.isCollapsed = false;
+	function LayoutCtrl($scope, $sideSplit, $state, $http, $timeout, LoginService, checkLoggedAndGetUser) {
+		$scope.isCollapsed = false;
+		$scope.user = checkLoggedAndGetUser ;
 
 		$sideSplit.open({ 
                         templateUrl: 'assets/html/layout/sidebar.view.html',

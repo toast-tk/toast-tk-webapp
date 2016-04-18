@@ -5,7 +5,7 @@ import play.api.libs.json.Reads._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import reactivemongo.api.{MongoDriver, _}
-import reactivemongo.bson.{BSONObjectID, BSONDocument}
+import reactivemongo.bson.{BSONObjectID, BSONDocument, BSONArray}
 import reactivemongo.api.commands.UpdateWriteResult
 import reactivemongo.bson.Producer.nameValue2Producer
 import reactivemongo.api.collections.bson.BSONCollection
@@ -106,7 +106,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     authPersonOpt
   }
 
-  def saveUser(user: User) {
+/*  def saveUser(user: User) {
     val collection = open_collection("users")
          println(s"[+] successfully gooottt user $user !")
 
@@ -120,6 +120,48 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
         case Success(_) => println("successfully saved user !")
       }
     }
+  }*/
+
+  def saveUser(user: User)  : Future[Boolean] = {
+    val collection = open_collection("users")
+    println(s"[+] successfully gooottt user $user !")
+
+    user.id match {
+      case None => {
+         Future{false} //looks like not reached
+       }
+       case _ => findUserBy(BSONDocument(
+        "$or" -> BSONArray(
+          BSONDocument(
+            "_id" -> BSONDocument("$ne" -> BSONObjectID(user.id.get)),
+            "login" -> user.login
+            ),
+          BSONDocument(
+            "_id" -> BSONDocument("$ne" -> BSONObjectID(user.id.get)),
+            "email" -> user.email
+            )
+          )
+        )
+       ).map{
+        case None => {
+          collection.insert(user).onComplete {
+            case Failure(e) => throw e
+            case Success(_) => println("[+] successfully inserted ${user.id} and $user !")
+          }
+          true
+        }
+        case Some(user) => {
+          println(s"[+] successfully found ${user.id} and $user !")
+          false
+        }
+      }
+    }
+  }
+
+
+  def findUserBy(query: BSONDocument): Future[Option[User]] = {
+    val collection = open_collection("users")
+    collection.find(query).one[User]
   }
 
   def saveConfiguration(conf: MacroConfiguration) {
