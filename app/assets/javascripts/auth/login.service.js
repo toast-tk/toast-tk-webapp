@@ -30,9 +30,12 @@ define(["angular","jwtClient"], function (angular, JWT) {
   }
 
       function logout() {
-        JWT.forget();
-        sync();
-        $state.go("login");
+        console.log("self.user", self.user);
+        playRoutes.controllers.Users.logout(self.user.id).get().then(function (response) {    
+          JWT.forget();
+          sync();
+          $state.go("login");
+        });
       }
 
   // Test if a user is currently authenticated
