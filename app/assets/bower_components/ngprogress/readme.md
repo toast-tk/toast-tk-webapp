@@ -1,7 +1,5 @@
 ## ngProgress.js
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/VictorBjelkholm/ngProgress?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Build Status](https://travis-ci.org/VictorBjelkholm/ngProgress.png?branch=master)](https://travis-ci.org/VictorBjelkholm/ngProgress)
 
 **ngProgress** is a provider for angular for showing a loading status of something.
@@ -30,23 +28,17 @@ var app = angular.module('progressApp', ['ngProgress']);
 ```
 
 
-Inject **ngProgressFactory** in your controller
+Inject **ngProgress** provider in controller
 
 ```javascript
-var MainCtrl = function($scope, $timeout, ngProgressFactory) {}
-```
-
-Create a instance of the progressbar
-
-```javascript
-$scope.progressbar = ngProgressFactory.createInstance();
+var MainCtrl = function($scope, $timeout, ngProgress) {}
 ```
 
 Use with the API down below
 
 ```javascript
-$scope.progressbar.start();
-$timeout($scope.progressbar.complete(), 1000);
+ngProgress.start();
+$timeout(ngProgress.complete(), 1000);
 ```
 
 ## API
@@ -58,17 +50,17 @@ to hide it
 ```javascript
 ngProgress.start();
 ```
-* **setHeight** - Sets the height of the progressbar. Use any valid CSS value
+* **height** - Sets the height of the progressbar. Use any valid CSS value
 Eg '10px', '1em' or '1%'
 
 ```javascript
-ngProgress.setHeight('10px');
+ngProgress.height('10px');
 ```
 
-* **setColor** - Sets the color of the progressbar and it's shadow. Use any valid HTML color
+* **color** - Sets the color of the progressbar and it's shadow. Use any valid HTML color
 
 ```javascript
-ngProgress.setColor('#fff');
+ngProgress.color('#fff');
 ```
 
 * **status** - Returns on how many percent the progressbar is at. Should'nt be needed
@@ -112,20 +104,6 @@ ngProgress.setParent(document.getElementById('container'));
 ```javascript
 var element = ngProgress.getDomElement();
 ```
-
-## Releasing a new version
-
-The current (and quite hacky solution, honestly) to make a new release:
-
-* Update package.json to have new version.
-
-* Commit changes
-
-* Run ```bower version patch|minor|major```
-
-## Publishing new Github-pages version
-
-Merge ```master``` into ```gh-pages```, run ```grunt``` and push to Github
 
 ##License
 
