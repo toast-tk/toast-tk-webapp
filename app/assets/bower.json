@@ -28,6 +28,6 @@
     "angular-xeditable": "~0.1.11"
   },
   "resolutions": {
-    "angular": "1.5.3"
+    "angular": ">=1.4.0"
   }
 }
