@@ -24,7 +24,11 @@ import controllers.mongo.User.{BSONReader => UserBSONReader}
 import scala.util._
 import java.security.SecureRandom
 
+import controllers.mongo.teams.Team
+import _root_.controllers.mongo.teams.TeamCollection
+
 object MongoConnector extends App {
+
   def apply() = {
     new MongoConnector(new MongoDriver(),List("localhost"), "play_db")
   }
@@ -192,6 +196,10 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     collection.find(query).one[User]
   }
 
+  def saveTeam(team: Team)  : Future[Boolean] = {
+    val teamCollection = TeamCollection()
+    teamCollection.save(team, open_collection("teams"))
+  }
 
 
   def saveConfiguration(conf: MacroConfiguration) {
