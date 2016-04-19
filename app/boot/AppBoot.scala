@@ -1,6 +1,8 @@
 package boot
 
 import controllers.mongo._
+import controllers.mongo.users._
+
 import java.util.logging.{ Logger => JLogger }
 import play.api.Logger
 import play.api.libs.Codecs

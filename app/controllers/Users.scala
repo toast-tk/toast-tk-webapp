@@ -1,6 +1,7 @@
 package controllers
 
 import boot.AppBoot
+import controllers.mongo.users._
 
 import play.api.mvc._
 import play.api.libs.json.Json
