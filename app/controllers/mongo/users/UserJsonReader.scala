@@ -12,7 +12,16 @@ import reactivemongo.bson.BSONDocumentWriter
 import reactivemongo.bson.BSONObjectID
 
 case class InspectedUser(login: String, password: String)
-case class User(id: Option[String], login: String, password: String, firstName: String, lastName: String, email: String, teams:  Option[String], token : Option[String], isActive : Boolean, lastConnection : Option[String])
+case class User(id: Option[String],
+	login: String,
+	password: String,
+	firstName: String,
+	lastName: String,
+	email: String,
+	teams:  Option[List[String]],
+	token : Option[String],
+	isActive : Boolean,
+	lastConnection : Option[String])
 
 
 
@@ -24,7 +33,7 @@ object User{
       (__ \ "firstName").read[String] and
       (__ \ "lastName").read[String] and
       (__ \ "email").read[String] and
-      (__ \ "teams").readNullable[String] and
+      (__ \ "teams").readNullable[List[String]] and
       (__ \ "token").readNullable[String] and
       (__ \ "isActive").read[Boolean] and
       (__ \ "lastConnection").readNullable[String])(User.apply(_,_,_,_,_,_,_,_,_,_))
@@ -36,7 +45,7 @@ object User{
       (__ \ "firstName").write[String] and
       (__ \ "lastName").write[String] and
       (__ \ "email").write[String] and
-      (__ \ "teams").writeNullable[String] and
+      (__ \ "teams").writeNullable[List[String]] and
       (__ \ "token").writeNullable[String] and
       (__ \ "isActive").write[Boolean] and
       (__ \ "lastConnection").writeNullable[String])(unlift(User.unapply))
@@ -51,11 +60,11 @@ object User{
       val firstName = doc.getAs[String]("firstName").get
       val lastName = doc.getAs[String]("lastName").get
       val email = doc.getAs[String]("email").get
-      val teams = doc.getAs[String]("teams").getOrElse("")
+      val teams = doc.getAs[List[BSONObjectID]]("teams").getOrElse(List()).map(x => x.stringify)
       val token = doc.getAs[String]("token").getOrElse("")
       val isActive = doc.getAs[Boolean]("isActive").getOrElse(false)
       val lastConnection = doc.getAs[String]("lastConnection").getOrElse("11/11/1111")
-      User(Option[String](id), login ,password, firstName, lastName, email, Option[String](teams), Option[String](token), isActive, Option[String](lastConnection))
+      User(Option[String](id), login ,password, firstName, lastName, email,  Option[List[String]](teams), Option[String](token), isActive, Option[String](lastConnection))
     }
   }
 
@@ -67,7 +76,7 @@ object User{
                                    "firstName"-> user.firstName,
                                    "lastName" -> user.lastName,    
                                    "email" -> user.email,
-                                   "teams" -> user.teams.getOrElse(""),
+                                   "teams" -> user.teams.getOrElse(List()),
                                    "token" -> user.token.getOrElse(""))
         case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get),
                                                   "login" -> user.login,
@@ -75,7 +84,7 @@ object User{
                                                   "firstName"-> user.firstName,
                                                   "lastName" -> user.lastName,    
                                                   "email" -> user.email,
-                                                  "teams" -> user.teams.getOrElse(""),
+                                                  "teams" -> user.teams.getOrElse(List()),
                                                   "token" -> user.token.getOrElse(""),
                                                   "isActive" -> user.isActive,
                                                   "lastConnection" -> user.lastConnection.getOrElse("11/11/1111")

@@ -45,13 +45,8 @@ object Team{
       val name = doc.getAs[String]("name").get
       val description = doc.getAs[String]("description").get
       val admin = doc.getAs[String]("admin").get
-
-      val writeAccess =   doc.getAs[List[BSONObjectID]]("writeAccess").get.map(x => x.stringify)
-      val readAccess = doc.getAs[List[BSONObjectID]]("readAccess").get.map(x => x.stringify)
-/*
-
-      val writeAccess = doc.getAs[List[BSONObjectID]]("writeAccess").getOrElse(List()).stringify
-      val readAccess = doc.getAs[List[BSONObjectID]]("readAccess").getOrElse(List()).stringify*/
+      val writeAccess =   doc.getAs[List[BSONObjectID]]("writeAccess").getOrElse(List()).map(x => x.stringify)
+      val readAccess = doc.getAs[List[BSONObjectID]]("readAccess").getOrElse(List()).map(x => x.stringify)
       Team(Option[String](id), name ,description, admin,  Option[List[String]](writeAccess),  Option[List[String]](readAccess))
     }
   }
@@ -62,14 +57,14 @@ object Team{
         case None =>  BSONDocument("name"-> team.name,
                                    "description"-> team.description,
                                    "admin"-> team.admin,
-                                   "writeAccess" -> team.writeAccess, 
-                                   "readAccess" -> team.readAccess)
+                                   "writeAccess" -> team.writeAccess.getOrElse(List()), 
+                                   "readAccess" -> team.readAccess.getOrElse(List()))
         case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get),
                                                   "name" -> team.name,
                                                   "description" -> team.description,
                                                   "admin"-> team.admin,
-                                                  "writeAccess" -> team.writeAccess, 
-                                                  "readAccess" -> team.readAccess
+                                                  "writeAccess" -> team.writeAccess.getOrElse(List()), 
+                                                  "readAccess" -> team.readAccess.getOrElse(List())
                                                   )
       }
   }
