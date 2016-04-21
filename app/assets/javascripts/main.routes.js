@@ -110,6 +110,16 @@ define(["angular", "exports"], function (angular, exports) {
                         controller: "AddUserCtrl"
                       }
                     }
+                  })
+                  .state('adminLayout.editUser', {
+                    url: "/user/edit",
+                    cache: false,
+                    views: {
+                      'content': {
+                        templateUrl: "assets/html/admin/accounts/edituser.html",
+                        controller: "editUserCtrl"
+                      }
+                    }
                   });
                  $urlRouterProvider.when('','/');
                  $urlRouterProvider.otherwise('/');

@@ -52,28 +52,27 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     db("repository")
   }
 
-
-/*  def findUserBy(query: BSONDocument): Future[Option[User]] = {
-    val collection = open_collection("users")
-    collection.find(query).one[User]
-  }*/
-    val userCollection = UserCollection()
-    val teamCollection = TeamCollection()
+  val userCollection = UserCollection(open_collection("users"))
+  val teamCollection = TeamCollection(open_collection("teams"))
 
   def AuthenticateUser(user : InspectedUser) : Option[User] = {
-    userCollection.AuthenticateUser(user, open_collection("users"))
+    userCollection.AuthenticateUser(user)
   }
 
   def saveUser(user: User)   : Future[Boolean] = {
-    userCollection.saveUser(user, open_collection("users"))
+    userCollection.saveUser(user)
   }
 
   def disconnectUser(id : String) : Future[Boolean] = {
-    userCollection.disconnectUser(id, open_collection("users"))
+    userCollection.disconnectUser(id)
+  }
+
+  def getAllUsers() : Future[List[User]] ={
+    userCollection.getAllUsers()
   }
 
   def saveTeam(team: Team)  : Future[Boolean] = {
-    teamCollection.save(team, open_collection("teams"))
+    teamCollection.save(team)
   }
 
 

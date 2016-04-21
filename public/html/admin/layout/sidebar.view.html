@@ -16,6 +16,12 @@
                                     <span  ng-if="isCollapsed===false">Add account</span>
                                 </a>
                             </li>
+                            <li ng-class="{'active' : currentState === 'adminLayout.editUser'}">
+                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.editUser')">
+                                    <i class="fa fa-user-plus fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
+                                    <span  ng-if="isCollapsed===false">Edit account</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 

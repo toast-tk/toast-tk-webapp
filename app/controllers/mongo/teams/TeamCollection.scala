@@ -9,9 +9,9 @@ import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.bson.{BSONObjectID, BSONDocument}
 
 
-case class TeamCollection(){
+case class TeamCollection(collection: BSONCollection){
 
-	def save(team: Team, collection: BSONCollection)  : Future[Boolean] = {
+	def save(team: Team)  : Future[Boolean] = {
 		println(s"[+] successfully gooottt team $team !")
 
 		team.id match {
@@ -21,8 +21,7 @@ case class TeamCollection(){
 			case _ => findTeamBy(
 				BSONDocument(
 					"name" -> team.name
-					),
-				collection
+					)
 				).map{
 				case None => {
 					collection.insert(team).onComplete {
@@ -40,7 +39,7 @@ case class TeamCollection(){
 	}
 
 
-	def findTeamBy(query: BSONDocument,  collection: BSONCollection): Future[Option[Team]] = {
+	def findTeamBy(query: BSONDocument): Future[Option[Team]] = {
 		collection.find(query).one[Team]
 	}
 

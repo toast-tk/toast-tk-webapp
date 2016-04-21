@@ -12,9 +12,9 @@ import reactivemongo.bson.{BSONObjectID, BSONDocument, BSONArray}
 
 import java.security.SecureRandom
 
-case class UserCollection(){
+case class UserCollection(collection: BSONCollection){
 
-  def AuthenticateUser(user : InspectedUser, collection: BSONCollection) : Option[User] = {
+  def AuthenticateUser(user : InspectedUser) : Option[User] = {
     var isAuthenticated = false
     val query = BSONDocument("login" -> user.login, "password" -> user.password)
     var authPersonOpt: Option[User]  = None;
@@ -39,7 +39,7 @@ case class UserCollection(){
           None)
         authPersonOpt = Some(authPerson)
         println(s"dataobj Token ----> ${authPersonOpt}")
-        saveUser(authPerson, collection)
+        saveUser(authPerson)
         val firstName = authPerson.firstName
         isAuthenticated = true
         println(s"found $firstName $isAuthenticated")
@@ -66,7 +66,7 @@ case class UserCollection(){
     }
   }*/
 
-  def saveUser(user: User, collection: BSONCollection)  : Future[Boolean] = {
+  def saveUser(user: User)  : Future[Boolean] = {
     println(s"[+] successfully gooottt user $user !")
 
     user.id match {
@@ -84,8 +84,7 @@ case class UserCollection(){
             "email" -> user.email
             )
           )
-        ),
-       collection
+        )
        ).map{
         case None => {
           collection.insert(user).onComplete {
@@ -102,12 +101,11 @@ case class UserCollection(){
     }
   }
 
-  def disconnectUser(id : String, collection: BSONCollection) : Future[Boolean] = {
+  def disconnectUser(id : String) : Future[Boolean] = {
     findUserBy(
           BSONDocument(
             "_id" -> BSONObjectID(id)
-            ),
-          collection
+            )
        ).map{
         case None => {
           println(s"[+] User not found, could not disconnect properly !")
@@ -131,8 +129,14 @@ case class UserCollection(){
       }
   }
 
-  def findUserBy(query: BSONDocument, collection: BSONCollection): Future[Option[User]] = {
+  def findUserBy(query: BSONDocument): Future[Option[User]] = {
     collection.find(query).one[User]
+  }
+
+  def getAllUsers() : Future[List[User]] ={
+    val query = BSONDocument()
+    val users = collection.find(query).cursor[User]().collect[List]()
+    users
   }
 
   object BearerTokenGenerator {

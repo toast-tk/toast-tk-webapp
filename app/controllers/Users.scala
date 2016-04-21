@@ -80,4 +80,10 @@ object Users extends Controller {
 			}
 		}
 
+/*		def getAllUsers() = Action.async {
+			conn.getAllUsers()
+		}*/
+
+
+
 }
