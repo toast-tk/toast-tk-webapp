@@ -2,16 +2,16 @@ package controllers
 
 import boot.AppBoot
 import controllers.mongo.users._
-
 import play.api.mvc._
 import play.api.libs.json.Json
-import controllers.mongo._
-import reactivemongo.bson.{BSONObjectID, BSONDocument}
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import play.api.libs.json._
 
 import scala.concurrent._
 import scala.concurrent.duration.Duration
-import scala.util.{Try, Success, Failure}
+import scala.util.{Failure, Success, Try}
 
 object Users extends Controller {
 
@@ -80,9 +80,17 @@ object Users extends Controller {
 			}
 		}
 
-/*		def getAllUsers() = Action.async {
-			conn.getAllUsers()
-		}*/
+		def getAllUsers() = Action.async {
+			conn.getAllUsers().map {
+        users => {
+          val publicUserList = users.map {
+            user =>
+            Json.toJson(user).as[JsObject] - "password"
+          }
+          Ok(Json.toJson(publicUserList))
+        }
+      }
+		}
 
 
 

@@ -15,6 +15,7 @@ GET         /loadEnvConfiguration                         controllers.Applicatio
 # Ajax routes: Users
 POST        /login                                        controllers.Application.login()
 GET         /users/:id                                    controllers.Users.user(id: Long)
+GET         /users                                        controllers.Users.getAllUsers()
 POST         /user                                        controllers.Users.saveUser()
 GET         /logout                                     controllers.Application.logout()
 GET        /logout/:id                                    controllers.Users.logout(id: String)
