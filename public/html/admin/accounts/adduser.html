@@ -5,7 +5,7 @@
       </h3>
     </div>
     <div class="panel-body">
-     <form class="form-horizontal">
+     <form name="userForm" class="form-horizontal" ng-submit="createNewUser()" novalidate>
 
        <div class="panel panel-default">
         <div class="panel-heading">
@@ -14,22 +14,22 @@
           </h3>
         </div>
         <div class="panel-body">
-         <div class="form-group">
-          <label for="username" class="col-sm-2 control-label">Username</label>
+         <div class="form-group" ng-class="{'has-error' : userForm.login.$error.required  && userForm.login.$dirty}">
+          <label for="login" class="col-sm-2 control-label">login</label>
           <div class="col-sm-10">
-            <input class="form-control" id="username" placeholder="Username">
+            <input name="login" ng-model="newUser.login" class="form-control" id="login" placeholder="login" username required pattern=".{5,}" >
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" ng-class="{'has-error' : userForm.firstname.$error.required  && userForm.firstname.$dirty}">
           <label for="firstname" class="col-sm-2 control-label">First Name</label>
           <div class="col-sm-10">
-            <input class="form-control" id="firstname" placeholder="First Name">
+            <input  name="firstname" ng-model="newUser.firstname" class="form-control" id="firstname" placeholder="First Name" required>
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" ng-class="{'has-error' : userForm.lastname.$error.required  && userForm.lastname.$dirty}">
           <label for="lastname" class="col-sm-2 control-label">Last Name</label>
           <div class="col-sm-10">
-            <input class="form-control" id="lastname" placeholder="Last Name">
+            <input  name="lastname" ng-model="newUser.lastname" class="form-control" id="lastname" placeholder="Last Name"required>
           </div>
         </div>
       </div>
@@ -42,10 +42,10 @@
         </h3>
       </div>
       <div class="panel-body">
-        <div class="form-group">
-          <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+        <div class="form-group" ng-class="{'has-error' : userForm.email.$error.required  && userForm.email.$dirty}">
+          <label for="inputEmail" class="col-sm-2 control-label">Email</label>
           <div class="col-sm-10">
-            <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+            <input name="email" ng-model="newUser.email" type="email" class="form-control" id="inputEmail" placeholder="Email" required>
           </div>
         </div>
       </div>
@@ -76,10 +76,10 @@
         </h3>
       </div>
       <div class="panel-body">
-        <div class="form-group">
-          <label for="inputPassword3" class="col-sm-2 control-label">Enter Password</label>
+        <div class="form-group" ng-class="{'has-error' : userForm.newpassword.$error.required  && userForm.newpassword.$dirty}">
+          <label for="newPassword" class="col-sm-2 control-label">Enter Password</label>
           <div class="col-sm-6">
-            <input ng-model="newPassword" class="form-control" id="inputPassword3" placeholder="Password">
+            <input name="newpassword" ng-model="newUser.newpassword" class="form-control" id="newPassword" placeholder="Password" required>
           </div>
           <div>
             <div class="btn btn-default" ng-click="generatePassword()">
@@ -87,10 +87,10 @@
             </div>
           </div>
         </div>
-        <div class="form-group">
-          <label for="inputPassword3" class="col-sm-2 control-label">Re-enter Password</label>
+        <div class="form-group" ng-class="{'has-error' : userForm.newpassword1.$error.required  && userForm.newpassword1.$dirty}">
+          <label for="newPassword1" class="col-sm-2 control-label">Re-enter Password</label>
           <div class="col-sm-6">
-            <input ng-model="newPassword1" class="form-control" id="inputPassword3" placeholder="Password">
+            <input  name="newpassword1" ng-model="newUser.newpassword1" class="form-control" id="newPassword1" placeholder="Password" required>
           </div>
         </div>
       </div>

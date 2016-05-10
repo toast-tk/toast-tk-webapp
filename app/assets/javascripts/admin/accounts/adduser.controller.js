@@ -3,11 +3,17 @@ define(["angular"], function (angular) {
     return {
         AddUserCtrl: function ($scope) {
         	$scope.greeting = "Hello World!";
+            $scope.isNewUserFormSubmitted = false;
+
         	console.log("printing entry");
         	$scope.generatePassword = function(){
         		$scope.newPassword = Math.random().toString(36).substring(18);
         		$scope.newPassword1 = $scope.newPassword;
         	}
+
+            $scope.createNewUser = function(){
+                $scope.isNewUserFormSubmitted = true;
+            }
         	
         	console.log("the new pasword is : ", $scope.newPassword);
         }
