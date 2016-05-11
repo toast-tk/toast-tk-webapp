@@ -4,18 +4,27 @@ define(["angular"], function (angular) {
         AddUserCtrl: function ($scope) {
         	$scope.greeting = "Hello World!";
             $scope.isNewUserFormSubmitted = false;
-
-        	console.log("printing entry");
+            $scope.newUser = {};
+    
+         	console.log("printing entry");
         	$scope.generatePassword = function(){
-        		$scope.newPassword = Math.random().toString(36).substring(18);
-        		$scope.newPassword1 = $scope.newPassword;
+        		$scope.newUser.newPassword = Math.random().toString(36).substring(18);
+        		$scope.newUser.newPassword1 = $scope.newUser.newPassword;
         	}
 
             $scope.createNewUser = function(){
                 $scope.isNewUserFormSubmitted = true;
+                if($scope.userForm.$valid){
+                    console.log("envoyer l'utilisateur , formulaire valide");
+                }
             }
-        	
-        	console.log("the new pasword is : ", $scope.newPassword);
+
+
+            $scope.validatePassword = function(){
+                if($scope.newUser.newPassword && $scope.newUser.newPassword1) {
+                        $scope.userForm.newPassword1.$setValidity("validConfirm",$scope.newUser.newPassword === $scope.newUser.newPassword1);
+                }
+            }
         }
     };
 });
