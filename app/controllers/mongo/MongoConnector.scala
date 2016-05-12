@@ -5,10 +5,11 @@ import play.api.libs.json.Reads._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import reactivemongo.api.{MongoDriver, _}
-import reactivemongo.bson.{BSONObjectID, BSONDocument, BSONArray}
-import reactivemongo.api.commands.UpdateWriteResult
+import reactivemongo.bson.{BSONArray, BSONDocument, BSONObjectID}
+import reactivemongo.api.commands.{UpdateWriteResult, WriteResult}
 import reactivemongo.bson.Producer.nameValue2Producer
 import reactivemongo.api.collections.bson.BSONCollection
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.Await
@@ -19,8 +20,8 @@ import controllers.parsers.WebPageElementBSONWriter
 import controllers.parsers.EntityFieldBSONWriter
 import boot.AppBoot
 import play.api.Logger
-import scala.util._
 
+import scala.util._
 import controllers.mongo.teams._
 import controllers.mongo.users._
 
@@ -65,6 +66,10 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
 
   def disconnectUser(id : String) : Future[Boolean] = {
     userCollection.disconnectUser(id)
+  }
+
+  def removeUser(id : String) : Future[WriteResult] = {
+    userCollection.removeUser(id)
   }
 
   def getAllUsers() : Future[List[User]] ={

@@ -117,7 +117,7 @@ define(["angular", "exports"], function (angular, exports) {
                     views: {
                       'content': {
                         templateUrl: "assets/html/admin/accounts/edituser.html",
-                        controller: "editUserCtrl"
+                        controller: "EditUserCtrl"
                       }
                     }
                   });

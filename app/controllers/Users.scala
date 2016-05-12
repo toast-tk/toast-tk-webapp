@@ -46,7 +46,7 @@ object Users extends Controller {
 						user.firstName,
 						user.lastName,
 						user.email,
-						user.teams, None, true, None
+						user.teams, None, Some(false), None
 						)
 					Await.ready(conn.saveUser(userWithId), Duration.Inf).value.get match {
 						case Failure(e) => throw e
@@ -92,6 +92,14 @@ object Users extends Controller {
       }
 		}
 
-
+	def deleteUser(id: String) = Action {
+		Await.ready(conn.removeUser(id), Duration.Inf).value.get match {
+			case Failure(e) => throw e
+			case Success(lasterror) => {
+				println("successfully removed document")
+        Ok("successfully removed document")
+			}
+		}
+	}
 
 }

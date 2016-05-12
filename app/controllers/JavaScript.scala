@@ -34,7 +34,10 @@ object JavaScript extends Controller {
           controllers.routes.javascript.Application.loadEnvConfiguration,
           controllers.routes.javascript.Application.logout,
           controllers.routes.javascript.Users.logout,
-          controllers.routes.javascript.Users.user)
+          controllers.routes.javascript.Users.user,
+          controllers.routes.javascript.Users.saveUser,
+          controllers.routes.javascript.Users.getAllUsers,
+          controllers.routes.javascript.Users.deleteUser )
     ).as(JAVASCRIPT)
   }
 }

@@ -2,7 +2,7 @@
             "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "ScenarioCtrl", "CampaignCtrl", "utilsScenarioService", 
             "homeCtrl",
             "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!javascripts/config/icon.constants.config.json",
-            "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl",
+            "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl", "EditUserCtrl",
 
 
             "clientService",
@@ -10,7 +10,7 @@
             "angular-ui-tree", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix"], 
           function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, utilsScenarioService, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile,
-           adminLayoutCtrl, adminSidebarmenu, addUserCtrl) {
+           adminLayoutCtrl, adminSidebarmenu, addUserCtrl, editUserCtrl) {
 
               var app = angular.module("app", 
                 ['ui.router', "play.routing", "ngAnimate",
@@ -49,7 +49,8 @@
               app.controller("AdminLayoutCtrl", adminLayoutCtrl.AdminLayoutCtrl);
               app.controller("AdminSidebarMenuCtrl", adminSidebarmenu.AdminSidebarMenuCtrl);
               app.controller("AddUserCtrl", addUserCtrl.AddUserCtrl);
-              
+              app.controller("EditUserCtrl", editUserCtrl.EditUserCtrl);
+
               app.config(routerConfig.RouterConfig);
               app.config(configConfig.ConfigConfig);
 

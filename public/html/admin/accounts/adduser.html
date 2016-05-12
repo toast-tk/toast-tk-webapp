@@ -14,27 +14,27 @@
           </h3>
         </div>
         <div class="panel-body">
-         <div class="form-group" ng-class="{'has-error' : userForm.login.$error.required  && (userForm.login.$dirty || isNewUserFormSubmitted) || (userForm.login.$invalid && userForm.login.$touched)}">
+         <div class="form-group" ng-class="{'has-error' :  (userForm.login.$dirty || isNewUserFormSubmitted) && (userForm.login.$error.required  || (userForm.login.$invalid && userForm.login.$touched))}">
           <label for="login" class="col-sm-2 control-label">login</label>
           <div class="col-sm-10">
             <input name="login" ng-model="newUser.login" class="form-control" id="login" placeholder="login" username required ng-minlength="5">
-              <div ng-if="(userForm.login.$invalid && userForm.login.$touched)" class="alert alert-danger field-error-alert" role="alert">
+              <div ng-if=" (userForm.login.$dirty || isNewUserFormSubmitted) && (userForm.login.$invalid && userForm.login.$touched)" class="alert alert-danger field-error-alert" role="alert">
                   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                   <span class="sr-only">Error:</span>
                       Login length sould be at least 5!
               </div>
           </div>
         </div>
-        <div class="form-group" ng-class="{'has-error' : userForm.firstname.$error.required  && (userForm.firstname.$dirty  || isNewUserFormSubmitted) }">
-          <label for="firstname" class="col-sm-2 control-label">First Name</label>
+        <div class="form-group" ng-class="{'has-error' : userForm.firstName.$error.required  && (userForm.firstName.$dirty  || isNewUserFormSubmitted) }">
+          <label for="firstName" class="col-sm-2 control-label">First Name</label>
           <div class="col-sm-10">
-            <input  name="firstname" ng-model="newUser.firstname" class="form-control" id="firstname" placeholder="First Name" required>
+            <input  name="firstName" ng-model="newUser.firstName" class="form-control" id="firstName" placeholder="First Name" required>
           </div>
         </div>
-        <div class="form-group" ng-class="{'has-error' : userForm.lastname.$error.required  && (userForm.lastname.$dirty  || isNewUserFormSubmitted) }">
-          <label for="lastname" class="col-sm-2 control-label">Last Name</label>
+        <div class="form-group" ng-class="{'has-error' : userForm.lastName.$error.required  && (userForm.lastName.$dirty  || isNewUserFormSubmitted) }">
+          <label for="lastName" class="col-sm-2 control-label">Last Name</label>
           <div class="col-sm-10">
-            <input  name="lastname" ng-model="newUser.lastname" class="form-control" id="lastname" placeholder="Last Name"required>
+            <input  name="lastName" ng-model="newUser.lastName" class="form-control" id="lastName" placeholder="Last Name"required>
           </div>
         </div>
       </div>
@@ -51,7 +51,7 @@
           <label for="inputEmail" class="col-sm-2 control-label">Email</label>
           <div class="col-sm-10">
             <input name="email" ng-model="newUser.email" type="email" class="form-control" id="inputEmail" placeholder="Email" required>
-              <div ng-if="(userForm.email.$invalid && userForm.email.$touched)" class="alert alert-danger field-error-alert" role="alert">
+              <div ng-if="(userForm.login.$dirty || isNewUserFormSubmitted) && (userForm.email.$invalid && userForm.email.$touched)" class="alert alert-danger field-error-alert" role="alert">
                   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                   <span class="sr-only">Error:</span>
                       Enter a valid email address
@@ -86,11 +86,11 @@
         </h3>
       </div>
       <div class="panel-body">
-        <div class="form-group" ng-class="{'has-error' : (userForm.newPassword.$error.required && (userForm.newPassword.$dirty || isNewUserFormSubmitted))  || (userForm.newPassword.$invalid && userForm.newPassword.$touched)}">
-          <label for="newPassword" class="col-sm-2 control-label">Enter Password</label>
+        <div class="form-group" ng-class="{'has-error' : (userForm.password.$dirty || isNewUserFormSubmitted) && (userForm.password.$error.required  || (userForm.password.$invalid && userForm.password.$touched))}">
+          <label for="password" class="col-sm-2 control-label">Enter Password</label>
           <div class="col-sm-6">
-            <input name="newPassword" ng-model="newUser.newPassword" class="form-control" id="newPassword" placeholder="Password" required minLength="8">
-            <div ng-if="(userForm.newPassword.$invalid && userForm.newPassword.$touched)" class="alert alert-danger field-error-alert" role="alert">
+            <input name="password" ng-model="newUser.password" class="form-control" id="password" placeholder="Password" required minLength="8">
+            <div ng-if="(userForm.password.$dirty || isNewUserFormSubmitted) && (userForm.password.$invalid && userForm.password.$touched)" class="alert alert-danger field-error-alert" role="alert">
                   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                   <span class="sr-only">Error:</span>
                       Password length sould be at least 8!
@@ -102,11 +102,11 @@
             </div>
           </div>
         </div>
-        <div class="form-group" ng-class="{'has-error' : (userForm.newPassword1.$error.required  && (userForm.newPassword1.$dirty || isNewUserFormSubmitted)) ||  userForm.newPassword1.$error.validConfirm }">
-          <label for="newPassword1" class="col-sm-2 control-label">Re-enter Password</label>
+        <div class="form-group" ng-class="{'has-error' : (userForm.password1.$error.required  && (userForm.password1.$dirty || isNewUserFormSubmitted)) ||  userForm.password1.$error.validConfirm }">
+          <label for="password1" class="col-sm-2 control-label">Re-enter Password</label>
           <div class="col-sm-6">
-            <input  name="newPassword1" ng-model="newUser.newPassword1" ng-blur="validatePassword()" class="form-control" id="newPassword1" placeholder="Password" required>
-            <div ng-if="userForm.newPassword1.$error.validConfirm" class="alert alert-danger field-error-alert" role="alert">
+            <input  name="password1" ng-model="newUser.password1" ng-blur="validatePassword()" class="form-control" id="password1" placeholder="Password" required>
+            <div ng-if="userForm.password1.$error.validConfirm" class="alert alert-danger field-error-alert" role="alert">
                   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                   <span class="sr-only">Error:</span>
                      Passwords do not match!

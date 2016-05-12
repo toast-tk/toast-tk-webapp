@@ -1,28 +1,35 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        AddUserCtrl: function ($scope) {
+        AddUserCtrl: function ($scope, playRoutes, toastr) {
         	$scope.greeting = "Hello World!";
             $scope.isNewUserFormSubmitted = false;
             $scope.newUser = {};
     
          	console.log("printing entry");
         	$scope.generatePassword = function(){
-        		$scope.newUser.newPassword = Math.random().toString(36).substring(18);
-        		$scope.newUser.newPassword1 = $scope.newUser.newPassword;
+        		$scope.newUser.password = Math.random().toString(36).substring(18);
+        		$scope.newUser.password1 = $scope.newUser.password;
         	}
 
             $scope.createNewUser = function(){
                 $scope.isNewUserFormSubmitted = true;
                 if($scope.userForm.$valid){
+                    $scope.newUser.password = CryptoJS.SHA1($scope.newUser.password).toString()
                     console.log("envoyer l'utilisateur , formulaire valide");
+                    playRoutes.controllers.Users.saveUser().post($scope.newUser).then(function () {
+                        toastr.success('Saved !');
+                        $scope.newUser = {};
+                        $scope.userForm.$setPristine();
+                        $scope.isNewUserFormSubmitted = false;
+                    });
                 }
             }
 
 
             $scope.validatePassword = function(){
-                if($scope.newUser.newPassword && $scope.newUser.newPassword1) {
-                        $scope.userForm.newPassword1.$setValidity("validConfirm",$scope.newUser.newPassword === $scope.newUser.newPassword1);
+                if($scope.newUser.password && $scope.newUser.password1) {
+                        $scope.userForm.password1.$setValidity("validConfirm",$scope.newUser.password === $scope.newUser.password1);
                 }
             }
         }

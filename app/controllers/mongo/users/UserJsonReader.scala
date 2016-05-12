@@ -20,7 +20,7 @@ case class User(id: Option[String],
 	email: String,
 	teams:  Option[List[String]],
 	token : Option[String],
-	isActive : Boolean,
+	isActive : Option[Boolean],
 	lastConnection : Option[String])
 
 
@@ -35,7 +35,7 @@ object User{
       (__ \ "email").read[String] and
       (__ \ "teams").readNullable[List[String]] and
       (__ \ "token").readNullable[String] and
-      (__ \ "isActive").read[Boolean] and
+      (__ \ "isActive").readNullable[Boolean] and
       (__ \ "lastConnection").readNullable[String])(User.apply(_,_,_,_,_,_,_,_,_,_))
 
   implicit val writer: Writes[User] = (
@@ -47,7 +47,7 @@ object User{
       (__ \ "email").write[String] and
       (__ \ "teams").writeNullable[List[String]] and
       (__ \ "token").writeNullable[String] and
-      (__ \ "isActive").write[Boolean] and
+      (__ \ "isActive").writeNullable[Boolean] and
       (__ \ "lastConnection").writeNullable[String])(unlift(User.unapply))
 
   implicit val userFormat = Json.format[User]
@@ -64,7 +64,7 @@ object User{
       val token = doc.getAs[String]("token").getOrElse("")
       val isActive = doc.getAs[Boolean]("isActive").getOrElse(false)
       val lastConnection = doc.getAs[String]("lastConnection").getOrElse("11/11/1111")
-      User(Option[String](id), login ,password, firstName, lastName, email,  Option[List[String]](teams), Option[String](token), isActive, Option[String](lastConnection))
+      User(Option[String](id), login ,password, firstName, lastName, email,  Option[List[String]](teams), Option[String](token), Option[Boolean](isActive), Option[String](lastConnection))
     }
   }
 
@@ -86,7 +86,7 @@ object User{
                                                   "email" -> user.email,
                                                   "teams" -> user.teams.getOrElse(List()),
                                                   "token" -> user.token.getOrElse(""),
-                                                  "isActive" -> user.isActive,
+                                                  "isActive" -> user.isActive.getOrElse(false),
                                                   "lastConnection" -> user.lastConnection.getOrElse("11/11/1111")
                                                   )
       }

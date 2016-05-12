@@ -9,6 +9,8 @@ import scala.concurrent.Await
 
 import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.bson.{BSONObjectID, BSONDocument, BSONArray}
+import reactivemongo.api.commands.WriteResult
+
 
 import java.security.SecureRandom
 
@@ -35,7 +37,7 @@ case class UserCollection(collection: BSONCollection){
           person.email,
           person.teams,
           token,
-          true,
+          Some(true),
           None)
         authPersonOpt = Some(authPerson)
         println(s"dataobj Token ----> ${authPersonOpt}")
@@ -138,6 +140,12 @@ case class UserCollection(collection: BSONCollection){
     val users = collection.find(query).cursor[User]().collect[List]()
     users
   }
+
+  def removeUser(id : String) : Future[WriteResult] = {
+    val selector = BSONDocument("_id" -> BSONObjectID(id))
+    collection.remove(selector)
+  }
+
 
   object BearerTokenGenerator {
   

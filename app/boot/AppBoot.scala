@@ -96,7 +96,7 @@ object AppBoot extends play.api.GlobalSettings {
     
     def persistDefaultSuperAdminUser() = {
       var adminPwd = Codecs.sha1("admin")
-      conn.saveUser(User(Some("111111111111111111111111"),"admin", adminPwd, "administrateur", "user", "admin@toastWebApp.com", None, None, true, None))
+      conn.saveUser(User(Some("111111111111111111111111"),"admin", adminPwd, "administrateur", "user", "admin@toastWebApp.com", None, None, None, None))
 
     }
 
