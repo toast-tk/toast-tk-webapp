@@ -1,9 +1,11 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        EditUserCtrl: function ($scope,playRoutes) {
+        EditUserCtrl: function ($scope,playRoutes, LoginService, toastr) {
         	$scope.greeting = "Hello World!";
         	console.log("printing entry");
+
+            $scope.user  = LoginService.currentUser();
 
 			playRoutes.controllers.Users.getAllUsers().get().then(function (response) {
 				$scope.userList = response.data;
@@ -18,6 +20,14 @@ define(["angular"], function (angular) {
 			$scope.deleteUser = function(id){
 				playRoutes.controllers.Users.deleteUser(id).delete().then(function (response) {
 					console.log("deleted: " , response.data);
+                    if(response.status === 200){
+                        toastr.success('Account removed successfully !');
+                        $scope.userList.forEach(function(user,index){
+                            if(user.id == id){
+                                $scope.userList.splice(index,1);
+                            }
+                        });
+                    }
 				});
 			}
         	

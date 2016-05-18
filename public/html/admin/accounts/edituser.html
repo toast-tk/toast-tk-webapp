@@ -9,14 +9,14 @@
     <ul class="list-group">
     <li class="list-group-item" ng-repeat="usr in userList">
     <div style="display: inline-block;">
-      <h4><i class="fa fa-user"></i> {{usr.login}}</h4>
+      <h4><i class="fa fa-user"></i> {{usr.login}} <span class="label label-success" ng-if="user.id == usr.id">It's you !</span> </h4> 
       <span >{{usr.firstName}} {{usr.lastName}}</span>
     </div>
       <div style="display: inline-block; float: right;">
        <button  class="btn btn-default btn-xs btn-edit1">
         <i class="fa fa-edit"></i>
        </button>
-       <button class="pull-right btn btn-default btn-xs btn-danger1" ng-click="deleteUser(usr.id)">
+       <button ng-if="user.id != usr.id" class="pull-right btn btn-default btn-xs btn-danger1" ng-click="deleteUser(usr.id)">
         <i class="fa fa-trash"></i>
        </button>
       </div>
