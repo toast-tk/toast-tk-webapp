@@ -131,7 +131,7 @@
         "adminSidebarmenu": ['./admin/layout/sidebar.menu.controller'],
         "addUserCtrl" : ["./admin/accounts/adduser.controller"],
         "editUserCtrl" : ["./admin/accounts/edituser.controller"],
-        "loginValidatorDrctv" : ["./admin/accounts/login.validator.directive"],
+        "validatorDirective" : ["./admin/accounts/validator.directive"],
         "addTeamCtrl" : ["./admin/teams/addteam.controller"],
         "editTeamCtrl" : ["./admin/teams/editteam.controller"]
     }
@@ -141,7 +141,7 @@
             "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "ScenarioCtrl", "CampaignCtrl", "utilsScenarioService", 
             "homeCtrl",
             "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!config/icon.constants.config.json",
-            "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl", "editUserCtrl", "loginValidatorDrctv", "addTeamCtrl", "editTeamCtrl",
+            "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl", "editUserCtrl", "validatorDirective", "addTeamCtrl", "editTeamCtrl",
 
 
             "clientService",
@@ -149,7 +149,7 @@
             "angular-ui-tree", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix", "jwtClient", "ngTagsInput"], 
           function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, utilsScenarioService, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile,
-           adminLayoutCtrl, adminSidebarmenu, addUserCtrl, editUserCtrl, loginValidatorDrctv, addTeamCtrl, editTeamCtrl) {
+           adminLayoutCtrl, adminSidebarmenu, addUserCtrl, editUserCtrl, validatorDirective, addTeamCtrl, editTeamCtrl) {
 
               var app = angular.module("app", 
                 ['ui.router', "play.routing", "ngAnimate",
@@ -189,7 +189,8 @@
               app.controller("AdminSidebarMenuCtrl", adminSidebarmenu.AdminSidebarMenuCtrl);
               app.controller("AddUserCtrl", addUserCtrl.AddUserCtrl);
               app.controller("EditUserCtrl", editUserCtrl.EditUserCtrl);
-              app.directive("login", loginValidatorDrctv.Login);
+              app.directive("login", validatorDirective.Login);
+              app.directive("email", validatorDirective.Email);
               
               app.controller("AddTeamCtrl", addTeamCtrl.AddTeamCtrl);
               app.controller("EditTeamCtrl", editTeamCtrl.EditTeamCtrl);
