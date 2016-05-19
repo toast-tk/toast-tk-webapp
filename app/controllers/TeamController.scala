@@ -7,6 +7,7 @@ import play.api.libs.json.Json
 import controllers.mongo._
 import reactivemongo.bson.{BSONObjectID, BSONDocument}
 import play.api.libs.json._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent._
 import scala.concurrent.duration.Duration
@@ -46,6 +47,14 @@ object TeamController extends Controller {
 			}
 			}.recoverTotal {
 				e => BadRequest("Detected error:" + JsError.toJson(e))
+			}
+		}
+
+		def getAllTeams() = Action.async {
+			conn.getAllTeams().map {
+				teams => {
+					Ok(Json.toJson(teams))
+				}
 			}
 		}
 

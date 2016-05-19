@@ -38,7 +38,8 @@ object JavaScript extends Controller {
           controllers.routes.javascript.Users.saveUser,
           controllers.routes.javascript.Users.getAllUsers,
           controllers.routes.javascript.Users.deleteUser,
-          controllers.routes.javascript.TeamController.saveTeam )
+          controllers.routes.javascript.TeamController.saveTeam,
+          controllers.routes.javascript.TeamController.getAllTeams )
     ).as(JAVASCRIPT)
   }
 }

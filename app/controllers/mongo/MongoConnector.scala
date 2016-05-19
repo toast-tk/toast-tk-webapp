@@ -80,6 +80,9 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     teamCollection.save(team)
   }
 
+  def getAllTeams() : Future[List[Team]] ={
+    teamCollection.getAllTeams()
+  }
 
   def saveConfiguration(conf: MacroConfiguration) {
     val collection = open_collection("configuration")

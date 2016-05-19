@@ -23,8 +23,8 @@ GET        /logout/:id                                    controllers.Users.logo
 
 # Ajax routes: Teams
 POST         /team                                        controllers.TeamController.saveTeam()
-
-# Ajax Domain Controller
+GET          /teams                                       controllers.TeamController.getAllTeams()
+# Ajax Domain Controller 
 GET         /loadAutoSetupCtx/:setupType                  controllers.Application.loadAutoSetupCtx(setupType: String)
 GET         /loadCtxTagData/:itemName                     controllers.Application.loadCtxTagData(itemName: String)
 GET         /loadCtxSentences/:confType                   controllers.Application.loadCtxSentences(confType:String)

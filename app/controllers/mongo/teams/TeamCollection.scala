@@ -43,4 +43,10 @@ case class TeamCollection(collection: BSONCollection){
 		collection.find(query).one[Team]
 	}
 
+	def getAllTeams() : Future[List[Team]] ={
+    	val query = BSONDocument()
+    	val users = collection.find(query).cursor[Team]().collect[List]()
+    users
+  }
+
 }

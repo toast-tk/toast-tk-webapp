@@ -71,9 +71,9 @@
               <div class="form-group">
           <label for="teams" class="col-sm-2 control-label">Teams</label>
           <div class="col-sm-10">
-            <tags-input ng-model="teams" add-on-paste="true" style="height:15px;">
-      <auto-complete source="loadTags($query)"></auto-complete>
-    </tags-input>
+            <tags-input ng-model="newUser.teams" style="height:15px;" display-property="name" add-from-autocomplete-only="true">
+                <auto-complete source="loadTeams()" load-on-down-arrow="true"></auto-complete>
+            </tags-input>
           </div>
       </div>
     </div>
