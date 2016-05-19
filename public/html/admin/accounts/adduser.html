@@ -17,8 +17,14 @@
          <div class="form-group" ng-class="{'has-error' :  (userForm.login.$dirty || isNewUserFormSubmitted) && (userForm.login.$error.required  || (userForm.login.$invalid && userForm.login.$touched))}">
           <label for="login" class="col-sm-2 control-label">login</label>
           <div class="col-sm-10">
-            <input name="login" ng-model="newUser.login" class="form-control" id="login" placeholder="login" username required ng-minlength="5">
-              <div ng-if=" (userForm.login.$dirty || isNewUserFormSubmitted) && (userForm.login.$invalid && userForm.login.$touched)" class="alert alert-danger field-error-alert" role="alert">
+            <input name="login" ng-model="newUser.login" class="form-control" id="login" placeholder="login" login required ng-minlength="5">
+              <span ng-show="userForm.login.$pending.login">Checking if this name is available...</span>
+              <div ng-if="userForm.login.$error.login" class="alert alert-warning field-error-alert" role="alert">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                      This login is already taken!
+              </div>
+              <div ng-if=" (userForm.login.$dirty || isNewUserFormSubmitted) && (userForm.login.$invalid && userForm.login.$touched) && !userForm.login.$error.login" class="alert alert-danger field-error-alert" role="alert">
                   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                   <span class="sr-only">Error:</span>
                       Login length sould be at least 5!
@@ -51,7 +57,7 @@
           <label for="inputEmail" class="col-sm-2 control-label">Email</label>
           <div class="col-sm-10">
             <input name="email" ng-model="newUser.email" type="email" class="form-control" id="inputEmail" placeholder="Email" required>
-              <div ng-if="(userForm.login.$dirty || isNewUserFormSubmitted) && (userForm.email.$invalid && userForm.email.$touched)" class="alert alert-danger field-error-alert" role="alert">
+              <div ng-if="(userForm.email.$dirty || isNewUserFormSubmitted) && (userForm.email.$invalid && userForm.email.$touched)" class="alert alert-danger field-error-alert" role="alert">
                   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                   <span class="sr-only">Error:</span>
                       Enter a valid email address

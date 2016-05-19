@@ -33,17 +33,7 @@ define(["angular"], function (angular) {
 
             $scope.loadTeams = function(){
                 var teamNameList =  [];
-                return playRoutes.controllers.TeamController.getAllTeams().get()
-
-                /*.then(function (response) {
-                     response.data.forEach(function(team){
-                        teamNameList.push({text : team.name});
-                     });
-                    
-                    deferred.resolve(teamNameList);
-                });
-                var deferred = $q.defer();
-                return deferred.promise;*/
+                return playRoutes.controllers.TeamController.getAllTeams().get();
             }
 
             $scope.validatePassword = function(){
