@@ -31,8 +31,12 @@
     "underscore": "^1.8.3"
   },
   "scripts": {
+<<<<<<< HEAD
     "setup": "npm install && bower install && gulp",
     "test": "karma start karma.conf.js"
+=======
+    "setup": "npm install && bower install && gulp"
+>>>>>>> a5f4edb52f01c96b560f72c489930d44086db9e6
   },
   "keywords": [],
   "author": "",

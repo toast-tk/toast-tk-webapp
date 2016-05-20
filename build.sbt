@@ -4,7 +4,8 @@ version := "1.3-rc4"
 
 scalaVersion := "2.11.7"
 
-resolvers += Resolver.mavenLocal
+//resolvers += Resolver.mavenLocal
+resolvers += "Local Maven Repository" at "file:///d:/Apps/m2/repository"
 
 resolvers += "Synaptix" at "http://nexus.talanlabs.com/content/repositories/snapshots/"
 
