@@ -29,14 +29,10 @@
     "ng-tags-input": "~3.0.0"
   },
   "resolutions": {
-<<<<<<< HEAD
-    "angular": "1.5.3"
+    "angular": ">=1.4.0"
   },
   "devDependencies": {
     "jwt-client": "~0.2.1",
     "sha1": "https://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js"
-=======
-    "angular": ">=1.4.0"
->>>>>>> a5f4edb52f01c96b560f72c489930d44086db9e6
   }
 }
