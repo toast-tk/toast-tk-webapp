@@ -1,4 +1,4 @@
-define(["angular","CryptoJS"], function(angular, CryptoJS) {
+define(["angular","CryptoJS/sha256"], function(angular, SHA256) {
   "use strict";
 
   return {
@@ -9,7 +9,7 @@ define(["angular","CryptoJS"], function(angular, CryptoJS) {
       $rootScope.user = {};
       $scope.login = function(credentials) {
         var creds = { login :  credentials.login,
-                      password : CryptoJS.SHA1(credentials.password).toString()
+                      password : SHA256(credentials.password).toString()
                     };
 
                     LoginService.login(creds).then(function (user) {

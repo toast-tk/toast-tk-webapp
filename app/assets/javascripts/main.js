@@ -2,6 +2,13 @@
   "use strict";
 
   requirejs.config({
+      packages: [
+          {
+              name: 'CryptoJS',
+              location: '../libs/crypto-js',
+              main: 'index'
+          }
+      ],
     shim: {
       'jsRoutes': {
         deps: ['angular'],
@@ -26,10 +33,6 @@
       'jwtClient': {
         deps: [],
         exports: 'jwtClient'
-      },
-      'CryptoJS': {
-        deps: [],
-        exports: 'CryptoJS'
       },
       'angular-ui-tree':{
         deps: ['angular']
@@ -95,7 +98,6 @@
         "ngProgress" : "../libs/ngprogress/build/ngProgress.min",
         "xeditable": ['../libs/angular-xeditable/dist/js/xeditable.min'],
         "jwtClient" : ['../libs/jwt-client/jwt-client'],
-        "CryptoJS" : ["../libs/sha1/index"],
         "ngTagsInput" : ["../libs/ng-tags-input/ng-tags-input.min"],
 
         "qTags": ['./libs/jquery-textntags'],
@@ -147,7 +149,7 @@
             "clientService",
             "componentsDir", "sortable", "ngProgress", 
             "angular-ui-tree", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
-            "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix", "jwtClient", "ngTagsInput"], 
+            "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix", "jwtClient", "ngTagsInput"],
           function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, utilsScenarioService, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile,
            adminLayoutCtrl, adminSidebarmenu, addUserCtrl, editUserCtrl, validatorDirective, addTeamCtrl, editTeamCtrl) {
 

@@ -1,4 +1,4 @@
-define(["angular"], function (angular) {
+define(["angular","CryptoJS/sha256"], function (angular, SHA256) {
     "use strict";
     return {
         AddUserCtrl: function ($scope, $q, playRoutes, toastr) {
@@ -16,11 +16,11 @@ define(["angular"], function (angular) {
                 $scope.isNewUserFormSubmitted = true;
                 if($scope.userForm.$valid){
                     var selectedTeamList = [];
-                    $scope.newUser.teams.forEach(function(team){
+                    ($scope.newUser.teams|| []).forEach(function(team){
                         selectedTeamList.push(team.id);
                     });
                     $scope.newUser.teams = selectedTeamList ;
-                    $scope.newUser.password = CryptoJS.SHA1($scope.newUser.password).toString()
+                    $scope.newUser.password = SHA256($scope.newUser.password).toString();
                     console.log("envoyer l'utilisateur , formulaire valide");
                     playRoutes.controllers.Users.saveUser().post($scope.newUser).then(function () {
                         toastr.success('Saved !');

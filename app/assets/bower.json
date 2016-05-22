@@ -26,13 +26,13 @@
     "jquery-ui": "~1.11.4",
     "angular": "~1.5.3",
     "angular-xeditable": "~0.1.11",
-    "ng-tags-input": "~3.0.0"
+    "ng-tags-input": "~3.0.0",
+    "crypto-js": "^3.1.6"
   },
   "resolutions": {
     "angular": "1.5.3"
   },
   "devDependencies": {
-    "jwt-client": "~0.2.1",
-    "sha1": "https://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js"
+    "jwt-client": "~0.2.1"
   }
 }
