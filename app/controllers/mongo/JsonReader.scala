@@ -28,8 +28,7 @@ case class ScenarioRowMapping(id: String, value: String, pos: Int)
 case class DBRef(collection: String, id: BSONObjectID, db: Option[String] = None)
 case class FixtureDescriptorLine(name: String, fixtureType: String, pattern: String, description: String)
 case class MojoFixtureDescriptor(name: String, sentences: List[FixtureDescriptorLine])
-case class InspectedUser(login: String, password: String)
-case class User(id: Option[String], login: String, password: String, firstName: String, lastName: String, email: String, teams:  Option[String], token : Option[String], isActive : Boolean, lastConnection : Option[String])
+
 case class MappedWebEventRecord (
                                   component: Option[String],
                                   eventType: Option[String],
@@ -408,81 +407,3 @@ object MacroConfiguration {
     }
   }
 }
-
-object User{
-  implicit val reader: Reads[User]= (
-      (__ \ "id").readNullable[String] and
-      (__ \ "login").read[String] and
-      (__ \ "password").read[String] and
-      (__ \ "firstName").read[String] and
-      (__ \ "lastName").read[String] and
-      (__ \ "email").read[String] and
-      (__ \ "teams").readNullable[String] and
-      (__ \ "token").readNullable[String] and
-      (__ \ "isActive").read[Boolean] and
-      (__ \ "lastConnection").readNullable[String])(User.apply(_,_,_,_,_,_,_,_,_,_))
-
-  implicit val writer: Writes[User] = (
-      (__ \ "id").writeNullable[String] and
-      (__ \ "login").write[String] and
-      (__ \ "password").write[String] and
-      (__ \ "firstName").write[String] and
-      (__ \ "lastName").write[String] and
-      (__ \ "email").write[String] and
-      (__ \ "teams").writeNullable[String] and
-      (__ \ "token").writeNullable[String] and
-      (__ \ "isActive").write[Boolean] and
-      (__ \ "lastConnection").writeNullable[String])(unlift(User.unapply))
-
-  implicit val userFormat = Json.format[User]
-  
-  implicit object BSONReader extends BSONDocumentReader[User] {
-    def read(doc: BSONDocument): User = {
-      val id = doc.getAs[BSONObjectID]("_id").get.stringify
-      val login = doc.getAs[String]("login").get
-      val password = doc.getAs[String]("password").get
-      val firstName = doc.getAs[String]("firstName").get
-      val lastName = doc.getAs[String]("lastName").get
-      val email = doc.getAs[String]("email").get
-      val teams = doc.getAs[String]("teams").getOrElse("")
-      val token = doc.getAs[String]("token").getOrElse("")
-      val isActive = doc.getAs[Boolean]("isActive").getOrElse(false)
-      val lastConnection = doc.getAs[String]("lastConnection").getOrElse("11/11/1111")
-      User(Option[String](id), login ,password, firstName, lastName, email, Option[String](teams), Option[String](token), isActive, Option[String](lastConnection))
-    }
-  }
-
-  implicit object BSONWriter extends BSONDocumentWriter[User] {
-    def write(user: User): BSONDocument =
-      user.id match {
-        case None =>  BSONDocument("login"-> user.login,
-                                   "password"-> user.password,
-                                   "firstName"-> user.firstName,
-                                   "lastName" -> user.lastName,    
-                                   "email" -> user.email,
-                                   "teams" -> user.teams.getOrElse(""),
-                                   "token" -> user.token.getOrElse(""))
-        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get),
-                                                  "login" -> user.login,
-                                                  "password" -> user.password,
-                                                  "firstName"-> user.firstName,
-                                                  "lastName" -> user.lastName,    
-                                                  "email" -> user.email,
-                                                  "teams" -> user.teams.getOrElse(""),
-                                                  "token" -> user.token.getOrElse(""),
-                                                  "isActive" -> user.isActive,
-                                                  "lastConnection" -> user.lastConnection.getOrElse("11/11/1111")
-                                                  )
-      }
-  }
-}
-
-object InspectedUser{
-  implicit val reader: Reads[InspectedUser]= (
-    (__ \ "login").read[String] and
-    (__ \ "password").read[String])(InspectedUser.apply(_,_))
-
-    implicit val writer: Writes[InspectedUser] = (
-      (__ \ "login").write[String] and
-      (__ \ "password").write[String])(unlift(InspectedUser.unapply))
-    }

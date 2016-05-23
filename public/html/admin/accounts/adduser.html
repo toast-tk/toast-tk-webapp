@@ -1,11 +1,11 @@
- <div class="container-fluid" style="overflow: hidden;">
+ <div id="adminAddUser" class="container-fluid" style="overflow: hidden;">
    <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title"><i class="fa fa-user-plus fa-fw"></i> Add user account
       </h3>
     </div>
     <div class="panel-body">
-     <form class="form-horizontal">
+     <form name="userForm" class="form-horizontal" ng-submit="createNewUser()" novalidate>
 
        <div class="panel panel-default">
         <div class="panel-heading">
@@ -14,22 +14,33 @@
           </h3>
         </div>
         <div class="panel-body">
-         <div class="form-group">
-          <label for="username" class="col-sm-2 control-label">Username</label>
+         <div class="form-group" ng-class="{'has-error' :  (userForm.login.$dirty || isNewUserFormSubmitted) && (userForm.login.$error.required  || (userForm.login.$invalid && userForm.login.$touched))}">
+          <label for="login" class="col-sm-2 control-label">login</label>
           <div class="col-sm-10">
-            <input class="form-control" id="username" placeholder="Username">
+            <input name="login" ng-model="newUser.login" class="form-control" id="login" placeholder="login" login required ng-minlength="5">
+              <span ng-show="userForm.login.$pending.login">Checking if this name is available...</span>
+              <div ng-if="userForm.login.$error.login" class="alert alert-warning field-error-alert" role="alert">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                      This login is already taken!
+              </div>
+              <div ng-if=" (userForm.login.$dirty || isNewUserFormSubmitted) && (userForm.login.$invalid && userForm.login.$touched) && !userForm.login.$error.login" class="alert alert-danger field-error-alert" role="alert">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                      Login length sould be at least 5!
+              </div>
           </div>
         </div>
-        <div class="form-group">
-          <label for="firstname" class="col-sm-2 control-label">First Name</label>
+        <div class="form-group" ng-class="{'has-error' : userForm.firstName.$error.required  && (userForm.firstName.$dirty  || isNewUserFormSubmitted) }">
+          <label for="firstName" class="col-sm-2 control-label">First Name</label>
           <div class="col-sm-10">
-            <input class="form-control" id="firstname" placeholder="First Name">
+            <input  name="firstName" ng-model="newUser.firstName" class="form-control" id="firstName" placeholder="First Name" required>
           </div>
         </div>
-        <div class="form-group">
-          <label for="lastname" class="col-sm-2 control-label">Last Name</label>
+        <div class="form-group" ng-class="{'has-error' : userForm.lastName.$error.required  && (userForm.lastName.$dirty  || isNewUserFormSubmitted) }">
+          <label for="lastName" class="col-sm-2 control-label">Last Name</label>
           <div class="col-sm-10">
-            <input class="form-control" id="lastname" placeholder="Last Name">
+            <input  name="lastName" ng-model="newUser.lastName" class="form-control" id="lastName" placeholder="Last Name"required>
           </div>
         </div>
       </div>
@@ -42,10 +53,21 @@
         </h3>
       </div>
       <div class="panel-body">
-        <div class="form-group">
-          <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+        <div class="form-group" ng-class="{'has-error' : (userForm.email.$dirty || isNewUserFormSubmitted)  && (userForm.email.$error.required || (userForm.email.$invalid && userForm.email.$touched))  }">
+          <label for="inputEmail" class="col-sm-2 control-label">Email</label>
           <div class="col-sm-10">
-            <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+            <input name="email" ng-model="newUser.email" type="email" class="form-control" id="inputEmail" placeholder="Email" required email>
+              <span ng-show="userForm.email.$pending.email">Checking if this name is available...</span>
+              <div ng-if="userForm.email.$error.email" class="alert alert-warning field-error-alert" role="alert">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                      This email is already taken!
+              </div>
+              <div ng-if="(userForm.email.$dirty || isNewUserFormSubmitted) && (userForm.email.$invalid && userForm.email.$touched) && !userForm.email.$error.email" class="alert alert-danger field-error-alert" role="alert">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                      Enter a valid email address
+              </div>
           </div>
         </div>
       </div>
@@ -61,9 +83,9 @@
               <div class="form-group">
           <label for="teams" class="col-sm-2 control-label">Teams</label>
           <div class="col-sm-10">
-            <tags-input ng-model="teams" add-on-paste="true" style="height:15px;">
-      <auto-complete source="loadTags($query)"></auto-complete>
-    </tags-input>
+            <tags-input ng-model="newUser.teams" style="height:15px;" display-property="name" add-from-autocomplete-only="true">
+                <auto-complete source="loadTeams()" load-on-down-arrow="true"></auto-complete>
+            </tags-input>
           </div>
       </div>
     </div>
@@ -76,10 +98,15 @@
         </h3>
       </div>
       <div class="panel-body">
-        <div class="form-group">
-          <label for="inputPassword3" class="col-sm-2 control-label">Enter Password</label>
+        <div class="form-group" ng-class="{'has-error' : (userForm.password.$dirty || isNewUserFormSubmitted) && (userForm.password.$error.required  || (userForm.password.$invalid && userForm.password.$touched))}">
+          <label for="password" class="col-sm-2 control-label">Enter Password</label>
           <div class="col-sm-6">
-            <input ng-model="newPassword" class="form-control" id="inputPassword3" placeholder="Password">
+            <input name="password" ng-model="newUser.password" class="form-control" id="password" placeholder="Password" required minLength="8">
+            <div ng-if="(userForm.password.$dirty || isNewUserFormSubmitted) && (userForm.password.$invalid && userForm.password.$touched)" class="alert alert-danger field-error-alert" role="alert">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                      Password length sould be at least 8!
+            </div>
           </div>
           <div>
             <div class="btn btn-default" ng-click="generatePassword()">
@@ -87,10 +114,15 @@
             </div>
           </div>
         </div>
-        <div class="form-group">
-          <label for="inputPassword3" class="col-sm-2 control-label">Re-enter Password</label>
+        <div class="form-group" ng-class="{'has-error' : (userForm.password1.$error.required  && (userForm.password1.$dirty || isNewUserFormSubmitted)) ||  userForm.password1.$error.validConfirm }">
+          <label for="password1" class="col-sm-2 control-label">Re-enter Password</label>
           <div class="col-sm-6">
-            <input ng-model="newPassword1" class="form-control" id="inputPassword3" placeholder="Password">
+            <input  name="password1" ng-model="newUser.password1" ng-blur="validatePassword()" class="form-control" id="password1" placeholder="Password" required>
+            <div ng-if="userForm.password1.$error.validConfirm" class="alert alert-danger field-error-alert" role="alert">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                     Passwords do not match!
+            </div>
           </div>
         </div>
       </div>
@@ -103,7 +135,6 @@
     </div>
   </form>
 
-</div>
 </div>
 </div>
 </div>

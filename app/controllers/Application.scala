@@ -3,6 +3,7 @@ package controllers
 import boot.AppBoot
 import play.api.Logger
 import controllers.mongo._
+import controllers.mongo.users._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Writes._
 import play.api.libs.json._

@@ -1,0 +1,27 @@
+ <div class="container-fluid" style="overflow: hidden;">
+
+  <div class="panel panel-default">
+   <div class="panel-heading">
+    <h3 class="panel-title"><i class="fa fa-team-plus fa-fw"></i> edit team
+    </h3>
+   </div>
+   <div class="panel-body">
+    <ul class="list-group">
+    <li class="list-group-item" ng-repeat="tm in teamList">
+    <div style="display: inline-block;">
+      <h4><i class="fa fa-team"></i> {{tm.name}}</h4> 
+      <span >{{tm.description}}</span>
+    </div>
+      <div style="display: inline-block; float: right;">
+       <button  class="btn btn-default btn-xs btn-edit1">
+        <i class="fa fa-edit"></i>
+       </button>
+       <button ng-if="team.id != tm.id" class="pull-right btn btn-default btn-xs btn-danger1" ng-click="deleteUser(tm.id)">
+        <i class="fa fa-trash"></i>
+       </button>
+      </div>
+     </li>
+    </ul>
+    </div>
+   </div>
+ </div>

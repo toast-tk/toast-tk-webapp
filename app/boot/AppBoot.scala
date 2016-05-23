@@ -1,14 +1,16 @@
 package boot
 
 import controllers.mongo._
-import java.util.logging.{ Logger => JLogger }
+import controllers.mongo.users._
+import java.util.logging.{Logger => JLogger}
+
 import play.api.Logger
-import play.api.libs.Codecs
 import java.io.IOException
-import de.flapdoodle.embed.mongo.{ Command, MongodStarter, MongodProcess, MongodExecutable }
+
+import de.flapdoodle.embed.mongo.{Command, MongodExecutable, MongodProcess, MongodStarter}
 import de.flapdoodle.embed.process.distribution.GenericVersion
 import de.flapdoodle.embed.process.distribution.Distribution
-import de.flapdoodle.embed.mongo.config.{ ArtifactStoreBuilder, DownloadConfigBuilder,  Net, MongodConfigBuilder, RuntimeConfigBuilder, Storage }
+import de.flapdoodle.embed.mongo.config.{ArtifactStoreBuilder, DownloadConfigBuilder, MongodConfigBuilder, Net, RuntimeConfigBuilder, Storage}
 import de.flapdoodle.embed.process.runtime.Network
 import de.flapdoodle.embed.mongo.distribution.Versions
 import de.flapdoodle.embed.process.config.io.ProcessOutput
@@ -93,8 +95,12 @@ object AppBoot extends play.api.GlobalSettings {
     Logger.info(s"[+] Initializing DB settings...")
     
     def persistDefaultSuperAdminUser() = {
-      var adminPwd = Codecs.sha1("admin")
-      conn.saveUser(User(Some("111111111111111111111111"),"admin", adminPwd, "administrateur", "user", "admin@toastWebApp.com", None, None, true, None))
+      def sha256(s: String): String = {
+        val m = java.security.MessageDigest.getInstance("SHA-256").digest(s.getBytes("UTF-8"))
+        m.map("%02x".format(_)).mkString
+      }
+      val adminPwd = sha256("admin")
+      conn.saveUser(User(Some("111111111111111111111111"),"admin", adminPwd, "administrateur", "user", "admin@toastWebApp.com", None, None, None, None))
 
     }
 

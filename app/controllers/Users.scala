@@ -1,16 +1,17 @@
 package controllers
 
 import boot.AppBoot
-
+import controllers.mongo.users._
 import play.api.mvc._
 import play.api.libs.json.Json
-import controllers.mongo._
-import reactivemongo.bson.{BSONObjectID, BSONDocument}
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import play.api.libs.json._
 
 import scala.concurrent._
 import scala.concurrent.duration.Duration
-import scala.util.{Try, Success, Failure}
+import scala.util.{Failure, Success, Try}
 
 object Users extends Controller {
 
@@ -45,7 +46,7 @@ object Users extends Controller {
 						user.firstName,
 						user.lastName,
 						user.email,
-						user.teams, None, true, None
+						user.teams, None, Some(false), None
 						)
 					Await.ready(conn.saveUser(userWithId), Duration.Inf).value.get match {
 						case Failure(e) => throw e
@@ -78,5 +79,27 @@ object Users extends Controller {
 				e => BadRequest("Detected error:" + JsError.toJson(e))
 			}
 		}
+
+		def getAllUsers() = Action.async {
+			conn.getAllUsers().map {
+        users => {
+          val publicUserList = users.map {
+            user =>
+            Json.toJson(user).as[JsObject] - "password"
+          }
+          Ok(Json.toJson(publicUserList))
+        }
+      }
+		}
+
+	def deleteUser(id: String) = Action {
+		Await.ready(conn.removeUser(id), Duration.Inf).value.get match {
+			case Failure(e) => throw e
+			case Success(lasterror) => {
+				println("successfully removed document")
+        Ok("successfully removed document")
+			}
+		}
+	}
 
 }

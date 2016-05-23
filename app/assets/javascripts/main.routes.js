@@ -110,6 +110,36 @@ define(["angular", "exports"], function (angular, exports) {
                         controller: "AddUserCtrl"
                       }
                     }
+                  })
+                  .state('adminLayout.editUser', {
+                    url: "/user/edit",
+                    cache: false,
+                    views: {
+                      'content': {
+                        templateUrl: "assets/html/admin/accounts/edituser.html",
+                        controller: "EditUserCtrl"
+                      }
+                    }
+                  })
+                  .state('adminLayout.addTeam', {
+                    url: "/team",
+                    cache: false,
+                    views: {
+                      'content': {
+                        templateUrl: "assets/html/admin/accounts/addteam.html",
+                        controller: "AddTeamCtrl"
+                      }
+                    }
+                  })
+                  .state('adminLayout.editTeam', {
+                    url: "/team/edit",
+                    cache: false,
+                    views: {
+                      'content': {
+                        templateUrl: "assets/html/admin/accounts/editteam.html",
+                        controller: "EditTeamCtrl"
+                      }
+                    }
                   });
                  $urlRouterProvider.when('','/');
                  $urlRouterProvider.otherwise('/');
