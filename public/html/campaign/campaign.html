@@ -37,70 +37,7 @@
  					<div view="resizer"></div>
  					<div view="cols">
  					<div ng-show="selectedProject != undefined">
-<<<<<<< HEAD
- 						<uib-tabset active="activeForm">
-	     					 <uib-tab index="0" heading="Campaigns">
-	       						<div class="" style="border: #ccc solid 1px; border-top: none;">
-	 							<!--<div class="panel panel-default" style="margin-bottom: 11px;">
-	 								<div class="panel-heading" style="padding: 3px;" role="tab" id="headingOne">
-	 									<h4 class="panel-title" style="font-size:14px;">
-	 										<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-	 											Add campaign :
-	 										</a>
-	 									</h4>
-	 								</div>
-	 								<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-	 									<div class="panel-body">
-	 										<div>
-	 											<button class="btn btn-primary btn-xs" data-ng-click="addCampaignToProject(project)">
-	 												+ Add a new campaign
-	 											</button>
-	 											<button class="btn btn-xs" data-ng-click="saveProject(project)">
-	 												Save
-	 											</button>
-	 										</div>
-	 									</div>
-	 								</div>
-	 							</div>-->
-	 							<div ng-repeat="campaign in selectedProject.campaigns" class="campaign">
-	 								<div class="panel panel-default" style="margin-bottom: 11px;">
-	 									<div class="panel-heading" style="padding: 3px;" role="tab" id="headingOne">  				Campaign name: <input type="text" ng-model="campaign.name"> 
-<!-- 	 										<span>
-	 											<button class="btn btn-primary btn-xs" data-ng-click="addScenarioToCampaign(campaign)">
-	 												+ Add a new scenario
-	 											</button>
-	 										</span> -->
-	 										<!-- <button class="btn btn-xs pull-right" data-ng-click="deleteCampaign(campaign, selectedProject)"><i class="fa fa-trash"></i></button>  -->
-	 									</div>
-	 									<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-	 										<div class="panel-body">
-	 											<div>
-	 												<ul ui-sortable ng-model="campaign.scenarii">
-	 													<li ng-repeat="scenario in campaign.scenarii">
-	 														Scenario Name:
-	 														<select ng-model="scenario.name" 
-	 																ng-options="reference.name as reference.name for reference in scenarii"/>
-<!-- 	 														<button class="btn btn-xs" 
-	 																data-ng-click="deleteScenario(scenario, campaign)">
-	 															<i class="fa fa-trash"></i>
-	 														</button> -->
-	 													</li>
-	 												</ul>
-	 											</div>
-	 										</div>
-	 									</div>
-	 								</div>
-	 							</div>
-	 						</div>
-	 						<!-- /.panel -->
-					    </uib-tab>
-					    <uib-tab index="1" heading="Reports" ng-click="displayReport(selectedProject)">
-					        <iframe src="{{reportUrl}}" style="width: 100%; height: 95%;"></iframe>
-				      	</uib-tab>
-   					 </uib-tabset>
-=======
                         <iframe src="{{reportUrl}}" style="width: 100%; height: 95%;"></iframe>
->>>>>>> a5f4edb52f01c96b560f72c489930d44086db9e6
  					</div>
  					</div>
  				</div>
