@@ -1,5 +1,6 @@
 package controllers
 
+import boot.AppBoot
 import com.synaptix.toast.dao.domain.impl.report.{Project, Campaign}
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage
 import com.synaptix.toast.runtime.parse.TestParser
@@ -11,7 +12,10 @@ import toast.engine.ToastRuntimeJavaWrapper
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.collection.immutable.StringOps
 import com.synaptix.toast.runtime.report.HTMLReporter
-
+import play.api.Logger
+import reactivemongo.bson.BSONDocument
+import scala.concurrent.duration.Duration
+import scala.concurrent._
 case class ScenarioWrapper(id: Option[String], name: Option[String], scenario: Option[Scenario])
 case class Cpgn(id: Option[String], name: String, scenarii: List[ScenarioWrapper])
 case class Prj(id: Option[String], name: String, iterations: Option[Short], campaigns: List[Cpgn])
@@ -21,7 +25,7 @@ object ProjectController  extends Controller {
   implicit val sFormat = Json.format[ScenarioWrapper]
   implicit val campaignFormat = Json.format[Cpgn]
   implicit val projectFormat = Json.format[Prj]
-
+ private val conn = AppBoot.conn
   /**
    * load to init projects
    */
@@ -69,7 +73,21 @@ object ProjectController  extends Controller {
         val campaign = new Campaign()
         campaign.setName(cpgn.name)
         val testPagelist = new java.util.ArrayList[ITestPage]()
-        val testPages = (for (c <- campaigns; wrapper <- c.scenarii) yield parseTestPage(wrapper.scenario.get, ScenarioController.wikifiedScenario(wrapper.scenario.get).as[String]))
+        val testPages = (for (c <- campaigns; wrapper <- c.scenarii) yield {
+
+        Await.result(conn.findOneScenarioBy(BSONDocument(
+          "name" -> wrapper.name.get
+          )).map{
+        case None => {
+          println(s"[+] Scenario not found, could not saveProject !")
+        }
+        case Some(scenario) => {
+    parseTestPage(scenario, ScenarioController.wikifiedScenario(scenario).as[String])
+          }
+        }, Duration.Inf).asInstanceOf[ITestPage]
+
+         // parseTestPage(wrapper.scenario.get, ScenarioController.wikifiedScenario(wrapper.scenario.get).as[String])
+        })
         for (tPage <- testPages) {
           testPagelist.add(tPage)
         }
@@ -82,6 +100,7 @@ object ProjectController  extends Controller {
       val project = new Project()
       project.setName(p.name)
       project.setCampaignsImpl(transformCampaign(p.campaigns))
+      Logger.info(s"~~~~~~~~~~~~~~~~~~~~~~~~~~ {$project}")
       project
     }
 
