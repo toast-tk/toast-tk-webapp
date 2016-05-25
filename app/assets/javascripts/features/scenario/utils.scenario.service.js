@@ -120,6 +120,28 @@ define(["angular"], function (angular) {
 
       /* ----- local functions ------ */
       /* BEGIN  : setMappingForScenarioRow */
+      function splitScenarioWithValues(scenarioSentenceWithValues){
+        var splittedByAst  = scenarioSentenceWithValues.split("*");
+        if(splittedByAst[0] === ""){
+            splittedByAst.splice(0,1);
+        }
+        var splittedScenarioSentence = [];
+        splittedByAst.forEach(function(element,index){
+            if(index == 0 || index % 2 == 0){
+                Array.prototype.push.apply(splittedScenarioSentence, element.split(" "));
+            } else {
+              splittedScenarioSentence.push(element);
+            }
+        });
+
+        splittedScenarioSentence.forEach(function(element,index){
+          if(element === ""){
+            splittedScenarioSentence.splice(index,1);
+          }
+        });
+        return splittedScenarioSentence;
+      }
+
       function setMappingForScenarioRow(scenarioRow, pattern, typeSentence, MapElementsIds){
         var scenarioSentenceWithValues = scenarioRow.patterns;
         scenarioRow.patterns = typeSentence;
@@ -130,10 +152,9 @@ define(["angular"], function (angular) {
         var componentPosition = 0;
         while (tag != null) {
           tags.push(tag);
-          var tagName = tags[tagPosition][0];
-          var mappingValue = scenarioSentenceWithValues.split(" ")[getIndex(pattern.split(" "), tagName)];
+          var tagName = tags[tagPosition][0];      
+          var mappingValue = splitScenarioWithValues(scenarioSentenceWithValues)[getIndex(pattern.split(" "), tagName)];
           patternValue = replaceIndex(patternValue, tagName,  tags[tagPosition].index , mappingValue);
-          mappingValue = mappingValue.replace(/\*/g, '');
           var varType = ClientService.actionItemType(tagName).category;
           if(MapElementsIds != null){
             if(varType == "component"){
