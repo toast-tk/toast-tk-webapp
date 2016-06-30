@@ -19,15 +19,15 @@ case class UserCollection(collection: BSONCollection){
   def AuthenticateUser(user : InspectedUser) : Option[User] = {
     var isAuthenticated = false
     val query = BSONDocument("login" -> user.login, "password" -> user.password)
-    var authPersonOpt: Option[User]  = None;
-    var token:Option[String] = None ;
+    var authPersonOpt: Option[User] = None;
+    var token: Option[String] = None;
     val userFuture =
-    collection.
-    find(query). 
-    cursor[User]().
-    collect[List]()
+      collection.
+        find(query).
+        cursor[User]().
+        collect[List]()
     Await.result(userFuture.map { users =>
-      for(person <- users) {
+      for (person <- users) {
         token = Some(BearerTokenGenerator.generateToken)
         val authPerson = User(person.id,
           person.login,
@@ -52,28 +52,10 @@ case class UserCollection(collection: BSONCollection){
     authPersonOpt
   }
 
-/*  def saveUser(user: User) {
-    val collection = open_collection("users")
-         println(s"[+] successfully gooottt user $user !")
-
-    user.id match {
-      case None => collection.insert(user).onComplete {
-        case Failure(e) => throw e
-        case Success(_) => println("[+] successfully inserted ${user.id} and $user !")
-      }
-      case Some(_) => collection.update(BSONDocument("_id" -> BSONObjectID(user.id.get)), user, upsert=true).onComplete {
-        case Failure(e) => throw e
-        case Success(_) => println("successfully saved user !")
-      }
-    }
-  }*/
-
   def saveUser(user: User)  : Future[Boolean] = {
-    println(s"[+] successfully gooottt user $user !")
-
     user.id match {
       case None => {
-         Future{false} //looks like not reached
+         Future{false} //no id provided
        }
        case _ => findUserBy(BSONDocument(
         "$or" -> BSONArray(
@@ -95,9 +77,26 @@ case class UserCollection(collection: BSONCollection){
           }
           true
         }
-        case Some(user) => {
-          println(s"[+] successfully found ${user.id} and $user !")
-          false
+        case Some(foundUser) => {
+          collection.update(BSONDocument("_id" -> BSONObjectID(foundUser.id.get)),
+            BSONDocument(
+              "$set" -> BSONDocument(
+                "firstName"-> user.firstName,
+                "lastName" -> user.lastName,
+                "email" -> user.email,
+                "teams" -> user.teams.getOrElse(List()),
+                "token" -> user.token.getOrElse(""),
+                "isActive" -> user.isActive.getOrElse(false),
+                "lastConnection" -> user.lastConnection.getOrElse("11/11/1111")
+              )
+            ),
+            upsert=false
+          ).onComplete {
+            case Failure(e) => throw e
+            case Success(_) => println("successfully saved configuration !")
+              
+          }
+          true
         }
       }
     }
@@ -146,21 +145,25 @@ case class UserCollection(collection: BSONCollection){
     collection.remove(selector)
   }
 
-
   object BearerTokenGenerator {
-  
-  val TOKEN_LENGTH = 32
-  val TOKEN_CHARS = 
-     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._"
-  val secureRandom = new SecureRandom()
-    
-  def generateToken:String =  
-    generateToken(TOKEN_LENGTH)   
-  
-  def generateToken(tokenLength: Int): String =
-    if(tokenLength == 0) "" else TOKEN_CHARS(secureRandom.nextInt(TOKEN_CHARS.length())) + 
-     generateToken(tokenLength - 1)
-  
-}
+    val TOKEN_LENGTH = 32
+    val TOKEN_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._"
+    val secureRandom = new SecureRandom()
+
+    def generateToken:String = {
+      generateToken(TOKEN_LENGTH)
+    }
+
+    def generateToken(tokenLength: Int): String = {
+      if(tokenLength == 0){
+        ""
+      }
+      else {
+        TOKEN_CHARS(secureRandom.nextInt(TOKEN_CHARS.length())) + generateToken(tokenLength - 1)
+      }
+
+    }
+
+  }
 
 }

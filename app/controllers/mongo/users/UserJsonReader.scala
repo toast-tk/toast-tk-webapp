@@ -1,7 +1,5 @@
 package controllers.mongo.users
 
-import controllers.parsers.WebPageElement
-import controllers.parsers.EntityField
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.libs.json.Writes._
@@ -12,24 +10,16 @@ import reactivemongo.bson.BSONDocumentWriter
 import reactivemongo.bson.BSONObjectID
 
 case class InspectedUser(login: String, password: String)
-case class User(id: Option[String],
-	login: String,
-	password: String,
-	firstName: String,
-	lastName: String,
-	email: String,
-	teams:  Option[List[String]],
-	token : Option[String],
-	isActive : Option[Boolean],
+case class User(id: Option[String], login: String, password: Option[String], firstName: String, lastName: String,
+	email: String, teams:  Option[List[String]], token : Option[String], isActive : Option[Boolean],
 	lastConnection : Option[String])
-
 
 
 object User{
   implicit val reader: Reads[User]= (
       (__ \ "id").readNullable[String] and
       (__ \ "login").read[String] and
-      (__ \ "password").read[String] and
+      (__ \ "password").readNullable[String] and
       (__ \ "firstName").read[String] and
       (__ \ "lastName").read[String] and
       (__ \ "email").read[String] and
@@ -41,7 +31,7 @@ object User{
   implicit val writer: Writes[User] = (
       (__ \ "id").writeNullable[String] and
       (__ \ "login").write[String] and
-      (__ \ "password").write[String] and
+      (__ \ "password").writeNullable[String] and
       (__ \ "firstName").write[String] and
       (__ \ "lastName").write[String] and
       (__ \ "email").write[String] and
@@ -64,7 +54,7 @@ object User{
       val token = doc.getAs[String]("token").getOrElse("")
       val isActive = doc.getAs[Boolean]("isActive").getOrElse(false)
       val lastConnection = doc.getAs[String]("lastConnection").getOrElse("11/11/1111")
-      User(Option[String](id), login ,password, firstName, lastName, email,  Option[List[String]](teams), Option[String](token), Option[Boolean](isActive), Option[String](lastConnection))
+      User(Option[String](id), login ,Option[String](password), firstName, lastName, email,  Option[List[String]](teams), Option[String](token), Option[Boolean](isActive), Option[String](lastConnection))
     }
   }
 

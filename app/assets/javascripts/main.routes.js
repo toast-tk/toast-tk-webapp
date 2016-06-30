@@ -112,12 +112,22 @@ define(["angular", "exports"], function (angular, exports) {
                     }
                   })
                   .state('adminLayout.editUser', {
-                    url: "/user/edit",
+                    url: "/user/edit/:idUser",
                     cache: false,
                     views: {
                       'content': {
                         templateUrl: "assets/html/admin/accounts/edituser.html",
                         controller: "EditUserCtrl"
+                      }
+                    }
+                  })
+                  .state('adminLayout.editUsers', {
+                    url: "/users",
+                    cache: false,
+                    views: {
+                      'content': {
+                        templateUrl: "assets/html/admin/accounts/editusers.html",
+                        controller: "EditUsersCtrl"
                       }
                     }
                   })

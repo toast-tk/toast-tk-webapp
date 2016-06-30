@@ -14,12 +14,12 @@ GET         /loadEnvConfiguration                         controllers.Applicatio
 
 # Ajax routes: Users
 POST        /login                                        controllers.Application.login()
-GET         /users/:id                                    controllers.Users.user(id: Long)
+GET         /users/:id                                    controllers.Users.user(id: String)
 DELETE      /users/:id                                    controllers.Users.deleteUser(id: String)
 GET         /users                                        controllers.Users.getAllUsers()
-POST         /user                                        controllers.Users.saveUser()
+POST        /user                                         controllers.Users.saveUser()
 GET         /logout                                       controllers.Application.logout()
-GET        /logout/:id                                    controllers.Users.logout(id: String)
+GET         /logout/:id                                   controllers.Users.logout(id: String)
 
 # Ajax routes: Teams
 POST         /team                                        controllers.TeamController.saveTeam()

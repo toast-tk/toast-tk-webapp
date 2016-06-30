@@ -76,6 +76,13 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     userCollection.getAllUsers()
   }
 
+  def editUser(id: String): Future[Option[User]] = {
+    val collection = open_collection("users")
+    val bsonId = BSONObjectID(id)
+    val query = BSONDocument("_id" -> bsonId)
+    collection.find(query).one[User]
+  }
+
   def saveTeam(team: Team)  : Future[Boolean] = {
     teamCollection.save(team)
   }
@@ -499,6 +506,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     val query = BSONDocument("_id" -> objectId)
     collection.find(query).one[EntityField]
   }
+
   def loadElement(objectId: BSONObjectID): Future[Option[WebPageElement]] = {
     val collection = open_collection("elements")
     val query = BSONDocument("_id" -> objectId)
