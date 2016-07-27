@@ -3,8 +3,8 @@ package controllers
 
 import scala.collection.JavaConversions._
 
-import com.synaptix.toast.dao.domain.impl.repository.{ElementImpl, RepositoryImpl}
-import com.synaptix.toast.swing.agent.interpret.MongoRepositoryCacheWrapper
+import io.toast.tk.dao.domain.impl.repository.{ElementImpl, RepositoryImpl}
+import io.toast.tk.swing.agent.interpret.MongoRepositoryCacheWrapper
 import controllers.mongo.MappedWebEventRecord
 import play.api.Logger
 import play.api.libs.json.{JsError, JsResult, Json}
@@ -12,8 +12,8 @@ import play.api.mvc._
 import play.api.libs.iteratee._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.collection.mutable
-import com.synaptix.toast.core.agent.interpret.WebEventRecord
-import com.synaptix.toast.action.interpret.web.{InterpretationProvider, IActionInterpret}
+import io.toast.tk.core.agent.interpret.WebEventRecord
+import io.toast.tk.action.interpret.web.{InterpretationProvider, IActionInterpret}
 import toast.engine.ToastRuntimeJavaWrapper
 
 

@@ -1,9 +1,9 @@
 package controllers
 
 import boot.AppBoot
-import com.synaptix.toast.dao.domain.impl.report.{Project, Campaign}
-import com.synaptix.toast.dao.domain.impl.test.block.ITestPage
-import com.synaptix.toast.runtime.parse.TestParser
+import io.toast.tk.dao.domain.impl.report.{Project, Campaign}
+import io.toast.tk.dao.domain.impl.test.block.ITestPage
+import io.toast.tk.runtime.parse.TestParser
 import controllers.mongo.Scenario
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.json.{Json, JsError}
@@ -11,7 +11,7 @@ import play.api.mvc.{ResponseHeader, Result, Action, Controller}
 import toast.engine.ToastRuntimeJavaWrapper
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.collection.immutable.StringOps
-import com.synaptix.toast.runtime.report.HTMLReporter
+import io.toast.tk.runtime.report.HTMLReporter
 import play.api.Logger
 import reactivemongo.bson.BSONDocument
 import scala.concurrent.duration.Duration
