@@ -1,37 +1,36 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        EditUserCtrl: function ($scope,playRoutes, LoginService, toastr) {
-        	$scope.greeting = "Hello World!";
-        	console.log("printing entry");
+        EditUserCtrl: function ($scope, playRoutes, LoginService, toastr, $stateParams) {
+            $scope.isNewUserFormSubmitted = false;
+            $scope.user = {};
 
-            $scope.user  = LoginService.currentUser();
+            playRoutes.controllers.Users.user($stateParams.idUser).get().then(function (response) {
+                $scope.user = response.data;
+                console.log("user being edited is : " , response.data);
+            });
+    
+            $scope.saveUser = function(){
+                $scope.isNewUserFormSubmitted = true;
+                if($scope.userForm.$valid){
+                    var selectedTeamList = [];
+                    ($scope.user.teams|| []).forEach(function(team){
+                        selectedTeamList.push(team.id);
+                    });
+                    $scope.user.teams = selectedTeamList;
+                    playRoutes.controllers.Users.saveUser().post($scope.user).then(function () {
+                        toastr.success('Saved !');
+                        $scope.userForm.$setPristine();
+                        $scope.isNewUserFormSubmitted = false;
+                    });
+                }
+            }
 
-			playRoutes.controllers.Users.getAllUsers().get().then(function (response) {
-				$scope.userList = response.data;
-				console.log("user list is : " , response.data);
-			});
-			
-        	$scope.generatePassword = function(){
-        		$scope.newPassword = Math.random().toString(36).substring(18);
-        		$scope.newPassword1 = $scope.newPassword;
-        	}
+            $scope.loadTeams = function(){
+                var teamNameList =  [];
+                return playRoutes.controllers.TeamController.getAllTeams().get();
+            }
 
-			$scope.deleteUser = function(id){
-				playRoutes.controllers.Users.deleteUser(id).delete().then(function (response) {
-					console.log("deleted: " , response.data);
-                    if(response.status === 200){
-                        toastr.success('Account removed successfully !');
-                        $scope.userList.forEach(function(user,index){
-                            if(user.id == id){
-                                $scope.userList.splice(index,1);
-                            }
-                        });
-                    }
-				});
-			}
-        	
-        	console.log("the new pasword is : ", $scope.newPassword);
         }
     };
 });

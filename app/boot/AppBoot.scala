@@ -100,7 +100,9 @@ object AppBoot extends play.api.GlobalSettings {
         m.map("%02x".format(_)).mkString
       }
       val adminPwd = sha256("admin")
-      conn.saveUser(User(Some("111111111111111111111111"),"admin", adminPwd, "administrateur", "user", "admin@toastWebApp.com", None, None, None, None))
+      conn.saveUser(User(Some("111111111111111111111111"),"admin", Some(adminPwd),
+                          "administrateur", "user", "admin@toastWebApp.com",
+                          None, None, None, None))
 
     }
 
