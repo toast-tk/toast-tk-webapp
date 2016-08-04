@@ -1,18 +1,18 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        newObjectModalCtrl: function ($scope,  $modalInstance, ICONS) {
+        newObjectModalCtrl: function ($scope,  $uibModalInstance, ICONS) {
             $scope.ICONS = ICONS;
             var newObject = {};
             $scope.scenarioTypeDropdownLabel = "Select type ..";
             
             $scope.closeModal = function(){
-             $modalInstance.dismiss();
+             $uibModalInstance.dismiss();
          }
 
          $scope.createNewObject = function(){
             newObject.name = $scope.newObjectName;
-            $modalInstance.close(newObject);
+            $uibModalInstance.close(newObject);
         }
 
         $scope.swapToType = function(type){

@@ -5,10 +5,11 @@ import play.api.libs.json.Reads._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import reactivemongo.api.{MongoDriver, _}
-import reactivemongo.bson.{BSONObjectID, BSONDocument}
-import reactivemongo.api.commands.UpdateWriteResult
+import reactivemongo.bson.{BSONArray, BSONDocument, BSONObjectID}
+import reactivemongo.api.commands.{UpdateWriteResult, WriteResult}
 import reactivemongo.bson.Producer.nameValue2Producer
 import reactivemongo.api.collections.bson.BSONCollection
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.Await
@@ -19,12 +20,13 @@ import controllers.parsers.WebPageElementBSONWriter
 import controllers.parsers.EntityFieldBSONWriter
 import boot.AppBoot
 import play.api.Logger
-import controllers.mongo.User.{BSONWriter => UserBSONWriter} 
-import controllers.mongo.User.{BSONReader => UserBSONReader} 
+
 import scala.util._
-import java.security.SecureRandom
+import controllers.mongo.teams._
+import controllers.mongo.users._
 
 object MongoConnector extends App {
+
   def apply() = {
     new MongoConnector(new MongoDriver(),List("localhost"), "play_db")
   }
@@ -32,23 +34,6 @@ object MongoConnector extends App {
     new MongoConnector(new MongoDriver(),List(url), "play_db")
   }
 }
-
-object BearerTokenGenerator {
-  
-  val TOKEN_LENGTH = 32
-  val TOKEN_CHARS = 
-     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._"
-  val secureRandom = new SecureRandom()
-    
-  def generateToken:String =  
-    generateToken(TOKEN_LENGTH)   
-  
-  def generateToken(tokenLength: Int): String =
-    if(tokenLength == 0) "" else TOKEN_CHARS(secureRandom.nextInt(TOKEN_CHARS.length())) + 
-     generateToken(tokenLength - 1)
-  
-}
-
 
 case class MongoConnector(driver: MongoDriver, servers: List[String], database: String){
 
@@ -68,58 +53,42 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     db("repository")
   }
 
+  val userCollection = UserCollection(open_collection("users"))
+  val teamCollection = TeamCollection(open_collection("teams"))
+
   def AuthenticateUser(user : InspectedUser) : Option[User] = {
-    var isAuthenticated = false
-    val query = BSONDocument("login" -> user.login, "password" -> user.password)
-    val collection = open_collection("users")
-    var authPersonOpt: Option[User]  = None;
-    var token:Option[String] = None ;
-    val userFuture =
-    collection.
-    find(query). 
-    cursor[User]().
-    collect[List]()
-    Logger.info("Loging in dfef!")
-    Await.result(userFuture.map { users =>
-      for(person <- users) {
-        token = Some(BearerTokenGenerator.generateToken)
-        val authPerson = User(person.id,
-          person.login,
-          person.password,
-          person.firstName,
-          person.lastName,
-          person.email,
-          person.teams,
-          token,
-          true,
-          None)
-        authPersonOpt = Some(authPerson)
-        println(s"dataobj Token ----> ${authPersonOpt}")
-        saveUser(authPerson)
-        val firstName = authPerson.firstName
-        isAuthenticated = true
-        println(s"found $firstName $isAuthenticated")
-        authPersonOpt
-      }
-    }, 5 seconds)
-    println(s"just here $isAuthenticated")
-    authPersonOpt
+    userCollection.AuthenticateUser(user)
   }
 
-  def saveUser(user: User) {
-    val collection = open_collection("users")
-         println(s"[+] successfully gooottt user $user !")
+  def saveUser(user: User)   : Future[Boolean] = {
+    userCollection.saveUser(user)
+  }
 
-    user.id match {
-      case None => collection.insert(user).onComplete {
-        case Failure(e) => throw e
-        case Success(_) => println("[+] successfully inserted ${user.id} and $user !")
-      }
-      case Some(_) => collection.update(BSONDocument("_id" -> BSONObjectID(user.id.get)), user, upsert=true).onComplete {
-        case Failure(e) => throw e
-        case Success(_) => println("successfully saved user !")
-      }
-    }
+  def disconnectUser(id : String) : Future[Boolean] = {
+    userCollection.disconnectUser(id)
+  }
+
+  def removeUser(id : String) : Future[WriteResult] = {
+    userCollection.removeUser(id)
+  }
+
+  def getAllUsers() : Future[List[User]] ={
+    userCollection.getAllUsers()
+  }
+
+  def editUser(id: String): Future[Option[User]] = {
+    val collection = open_collection("users")
+    val bsonId = BSONObjectID(id)
+    val query = BSONDocument("_id" -> bsonId)
+    collection.find(query).one[User]
+  }
+
+  def saveTeam(team: Team)  : Future[Boolean] = {
+    teamCollection.save(team)
+  }
+
+  def getAllTeams() : Future[List[Team]] ={
+    teamCollection.getAllTeams()
   }
 
   def saveConfiguration(conf: MacroConfiguration) {
@@ -537,6 +506,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     val query = BSONDocument("_id" -> objectId)
     collection.find(query).one[EntityField]
   }
+
   def loadElement(objectId: BSONObjectID): Future[Option[WebPageElement]] = {
     val collection = open_collection("elements")
     val query = BSONDocument("_id" -> objectId)

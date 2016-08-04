@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        ScenarioCtrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $modal, TreeLayoutService, ICONS, LayoutService, NewStepService, UtilsScenarioService, toastr) {
+        ScenarioCtrl: function ($rootScope, $scope, $q, playRoutes, ngProgress, ClientService, $sideSplit, $timeout, $uibModal, TreeLayoutService, ICONS, LayoutService, NewStepService, UtilsScenarioService, toastr) {
             $scope.isEditScenarioName = false;
             $scope.isCollapsed = false;
             $scope.ICONS = ICONS ;
@@ -11,7 +11,6 @@ define(["angular"], function (angular) {
             $scope.selectedType = "";
             $scope.importModes = ["prepend", "append"];
             $scope.scenarii = [];
-            var regexMap = [];
             $scope.scenario = undefined;
             $scope.stepType = "";
             $scope.addNewStep = addNewStep;
@@ -37,6 +36,7 @@ define(["angular"], function (angular) {
                 })
             });
 
+            $scope.selectNode =selectNode ;
             function selectNode(id){
                 TreeLayoutService.selectNode(id);
             }
@@ -51,7 +51,7 @@ define(["angular"], function (angular) {
                     }).then(function(){
                         var modalScope = $scope.$new(true);
                         modalScope.newNodeType = nodeType;
-                        var modalInstance = $modal.open({
+                        var modalInstance = $uibModal.open({
                             animation: $scope.animationsEnabled,
                             templateUrl: 'assets/html/scenario/newstep.modal.scenario.html',
                             controller:'newStepModalCtrl',
@@ -103,8 +103,16 @@ define(["angular"], function (angular) {
 
             function recordActions(){
                 ClientService.setSentenceListener(function(data){
-                    toastr.success(data);
-                    console.log("received: " + data);
+                    $scope.$apply(function(){
+                        if(!angular.isObject(data.sentence)){
+                            data.row = {
+                                "patterns" : data.sentence
+                            }
+                            UtilsScenarioService.templatizeRow(data.row, "web", data.ids);
+                            console.log("data.row : ", JSON.stringify(data.row));
+                            $scope.scenario.rows.push(angular.copy(data.row));
+                        }
+                    });
                 });
             }
 
@@ -129,6 +137,13 @@ define(["angular"], function (angular) {
              isNewStepResolved = (response.isResolved == true) ? response.isResolved : isNewStepResolved;
             }
 
+            var newCostomStep ;
+            $scope.newStepChanged = function(customTypedStep){
+                console.log("newStep", customTypedStep);
+                newCostomStep = customTypedStep ;
+
+            }
+
             function newCustomStepSelected(newCustomStep){
                  var step = { kind : $scope.scenario.type ,
                                 patterns : newCustomStep};
@@ -141,10 +156,14 @@ define(["angular"], function (angular) {
             function addNewStep(){
                 if(isNewStepResolved==false){
                     console.log("eef ", $scope.newStepModel)
-                    newCustomStepSelected("");
+                    newCustomStepSelected(newCostomStep);
                 }
 
                 newStepPromise.promise.then(function(step){
+                    if(step.patterns === ""){
+                        step.patterns = newCostomStep ;
+                    }
+                    newCostomStep = "";
                     isNewStepResolved = false;
                     console.log("   adding ;", angular.copy(step));
                     $scope.scenario.rows.push(angular.copy(step));
@@ -171,6 +190,10 @@ define(["angular"], function (angular) {
                 }
 
                 newStepPromise.promise.then(function(step){
+                    if(step.patterns === ""){
+                        step.patterns = newCostomStep ;
+                    }
+                    newCostomStep = "";
                     isNewStepResolved = false;
                     console.log("editing :", angular.copy(step));
                     $scope.scenario.rows[$scope.editableStepIndex] = step;
@@ -238,90 +261,13 @@ define(["angular"], function (angular) {
             };
 
             function convertToTemplate(scenario){
-                var newScenarioTemplate = scenario;
-                for(var i = 0 ; i < newScenarioTemplate.rows.length ; i++){
-                    var actionType = getActionType(newScenarioTemplate, newScenarioTemplate.rows[i]) || 'swing';
-                    newScenarioTemplate.rows[i].kind = actionType;
-                    var regexList = regexMap[actionType]; 
-                    var sentence = removeHeadAnnotation(newScenarioTemplate.rows[i].patterns);
-                    for(var j=0; j < regexList.length; j++){
-                        var replacedSentence = ClientService.convertToRegexSentence(regexList[j].typed_sentence);
-                        var regex = new RegExp(replacedSentence, 'i');
-                        if(regex.test(sentence)){
-                            var typeSentence = regexList[j].typed_sentence;
-                            var pattern = ClientService.convertToPatternSentence(typeSentence);
-                            var scenarioRow = newScenarioTemplate.rows[i];
-                            setMappingForScenarioRow(scenarioRow, pattern, typeSentence);
-                            break;
-                        }
-                    } 
-                }
-                newScenarioTemplate.template = false;
-                saveScenarii(newScenarioTemplate);
+                UtilsScenarioService.convertToTemplate(scenario).then(function(newScenarioTemplate){
+                    saveScenarii(newScenarioTemplate);
+                });
             }
 
-            function removeHeadAnnotation(sentence){
-                var regex = /(swing|web|service|driverLess):?([\w]*)? ([\w\W]+)/
-                var tail;
-                if(tail = regex.exec(sentence)){
-                    return tail[3];
-                }
-                return sentence;
-            }
-
-            function getActionType(scenario, row){
-                if(row.patterns.startsWith("@service")){
-                    return "service";
-                }
-                else if (row.patterns.startsWith("@web")){
-                    return "service";
-                }
-                else if (row.patterns.startsWith("@swing")){
-                    return "swing";
-                }
-                else {
-                    return scenario.type;
-                }
-            }
-
-            function setMappingForScenarioRow(scenarioRow, pattern, typeSentence){
-                var scenarioSentenceWithValues = scenarioRow.patterns;
-                scenarioRow.patterns = typeSentence;
-                var patternValue = pattern;
-                var tag = UtilsScenarioService.getRegexTag(patternValue);
-                var tags = [];
-                var tagPosition = 0;
-                while (tag != null) {
-                    tags.push(tag);
-                    var tagName = tags[tagPosition][0];
-                    var varType = tags[tagPosition][3];
-                    var mappingValue = scenarioSentenceWithValues.split(" ")[UtilsScenarioService.getIndex(pattern.split(" "), tagName)];
-                    patternValue = UtilsScenarioService.replaceIndex(patternValue, tagName,  tags[tagPosition].index , mappingValue);
-                    mappingValue = mappingValue.replace(/\*/g, '');
-                    onPatternValueChange(scenarioRow, tagPosition, varType == "component" ? varType : tagPosition.toString(), mappingValue);
-                    tagPosition = tagPosition + 1;
-                    tag = UtilsScenarioService.getRegexTag(patternValue);
-                }
-            }
-
-            //performs model update
-            function onPatternValueChange(row, position, identifier, value) {
-                var newVal = {id: identifier, pos: position, val: value};
-                if (angular.isUndefined(row.mappings)) {
-                    row.mappings = [];
-                    row.mappings.push(newVal);
-                } else {
-                    var found = false;
-                    for (var i = 0; i < row.mappings.length; i++) {
-                        if (row.mappings[i].pos == position) {
-                            row.mappings[i] = newVal;
-                            found = true;
-                        }
-                    }
-                    if (!found) {
-                        row.mappings.push(newVal);
-                    }
-                }
+            function onPatternValueChange(scenarioRow, position, identifier, value){
+                UtilsScenarioService.onPatternValueChange(scenarioRow, position, identifier, value);
             }
 
    $scope.regexFullList=[];
@@ -330,7 +276,7 @@ define(["angular"], function (angular) {
     for(var i =0 ; i < $scope.scenario_types.length; i++){
         var scenariiKind = $scope.scenario_types[i];
         ClientService.loadRegexList(scenariiKind, function(scenariiKind, list){
-            regexMap[scenariiKind] = list;
+            UtilsScenarioService.setRegexList(scenariiKind, list);
             angular.forEach(list,function(value,key){
                 value.kind = scenariiKind;
                 $scope.regexFullList.push(value);
@@ -357,7 +303,7 @@ define(["angular"], function (angular) {
                            }
                         }catch(e){
                             if(!angular.isObject(scenario.rows)){
-                            //convert it into rows
+                            /*convert it into rows*/
                             var lines = scenario.rows.split( "\n" );
                             scenario.template = true;
                             scenario.rows = [];
@@ -416,7 +362,9 @@ if(doBuildTree === true){
         $timeout(function(){
             $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
         },500);
-        $scope.$apply();
+        if(!$scope.$$phase) {
+            $scope.$apply();
+        }
     }, function(selectedElementId,selectedItem){
         return selectedElementId && selectedItem.type!="folder";
     });
@@ -425,7 +373,9 @@ if(doBuildTree === true){
         $scope.scenario = null ;
         $scope.folder = selectedFolder;
         $scope.folderContents = TreeLayoutService.getAllChildNodes(selectedFolder.id);
-        $scope.$apply();
+        if(!$scope.$$phase) {
+            $scope.$apply();
+        }
     }, function(selectedElementId,selectedItem){
         return selectedElementId && selectedItem.type=="folder";
     });

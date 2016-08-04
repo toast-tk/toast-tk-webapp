@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        NewSettingsModalCtrl: function ($scope,  $modalInstance, TreeLayoutService,ICONS, $timeout) {
+        NewSettingsModalCtrl: function ($scope,  $uibModalInstance, TreeLayoutService,ICONS, $timeout) {
             $scope.ICONS = ICONS;
             var newScenario = {};
             if($scope.newNodeType === "settings set"){
@@ -13,7 +13,7 @@ define(["angular"], function (angular) {
             
             $scope.closeModal = closeModal ;
             function closeModal(){
-             $modalInstance.dismiss();
+             $uibModalInstance.dismiss();
          }
 
          $scope.createNewNode = function(){
@@ -21,7 +21,7 @@ define(["angular"], function (angular) {
             newScenario.value = $scope.scenarioName;
             console.log($.extend({}, newScenario));          
             TreeLayoutService.add(newScenario);
-            $modalInstance.close(newScenario);
+            $uibModalInstance.close(newScenario);
         }
 
         $scope.swapToType = function(type){

@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        SettingsCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $sideSplit, LayoutService, TreeLayoutService, $modal, ICONS, toastr) {
+        SettingsCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $sideSplit, LayoutService, TreeLayoutService, $uibModal, ICONS, toastr) {
             var vm = $scope;
             $scope.ICONS = ICONS;
             
@@ -83,7 +83,7 @@ define(["angular"], function (angular) {
                             }).then(function(){
                                 var modalScope = $scope.$new(true);
                                 modalScope.newNodeType = nodeType;
-                                var modalInstance = $modal.open({
+                                var modalInstance = $uibModal.open({
                                     animation: $scope.animationsEnabled,
                                     templateUrl: 'assets/html/settings/newSettings.modal.html',
                                     controller:'NewSettingsModalCtrl',

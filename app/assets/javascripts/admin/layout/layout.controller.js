@@ -5,10 +5,12 @@ define(["angular"], function(angular) {
     	}
 
 
-	AdminLayoutCtrl.$inject = ['$scope','$sideSplit','$state','$http','$timeout'];
+	AdminLayoutCtrl.$inject = ['$scope','$sideSplit','$state','$http','$timeout','checkLoggedAndGetUser'];
 
-	function AdminLayoutCtrl($scope, $sideSplit, $state, $http, $timeout, LoginService) {
-				$scope.isCollapsed = false;
+	function AdminLayoutCtrl($scope, $sideSplit, $state, $http, $timeout, LoginService, checkLoggedAndGetUser) {
+		$scope.isCollapsed = false;
+		$scope.user = checkLoggedAndGetUser ;
+
 
 		$sideSplit.open({ 
                         templateUrl: 'assets/html/admin/layout/sidebar.view.html',

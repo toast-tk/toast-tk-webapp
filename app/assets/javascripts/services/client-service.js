@@ -3,11 +3,10 @@ define(["angular"], function (angular) {
 
   	// The module - will be referenced by other modules
   	var module = angular.module("tk.services", ["play.routing"]);
-
-  	module.factory('ClientService', function(playRoutes){
+    module.constant('webSocket', WebSocket);
+  	module.factory('ClientService', function(playRoutes,webSocket){
   		var factory = {};
 
-        factory.ACTION_ITEM_REGEX = /{{([\w:]+)}}/gi;
         factory.recorders = [];
         factory.socketIsActive = false;
         factory.recorderListener = null;
@@ -15,7 +14,7 @@ define(["angular"], function (angular) {
         factory.regexList = [];
         factory.regexMap = {};
 
-        var socket = new WebSocket('ws://localhost:9000/socket/stream');
+        var socket = new webSocket('ws://localhost:9000/socket/stream');
 
         // When the connection is open, send some data to the server
         socket.onopen = function (event) {
@@ -89,9 +88,37 @@ define(["angular"], function (angular) {
 			return factory.convertSentence(sentence, getActionItemPattern);
 		};
 
+
+        factory.actionItemType = function(actionItem){
+            var match = /{{([\w:]+)}}/gi.exec(actionItem);
+            if(match != null) {
+                var actionItemDefinition = match[1];
+                var groupArray = actionItemDefinition.split(":");
+                if(groupArray.length == 1) {
+                    return {
+                        category : groupArray[0],
+                        type: "string"
+                    }
+                }
+                else if(groupArray.length == 2) {
+                    return {
+                        category : groupArray[0],
+                        type: groupArray[1]
+                    }
+                }
+                else if(groupArray.length == 3) {
+                    return {
+                        category : groupArray[0],
+                        type: groupArray[1]
+                    }
+                }
+            }
+        }
+
 		factory.convertSentence = function(sentence, callback){
 			var convertedSentence = sentence;
-			var match = factory.ACTION_ITEM_REGEX.exec(sentence);
+            var actionItemRegex = /{{([\w:]+)}}/gi;
+			var match = actionItemRegex.exec(sentence);
 			while(match != null) {
 				var actionItemDefinition = match[1];
 				var groupArray = actionItemDefinition.split(":");
@@ -113,7 +140,7 @@ define(["angular"], function (angular) {
 				if(regex != null) {
 					convertedSentence = convertedSentence.replace(new RegExp(match[0], 'g'), regex);
 				}
-				match = factory.ACTION_ITEM_REGEX.exec(convertedSentence);
+				match = actionItemRegex.exec(convertedSentence);
 			}
 			return convertedSentence;
 		}

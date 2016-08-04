@@ -20,4 +20,6 @@ bin/*
 /.target/
 /bin/
 toast-logs.log
+/app/assets/libs/*
 /app/assets/node_modules/*
+/app/assets/bower_components/*
