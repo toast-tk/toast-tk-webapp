@@ -21,3 +21,4 @@ bin/*
 /bin/
 toast-logs.log
 /app/assets/node_modules/*
+/app/assets/libs/*
