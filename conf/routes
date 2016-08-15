@@ -14,10 +14,17 @@ GET         /loadEnvConfiguration                         controllers.Applicatio
 
 # Ajax routes: Users
 POST        /login                                        controllers.Application.login()
-GET         /users/:id                                    controllers.Users.user(id: Long)
+GET         /users/:id                                    controllers.Users.user(id: String)
+DELETE      /users/:id                                    controllers.Users.deleteUser(id: String)
+GET         /users                                        controllers.Users.getAllUsers()
+POST        /user                                         controllers.Users.saveUser()
 GET         /logout                                       controllers.Application.logout()
+GET         /logout/:id                                   controllers.Users.logout(id: String)
 
-# Ajax Domain Controller
+# Ajax routes: Teams
+POST         /team                                        controllers.TeamController.saveTeam()
+GET          /teams                                       controllers.TeamController.getAllTeams()
+# Ajax Domain Controller 
 GET         /loadAutoSetupCtx/:setupType                  controllers.Application.loadAutoSetupCtx(setupType: String)
 GET         /loadCtxTagData/:itemName                     controllers.Application.loadCtxTagData(itemName: String)
 GET         /loadCtxSentences/:confType                   controllers.Application.loadCtxSentences(confType:String)
@@ -27,7 +34,7 @@ GET         /typeDescriptor                               controllers.DomainCont
 POST        /postConnector                                controllers.Application.onConnectorReceived()
 POST        /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
 GET         /loadWikifiedRepository                       controllers.Application.loadWikifiedRepository()
-GET         /loadwebWikifiedRepository                    controllers.Application.loadWebWikifiedRepository()
+GET         /loadWebWikifiedRepository                    controllers.Application.loadWebWikifiedRepository()
 GET         /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
 GET         /loadSentences/:confType                      controllers.Application.loadSentences(confType:String)
 POST        /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()

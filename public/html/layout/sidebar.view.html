@@ -1,27 +1,30 @@
-          <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-                <ul id="side-nav" class="nav navbar-nav side-nav" ng-class="{'side-nav-collapsed': isCollapsed === true}">
-<!--                     <li>
-                        <a href="#/main"><i class="fa fa-fw fa-home fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Home</span></a>
-                    </li> -->
-                     <li ng-class="{'active' : currentState === 'layout.scenario'}">
-                        <a  ng-click="goToState('layout.scenario')"><i class="fa fa-fw fa-pencil-square-o fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
-                        <span  ng-if="isCollapsed===false">Scenarii Edition</span></a>
-                    </li>
-                    <li ng-class="{'active' : currentState === 'layout.repository'}">
-                        <a ng-click="goToState('layout.repository')"><i class="fa fa-fw fa-archive fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Object repository</span></a>
-                    </li>
-                   
-                    <li ng-class="{'active' : currentState === 'layout.campaign'}">
-                        <a ng-click="goToState('layout.campaign')"><i class="fa fa-fw fa-terminal fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Test Compaign Reports</span></a>
-                    </li>
-                    <li style="position: fixed; bottom: 0;">
-                        <a ng-click="collapse()">
-                        <i  ng-if="isCollapsed===false" style="width: 100%;" class="btn fa fa-lg fa-chevron-circle-left" ng-class="{'fa-2x': isCollapsed === true}"></i>
-                        <i  ng-if="isCollapsed===true" class="fa fa-lg fa-chevron-circle-right" ng-class="{'fa-2x': isCollapsed === true}"></i>
-                        </a>
-                    </li>
-                    <li ng-class="{'active' : currentState === 'layout.settings'}">
-                        <a ng-click="goToState('layout.settings')"><i class="fa fa-fw fa-gear fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span ng-if="isCollapsed===false">Settings</span></a>
-                    </li>
-                </ul>
-            <!-- /.navbar-collapse -->
+<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+    <ul id="side-nav" class="nav navbar-nav side-nav" ng-class="{'side-nav-collapsed': isCollapsed === true}">
+        <!-- <li>
+            <a href="#/main"><i class="fa fa-fw fa-home fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Home</span></a>
+        </li> -->
+         <li ng-class="{'active' : currentState === 'layout.scenario'}">
+            <a  ng-click="goToState('layout.scenario')"><i class="fa fa-fw fa-pencil-square-o fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
+            <span  ng-if="isCollapsed===false">Scenarii Edition</span></a>
+        </li>
+        <li ng-class="{'active' : currentState === 'layout.repository'}">
+            <a ng-click="goToState('layout.repository')"><i class="fa fa-fw fa-archive fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Object repository</span></a>
+        </li>
+       
+        <li ng-class="{'active' : currentState === 'layout.campaign'}">
+            <a ng-click="goToState('layout.campaign')"><i class="fa fa-fw fa-terminal fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Test Compaign Reports</span></a>
+        </li>
+        <li style="position: fixed; bottom: 0;">
+            <a ng-click="collapse()">
+            <i  ng-if="isCollapsed===false" style="width: 100%;" class="btn fa fa-lg fa-chevron-circle-left" ng-class="{'fa-2x': isCollapsed === true}"></i>
+            <i  ng-if="isCollapsed===true" class="fa fa-lg fa-chevron-circle-right" ng-class="{'fa-2x': isCollapsed === true}"></i>
+            </a>
+        </li>
+        <li ng-class="{'active' : currentState === 'ladminLayout'}">
+            <a ng-click="goToState('adminLayout')"><i class="fa fa-fw fa-users fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span ng-if="isCollapsed===false">Users</span></a>
+        </li>
+        <!--<li ng-class="{'active' : currentState === 'layout.settings'}">
+            <a ng-click="goToState('layout.settings')"><i class="fa fa-fw fa-gear fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span ng-if="isCollapsed===false">Settings</span></a>
+        </li>-->
+    </ul>
+<!-- /.navbar-collapse -->

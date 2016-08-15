@@ -9,23 +9,30 @@
   "dependencies": {
     "angular": "^1.5.3",
     "angular-mocks": "^1.5.3",
+    "angular-ui-router": "^0.2.18",
     "jasmine-core": "^2.4.1",
     "jquery": "^2.2.3",
     "karma": "^0.13.22",
     "karma-jasmine": "^0.3.8"
   },
   "devDependencies": {
+    "angular-animate": "^1.5.3",
+    "angular-route": "^1.5.3",
     "del": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-filter": "^4.0.0",
-    "karma": "^0.13.22",
+    "jasmine-jquery": "^2.1.1",
+    "jquery-ui": "^1.10.5",
     "karma-chrome-launcher": "^0.2.3",
+    "karma-ng-html2js-preprocessor": "^0.2.2",
     "karma-requirejs": "^0.2.6",
     "mkdirp": "^0.5.1",
-    "requirejs": "^2.2.0"
+    "requirejs": "^2.2.0",
+    "underscore": "^1.8.3"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "setup": "npm install && node ./node_modules/bower/bin/bower install && node ./node_modules/gulp/bin/gulp",
+    "test": "karma start karma.conf.js"
   },
   "keywords": [],
   "author": "",

@@ -1,0 +1,32 @@
+ <div class="container-fluid" style="overflow: hidden;">
+
+  <div class="panel panel-default">
+   <div class="panel-heading">
+    <h3 class="panel-title"><i class="fa fa-user-plus fa-fw"></i> Add user account
+    </h3>
+   </div>
+   <div class="panel-body">
+    <ul class="list-group">
+    <li class="list-group-item" ng-repeat="usr in userList">
+    <div style="display: inline-block;">
+      <h4><i class="fa fa-user"></i> {{usr.login}} 
+        <span class="label label-success" ng-if="user.id == usr.id">It's you !</span> 
+      </h4> 
+      <span >{{usr.firstName}} {{usr.lastName}}</span>
+    </div>
+      <div style="display: inline-block; float: right;">
+       <button  class="btn btn-default btn-xs btn-edit1"
+                ng-click="editUser(usr.id)">
+          <i class="fa fa-edit"></i>
+       </button>
+       <button ng-if="user.id != usr.id" 
+               class="pull-right btn btn-default btn-xs btn-danger1" 
+               ng-click="deleteUser(usr.id)">
+          <i class="fa fa-trash"></i>
+       </button>
+      </div>
+     </li>
+    </ul>
+    </div>
+   </div>
+ </div>

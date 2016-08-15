@@ -1,11 +1,11 @@
 package toast.engine
 
 import play.api.Play
-import com.synaptix.toast.adapter._
-import com.synaptix.toast.dao.guice.MongoModule
-import com.synaptix.toast.runtime.dao.DAOManager
-import com.synaptix.toast.dao.service.dao.access.project.ProjectDaoService
-import com.synaptix.toast.dao.service.dao.access.repository.RepositoryDaoService
+import io.toast.tk.adapter._
+import io.toast.tk.dao.guice.MongoModule
+import io.toast.tk.runtime.dao.DAOManager
+import io.toast.tk.dao.service.dao.access.project.ProjectDaoService
+import io.toast.tk.dao.service.dao.access.repository.RepositoryDaoService
 import scala.collection.JavaConverters._
 
 object ToastRuntimeJavaWrapper {

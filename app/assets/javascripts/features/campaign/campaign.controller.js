@@ -15,6 +15,7 @@ define(["angular"], function (angular) {
 
             $scope.selectProject = function(project){
                 $scope.selectedProject = project;
+                $scope.displayReport($scope.selectedProject);
             }
 
             playRoutes.controllers.ScenarioController.loadScenarii().get().then(function (response) {

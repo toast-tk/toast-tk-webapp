@@ -2,6 +2,13 @@
   "use strict";
 
   requirejs.config({
+      packages: [
+          {
+              name: 'CryptoJS',
+              location: '../libs/crypto-js',
+              main: 'index'
+          }
+      ],
     shim: {
       'jsRoutes': {
         deps: ['angular'],
@@ -23,6 +30,10 @@
       	deps: [],
       	exports: '_'
       },
+      'jwtClient': {
+        deps: [],
+        exports: 'jwtClient'
+      },
       'angular-ui-tree':{
         deps: ['angular']
       },
@@ -33,11 +44,21 @@
       'ui.router':{
         deps: ['angular']
       },
+      'ngProgress': {
+        deps: ['angular'],
+        exports: 'ngProgress'
+      },
+      'xeditable': {
+        deps: ['angular']
+      },
       'angular-toastr':  ['angular'],
       'sidesplit':{
         deps: ['angular']
       },
       'angular-animate':{
+        deps: ['angular']
+      },
+      'ngTagsInput':{
         deps: ['angular']
       },
       'bootstrap': {
@@ -57,33 +78,46 @@
       }
     },
     paths: {
-        'requirejs': ['../lib/requirejs/require'],
-        text : './libs/require-plugins/text',
-        json : './libs/require-plugins/json',
-        'jsRoutes': ['/jsroutes'],
-        "jquery": "//code.jquery.com/jquery-2.2.0.min",
-        "jquery-ui" : "//code.jquery.com/ui/1.9.2/jquery-ui.min",
-        "angular": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular",
-        "angularRoute": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route",
-	      "ui-sortable" : ['./libs/sortable'],
-        "underscore" : "//underscorejs.org/underscore",
+        'jquery': '../libs/jquery/dist/jquery',
+        "jquery-ui" : "../libs/jquery-ui/jquery-ui",
+        "underscore" : "../libs/underscore/underscore-min",
+        'requirejs': '../libs/requirejs/require',
+        text : '../libs/requirejs-plugins/lib/text',
+        json : '../libs/requirejs-plugins/src/json',
+        "bootstrap":['../libs/bootstrap/dist/js/bootstrap.min'],
+        
+        'angular': '../libs/angular/angular',
+        "angularRoute": "../libs/angular-route/angular-route.min",
+        "ui.router": ['../libs/angular-ui-router/release/angular-ui-router.min'],
+        "angular-animate":['../libs/angular-animate/angular-animate.min'],
+        "ui-sortable" : ['../libs/angular-ui-sortable/sortable.min'],
+        "angular-toastr": ['../libs/angular-toastr/dist/angular-toastr.tpls.min'],
+        "angucomplete": ['../libs/angucomplete-alt/dist/angucomplete-alt.min'],
+        "angular-ui-tree": ['../libs/angular-ui-tree/dist/angular-ui-tree.min'],
+        "ui.bootstrap": ['../libs/angular-bootstrap/ui-bootstrap-tpls.min'],
+        "ngProgress" : "../libs/ngprogress/build/ngProgress.min",
+        "xeditable": ['../libs/angular-xeditable/dist/js/xeditable.min'],
+        "jwtClient" : ['../libs/jwt-client/jwt-client'],
+        "ngTagsInput" : ["../libs/ng-tags-input/ng-tags-input.min"],
+
         "qTags": ['./libs/jquery-textntags'],
-        "angular-ui-tree": ['/libs/angular-ui-tree.min'],
-        "angular-animate":['libs/angular-animate.min'],
-        "bootstrap":['libs/bootstrap.min'],
-        "ui.bootstrap": ['libs/ui-bootstrap-tpls-0.12.1'],
-        "xeditable": ['libs/xeditable'],
-        "ui.router": ['libs/angular-ui-router.min'],
         "webix": ['libs/webix'],
-        "angular-toastr": ['libs/angular-toastr.tpls.min'],
         "sidesplit": ['libs/angular-sidesplit.provider'],
-        "angucomplete": ['libs/angucomplete-alt.min'],
+
+        'jsRoutes': ['/jsroutes'],
+
+        'playRoutes': './services/playRoutes',
+        'clientService': "./services/client-service",
+        "componentsDir" : './directives/components',
+        "sortable": "./libs/sortable",
+        "homeCtrl": ['./features/home'],
         "loginCtrl" : ['auth/login'],
         "loginService" : ['auth/login.service'],
         "loginResolverService" : ['auth/login.resolver.service'],
         "sidebarmenu": ['features/layout/sidebar.menu.controller'],
         "layout": ['features/layout/layout.controller'],
         "layoutService" :  ['features/layout/layout.service'],
+        "treeLayoutService": ['./features/layout/tree.layout.service'],
         "SettingsCtrl" :  ['features/settings/settings.controller'],
         "newSettingsModalCtrl": ["./features/settings/newSettings.modal.controller"],
         "RepositoryCtrl": ["./features/repository/repository.controller"],
@@ -97,28 +131,33 @@
         "configConfig": ["./main.config"],
         "adminLayoutCtrl" :  ["./admin/layout/layout.controller"],
         "adminSidebarmenu": ['./admin/layout/sidebar.menu.controller'],
-        "addUserCtrl" : ["./admin/accounts/adduser.controller"]
+        "addUserCtrl" : ["./admin/accounts/adduser.controller"],
+        "editUserCtrl" : ["./admin/accounts/edituser.controller"],
+        "editUsersCtrl" : ["./admin/accounts/editusers.controller"],
+        "validatorDirective" : ["./admin/accounts/validator.directive"],
+        "addTeamCtrl" : ["./admin/teams/addteam.controller"],
+        "editTeamCtrl" : ["./admin/teams/editteam.controller"]
     }
   });
 
-  require(["angular", "./services/playRoutes",  "routerConfig", "configConfig", "./features/layout/tree.layout.service" ,
+  require(["angular", "playRoutes",  "routerConfig", "configConfig", "treeLayoutService" ,
             "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "ScenarioCtrl", "CampaignCtrl", "utilsScenarioService", 
-            "./features/home",
-            "./features/layout/sidebar.menu.controller", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!config/icon.constants.config.json",
-            "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl",
+            "homeCtrl",
+            "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!config/icon.constants.config.json",
+            "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl", "editUsersCtrl", "validatorDirective", "addTeamCtrl", "editTeamCtrl", "editUserCtrl",
 
 
-            "./services/client-service",
-            "./directives/components", "./libs/sortable", "./libs/ngProgress.min", 
-            "./libs/angular-ui-tree.min", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
-            "./libs/xeditable", "./libs/angular-ui-router.min", "angular-animate", "sidesplit", "angular-toastr", "webix"], 
+            "clientService",
+            "componentsDir", "sortable", "ngProgress", 
+            "angular-ui-tree", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
+            "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix", "jwtClient", "ngTagsInput"],
           function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, utilsScenarioService, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile,
-           adminLayoutCtrl, adminSidebarmenu, addUserCtrl) {
+           adminLayoutCtrl, adminSidebarmenu, addUserCtrl, editUsersCtrl, validatorDirective, addTeamCtrl, editTeamCtrl, editUserCtrl) {
 
               var app = angular.module("app", 
                 ['ui.router', "play.routing", "ngAnimate",
                 "tk.components", "tk.services",
-                "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable", "sidesplit", "webix","angucomplete-alt","toastr"]);
+                "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable", "sidesplit", "webix","angucomplete-alt","toastr","ngTagsInput"]);
               
               app.controller("LoginCtrl", login.LoginCtrl);
               app.controller("MainCtrl", home.MainCtrl);
@@ -152,6 +191,13 @@
               app.controller("AdminLayoutCtrl", adminLayoutCtrl.AdminLayoutCtrl);
               app.controller("AdminSidebarMenuCtrl", adminSidebarmenu.AdminSidebarMenuCtrl);
               app.controller("AddUserCtrl", addUserCtrl.AddUserCtrl);
+              app.controller("EditUserCtrl", editUserCtrl.EditUserCtrl);
+              app.controller("EditUsersCtrl", editUsersCtrl.EditUsersCtrl);
+              app.directive("login", validatorDirective.Login);
+              app.directive("email", validatorDirective.Email);
+              
+              app.controller("AddTeamCtrl", addTeamCtrl.AddTeamCtrl);
+              app.controller("EditTeamCtrl", editTeamCtrl.EditTeamCtrl);
               
               app.config(routerConfig.RouterConfig);
               app.config(configConfig.ConfigConfig);

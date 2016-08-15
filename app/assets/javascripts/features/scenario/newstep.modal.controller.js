@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        newStepModalCtrl: function ($scope,  $modalInstance, TreeLayoutService,ICONS, playRoutes, toastr) {
+        newStepModalCtrl: function ($scope,  $uibModalInstance, TreeLayoutService,ICONS, playRoutes, toastr) {
             $scope.ICONS = ICONS;
              var newNode = {};
 
@@ -15,7 +15,7 @@ define(["angular"], function (angular) {
             
             $scope.closeModal = closeModal ;
             function closeModal(){
-             $modalInstance.dismiss();
+            $uibModalInstance.dismiss();
          }
 
          $scope.createNewNode = function(){
@@ -47,7 +47,7 @@ define(["angular"], function (angular) {
                 playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function (savedScenario) {
                     TreeLayoutService.add(savedScenario.data).then(function(newId){
                         console.log("saved scenario", savedScenario.data);
-                        $modalInstance.close(savedScenario.data);
+                        $uibModalInstance.close(savedScenario.data);
                     });
                 },function(){
                     toastr.error('Could Not save new node !');
