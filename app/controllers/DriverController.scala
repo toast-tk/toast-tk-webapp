@@ -51,7 +51,7 @@ object DriverController extends Controller{
     request => {
       drivers.push(host);
       channel.foreach(_.push("driver:" + host))
-      Ok("driver registred: " + host)
+      Ok("driver registered: " + host)
     }
   }
 
