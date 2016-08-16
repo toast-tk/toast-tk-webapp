@@ -25,7 +25,7 @@ libraryDependencies ++= Seq(
   "io.toast-tk" % "toast-tk-interpret" % "0.1.4-SNAPSHOT",
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0",
   "com.pauldijou" %% "jwt-play" % "0.5.1",
-  "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % "test",
+  "org.scalatestplus" % "play_2.11" % "1.4.0-M3"% "test",
   "com.github.simplyscala" %% "scalatest-embedmongo" % "0.2.2" % "test"
 )
 

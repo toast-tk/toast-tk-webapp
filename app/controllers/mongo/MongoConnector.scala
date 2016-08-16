@@ -16,7 +16,6 @@ import scala.concurrent.Await
 import scala.util.{Failure, Success}
 import controllers.parsers.EntityField
 import controllers.parsers.WebPageElement
-import controllers.parsers.EntityFieldBSONWriter
 
 import controllers.mongo.teams._
 import controllers.mongo.users._
@@ -31,10 +30,15 @@ object MongoConnector extends App {
 }
 
 case class MongoConnector(driver: MongoDriver, servers: List[String], database: String){
-
+  val db = driver.connection(servers)(database)
   val userCollection = UserCollection(open_collection("users"))
   val teamCollection = TeamCollection(open_collection("teams"))
   val repositoryCollection = RepositoryCollection(open_collection("repository"), open_collection("elements"))
+
+
+  def init() = {
+    userCollection.initAdminAccount()
+  }
 
   def saveAutoConfiguration(impl: RepositoryImpl) ={
     repositoryCollection.saveAutoConfiguration(impl)
@@ -45,8 +49,6 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   def close(): Unit = {
     db.connection.close()
   }
-
-  val db = driver.connection(servers)(database)
 
   def open_collection(collection: String) = {
     db(collection)
@@ -313,15 +315,8 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
   }
 
-  def loadDefaultSuperAdminUser(): Future[Option[User]] = {
-    loadUser("admin")
-  }
-
   def loadUser(login: String): Future[Option[User]] = {
-    val collection = open_collection("users")
-    val query = BSONDocument("login" -> login)
-    val user = collection.find(query).one[User]
-    user
+    userCollection.loadUser(login)
   }
 
   def loadConfiguration(): Future[List[MacroConfiguration]] = {

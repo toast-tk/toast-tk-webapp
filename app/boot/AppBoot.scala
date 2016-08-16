@@ -93,18 +93,6 @@ object AppBoot extends play.api.GlobalSettings {
   override def onStart(app: play.api.Application): Unit = {
     Logger.info(s"[+] Initializing DB settings...")
     
-    def persistDefaultSuperAdminUser() = {
-      def sha256(s: String): String = {
-        val m = java.security.MessageDigest.getInstance("SHA-256").digest(s.getBytes("UTF-8"))
-        m.map("%02x".format(_)).mkString
-      }
-      val adminPwd = sha256("admin")
-      conn.saveUser(User(Some("111111111111111111111111"),"admin", Some(adminPwd),
-                          "administrateur", "user", "admin@toastWebApp.com",
-                          None, None, None, None))
-
-    }
-
     def persistDefaultConfiguration(confId: Option[String]) = {
       var congifMap = Map[String, List[ConfigurationSyntax]]()
       val fixtureDescriptorList = DAOJavaWrapper.actionAdapterSentenceList
@@ -123,16 +111,7 @@ object AppBoot extends play.api.GlobalSettings {
     }
 
     import scala.concurrent.ExecutionContext.Implicits.global
-    conn.loadDefaultSuperAdminUser().map { 
-      user => user match {
-        case None => {
-          persistDefaultSuperAdminUser()
-        }
-        case Some(user) => {
-           persistDefaultSuperAdminUser()
-        }
-      }
-    }
+    conn.init()
     conn.loadDefaultConfiguration().map { 
       configuration => configuration match {
         case None => {

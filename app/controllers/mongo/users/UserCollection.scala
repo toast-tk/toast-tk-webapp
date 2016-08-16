@@ -15,6 +15,15 @@ import reactivemongo.api.commands.WriteResult
 import java.security.SecureRandom
 
 case class UserCollection(collection: BSONCollection){
+  def initAdminAccount(): Future[Boolean] = {
+    persistDefaultSuperAdminUser()
+  }
+
+  def loadUser(login: String): Future[Option[User]] = {
+    val query = BSONDocument("login" -> login)
+    val user = collection.find(query).one[User]
+    user
+  }
 
   def AuthenticateUser(user : InspectedUser) : Option[User] = {
     var isAuthenticated = false
@@ -54,7 +63,7 @@ case class UserCollection(collection: BSONCollection){
 
   def saveUser(user: User)  : Future[Boolean] = {
     user.id match {
-      case None => {
+       case None => {
          Future{false} //no id provided
        }
        case _ => findUserBy(BSONDocument(
@@ -143,6 +152,18 @@ case class UserCollection(collection: BSONCollection){
   def removeUser(id : String) : Future[WriteResult] = {
     val selector = BSONDocument("_id" -> BSONObjectID(id))
     collection.remove(selector)
+  }
+
+  private def persistDefaultSuperAdminUser(): Future[Boolean] = {
+    def sha256(s: String): String = {
+      val m = java.security.MessageDigest.getInstance("SHA-256").digest(s.getBytes("UTF-8"))
+      m.map("%02x".format(_)).mkString
+    }
+    val adminPwd = sha256("admin")
+    saveUser(User(Some("111111111111111111111111"),"admin", Some(adminPwd),
+      "administrateur", "user", "admin@toastWebApp.com",
+      None, None, None, None))
+
   }
 
   object BearerTokenGenerator {
