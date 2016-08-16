@@ -46,11 +46,11 @@ trait InnerUserController {
 	def saveUser() = Action(parse.json) { implicit request =>
 		request.body.validate[User].map {
 			case user: User =>
-				user.id match {
+				user._id match {
 						case None => {
-							val userWithId : User = User(Some(BSONObjectID.generate.stringify),
-                                            user.login, user.password, user.firstName, user.lastName,
-                                            user.email, user.teams, None, Some(false), None)
+							val userWithId : User = User(user.login, user.password,
+                                           user.firstName, user.lastName,
+                                           user.email, user.teams)
 
 							Await.ready(conn.saveUser(userWithId), Duration.Inf).value.get match {
 								case Failure(e) => {
@@ -97,7 +97,6 @@ trait InnerUserController {
       }
     }
 	}
-
 
 	def deleteUser(id: String) = Action {
 		Await.ready(conn.removeUser(id), Duration.Inf).value.get match {

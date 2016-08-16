@@ -35,8 +35,6 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   val teamCollection = TeamCollection(open_collection("teams"))
   val repositoryCollection = RepositoryCollection(open_collection("repository"), open_collection("elements"))
 
-
-
   def init() = {
     teamCollection.initDefaultTeam().map{
       team =>

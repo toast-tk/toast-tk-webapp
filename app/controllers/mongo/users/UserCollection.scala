@@ -40,7 +40,7 @@ case class UserCollection(collection: BSONCollection){
     Await.result(userFuture.map { users =>
       for (person <- users) {
         token = Some(BearerTokenGenerator.generateToken)
-        val authPerson = User(person.id,
+        val authPerson = User(
           person.login,
           person.password,
           person.firstName,
@@ -49,7 +49,8 @@ case class UserCollection(collection: BSONCollection){
           person.teams,
           token,
           Some(true),
-          None)
+          None,
+          person._id)
         authPersonOpt = Some(authPerson)
         println(s"dataobj Token ----> ${authPersonOpt}")
         saveUser(authPerson)
@@ -64,18 +65,14 @@ case class UserCollection(collection: BSONCollection){
   }
 
   def saveUser(user: User)  : Future[Boolean] = {
-    user.id match {
-       case None => {
-         Future{false} //no id provided
-       }
-       case _ => findUserBy(BSONDocument(
+    findUserBy(BSONDocument(
         "$or" -> BSONArray(
           BSONDocument(
-            "_id" -> BSONDocument("$ne" -> BSONObjectID(user.id.get)),
+            "_id" -> BSONDocument("$ne" -> user._id),
             "login" -> user.login
             ),
           BSONDocument(
-            "_id" -> BSONDocument("$ne" -> BSONObjectID(user.id.get)),
+            "_id" -> BSONDocument("$ne" -> user._id),
             "email" -> user.email
             )
           )
@@ -89,7 +86,7 @@ case class UserCollection(collection: BSONCollection){
           true
         }
         case Some(foundUser) => {
-          collection.update(BSONDocument("_id" -> BSONObjectID(foundUser.id.get)),
+          collection.update(BSONDocument("_id" -> foundUser._id),
             BSONDocument(
               "$set" -> BSONDocument(
                 "firstName"-> user.firstName,
@@ -110,7 +107,6 @@ case class UserCollection(collection: BSONCollection){
           true
         }
       }
-    }
   }
 
   def disconnectUser(id : String) : Future[Boolean] = {
@@ -124,7 +120,7 @@ case class UserCollection(collection: BSONCollection){
           false
         }
         case Some(user) => {
-          println(s"[+] disconnecting ${id} ${user.id} and $user !")
+          println(s"[+] disconnecting ${user._id} and $user !")
           collection.update(BSONDocument("_id" -> BSONObjectID(id)), 
               BSONDocument(
                 "$set" -> BSONDocument(
@@ -162,9 +158,19 @@ case class UserCollection(collection: BSONCollection){
       m.map("%02x".format(_)).mkString
     }
     val adminPwd = sha256("admin")
-    saveUser(User(Some("111111111111111111111111"),"admin", Some(adminPwd),
-      "administrateur", "user", "admin@toastWebApp.com",
-      Some(List(team)), None, None, None))
+
+    saveUser(
+      User(
+        login = "admin",
+        password = Some(adminPwd),
+        firstName = "administrateur",
+        lastName = "user",
+        email = "admin@toastWebApp.com",
+        teams = Some(List(team)),
+        token = None,
+        lastConnection = None
+      )
+    )
 
   }
 

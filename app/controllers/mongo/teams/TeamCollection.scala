@@ -1,7 +1,4 @@
 package controllers.mongo.teams
-
-import reactivemongo.api.commands.WriteResult
-
 import scala.util.{Failure, Success}
 
 import scala.concurrent.{Promise, Future}
@@ -22,7 +19,7 @@ case class TeamCollection(collection: BSONCollection){
         case Some(t) => Future.successful(t)
         case None => {
           val p = Promise[Team]
-          val defaultTeam = new Team(Some(BSONObjectID.generate.stringify), defaultTeamName, "default team")
+          val defaultTeam = new Team(name=defaultTeamName, description ="default team")
           collection.insert(defaultTeam).onComplete {
             case Failure(e) => throw e
             case Success(_) => p.success(defaultTeam)
@@ -35,11 +32,7 @@ case class TeamCollection(collection: BSONCollection){
   }
 
 	def save(team: Team)  : Future[Boolean] = {
-		team.id match {
-			case None => {
-				Future{false} 
-			}
-			case _ => findTeamBy(
+		findTeamBy(
 				BSONDocument(
 					"name" -> team.name
 					)
@@ -52,11 +45,10 @@ case class TeamCollection(collection: BSONCollection){
 					true
 				}
 				case Some(team) => {
-					println(s"[+] successfully found ${team.id} and $team !")
+					println(s"[+] successfully found ${team._id} and $team !")
 					false
 				}
 			}
-		}
 	}
 
 

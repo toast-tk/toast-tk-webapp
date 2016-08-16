@@ -22,9 +22,9 @@ object TeamController extends Controller {
 	def saveTeam() = Action(parse.json) { implicit request =>
 		request.body.validate[Team].map {
 			case team: Team =>
-			team.id match {
+			team._id match {
 				case None => {
-					val teamWithId : Team = Team(Some(BSONObjectID.generate.stringify),team.name, team.description)
+					val teamWithId : Team = Team(Some(BSONObjectID.generate), team.name, team.description)
 					Await.ready(conn.saveTeam(teamWithId), Duration.Inf).value.get match {
 						case Failure(e) => throw e
 						case Success(isInserted) => {

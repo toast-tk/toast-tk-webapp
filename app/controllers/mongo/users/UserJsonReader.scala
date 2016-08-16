@@ -1,5 +1,6 @@
 package controllers.mongo.users
 
+import controllers.mongo.BSONObjectIdFormats
 import controllers.mongo.teams.Team
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -8,23 +9,22 @@ import play.api.libs.json.Reads._
 import reactivemongo.bson._
 
 case class InspectedUser(login: String, password: String)
-case class User(id: Option[String],
-                login: String,
+case class User(login: String,
                 password: Option[String],
                 firstName: String,
                 lastName: String,
                 email: String,
                 teams:  Option[List[Team]],
-                token : Option[String],
-                isActive : Option[Boolean],
-                lastConnection : Option[String])
+                token : Option[String] = None,
+                isActive : Option[Boolean] = Some(true),
+                lastConnection : Option[String] = Some("11/11/1111"),
+                _id: Option[BSONObjectID] = Some(BSONObjectID.generate))
 
 
-object User{
+object User extends BSONObjectIdFormats {
   implicit val userJsonHandler = Json.format[User]
   implicit val userReader: BSONDocumentReader[User] = Macros.reader[User]
   implicit val userWrtier: BSONDocumentWriter[User] = Macros.writer[User]
-
 }
 
 object InspectedUser{
