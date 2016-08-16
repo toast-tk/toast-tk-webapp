@@ -5,7 +5,7 @@ import scala.concurrent.{Promise, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import reactivemongo.api.collections.bson.BSONCollection
-import reactivemongo.bson.{BSONObjectID, BSONDocument}
+import reactivemongo.bson.{BSONDocument}
 
 
 case class TeamCollection(collection: BSONCollection){
@@ -31,7 +31,7 @@ case class TeamCollection(collection: BSONCollection){
     )
   }
 
-	def save(team: Team)  : Future[Boolean] = {
+	def save(team: Team) : Future[Boolean] = {
 		findTeamBy(
 				BSONDocument(
 					"name" -> team.name

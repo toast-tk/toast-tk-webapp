@@ -6,11 +6,32 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.libs.json.Writes._
 import play.api.libs.json.Reads._
-import reactivemongo.bson.BSONDocumentReader
-import reactivemongo.bson.BSONDocument
-import reactivemongo.bson.BSONDocumentWriter
-import reactivemongo.bson.BSONObjectID
+import reactivemongo.api.collections.bson.BSONCollection
+import reactivemongo.bson._
 
+import scala.concurrent.{ExecutionContext, Promise, Future}
+import scala.util.{Success, Failure}
+
+
+abstract class Identifiable {
+  def _id : Option[BSONObjectID]
+}
+
+abstract class IdentifiableCollection[T<:Identifiable](collection: BSONCollection){
+
+  def save(identifiable: T)(implicit writer: BSONDocumentWriter[T], ex: ExecutionContext): Future[T] = {
+    val p = Promise[T]
+    collection.update(BSONDocument("_id" -> identifiable._id), identifiable, upsert = true).onComplete {
+      case Failure(e) => {
+        throw e
+      }
+      case Success(_) => {
+        p.success(identifiable)
+      }
+    }
+    p.future
+  }
+}
 
 case class ConfigurationSyntax(sentence: String, typed_sentence: String, description: String)
 case class ConfigurationRow(group: String, name: String, syntax: List[ConfigurationSyntax])

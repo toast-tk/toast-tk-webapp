@@ -1,5 +1,6 @@
 package controllers.mongo
 
+import controllers.mongo.project.ProjectCollection
 import controllers.mongo.repository.RepositoryCollection
 
 import scala.concurrent.duration._
@@ -34,6 +35,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   val userCollection = UserCollection(open_collection("users"))
   val teamCollection = TeamCollection(open_collection("teams"))
   val repositoryCollection = RepositoryCollection(open_collection("repository"), open_collection("elements"))
+  val projectCollection = ProjectCollection(open_collection("project"))
 
   def init() = {
     teamCollection.initDefaultTeam().map{

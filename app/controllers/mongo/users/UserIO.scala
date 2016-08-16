@@ -1,6 +1,6 @@
 package controllers.mongo.users
 
-import controllers.mongo.BSONObjectIdFormats
+import controllers.mongo.{Identifiable, BSONObjectIdFormats}
 import controllers.mongo.teams.Team
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -18,13 +18,13 @@ case class User(login: String,
                 token : Option[String] = None,
                 isActive : Option[Boolean] = Some(true),
                 lastConnection : Option[String] = Some("11/11/1111"),
-                _id: Option[BSONObjectID] = Some(BSONObjectID.generate))
+                override val _id: Option[BSONObjectID] = Some(BSONObjectID.generate)) extends Identifiable
 
 
 object User extends BSONObjectIdFormats {
   implicit val userJsonHandler = Json.format[User]
   implicit val userReader: BSONDocumentReader[User] = Macros.reader[User]
-  implicit val userWrtier: BSONDocumentWriter[User] = Macros.writer[User]
+  implicit val userWriter: BSONDocumentWriter[User] = Macros.writer[User]
 }
 
 object InspectedUser{

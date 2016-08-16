@@ -20,7 +20,6 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import play.api.mvc._
 
-import scala.concurrent.ExecutionContext.Implicits.global
 
 @RunWith(classOf[JUnitRunner])
 class UserControllerSpec extends PlaySpec

@@ -24,7 +24,7 @@ object TeamController extends Controller {
 			case team: Team =>
 			team._id match {
 				case None => {
-					val teamWithId : Team = Team(Some(BSONObjectID.generate), team.name, team.description)
+					val teamWithId : Team = Team(team.name, team.description)
 					Await.ready(conn.saveTeam(teamWithId), Duration.Inf).value.get match {
 						case Failure(e) => throw e
 						case Success(isInserted) => {
