@@ -1,6 +1,7 @@
 package controllers
 
 import boot.AppBoot
+import controllers.mongo.MongoConnector
 import controllers.mongo.users._
 import play.api.mvc._
 import play.api.libs.json.Json
@@ -13,9 +14,12 @@ import scala.concurrent._
 import scala.concurrent.duration.Duration
 import scala.util.{Failure, Success, Try}
 
-object Users extends Controller {
+object UserController extends Controller with InnerUserController
 
-  	private val conn = AppBoot.conn
+trait InnerUserController {
+  this: Controller =>
+
+  private val conn = AppBoot.conn
 
 	def user(id: String) = Action.async {
 		conn.editUser(id).map {
@@ -101,8 +105,7 @@ object Users extends Controller {
         throw e
       }
 			case Success(lasterror) => {
-				println("successfully removed document")
-        Ok("successfully removed document")
+        Ok("successfully removed user")
 			}
 		}
 	}

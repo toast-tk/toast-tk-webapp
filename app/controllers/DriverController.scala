@@ -14,7 +14,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.collection.mutable
 import io.toast.tk.core.agent.interpret.WebEventRecord
 import io.toast.tk.action.interpret.web.{InterpretationProvider, IActionInterpret}
-import toast.engine.ToastRuntimeJavaWrapper
+import toast.engine.DAOJavaWrapper
 
 
 case class RecordedSentence(sentence:String, ids:List[String])
@@ -25,7 +25,7 @@ object DriverController extends Controller{
   val drivers: mutable.Stack[String] = mutable.Stack[String]();
   var channel: Option[Concurrent.Channel[String]] = None
   val mongoCacheWrapper:MongoRepositoryCacheWrapper = new MongoRepositoryCacheWrapper()
-  mongoCacheWrapper.initCache(ToastRuntimeJavaWrapper.repositoryDaoService);
+  mongoCacheWrapper.initCache(DAOJavaWrapper.repositoryDaoService);
   val interpretationProvider:InterpretationProvider = new InterpretationProvider(mongoCacheWrapper)
 
 

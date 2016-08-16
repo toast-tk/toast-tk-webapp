@@ -1,14 +1,14 @@
 package controllers
 
 import boot.AppBoot
-import io.toast.tk.dao.domain.impl.report.{Project, Campaign}
+import io.toast.tk.dao.domain.impl.report.{TestPlanImpl, Campaign}
 import io.toast.tk.dao.domain.impl.test.block.ITestPage
 import io.toast.tk.runtime.parse.TestParser
 import controllers.mongo.Scenario
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.json.{Json, JsError}
 import play.api.mvc.{ResponseHeader, Result, Action, Controller}
-import toast.engine.ToastRuntimeJavaWrapper
+import toast.engine.DAOJavaWrapper
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.collection.immutable.StringOps
 import io.toast.tk.runtime.report.HTMLReporter
@@ -20,12 +20,12 @@ case class ScenarioWrapper(id: Option[String], name: Option[String], scenario: O
 case class Cpgn(id: Option[String], name: String, scenarii: List[ScenarioWrapper])
 case class Prj(id: Option[String], name: String, iterations: Option[Short], campaigns: List[Cpgn])
 
-object ProjectController  extends Controller {
-  lazy val projectJavaDaoService = ToastRuntimeJavaWrapper.projectService
+object TestPlanController  extends Controller {
+  lazy val projectJavaDaoService = DAOJavaWrapper.testPlanService
   implicit val sFormat = Json.format[ScenarioWrapper]
   implicit val campaignFormat = Json.format[Cpgn]
   implicit val projectFormat = Json.format[Prj]
- private val conn = AppBoot.conn
+  private val conn = AppBoot.conn
   /**
    * load to init projects
    */
@@ -96,8 +96,8 @@ object ProjectController  extends Controller {
       }
       list
     }
-    def tranformProject(p: Prj): Project = {
-      val project = new Project()
+    def tranformProject(p: Prj): TestPlanImpl = {
+      val project = new TestPlanImpl()
       project.setName(p.name)
       project.setCampaignsImpl(transformCampaign(p.campaigns))
       Logger.info(s"~~~~~~~~~~~~~~~~~~~~~~~~~~ {$project}")

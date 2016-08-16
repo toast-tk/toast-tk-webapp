@@ -1,14 +1,14 @@
 package controllers.mongo
 
+import controllers.mongo.repository.RepositoryCollection
+
 import scala.concurrent.duration._
-import play.api.libs.json.Reads._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import reactivemongo.api.{MongoDriver, _}
 import reactivemongo.bson.{BSONArray, BSONDocument, BSONObjectID}
 import reactivemongo.api.commands.{UpdateWriteResult, WriteResult}
 import reactivemongo.bson.Producer.nameValue2Producer
-import reactivemongo.api.collections.bson.BSONCollection
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -16,17 +16,12 @@ import scala.concurrent.Await
 import scala.util.{Failure, Success}
 import controllers.parsers.EntityField
 import controllers.parsers.WebPageElement
-import controllers.parsers.WebPageElementBSONWriter
 import controllers.parsers.EntityFieldBSONWriter
-import boot.AppBoot
-import play.api.Logger
 
-import scala.util._
 import controllers.mongo.teams._
 import controllers.mongo.users._
 
 object MongoConnector extends App {
-
   def apply() = {
     new MongoConnector(new MongoDriver(),List("localhost"), "play_db")
   }
@@ -36,6 +31,14 @@ object MongoConnector extends App {
 }
 
 case class MongoConnector(driver: MongoDriver, servers: List[String], database: String){
+
+  val userCollection = UserCollection(open_collection("users"))
+  val teamCollection = TeamCollection(open_collection("teams"))
+  val repositoryCollection = RepositoryCollection(open_collection("repository"), open_collection("elements"))
+
+  def saveAutoConfiguration(impl: RepositoryImpl) ={
+    repositoryCollection.saveAutoConfiguration(impl)
+  }
 
   implicit val scenarioRowsFormat = Json.format[ScenarioRows] 
 
@@ -48,13 +51,6 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   def open_collection(collection: String) = {
     db(collection)
   }
-
-  def getRepositoryCollection: BSONCollection = {
-    db("repository")
-  }
-
-  val userCollection = UserCollection(open_collection("users"))
-  val teamCollection = TeamCollection(open_collection("teams"))
 
   def AuthenticateUser(user : InspectedUser) : Option[User] = {
     userCollection.AuthenticateUser(user)
@@ -77,6 +73,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   }
 
   def editUser(id: String): Future[Option[User]] = {
+
     val collection = open_collection("users")
     val bsonId = BSONObjectID(id)
     val query = BSONDocument("_id" -> bsonId)
@@ -105,7 +102,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
   }
 
-  def refactorScenarii(config: AutoSetupConfig) {
+  def refactorScenarii(config: RepositoryImpl) {
     val collection = open_collection("scenarii")
 
     if(config.id != null){
@@ -124,7 +121,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
   }
 
-  def isScenarioPatternImpacted(scenario: Scenario, config: AutoSetupConfig) : Boolean = {
+  def isScenarioPatternImpacted(scenario: Scenario, config: RepositoryImpl) : Boolean = {
     var isImpacted = false
     if(scenario.rows != null){
       try{
@@ -163,7 +160,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
         if(mapping.id.equals("component")){ //lame hack, to fix as soon as possible on editor.js side also
           val pageName = mapping.value.split("[.]")(0)
           val componentName = mapping.value.split("[.]")(1)
-          val pages: List[AutoSetupConfig] = Await.result(loadSwingPagesFromRepositoryByName(pageName), 5 seconds).asInstanceOf[List[AutoSetupConfig]]
+          val pages: List[RepositoryImpl] = Await.result(loadSwingPagesFromRepositoryByName(pageName), 5 seconds).asInstanceOf[List[RepositoryImpl]]
           if(pages.isDefinedAt(0)){
             val page = pages(0)
             breakable { 
@@ -195,7 +192,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
              parent= scenario.parent)
   }
 
-  def refactorScenario(scenario: Scenario, config: AutoSetupConfig):  Scenario = {  
+  def refactorScenario(scenario: Scenario, config: RepositoryImpl):  Scenario = {
     val scenarioRows = convertJsonToScenarioRows(scenario)
     var outputRows = List[ScenarioRows]()
     for(row <- scenarioRows){
@@ -222,85 +219,6 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
             parent= scenario.parent)
   }
 
-  def saveServiceEntityConfiguration(conf: ServiceEntityConfig) {
-    val collection = open_collection("repository")
-    val elementsToPersist: List[EntityField] = conf.rows.getOrElse(List())
-    val elementAsBsonDocuments: List[BSONDocument] = for(element <- elementsToPersist) yield EntityFieldBSONWriter.write(element)
-    val listOfFutures: List[Future[UpdateWriteResult]] = for(element <- elementAsBsonDocuments) yield saveContainerElement(element)
-    val futureList = Future.sequence(listOfFutures)
-    //once we've completed saving elements
-    //we can check here through last errors if everything has been saved !
-    futureList.map(_ => {
-      //TODO      
-    })
-    val dbRefs: List[DBRef] = elementAsBsonDocuments match {
-      case elements: List[BSONDocument] => elements.map(element => { 
-                                              val objectId = element.getAs[BSONObjectID]("_id").get
-                                              DBRef("elements", objectId)
-                                          })
-      case _ => List()
-    }
-    val autoSetupWithRefs: ServiceEntityConfigWithRefs = ServiceEntityConfigWithRefs (
-      id = conf.id, name = conf.name, cType = conf.cType, rows = Some(dbRefs)
-    )
-
-    println("[+] successfully saved configuration elements, persisting configuration..")
-    autoSetupWithRefs.id match {
-      case None => collection.insert(autoSetupWithRefs).onComplete {
-        case Failure(e) => throw e
-        case Success(_) => println("[+] successfully inserted repository updates !")
-      }
-      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(autoSetupWithRefs.id.get)), autoSetupWithRefs, upsert = true).onComplete {
-        case Failure(e) => throw e
-        case Success(_) => println("[=] successfully saved repository updates !")
-      }
-    }
-  }
-
-  def saveAutoConfiguration(conf: AutoSetupConfig) {
-    val collection = open_collection("repository")
-    val elementsToPersist: List[WebPageElement] = conf.rows.getOrElse(List())
-    val elementAsBsonDocuments: List[BSONDocument] = for(element <- elementsToPersist) yield WebPageElementBSONWriter.write(element)
-    val listOfFutures: List[Future[UpdateWriteResult]] = for(element <- elementAsBsonDocuments) yield saveContainerElement(element)
-    val futureList = Future.sequence(listOfFutures)
-    //once we've completed saving elements
-    //we can check here through last errors if everything has been saved !
-    futureList.map(_ => {
-      //TODO      
-    })
-    val dbRefs: List[DBRef] = elementAsBsonDocuments match {
-      case elements: List[BSONDocument] => elements.map(element => { 
-                                              val objectId = element.getAs[BSONObjectID]("_id").get
-                                              DBRef("elements", objectId)
-                                          })
-      case _ => List()
-    }
-    val autoSetupWithRefs: AutoSetupConfigWithRefs = AutoSetupConfigWithRefs (
-      id = conf.id, name = conf.name, cType = conf.cType, rows = Some(dbRefs)
-    )
-
-    println("[+] successfully saved configuration elements, persisting configuration..")
-    autoSetupWithRefs.id match {
-      case None => collection.insert(autoSetupWithRefs).onComplete {
-        case Failure(e) => throw e
-        case Success(_) => println("[+] successfully inserted repository updates !")
-      }
-      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(autoSetupWithRefs.id.get)),autoSetupWithRefs, upsert = true).onComplete {
-        case Failure(e) => throw e
-        case Success(_) => println("[=] successfully saved repository updates !")
-      }
-    }
-  }
-
-  /**
-   * We return a future
-   */
-  def saveContainerElement(element: BSONDocument): Future[UpdateWriteResult] = {
-      val collection = open_collection("elements")
-      collection.update(BSONDocument("_id" -> element.get("_id").get),element,upsert=true)
-  }
-
-
   def deleteObject(autoSetupId: String) {
     val collection = open_collection("repository")
     collection.remove(BSONDocument("_id" -> BSONObjectID(autoSetupId))).onComplete {
@@ -311,7 +229,6 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
 
   def deleteScenarii(scenarioId: String) : Future[Boolean] ={
     val collection = open_collection("scenarii")
-    /*val childList = findChildNodes(scenarioId)*/
     hasChildNodes(scenarioId).map {
       case false => {
         collection.remove(BSONDocument("_id" -> BSONObjectID(scenarioId))).onComplete {
@@ -337,24 +254,6 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
       }
      }
   }
-
-/*  def findChildNodes(nodeId : String): Future[List[Scenario]] ={
-     val collection = open_collection("scenarii")
-    val query = BSONDocument("parent" -> nodeId)
-    var NodeList : List[Scenario] = List()
-    var childNodes = collection.find(query).cursor[Scenario]().collect[List]()
-      childNodes.map {
-      nodes => {
-
-        NodeList = for (node <- nodes) yield {
-          var result = Await.result(findChildNodes(node.id.get), 0 nanos)
-          NodeList :: result
-        }
-
-      }
-    }
-    childNodes
-  }*/
 
   def findOneScenarioBy(query: BSONDocument): Future[Option[Scenario]] = {
     val collection = open_collection("scenarii")
@@ -439,16 +338,12 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     scenarii
   }
 
-  def loadWebPageRepository(): Future[List[AutoSetupConfig]] = {
+  def loadWebPageRepository(): Future[List[RepositoryImpl]] = {
     loadAutoConfiguration(BSONDocument("type" -> "web page"))
   }
 
-  def loadSwingPageRepository(): Future[List[AutoSetupConfig]] = {
+  def loadSwingPageRepository(): Future[List[RepositoryImpl]] = {
     loadAutoConfiguration(BSONDocument("type" -> "swing page"))
-  }
-
-  def loadServiceEntityRepository(): Future[List[ServiceEntityConfig]] = {
-    loadServiceAutoConfiguration(BSONDocument("type" -> "service entity"))
   }
 
   def loadServiceAutoConfiguration(query: BSONDocument): Future[List[ServiceEntityConfig]] = {
@@ -476,15 +371,15 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     convertedListFuture
   }
 
-  def loadAutoConfiguration(query: BSONDocument): Future[List[AutoSetupConfig]] = {
+  def loadAutoConfiguration(query: BSONDocument): Future[List[RepositoryImpl]] = {
     val collection = open_collection("repository")
     val configurationWithRefs: Future[List[AutoSetupConfigWithRefs]] = collection.find(query).sort(BSONDocument("name" -> 1)).cursor[AutoSetupConfigWithRefs]().collect[List]()
     // re-compute as configurations
-    def convertItems(configurationWithRef: AutoSetupConfigWithRefs): Future[AutoSetupConfig] = {
+    def convertItems(configurationWithRef: AutoSetupConfigWithRefs): Future[RepositoryImpl] = {
       configurationWithRef.rows match {
         case Some(refs) => {
           val loadedElementFutureList: Future[List[Option[WebPageElement]]] = Future.sequence(for( ref <- refs ) yield loadElement(ref.id))
-          loadedElementFutureList.map(elements => AutoSetupConfig(
+          loadedElementFutureList.map(elements => RepositoryImpl(
                                             id = configurationWithRef.id, 
                                             name = configurationWithRef.name, 
                                             cType = configurationWithRef.cType,
@@ -492,9 +387,9 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
         }
       }
     }
-    val convertedListFuture: Future[List[AutoSetupConfig]] = configurationWithRefs.flatMap {
+    val convertedListFuture: Future[List[RepositoryImpl]] = configurationWithRefs.flatMap {
       configurationWithRefs => {
-        val configFutureList: Future[List[AutoSetupConfig]] = Future.sequence(for (configurationWithRef <- configurationWithRefs) yield convertItems(configurationWithRef))
+        val configFutureList: Future[List[RepositoryImpl]] = Future.sequence(for (configurationWithRef <- configurationWithRefs) yield convertItems(configurationWithRef))
         configFutureList
       }
     }
@@ -528,15 +423,15 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
   }
 
-  def loadWebPagesFromRepository(): Future[List[AutoSetupConfig]] = {
+  def loadWebPagesFromRepository(): Future[List[RepositoryImpl]] = {
     loadAutoConfiguration(BSONDocument("type" -> "web page"))
   }
 
-  def loadSwingPagesFromRepositoryByName(name: String): Future[List[AutoSetupConfig]] = {
+  def loadSwingPagesFromRepositoryByName(name: String): Future[List[RepositoryImpl]] = {
     loadAutoConfiguration(BSONDocument("type" -> "swing page", "name" -> name))
   }
 
-  def loadSwingPagesFromRepository(): Future[List[AutoSetupConfig]] = {
+  def loadSwingPagesFromRepository(): Future[List[RepositoryImpl]] = {
     loadAutoConfiguration(BSONDocument("type" -> "swing page"))
   }
 

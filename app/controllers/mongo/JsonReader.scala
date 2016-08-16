@@ -17,7 +17,6 @@ case class ConfigurationRow(group: String, name: String, syntax: List[Configurat
 case class MacroConfiguration(id: Option[String], cType: String, rows: List[ConfigurationRow])
 case class ServiceEntityConfig(id: Option[String], name: String, cType: String, rows: Option[List[EntityField]])
 case class ServiceEntityConfigWithRefs(id: Option[String], name: String, cType: String, rows: Option[List[DBRef]])
-case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: Option[List[WebPageElement]])
 case class AutoSetupConfigWithRefs(id: Option[String], name: String, cType: String, rows: Option[List[DBRef]])
 case class InspectedPage(name: String, items: List[String])
 case class InspectedScenario(name: String, steps: String)
@@ -42,7 +41,8 @@ case class MappedWebEventRecord (
                                   id: Option[String],
                                   value: Option[String],
                                   componentName: Option[String],
-                                  parent: Option[String]
+                                  parent: Option[String],
+                                  path: Option[String]
                             )
 object DBRef {
   implicit object DBRefReader extends BSONDocumentReader[DBRef] {
@@ -280,43 +280,7 @@ object ServiceEntityConfig{
   }
 }
 
-object AutoSetupConfig{
-    implicit val autoSetupConfigReader: Reads[AutoSetupConfig]= (
-      (__ \ "id").readNullable[String] and
-      (__ \ "name").read[String] and
-      (__ \ "type").read[String] and
-      (__ \ "rows").readNullable[List[WebPageElement]])(AutoSetupConfig.apply(_,_ , _,_)
-    )
 
-    implicit val autoSetupConfigWriter: Writes[AutoSetupConfig] = (
-    (__ \ "id").writeNullable[String] and
-    (__ \ "name").write[String] and
-    (__ \ "type").write[String] and
-    (__ \ "rows").writeNullable[List[WebPageElement]])(unlift(AutoSetupConfig.unapply))
-
-  implicit object AutoSetupConfigurationWriter extends BSONDocumentWriter[AutoSetupConfig] {
-    def formatName(name: String): String = {
-      name.trim.replace(" ", "_").replace("'", "_").replace("°", "_")
-    }
-    def write(configuration: AutoSetupConfig): BSONDocument = {
-      val formatedName = formatName(configuration.name)
-      configuration.id match {
-        case None => BSONDocument("name"-> formatedName, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
-        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> formatedName, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
-      }
-    }
-  }
-
-  implicit object AutoSetupConfigurationReader extends BSONDocumentReader[AutoSetupConfig] {
-    def read(doc: BSONDocument): AutoSetupConfig = {
-      val id = doc.getAs[BSONObjectID]("_id").get.stringify
-      val name = doc.getAs[String]("name").get
-      val ctype = doc.getAs[String]("type").get
-      val rows = doc.getAs[List[WebPageElement]]("rows").getOrElse(List())
-      AutoSetupConfig(Option[String](id), name, ctype, Option[List[WebPageElement]](rows))
-    }
-  }
-}
 
 object ConfigurationSyntax {
 

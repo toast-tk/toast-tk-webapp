@@ -48,7 +48,7 @@ define(["angular"], function (angular) {
             }
 
             $scope.saveProject = function (project) {
-                playRoutes.controllers.ProjectController.saveProject().post(project).then(function (response) {
+                playRoutes.controllers.TestPlanController.saveProject().post(project).then(function (response) {
                     load();
                 });
             }
@@ -73,7 +73,7 @@ define(["angular"], function (angular) {
             }
 
             function load() {
-                playRoutes.controllers.ProjectController.loadProject().get().then(function (response) {
+                playRoutes.controllers.TestPlanController.loadProject().get().then(function (response) {
                     var data = response.data || [];
                     $scope.projects = data;
                 });

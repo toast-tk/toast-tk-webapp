@@ -5,7 +5,7 @@ define(["angular"], function (angular) {
             $scope.isNewUserFormSubmitted = false;
             $scope.user = {};
 
-            playRoutes.controllers.Users.user($stateParams.idUser).get().then(function (response) {
+            playRoutes.controllers.UserController.user($stateParams.idUser).get().then(function (response) {
                 $scope.user = response.data;
                 console.log("user being edited is : " , response.data);
             });
@@ -18,7 +18,7 @@ define(["angular"], function (angular) {
                         selectedTeamList.push(team.id);
                     });
                     $scope.user.teams = selectedTeamList;
-                    playRoutes.controllers.Users.saveUser().post($scope.user).then(function () {
+                    playRoutes.controllers.UserController.saveUser().post($scope.user).then(function () {
                         toastr.success('Saved !');
                         $scope.userForm.$setPristine();
                         $scope.isNewUserFormSubmitted = false;

@@ -64,7 +64,7 @@ object Application extends Controller {
     request.body.validate[InspectedPage].map {
       case page: InspectedPage =>
         val pageElements = for (itemLocator <- page.items) yield WebPageElement(None, "", "", itemLocator, Some(""), Some(0))
-        conn.saveAutoConfiguration(AutoSetupConfig(None, page.name, "swing page", Some(pageElements)))
+        conn.saveAutoConfiguration(RepositoryImpl(None, page.name, "swing page", Some(pageElements)))
         Ok("received inspected page...")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
@@ -97,7 +97,7 @@ object Application extends Controller {
   def loadWikifiedRepository() = Action.async {
     conn.loadSwingPageRepository.map {
       repository => {
-        def wikifiedObject(page: AutoSetupConfig): JsValue = {
+        def wikifiedObject(page: RepositoryImpl): JsValue = {
           var res = "page id:" + page.id.get + "\n"
           res = res + "|| setup || " +  page.cType + " || " + page.name + " ||\n"
           res = res + "| name | type | locator |\n"
@@ -117,7 +117,7 @@ object Application extends Controller {
   def loadWebWikifiedRepository() = Action.async {
     conn.loadWebPageRepository().map {
       repository => {
-        def wikifiedObject(page: AutoSetupConfig): JsValue = {
+        def wikifiedObject(page: RepositoryImpl): JsValue = {
           var res = "page id:" + page.id.get + "\n"
           res = res + "|| setup || " +  page.cType + " || " + page.name + " ||\n"
           res = res + "| name | type | locator | method | position |\n"

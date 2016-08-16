@@ -2,14 +2,12 @@ name := "toast-tk-webapp"
 
 version := "1.3-rc4"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 resolvers += Resolver.mavenLocal
 //resolvers += "Local Maven Repository" at "file:///d:/Apps/m2/repository"
 
-resolvers += "MavenSnapshots" at "http://nexus.talanlabs.com/content/repositories/snapshots/"
-
-resolvers += "MavenCentral" at "https://oss.sonatype.org/content/repositories/snapshots/"
+resolvers += "MavenSnapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
 resolvers += "Typesafe" at "http://repo.typesafe.com/typesafe/releases/"
 
@@ -27,7 +25,11 @@ libraryDependencies ++= Seq(
   "io.toast-tk" % "toast-tk-interpret" % "0.1.4-SNAPSHOT",
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0",
   "com.pauldijou" %% "jwt-play" % "0.5.1",
-  "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.0" % "test"
+  "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % "test",
+  "com.github.simplyscala" %% "scalatest-embedmongo" % "0.2.2" % "test"
 )
+
+//TODO: move to injected resources @Inject()
+//routesGenerator := StaticRoutesGenerator
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)

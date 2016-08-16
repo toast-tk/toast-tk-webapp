@@ -17,12 +17,12 @@ define(["angular","CryptoJS/sha256"], function (angular, SHA256) {
                 if($scope.userForm.$valid){
                     var selectedTeamList = [];
                     ($scope.newUser.teams|| []).forEach(function(team){
-                        selectedTeamList.push(team.id);
+                        selectedTeamList.push(team.name); //TODO add object here !
                     });
                     $scope.newUser.teams = selectedTeamList ;
                     $scope.newUser.password = SHA256($scope.newUser.password).toString();
                     console.log("envoyer l'utilisateur , formulaire valide");
-                    playRoutes.controllers.Users.saveUser().post($scope.newUser).then(function () {
+                    playRoutes.controllers.UserController.saveUser().post($scope.newUser).then(function () {
                         toastr.success('Saved !');
                         $scope.newUser = {};
                         $scope.userForm.$setPristine();

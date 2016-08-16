@@ -12,16 +12,15 @@ class ApplicationSpec extends PlaySpec {
 
   "DomainController" should {
 
-    "1: initalize action items descriptor" in {
+    "1: initialize action items descriptors" in {
       val controller = new TestDomainController()
       val result = controller.actionItems.size > 0
       result mustBe true
     } 
     
-    "2e: find variable action item description" in {
+    "2: find variable action item description" in {
       val controller = new TestDomainController()
       val result = controller.findActionItemByCategoryAndType(ActionItem.ActionCategoryEnum.value, ActionItem.ActionTypeEnum.string)
-      println(result.regex)
       result.regex mustBe "\\*([^\\*]*)\\*"
     } 
 

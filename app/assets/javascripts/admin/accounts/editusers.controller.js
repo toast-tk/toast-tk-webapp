@@ -4,7 +4,7 @@ define(["angular"], function (angular) {
         EditUsersCtrl: function ($scope, playRoutes, LoginService, toastr, $state) {
         	$scope.user  = LoginService.currentUser();
 
-			playRoutes.controllers.Users.getAllUsers().get().then(function (response) {
+			playRoutes.controllers.UserController.getAllUsers().get().then(function (response) {
 				$scope.userList = response.data;
 				console.log("user being edited is : " , response.data);
 			});
@@ -19,7 +19,7 @@ define(["angular"], function (angular) {
             }
 
 			$scope.deleteUser = function(id){
-				playRoutes.controllers.Users.deleteUser(id).delete().then(function (response) {
+				playRoutes.controllers.UserController.deleteUser(id).delete().then(function (response) {
 					console.log("deleted: " , response.data);
                     if(response.status === 200){
                         toastr.success('Account removed successfully !');

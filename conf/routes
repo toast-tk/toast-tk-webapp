@@ -14,12 +14,12 @@ GET         /loadEnvConfiguration                         controllers.Applicatio
 
 # Ajax routes: Users
 POST        /login                                        controllers.Application.login()
-GET         /users/:id                                    controllers.Users.user(id: String)
-DELETE      /users/:id                                    controllers.Users.deleteUser(id: String)
-GET         /users                                        controllers.Users.getAllUsers()
-POST        /user                                         controllers.Users.saveUser()
+GET         /users/:id                                    controllers.UserController.user(id: String)
+DELETE      /users/:id                                    controllers.UserController.deleteUser(id: String)
+GET         /users                                        controllers.UserController.getAllUsers()
+POST        /user                                         controllers.UserController.saveUser()
 GET         /logout                                       controllers.Application.logout()
-GET         /logout/:id                                   controllers.Users.logout(id: String)
+GET         /logout/:id                                   controllers.UserController.logout(id: String)
 
 # Ajax routes: Teams
 POST         /team                                        controllers.TeamController.saveTeam()
@@ -48,10 +48,8 @@ POST        /saveConfiguration                            controllers.Configurat
 
 # Ajax routes: Repository Controller
 GET         /loadAutoConfiguration                        controllers.RepositoryController.loadAutoConfiguration()
-GET         /loadServiceEntityRepository                  controllers.RepositoryController.loadServiceEntityRepository()
 GET         /loadWebPageRepository                        controllers.RepositoryController.loadWebPageRepository()
 POST        /saveAutoSetupConfiguration                   controllers.RepositoryController.saveAutoConfig()
-POST        /saveServiceConfigBlock                       controllers.RepositoryController.saveServiceConfigBlock()
 POST        /saveAutoConfigBlock                          controllers.RepositoryController.saveAutoConfigBlock()
 GET         /loadRepository                               controllers.RepositoryController.loadRepository()
 POST        /saveRepository                               controllers.RepositoryController.saveRepository()
@@ -67,10 +65,10 @@ POST        /saveScenarii                                 controllers.ScenarioCo
 POST        /deleteScenarii                               controllers.ScenarioController.deleteScenarii()
 
 # Ajax routes: Project Controller
-POST        /saveProject                                  controllers.ProjectController.saveProject()
-GET         /loadProject                                  controllers.ProjectController.loadProject()
-GET         /loadProjectReport/:projectName               controllers.ProjectController.loadProjectReport(projectName:String)
-GET         /test                                         controllers.ProjectController.loadTestReport()
+POST        /saveProject                                  controllers.TestPlanController.saveProject()
+GET         /loadProject                                  controllers.TestPlanController.loadProject()
+GET         /loadProjectReport/:projectName               controllers.TestPlanController.loadProjectReport(projectName:String)
+GET         /test                                         controllers.TestPlanController.loadTestReport()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                 controllers.Assets.at(path="/public", file)

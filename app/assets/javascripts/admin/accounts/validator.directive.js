@@ -7,7 +7,7 @@ define(["angular"], function (angular) {
         link: function(scope, elm, attrs, ctrl) {
           var logins = [];
 
-          playRoutes.controllers.Users.getAllUsers().get().then(function (response) {
+          playRoutes.controllers.UserController.getAllUsers().get().then(function (response) {
               response.data.forEach(function(user){
                 logins.push(user.login);
               })              
@@ -40,7 +40,7 @@ define(["angular"], function (angular) {
         link: function(scope, elm, attrs, ctrl) {
           var emails = [];
 
-          playRoutes.controllers.Users.getAllUsers().get().then(function (response) {
+          playRoutes.controllers.UserController.getAllUsers().get().then(function (response) {
               response.data.forEach(function(user){
                 emails.push(user.email);
               })              

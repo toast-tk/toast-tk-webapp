@@ -5,7 +5,7 @@ import boot.AppBoot
 
 import io.toast.tk.runtime.parse._
 import io.toast.tk.dao.domain.impl.test.block.TestPage
-import io.toast.tk.dao.service.dao.access.project._
+import io.toast.tk.dao.service.dao.access.plan._
 import io.toast.tk.dao.domain.impl.report._
 
 import controllers.mongo._

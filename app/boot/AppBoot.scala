@@ -16,8 +16,7 @@ import de.flapdoodle.embed.mongo.distribution.Versions
 import de.flapdoodle.embed.process.config.io.ProcessOutput
 import de.flapdoodle.embed.process.io.directories.UserTempDirInPlatformTempDir
 import de.flapdoodle.embed.process.extract.UserTempNaming
-import toast.engine.ToastRuntimeJavaWrapper
-import controllers.DomainController
+import toast.engine.DAOJavaWrapper
 
 object MongoExeFactory {
   def apply(port: Int, versionNumber: String, dataPath:String) = {
@@ -108,7 +107,7 @@ object AppBoot extends play.api.GlobalSettings {
 
     def persistDefaultConfiguration(confId: Option[String]) = {
       var congifMap = Map[String, List[ConfigurationSyntax]]()
-      val fixtureDescriptorList = ToastRuntimeJavaWrapper.actionAdapterSentenceList
+      val fixtureDescriptorList = DAOJavaWrapper.actionAdapterSentenceList
       for (descriptor <- fixtureDescriptorList) {
         val fixtureType: String = descriptor.fixtureType
         val fixtureName: String = descriptor.name
