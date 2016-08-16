@@ -1,5 +1,7 @@
 package controllers.mongo.users
 
+import controllers.mongo.teams.Team
+
 import scala.util.{Failure, Success}
 
 import scala.concurrent.duration._
@@ -15,8 +17,8 @@ import reactivemongo.api.commands.WriteResult
 import java.security.SecureRandom
 
 case class UserCollection(collection: BSONCollection){
-  def initAdminAccount(): Future[Boolean] = {
-    persistDefaultSuperAdminUser()
+  def initAdminAccount(team: Team): Future[Boolean] = {
+    persistDefaultSuperAdminUser(team)
   }
 
   def loadUser(login: String): Future[Option[User]] = {
@@ -154,7 +156,7 @@ case class UserCollection(collection: BSONCollection){
     collection.remove(selector)
   }
 
-  private def persistDefaultSuperAdminUser(): Future[Boolean] = {
+  private def persistDefaultSuperAdminUser(team: Team): Future[Boolean] = {
     def sha256(s: String): String = {
       val m = java.security.MessageDigest.getInstance("SHA-256").digest(s.getBytes("UTF-8"))
       m.map("%02x".format(_)).mkString
@@ -162,7 +164,7 @@ case class UserCollection(collection: BSONCollection){
     val adminPwd = sha256("admin")
     saveUser(User(Some("111111111111111111111111"),"admin", Some(adminPwd),
       "administrateur", "user", "admin@toastWebApp.com",
-      None, None, None, None))
+      Some(List(team)), None, None, None))
 
   }
 

@@ -6,7 +6,7 @@ import scala.concurrent.duration._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import reactivemongo.api.{MongoDriver, _}
-import reactivemongo.bson.{BSONArray, BSONDocument, BSONObjectID}
+import reactivemongo.bson._
 import reactivemongo.api.commands.{UpdateWriteResult, WriteResult}
 import reactivemongo.bson.Producer.nameValue2Producer
 
@@ -36,8 +36,12 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   val repositoryCollection = RepositoryCollection(open_collection("repository"), open_collection("elements"))
 
 
+
   def init() = {
-    userCollection.initAdminAccount()
+    teamCollection.initDefaultTeam().map{
+      team =>
+        userCollection.initAdminAccount(team)
+    }
   }
 
   def saveAutoConfiguration(impl: RepositoryImpl) ={
