@@ -31,7 +31,7 @@ case class RepositoryCollection(collection: BSONCollection, elementCollection: B
       case _ => List()
     }
     val autoSetupWithRefs: AutoSetupConfigWithRefs = AutoSetupConfigWithRefs (
-      id = conf.id, name = conf.name, cType = conf.cType, rows = Some(dbRefs)
+      id = conf.id, name = conf.name, cType = conf.cType, rows = Some(dbRefs), project = conf.project
     )
 
     println("[+] successfully saved configuration elements, persisting configuration..")

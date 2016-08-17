@@ -1,25 +1,19 @@
 package controllers.mongo
 
+import controllers.mongo.project.Project
 import controllers.parsers.WebPageElement
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import reactivemongo.bson.{BSONDocumentReader, BSONObjectID, BSONDocument, BSONDocumentWriter}
 
-case class RepositoryImpl(id: Option[String], name: String, cType: String, rows: Option[List[WebPageElement]])
+case class RepositoryImpl(id: Option[String],
+                          name: String,
+                          cType: String,
+                          rows: Option[List[WebPageElement]],
+                          project: Option[Project])
 
 object RepositoryImpl{
-  implicit val repositoryReader: Reads[RepositoryImpl]= (
-    (__ \ "id").readNullable[String] and
-      (__ \ "name").read[String] and
-      (__ \ "type").read[String] and
-      (__ \ "rows").readNullable[List[WebPageElement]])(RepositoryImpl.apply(_,_ , _,_)
-    )
 
-  implicit val repositoryWriter: Writes[RepositoryImpl] = (
-    (__ \ "id").writeNullable[String] and
-      (__ \ "name").write[String] and
-      (__ \ "type").write[String] and
-      (__ \ "rows").writeNullable[List[WebPageElement]])(unlift(RepositoryImpl.unapply))
+  implicit val jsonHandler = Json.format[RepositoryImpl]
 
   implicit object RepositoryWriter extends BSONDocumentWriter[RepositoryImpl] {
     def formatName(name: String): String = {
@@ -29,12 +23,18 @@ object RepositoryImpl{
       val formatedName = formatName(repository.name)
       repository.id match {
         case None =>
-          BSONDocument("name"-> formatedName, "type" -> repository.cType, "rows" -> repository.rows.getOrElse(List()))
+          BSONDocument("name"-> formatedName,
+                       "type" -> repository.cType,
+                       "rows" -> repository.rows.getOrElse(List()),
+                       "project" -> repository.project.get
+          )
         case value:Option[String] =>
           BSONDocument("_id" -> BSONObjectID(value.get),
                       "name"-> formatedName,
                       "type" -> repository.cType,
-                      "rows" -> repository.rows.getOrElse(List()))
+                      "rows" -> repository.rows.getOrElse(List()),
+                      "project" -> repository.project.get
+          )
       }
     }
   }
@@ -45,7 +45,12 @@ object RepositoryImpl{
       val name = doc.getAs[String]("name").get
       val ctype = doc.getAs[String]("type").get
       val rows = doc.getAs[List[WebPageElement]]("rows").getOrElse(List())
-      RepositoryImpl(Option[String](id), name, ctype, Option[List[WebPageElement]](rows))
+      val project = doc.getAs[Project]("project").get
+      RepositoryImpl(Option[String](id),
+                    name,
+                    ctype,
+                    Option[List[WebPageElement]](rows),
+                    Option[Project](project))
     }
   }
 }

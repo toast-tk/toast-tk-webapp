@@ -382,7 +382,9 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
                                             id = configurationWithRef.id, 
                                             name = configurationWithRef.name, 
                                             cType = configurationWithRef.cType,
-                                            rows = Some(elements.flatMap(_.toList))))
+                                            rows = Some(elements.flatMap(_.toList)),
+                                            project = configurationWithRef.project)
+          )
         }
       }
     }

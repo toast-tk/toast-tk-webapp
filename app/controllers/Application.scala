@@ -64,7 +64,7 @@ object Application extends Controller {
     request.body.validate[InspectedPage].map {
       case page: InspectedPage =>
         val pageElements = for (itemLocator <- page.items) yield WebPageElement(None, "", "", itemLocator, Some(""), Some(0))
-        conn.saveAutoConfiguration(RepositoryImpl(None, page.name, "swing page", Some(pageElements)))
+        conn.saveAutoConfiguration(RepositoryImpl(None, page.name, "swing page", Some(pageElements), None))
         Ok("received inspected page...")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))

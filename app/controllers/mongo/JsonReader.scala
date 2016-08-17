@@ -1,6 +1,6 @@
 package controllers.mongo
 
-import controllers.parsers.WebPageElement
+import controllers.mongo.project.Project
 import controllers.parsers.EntityField
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -31,21 +31,46 @@ abstract class IdentifiableCollection[T<:Identifiable](collection: BSONCollectio
     }
     p.future
   }
+
+  def list()(implicit writer: BSONDocumentReader[T], ex: ExecutionContext) : Future[List[T]] ={
+    val query = BSONDocument()
+    val results = collection.find(query).cursor[T]().collect[List]()
+    results
+  }
+
 }
 
 case class ConfigurationSyntax(sentence: String, typed_sentence: String, description: String)
 case class ConfigurationRow(group: String, name: String, syntax: List[ConfigurationSyntax])
 case class MacroConfiguration(id: Option[String], cType: String, rows: List[ConfigurationRow])
+
 case class ServiceEntityConfig(id: Option[String], name: String, cType: String, rows: Option[List[EntityField]])
 case class ServiceEntityConfigWithRefs(id: Option[String], name: String, cType: String, rows: Option[List[DBRef]])
-case class AutoSetupConfigWithRefs(id: Option[String], name: String, cType: String, rows: Option[List[DBRef]])
+case class AutoSetupConfigWithRefs(id: Option[String],
+                                   name: String,
+                                   cType: String,
+                                   rows: Option[List[DBRef]],
+                                   project: Option[Project])
+
 case class InspectedPage(name: String, items: List[String])
 case class InspectedScenario(name: String, steps: String)
-case class Scenario(id: Option[String], name: String, cType: String, driver: String, rows: Option[String], parent: Option[String])
+
+case class Scenario(
+                     id: Option[String],
+                     name: String,
+                     cType: String,
+                     driver: String,
+                     rows: Option[String],
+                     parent: Option[String]
+                     )
+
 case class TestScript(id: Option[String], name: String, scenarii: List[Scenario])
+
 case class ScenarioRows(patterns: String, kind: Option[String], mappings: Option[List[ScenarioRowMapping]])
 case class ScenarioRowMapping(id: String, value: String, pos: Int)
+
 case class DBRef(collection: String, id: BSONObjectID, db: Option[String] = None)
+
 case class FixtureDescriptorLine(name: String, fixtureType: String, pattern: String, description: String)
 case class MojoFixtureDescriptor(name: String, sentences: List[FixtureDescriptorLine])
 
@@ -226,8 +251,12 @@ object AutoSetupConfigWithRefs{
   implicit object AutoSetupConfigurationWriter extends BSONDocumentWriter[AutoSetupConfigWithRefs] {
     def write(configuration: AutoSetupConfigWithRefs): BSONDocument = 
       configuration.id match {
-        case None => BSONDocument("name"-> configuration.name, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
-        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> configuration.name, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
+        case None => BSONDocument("name"-> configuration.name, "type" -> configuration.cType,
+          "rows" -> configuration.rows.getOrElse(List()),
+          "project" -> configuration.project.get)
+        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> configuration.name,
+          "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()),
+          "project" -> configuration.project.get)
       }
   }
 
@@ -237,7 +266,9 @@ object AutoSetupConfigWithRefs{
       val name = doc.getAs[String]("name").get
       val ctype = doc.getAs[String]("type").get
       val rows = doc.getAs[List[DBRef]]("rows").getOrElse(List())
-      AutoSetupConfigWithRefs(Option[String](id), name, ctype, Option[List[DBRef]](rows))
+      val project = doc.getAs[Project]("project").get
+      AutoSetupConfigWithRefs(Option[String](id), name, ctype, Option[List[DBRef]](rows),
+        Option[Project](project))
     }
   }
 }
