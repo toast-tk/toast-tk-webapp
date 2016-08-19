@@ -38,7 +38,7 @@ abstract class IdentifiableCollection[T<:Identifiable](collection: BSONCollectio
 
   //TODO: add error mngmt
   def one(id: String)(implicit writer: BSONDocumentReader[T], ex: ExecutionContext):Future[Option[T]] = {
-    val query = BSONDocument("_id" -> id)
+    val query = BSONDocument("_id" -> BSONObjectID(id))
     val result = collection.find(query).one[T]
     result
   }

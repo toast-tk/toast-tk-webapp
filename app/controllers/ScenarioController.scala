@@ -4,27 +4,18 @@ package controllers
 import boot.AppBoot
 import controllers.mongo.scenario.Scenario
 
-import io.toast.tk.runtime.parse._
-import io.toast.tk.dao.domain.impl.test.block.TestPage
-import io.toast.tk.dao.service.dao.access.plan._
-import io.toast.tk.dao.domain.impl.report._
-
 import controllers.mongo._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.libs.iteratee.Enumerator
 import play.api.libs.json.Reads._
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import play.api.mvc._
-import controllers.parsers.WebPageElement
 import reactivemongo.api.commands.UpdateWriteResult
 
 import scala.concurrent._
 import scala.concurrent.duration.Duration
 import reactivemongo.bson.{BSONObjectID, BSONDocument}
 import scala.util.{Try, Success, Failure}
-import scala.collection.immutable.StringOps
-import scala.util.matching.Regex
 
 
 object ScenarioController extends Controller {

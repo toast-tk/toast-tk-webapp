@@ -10,9 +10,9 @@ case class Scenario(
                      name: String,
                      cType: String,
                      driver: String,
-                     rows: Option[String],
-                     parent: Option[String],
-                     project: Option[Project],
+                     rows: Option[String] = None,
+                     parent: Option[String] = None,
+                     project: Option[Project] = None,
                      override val _id: Option[BSONObjectID] = Some(BSONObjectID.generate)
                      ) extends Identifiable
 
