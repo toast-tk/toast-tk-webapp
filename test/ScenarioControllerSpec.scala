@@ -33,11 +33,15 @@ class ScenarioControllerSpec extends PlaySpec
   }
 
   "ScenarioCollection" should {
-    "1: save a scenario with not ID" in {
+    "1: save a scenario with no ID" in {
 
     }
 
     "2: upsert a scenario with ID" in {
+
+    }
+
+    "3: find a scenario by name and project" in {
 
     }
   }

@@ -15,6 +15,14 @@ import scala.util.{Failure, Success}
 
 case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollection) extends IdentifiableCollection[Scenario](collection){
 
+  def findProjectScenario(scenarioName: String, maybeProject: Option[Project]) = {
+    val query = BSONDocument(
+      "name" -> scenarioName, "project" -> maybeProject
+    )
+    findOneScenarioBy(query)
+  }
+
+
   def findProjectScenarios(project: Project) = {
     val query = BSONDocument("project" -> project)
     val scenarii = collection.find(query).cursor[Scenario]().collect[List]()

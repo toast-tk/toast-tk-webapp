@@ -34,6 +34,9 @@ object MongoConnector extends App {
 }
 
 case class MongoConnector(driver: MongoDriver, servers: List[String], database: String){
+  def findScenario(scenarioName: String, maybeProject: Option[Project]) = {
+    scenarioCollection.findProjectScenario(scenarioName, maybeProject)
+  }
 
 
   val db = driver.connection(servers)(database)
@@ -207,23 +210,15 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     future
   }
 
-  def loadWebPageRepository(project: Project): Future[List[RepositoryImpl]] = {
-    repositoryCollection.findProjectWebRepositories(project)
-  }
-
-  def loadSwingPageRepository(project: Project): Future[List[RepositoryImpl]] = {
-    repositoryCollection.findProjectSwingRepositories(project)
-  }
-
   def loadSwingPageRepository(idProject: String): Future[List[RepositoryImpl]] = {
     val future = for{
       project <- projectCollection.one(idProject)
-      result <- repositoryCollection.findProjectSwingRepositories(project.get)
+      result <-  repositoryCollection.findProjectSwingRepositories(project.get)
       if(project.isDefined)
     } yield (result)
     future
-  }
 
+  }
 
   def loadEntityField(objectId: BSONObjectID): Future[Option[EntityField]] = {
     val collection = open_collection("elements")

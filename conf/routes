@@ -26,15 +26,15 @@ POST         /team                                        controllers.TeamContro
 GET          /teams                                       controllers.TeamController.getAllTeams()
 # Ajax Domain Controller 
 GET         /loadAutoSetupCtx/:setupType                  controllers.Application.loadAutoSetupCtx(setupType: String)
-GET         /loadCtxTagData/:itemName                     controllers.Application.loadCtxTagData(itemName: String)
+GET         /loadCtxTagData/:itemName/:idProject          controllers.Application.loadCtxTagData(itemName: String,  idProject: String)
 GET         /loadCtxSentences/:confType                   controllers.Application.loadCtxSentences(confType:String)
 GET         /typeDescriptor                               controllers.DomainController.typeDescriptor()
 
 # Ajax for API controller
 POST        /postConnector                                controllers.Application.onConnectorReceived()
 POST        /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
-GET         /loadWikifiedRepository                       controllers.Application.loadWikifiedRepository()
-GET         /loadWebWikifiedRepository                    controllers.Application.loadWebWikifiedRepository()
+GET         /loadWikifiedRepository/:idProject            controllers.Application.loadWikifiedRepository(idProject: String)
+GET         /loadWebWikifiedRepository/:idProject         controllers.Application.loadWebWikifiedRepository(idProject: String)
 GET         /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
 GET         /loadSentences/:confType                      controllers.Application.loadSentences(confType:String)
 POST        /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
@@ -66,7 +66,7 @@ POST        /deleteScenarii                               controllers.ScenarioCo
 
 # Ajax routes: Project Controller
 POST        /saveProject                                  controllers.TestPlanController.saveProject()
-GET         /loadProject                                  controllers.TestPlanController.loadProject()
+GET         /loadProject/:idProject                       controllers.TestPlanController.loadProject(idProject: String)
 GET         /loadProjectReport/:projectName               controllers.TestPlanController.loadProjectReport(projectName:String)
 GET         /test                                         controllers.TestPlanController.loadTestReport()
 

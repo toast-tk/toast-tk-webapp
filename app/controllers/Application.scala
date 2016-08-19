@@ -188,11 +188,11 @@ object Application extends Controller {
    * a context = { itemName [WebPageItem, Entity..], other values to refine the result set}
    *
    */
-  def loadCtxTagData(itemName: String) = Action.async {
+  def loadCtxTagData(itemName: String, idProject: String) = Action.async {
     itemName match {
       case "web" => {
         var res = List[JsValue]();
-        conn.loadWebPagesFromRepository().map {
+        conn.loadWebPageRepository(idProject).map {
           pageConfigurations => {
             for (page <- pageConfigurations) {
               val pageElements = page.rows.getOrElse(List()).sortWith(_.name < _.name);
@@ -211,7 +211,7 @@ object Application extends Controller {
       }
       case "swing" => {
         var res = List[JsValue]();
-        conn.loadSwingPagesFromRepository().map {
+        conn.loadSwingPageRepository(idProject).map {
           pageConfigurations => {
             for (page <- pageConfigurations) {
               val pageElements = page.rows.getOrElse(List()).sortWith(_.name < _.name);

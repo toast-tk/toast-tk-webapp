@@ -5,7 +5,7 @@ import io.toast.tk.adapter._
 import io.toast.tk.dao.guice.MongoModule
 import io.toast.tk.runtime.dao.DAOManager
 import io.toast.tk.dao.service.dao.access.plan.TestPlanDaoService
-import io.toast.tk.dao.service.dao.access.repository.RepositoryDaoService
+import io.toast.tk.dao.service.dao.access.repository.{ProjectDaoService, RepositoryDaoService}
 import io.toast.tk.dao.service.dao.access.team.UserDaoService
 import io.toast.tk.dao.service.dao.access.team.TeamDaoService
 import scala.collection.JavaConverters._
@@ -23,6 +23,7 @@ object DAOJavaWrapper {
   lazy val repositoryDaoService = injector.getInstance(classOf[RepositoryDaoService.Factory])create(toast_db);
   lazy val userDaoService = injector.getInstance(classOf[UserDaoService.Factory])create(toast_db);
   lazy val teamDaoService = injector.getInstance(classOf[TeamDaoService.Factory])create(toast_db);
+  lazy val proectService = injector.getInstance(classOf[ProjectDaoService.Factory])create(toast_db);
   def actionAdapterSentenceList = {
     val fixtureDescriptorList = ActionAdapterCollector.listAvailableSentences().asScala
     fixtureDescriptorList

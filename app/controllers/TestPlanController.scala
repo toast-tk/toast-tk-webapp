@@ -1,6 +1,7 @@
 package controllers
 
 import boot.AppBoot
+import controllers.mongo.project.Project
 import controllers.mongo.scenario.Scenario
 import io.toast.tk.dao.domain.impl.report.{TestPlanImpl, Campaign}
 import io.toast.tk.dao.domain.impl.test.block.ITestPage
@@ -16,29 +17,32 @@ import play.api.Logger
 import reactivemongo.bson.BSONDocument
 import scala.concurrent.duration.Duration
 import scala.concurrent._
+import scala.collection.JavaConverters._
 
 
 
 case class ScenarioWrapper(id: Option[String], name: Option[String], scenario: Option[Scenario])
 case class Cpgn(id: Option[String], name: String, scenarii: List[ScenarioWrapper])
-case class Prj(id: Option[String], name: String, iterations: Option[Short], campaigns: List[Cpgn])
+case class TestPlan(id: Option[String], name: String, iterations: Option[Short], campaigns: List[Cpgn], project: Option[Project])
 
 object TestPlanController  extends Controller {
-  lazy val projectJavaDaoService = DAOJavaWrapper.testPlanService
+  lazy val testPlanService = DAOJavaWrapper.testPlanService
+  lazy val projectService = DAOJavaWrapper.proectService
+
   implicit val sFormat = Json.format[ScenarioWrapper]
   implicit val campaignFormat = Json.format[Cpgn]
-  implicit val projectFormat = Json.format[Prj]
+  implicit val testPlanFormat = Json.format[TestPlan]
   private val conn = AppBoot.conn
+
   /**
-   * load to init projects
+   * load to init test plan
    */
-  def loadProject() = Action {
-    val projects = projectJavaDaoService.findAllReferenceProjects().iterator
-    var prjs = List[Prj]()
-    while (projects.hasNext()) {
-      val project = projects.next()
+  def loadProject(idProject:String) = Action {
+    val jTestPlans = testPlanService.findAllReferenceProjects(idProject).asScala
+    var testPlans = List[TestPlan]()
+    for(jTestPlan <- jTestPlans){
       var cmpgs = List[Cpgn]()
-      val campaigns = project.getCampaigns().iterator
+      val campaigns = jTestPlan.getCampaigns().iterator
       while (campaigns.hasNext()) {
         val campaign = campaigns.next()
         var scns = List[ScenarioWrapper]()
@@ -49,9 +53,14 @@ object TestPlanController  extends Controller {
         }
         cmpgs = Cpgn(Some(campaign.getIdAsString()), campaign.getName(), scns.reverse) :: cmpgs
       }
-      prjs = Prj(Some(project.getId().toString()), project.getName(), Some(project.getIteration()) , cmpgs) :: prjs
+      testPlans = TestPlan(
+        Some(jTestPlan.getId().toString()),
+        jTestPlan.getName(),
+        Some(jTestPlan.getIteration()) ,
+        cmpgs, None) :: testPlans
     }
-    Ok(Json.toJson(prjs))
+
+    Ok(Json.toJson(testPlans))
   }
 
   /**
@@ -70,7 +79,7 @@ object TestPlanController  extends Controller {
       testPage
     }
 
-    def transformCampaign(campaigns: List[Cpgn]): java.util.ArrayList[Campaign] = {
+    def transformCampaign(project: Option[Project], campaigns: List[Cpgn]): java.util.ArrayList[Campaign] = {
       val list = new java.util.ArrayList[Campaign]()
       for (cpgn <- campaigns) {
         val campaign = new Campaign()
@@ -78,18 +87,14 @@ object TestPlanController  extends Controller {
         val testPagelist = new java.util.ArrayList[ITestPage]()
         val testPages = (for (c <- campaigns; wrapper <- c.scenarii) yield {
 
-        Await.result(conn.findOneScenarioBy(BSONDocument(
-          "name" -> wrapper.name.get
-          )).map{
-        case None => {
-          println(s"[+] Scenario not found, could not saveProject !")
-        }
-        case Some(scenario) => {
-            parseTestPage(scenario, ScenarioController.wikifiedScenario(scenario).as[String])
-          }
-        }, Duration.Inf).asInstanceOf[ITestPage]
-
-         // parseTestPage(wrapper.scenario.get, ScenarioController.wikifiedScenario(wrapper.scenario.get).as[String])
+                          Await.result(conn.findScenario(wrapper.scenario.get.name, project).map{
+                          case None => {
+                            println(s"[+] Scenario not found, could not saveProject !")
+                          }
+                          case Some(scenario) => {
+                              parseTestPage(scenario, ScenarioController.wikifiedScenario(scenario).as[String])
+                            }
+                          }, Duration.Inf).asInstanceOf[ITestPage]
         })
         for (tPage <- testPages) {
           testPagelist.add(tPage)
@@ -99,18 +104,22 @@ object TestPlanController  extends Controller {
       }
       list
     }
-    def tranformProject(p: Prj): TestPlanImpl = {
-      val project = new TestPlanImpl()
-      project.setName(p.name)
-      project.setCampaignsImpl(transformCampaign(p.campaigns))
-      Logger.info(s"~~~~~~~~~~~~~~~~~~~~~~~~~~ {$project}")
-      project
+    def tranformProject(tp: TestPlan): TestPlanImpl = {
+      val testPlan = new TestPlanImpl()
+      testPlan.setName(tp.name)
+      if(tp.project.isDefined){
+        testPlan.setProject(projectService.findProject(tp.project.get._id.get.stringify))
+      }
+      testPlan.setCampaignsImpl(transformCampaign(tp.project, tp.campaigns))
+      Logger.info(s"~~~~~~~~~~~~~~~~~~~~~~~~~~ {$testPlan}")
+      testPlan
     }
 
-    request.body.validate[Prj].map {
-      case project: Prj => {
-        projectJavaDaoService.saveReferenceProject(tranformProject(project))
-        Ok("project saved !") 
+    request.body.validate[TestPlan].map {
+      case project: TestPlan => {
+        testPlanService.saveReferenceProject(tranformProject(project))
+
+        Ok("Test Plan saved !")
       }
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
@@ -130,7 +139,7 @@ object TestPlanController  extends Controller {
       val pName = request.queryString("project")(0);
       val iter = request.queryString("iteration")(0);
       val tName = request.queryString("test")(0);
-      var p = projectJavaDaoService.getByNameAndIteration(pName, iter);
+      var p = testPlanService.getByNameAndIteration(pName, iter);
       var pageReport = ""
       val iteratorCampaign = p.getCampaigns().iterator
       while (iteratorCampaign.hasNext()) {
