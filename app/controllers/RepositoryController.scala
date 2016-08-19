@@ -2,7 +2,8 @@
 package controllers
 
 import boot.AppBoot
-import controllers.mongo.{RepositoryImpl, ServiceEntityConfig}
+import controllers.mongo.project.Project
+import controllers.mongo.{RepositoryImpl}
 import play.api.libs.json.{JsError, JsObject, JsArray, Json}
 import play.api.mvc.{Controller, Action}
 import toast.engine.DAOJavaWrapper
@@ -16,25 +17,25 @@ object RepositoryController extends Controller {
   /**
    * load to init repository configuration
    */
-  def loadAutoConfiguration() = Action.async {
-    conn.loadSwingPageRepository.map {
-      repository => {
-        val input = Json.toJson(repository).as[JsArray]
-        def extendedObject(obj: JsObject) = {
-          obj + ("columns" -> DomainController.autoSetupCtxProvider((obj \ "type").as[String]))
+  def loadAutoConfiguration(idProject: String) = Action.async {
+      conn.loadSwingPageRepository(idProject).map {
+        repository => {
+          val input = Json.toJson(repository).as[JsArray]
+          def extendedObject(obj: JsObject) = {
+            obj + ("columns" -> DomainController.autoSetupCtxProvider((obj \ "type").as[String]))
+          }
+          val response = for (i <- input.value) yield extendedObject(i.as[JsObject])
+          Ok(Json.toJson(response))
         }
-        val response = for (i <- input.value) yield extendedObject(i.as[JsObject])
-        Ok(Json.toJson(response))
       }
-    }
   }
 
 
   /**
    * load to init repository configuration
    */
-  def loadWebPageRepository() = Action.async {
-    conn.loadWebPageRepository.map {
+  def loadWebPageRepository(idProject: String) = Action.async {
+    conn.loadWebPageRepository(idProject).map {
       repository => {
         val input = Json.toJson(repository).as[JsArray]
         def extendedObject(obj: JsObject) = {

@@ -1,6 +1,7 @@
 package controllers
 
 import boot.AppBoot
+import controllers.mongo.scenario.Scenario
 import play.api.Logger
 import controllers.mongo._
 import controllers.mongo.users._
@@ -75,12 +76,13 @@ object Application extends Controller {
     val scenarioR = Json.fromJson(request.body)(Json.format[InspectedScenario])
     scenarioR.map {
       case scenario: InspectedScenario =>
-        val logInstance = Scenario(id = None, 
-                                  name = scenario.name, 
+        val logInstance = Scenario(name = scenario.name,
                                   cType = "swing", 
                                   driver = "swing", 
                                   rows = Some(scenario.steps),
-                                  parent = Some("0"))
+                                  parent = Some("0"),
+                                  project = None
+        )
         conn.savePlainScenario(logInstance)
         Ok("scenario saved !")
     }.recoverTotal {
@@ -94,8 +96,8 @@ object Application extends Controller {
    * case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: List[WebPageElement])
    * WebPageElement(name: String, elementType: String, locator: String, method: String, position: Int)
    */
-  def loadWikifiedRepository() = Action.async {
-    conn.loadSwingPageRepository.map {
+  def loadWikifiedRepository(idProject: String)  = Action.async {
+    conn.loadSwingPageRepository(idProject).map {
       repository => {
         def wikifiedObject(page: RepositoryImpl): JsValue = {
           var res = "page id:" + page.id.get + "\n"
@@ -114,8 +116,8 @@ object Application extends Controller {
   }
 
 
-  def loadWebWikifiedRepository() = Action.async {
-    conn.loadWebPageRepository().map {
+  def loadWebWikifiedRepository(idProject: String) = Action.async {
+    conn.loadWebPageRepository(idProject).map {
       repository => {
         def wikifiedObject(page: RepositoryImpl): JsValue = {
           var res = "page id:" + page.id.get + "\n"

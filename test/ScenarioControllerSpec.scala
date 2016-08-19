@@ -2,9 +2,14 @@ import java.util.concurrent.TimeUnit
 
 import akka.util.Timeout
 import boot.AppBoot
+import com.github.simplyscala.{MongoEmbedDatabase, MongodProps}
 import controllers.mongo.MongoConnector
 import de.flapdoodle.embed.mongo.distribution.Version
 import org.junit.runner.RunWith
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.junit.JUnitRunner
+import org.scalatestplus.play.PlaySpec
 import play.api.mvc._
 
 import scala.concurrent.Await
@@ -36,6 +41,14 @@ class ScenarioControllerSpec extends PlaySpec
 
     }
   }
+
+  "ScenarioController" should {
+    "3: upsert a scenario (saveScenarii)" in {
+
+    }
+
+  }
+
 
   override def afterAll {
     mongoStop(mongoProps)

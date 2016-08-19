@@ -1,118 +1,156 @@
 package controllers.mongo.scenario
 
 import controllers.mongo.project.Project
-import controllers.mongo.{RepositoryImpl, AutoSetupConfigWithRefs, DBRef}
-import controllers.parsers.{WebPageElementBSONWriter, WebPageElement}
+import controllers.mongo._
+import controllers.mongo.repository.RepositoryCollection
+import play.api.libs.json.Json
 import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.api.commands.UpdateWriteResult
-import reactivemongo.bson.{BSONObjectID, BSONDocument}
+import scala.concurrent.duration._
+import reactivemongo.bson.{BSONDocument, BSONObjectID}
 
-import scala.concurrent.{Promise, Future}
-import scala.util.{Success, Failure}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{Await, Future}
+import scala.util.{Failure, Success}
 
-case class ScenarioCollection(collection: BSONCollection, elementCollection: BSONCollection) {
-  def findRepositoriesByNameAndProject(project: Project, name: String) = {
-    findRepositories(BSONDocument("name" -> name, "project" -> project))
+case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollection) extends IdentifiableCollection[Scenario](collection){
+
+  def findProjectScenarios(project: Project) = {
+    val query = BSONDocument("project" -> project)
+    val scenarii = collection.find(query).cursor[Scenario]().collect[List]()
+    scenarii
+  }
+
+  def upsertScenario(scenario: Scenario) : Future[UpdateWriteResult] = {
+    val update: Future[UpdateWriteResult] = {
+      collection.update(BSONDocument("_id" -> scenario._id), updateScenario(scenario), upsert=true)
+    }
+    update
+  }
+
+  def findOneScenarioBy(query: BSONDocument): Future[Option[Scenario]] = {
+    collection.find(query).one[Scenario]
   }
 
 
-  def findProjectSwingRepositories(project: Project): Future[List[RepositoryImpl]] = {
-    findRepositories(BSONDocument("type" -> "swing page", "project" -> project))
+  def updateScenario(scenario: Scenario):  Scenario = {
+    import scala.util.control.Breaks._
+    val scenarioRows: List[ScenarioRows] = convertJsonToScenarioRows(scenario)
+    println(scenarioRows)
+    var outputRows = List[ScenarioRows]()
+    for(row <- scenarioRows){
+      var outputMappings = List[ScenarioRowMapping]()
+      for(mapping <- row.mappings.getOrElse(List())){
+        var mappingUpdate: Boolean = false;
+        if(mapping.id.equals("component")){ //lame hack, to fix as soon as possible on editor.js side also
+        val pageName = mapping.value.split("[.]")(0)
+          val componentName = mapping.value.split("[.]")(1)
+          val pages: List[RepositoryImpl] = {
+            Await.result(repo.findRepositoriesByNameAndProject(scenario.project.get, pageName), 10 seconds)
+          }
+          if(pages.isDefinedAt(0)){
+            val page = pages(0)
+            breakable {
+              for(component <- page.rows.getOrElse(List())){
+                if(component.name.equals(componentName)){
+                  outputMappings = ScenarioRowMapping(id = component.id.getOrElse(mapping.id),
+                                                      value = mapping.value,
+                                                      pos = mapping.pos) :: outputMappings
+                  mappingUpdate = true
+                  break
+                }
+              }
+            }
+          }else{
+            //Log something
+          }
+        }
+        if(!mappingUpdate){
+          outputMappings = mapping :: outputMappings
+        }
+      }
+      outputRows = ScenarioRows(patterns = row.patterns, kind = row.kind, mappings = Some(outputMappings)) :: outputRows
+    }
+    val jsonRowsAsString = Json.stringify(Json.toJson(outputRows.reverse))
+    Scenario(_id = scenario._id, name= scenario.name,
+      cType = scenario.cType,
+      driver = scenario.driver,
+      rows = Some(jsonRowsAsString),
+      parent= scenario.parent, project = scenario.project)
   }
 
-  def findProjectWebRepositories(project: Project): Future[List[RepositoryImpl]] = {
-    findRepositories(BSONDocument("type" -> "web page", "project" -> project))
+  def refactorScenario(scenario: Scenario, config: RepositoryImpl):  Scenario = {
+    val scenarioRows = convertJsonToScenarioRows(scenario)
+    var outputRows = List[ScenarioRows]()
+    for(row <- scenarioRows){
+      var outputMappings = List[ScenarioRowMapping]()
+      for(mapping <- row.mappings.getOrElse(List())){
+        for(configElement <- config.rows.getOrElse(List())){
+          if (mapping.id.equals(configElement.id.get)) {
+            val newMappingValue = config.name + "." + configElement.name
+            outputMappings = ScenarioRowMapping(id = mapping.id, value = newMappingValue, pos = mapping.pos) :: outputMappings
+          } else {
+            outputMappings = mapping :: outputMappings
+          }
+        }
+      }
+      outputRows = outputRows :+ ScenarioRows(patterns = row.patterns, kind = row.kind, mappings = Some(outputMappings))
+
+    }
+    val jsonRowsAsString = Json.stringify(Json.toJson(outputRows))
+    Scenario(_id = scenario._id,
+      name= scenario.name,
+      cType = scenario.cType,
+      driver = scenario.driver,
+      rows = Some(jsonRowsAsString),
+      parent= scenario.parent,
+      project = scenario.project)
   }
 
-  def findProjectRepositories(project: Project) = {
-    findRepositories(BSONDocument("project" -> project))
-  }
+  def refactorScenarii(config: RepositoryImpl) {
 
-  private def findRepositories(query: BSONDocument): Future[List[RepositoryImpl]] = {
-    val configurationWithRefs: Future[List[AutoSetupConfigWithRefs]] = collection.find(query).sort(BSONDocument("name" -> 1)).cursor[AutoSetupConfigWithRefs]().collect[List]()
-    // re-compute as repository
-    def convertItems(configurationWithRef: AutoSetupConfigWithRefs): Future[RepositoryImpl] = {
-      configurationWithRef.rows match {
-        case Some(refs) => {
-          val loadedElementFutureList: Future[List[Option[WebPageElement]]] = Future.sequence(for( ref <- refs ) yield loadElement(ref.id))
-          loadedElementFutureList.map(elements => RepositoryImpl(
-            id = configurationWithRef.id,
-            name = configurationWithRef.name,
-            cType = configurationWithRef.cType,
-            rows = Some(elements.flatMap(_.toList)),
-            project = configurationWithRef.project)
-          )
+    if(config.id != null){
+      // BIG OPERATION !! to improve, for instance open a new future
+      // and consume the database as a stream
+      val query = BSONDocument()
+      val scenariiFuture = collection.find(query).cursor[Scenario]().collect[List]()
+      scenariiFuture.map{
+        scenarii => {
+          for {
+            scenario <- scenarii
+            if isScenarioPatternImpacted(scenario, config)
+          } yield upsertScenario(refactorScenario(scenario, config))
         }
       }
     }
-    val convertedListFuture: Future[List[RepositoryImpl]] = configurationWithRefs.flatMap {
-      configurationWithRefs => {
-        val configFutureList: Future[List[RepositoryImpl]] = Future.sequence(for (configurationWithRef <- configurationWithRefs) yield convertItems(configurationWithRef))
-        configFutureList
-      }
-    }
-    convertedListFuture
   }
 
-  def saveAutoConfiguration(repository: RepositoryImpl): Future[Boolean] = {
-    val elementsToPersist: List[WebPageElement] = repository.rows.getOrElse(List())
-    val elementAsBsonDocuments: List[BSONDocument] = for(element <- elementsToPersist) yield WebPageElementBSONWriter.write(element)
-    val listOfFutures: List[Future[UpdateWriteResult]] = for(element <- elementAsBsonDocuments) yield saveContainerElement(element)
-    val futureList = Future.sequence(listOfFutures)
 
-    //once we've completed saving elements
-    //we can check here through last errors if everything has been saved !
-    futureList.map(_ => {
-      //TODO
-    })
-    val dbRefs: List[DBRef] = elementAsBsonDocuments match {
-      case elements: List[BSONDocument] => elements.map(element => {
-        val objectId = element.getAs[BSONObjectID]("_id").get
-        DBRef("elements", objectId)
-      })
-      case _ => List()
-    }
-    val autoSetupWithRefs: AutoSetupConfigWithRefs = AutoSetupConfigWithRefs (
-      id = repository.id, name = repository.name, cType = repository.cType, rows = Some(dbRefs), project = repository.project
-    )
-
-    println("[+] successfully saved configuration elements, persisting configuration..")
-    val p = Promise[Boolean]
-    autoSetupWithRefs.id match {
-      case None => collection.insert(autoSetupWithRefs).onComplete {
-        case Failure(e) => {
-          p.failure(e)
-          throw e
+  def isScenarioPatternImpacted(scenario: Scenario, config: RepositoryImpl) : Boolean = {
+    var isImpacted = false
+    if(scenario.rows != null){
+      try{
+        val scenarioRows = Json.parse(scenario.rows.getOrElse("[]")).as[List[ScenarioRows]]
+        for(row <- scenarioRows; mapping <- row.mappings.getOrElse(List())){
+          for(configElement <- config.rows.getOrElse(List())){
+            if (mapping.id.equals(configElement.id.get)){
+              isImpacted = true
+            }
+          }
         }
-        case Success(_) => {
-          p.success(true)
-          println("[+] successfully inserted repository updates !")
-        }
-      }
-      case _ => collection.update(BSONDocument("_id" -> BSONObjectID(autoSetupWithRefs.id.get)),autoSetupWithRefs, upsert = true).onComplete {
-        case Failure(e) => {
-          p.failure(e)
-          throw e
-        }
-        case Success(_) =>{
-          p.success(true)
-          println("[=] successfully saved repository updates !")
+      } catch {
+        case e: Exception => {
+          println("Couldn't parse scenario rows !")
+          e.printStackTrace()
         }
       }
     }
-    p.future
+    isImpacted
   }
 
-  /**
-   * We return a future
-   */
-  def saveContainerElement(element: BSONDocument): Future[UpdateWriteResult] = {
-    elementCollection.update(BSONDocument("_id" -> element.get("_id").get),element,upsert=true)
-  }
 
-  def loadElement(objectId: BSONObjectID): Future[Option[WebPageElement]] = {
-    val query = BSONDocument("_id" -> objectId)
-    elementCollection.find(query).one[WebPageElement]
+  private def convertJsonToScenarioRows(scenario: Scenario): List[ScenarioRows] = {
+    val scenarioRows = Json.parse(scenario.rows.getOrElse("")).as[List[ScenarioRows]]
+    scenarioRows
   }
 }

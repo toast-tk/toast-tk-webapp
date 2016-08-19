@@ -1,10 +1,10 @@
 package controllers
 
 import boot.AppBoot
+import controllers.mongo.scenario.Scenario
 import io.toast.tk.dao.domain.impl.report.{TestPlanImpl, Campaign}
 import io.toast.tk.dao.domain.impl.test.block.ITestPage
 import io.toast.tk.runtime.parse.TestParser
-import controllers.mongo.Scenario
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.json.{Json, JsError}
 import play.api.mvc.{ResponseHeader, Result, Action, Controller}
@@ -16,6 +16,9 @@ import play.api.Logger
 import reactivemongo.bson.BSONDocument
 import scala.concurrent.duration.Duration
 import scala.concurrent._
+
+
+
 case class ScenarioWrapper(id: Option[String], name: Option[String], scenario: Option[Scenario])
 case class Cpgn(id: Option[String], name: String, scenarii: List[ScenarioWrapper])
 case class Prj(id: Option[String], name: String, iterations: Option[Short], campaigns: List[Cpgn])
@@ -59,9 +62,9 @@ object TestPlanController  extends Controller {
 
     def parseTestPage(scenario: Scenario, wikiScenario: String): ITestPage = {
       val testPage = parser.readString(wikiScenario, scenario.name)
-      scenario.id match {
+      scenario._id match {
         case None => {}
-        case Some(id) => testPage.setId(id)
+        case Some(id) => testPage.setId(id.stringify)
       }
       testPage.setName(scenario.name)
       testPage
@@ -82,7 +85,7 @@ object TestPlanController  extends Controller {
           println(s"[+] Scenario not found, could not saveProject !")
         }
         case Some(scenario) => {
-    parseTestPage(scenario, ScenarioController.wikifiedScenario(scenario).as[String])
+            parseTestPage(scenario, ScenarioController.wikifiedScenario(scenario).as[String])
           }
         }, Duration.Inf).asInstanceOf[ITestPage]
 

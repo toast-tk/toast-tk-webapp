@@ -1,11 +1,9 @@
 package controllers.mongo
 
 import controllers.mongo.project.Project
+import controllers.mongo.scenario.Scenario
 import controllers.parsers.EntityField
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import play.api.libs.json.Writes._
-import play.api.libs.json.Reads._
 import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.bson._
 
@@ -38,6 +36,13 @@ abstract class IdentifiableCollection[T<:Identifiable](collection: BSONCollectio
     results
   }
 
+  //TODO: add error mngmt
+  def one(id: String)(implicit writer: BSONDocumentReader[T], ex: ExecutionContext):Future[Option[T]] = {
+    val query = BSONDocument("_id" -> id)
+    val result = collection.find(query).one[T]
+    result
+  }
+
 }
 
 case class ConfigurationSyntax(sentence: String, typed_sentence: String, description: String)
@@ -54,15 +59,6 @@ case class AutoSetupConfigWithRefs(id: Option[String],
 
 case class InspectedPage(name: String, items: List[String])
 case class InspectedScenario(name: String, steps: String)
-
-case class Scenario(
-                     id: Option[String],
-                     name: String,
-                     cType: String,
-                     driver: String,
-                     rows: Option[String],
-                     parent: Option[String]
-                     )
 
 case class TestScript(id: Option[String], name: String, scenarii: List[Scenario])
 
@@ -106,122 +102,33 @@ object DBRef {
         "$id" -> ref.id,
         "$db" -> ref.db)
   }
-} 
-
-object MojoFixtureDescriptor {
-  implicit val reader: Reads[MojoFixtureDescriptor]= (
-      (__ \ "name").read[String] and
-      (__ \ "sentences").read[List[FixtureDescriptorLine]])(MojoFixtureDescriptor.apply(_,_))
-
-  implicit val writer: Writes[MojoFixtureDescriptor] = (
-      (__ \ "name").write[String] and
-      (__ \ "sentences").write[List[FixtureDescriptorLine]])(unlift(MojoFixtureDescriptor.unapply))
 }
 
 object FixtureDescriptorLine {
-  implicit val reader: Reads[FixtureDescriptorLine]= (
-      (__ \ "name").read[String] and
-      (__ \ "fixtureType").read[String] and
-      (__ \ "pattern").read[String] and
-      (__ \ "description").read[String])(FixtureDescriptorLine.apply(_,_,_,_))
-
-  implicit val writer: Writes[FixtureDescriptorLine] = (
-      (__ \ "name").write[String] and
-      (__ \ "fixtureType").write[String] and
-      (__ \ "pattern").write[String] and
-      (__ \ "description").write[String])(unlift(FixtureDescriptorLine.unapply))
+  implicit val format = Json.format[FixtureDescriptorLine]
 }
 
-object ScenarioRowMapping{
-  implicit val reader: Reads[ScenarioRowMapping]= (
-      (__ \ "id").read[String] and
-      (__ \ "val").read[String] and
-      (__ \ "pos").read[Int])(ScenarioRowMapping.apply(_,_,_))
+object MojoFixtureDescriptor {
+  implicit val format = Json.format[MojoFixtureDescriptor]
+}
 
-  implicit val writer: Writes[ScenarioRowMapping] = (
-      (__ \ "id").write[String] and
-      (__ \ "val").write[String] and
-      (__ \ "pos").write[Int])(unlift(ScenarioRowMapping.unapply))
+
+
+object ScenarioRowMapping{
+  implicit val format = Json.format[ScenarioRowMapping]
 }
 
 object ScenarioRows{
-  implicit val reader: Reads[ScenarioRows]= (
-      (__ \ "patterns").read[String] and
-      (__ \ "kind").readNullable[String] and
-      (__ \ "mappings").readNullable[List[ScenarioRowMapping]])(ScenarioRows.apply(_,_,_))
-
-  implicit val writer: Writes[ScenarioRows] = (
-      (__ \ "patterns").write[String] and
-      (__ \ "kind").writeNullable[String] and
-      (__ \ "mappings").writeNullable[List[ScenarioRowMapping]])(unlift(ScenarioRows.unapply))
+  implicit val format = Json.format[ScenarioRows]
 }
 
 object InspectedScenario{
-  implicit val reader: Reads[InspectedScenario]= (
-      (__ \ "name").read[String] and
-      (__ \ "steps").read[String])(InspectedScenario.apply(_,_))
-
-  implicit val writer: Writes[InspectedScenario] = (
-      (__ \ "name").write[String] and
-      (__ \ "steps").write[String])(unlift(InspectedScenario.unapply))
+  implicit val format = Json.format[InspectedScenario]
 }
 
 object InspectedPage{
-  implicit val reader: Reads[InspectedPage]= (
-      (__ \ "name").read[String] and
-      (__ \ "items").read[List[String]])(InspectedPage.apply(_,_))
-
-  implicit val writer: Writes[InspectedPage] = (
-      (__ \ "type").write[String] and
-      (__ \ "items").write[List[String]])(unlift(InspectedPage.unapply))
+  implicit val format = Json.format[InspectedPage]
 }
-
-object Scenario{
-  implicit val reader: Reads[Scenario]= (
-      (__ \ "id").readNullable[String] and
-    (__ \ "name").read[String] and
-      (__ \ "type").read[String] and
-      (__ \ "driver").read[String] and
-      (__ \ "rows").readNullable[String] and
-      (__ \ "parent").readNullable[String])(Scenario.apply(_,_,_,_,_,_))
-
-  implicit val writer: Writes[Scenario] = (
-      (__ \ "id").writeNullable[String] and
-      (__ \ "name").write[String] and
-      (__ \ "type").write[String] and
-      (__ \ "driver").write[String] and
-      (__ \ "rows").writeNullable[String] and
-      (__ \ "parent").writeNullable[String])(unlift(Scenario.unapply))
-
-  implicit object BSONWriter extends BSONDocumentWriter[Scenario] {
-    def write(scenario: Scenario): BSONDocument ={
-      val genId = BSONObjectID.generate
-      println("genId "+ scenario.id +"--> " + genId.stringify)
-      scenario.id match {
-        case None =>  BSONDocument("_id" -> genId, "name"-> scenario.name, "type"-> scenario.cType, "driver" -> scenario.driver,  "rows" -> scenario.rows.getOrElse(""), "parent" -> scenario.parent.getOrElse("0"))
-        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), 
-                                                  "name" -> scenario.name, "type"-> scenario.cType,
-                                                  "driver" -> scenario.driver,    
-                                                  "rows" -> scenario.rows.getOrElse(""),
-                                                  "parent" -> scenario.parent.getOrElse("0")
-                                                  )
-      }
-    }
-  }
-
-  implicit object BSONReader extends BSONDocumentReader[Scenario] {
-    def read(doc: BSONDocument): Scenario = {
-      val id = doc.getAs[BSONObjectID]("_id").get.stringify
-      val name = doc.getAs[String]("name").get
-      val scenarioType = doc.getAs[String]("type").get
-      val driver = doc.getAs[String]("driver").get
-      val rows = doc.getAs[String]("rows").getOrElse("")
-      val parent = doc.getAs[String]("parent").getOrElse("0")
-      Scenario(Option[String](id), name ,scenarioType, driver, Option[String](rows), Option[String](parent))
-    }
-  }
-}
-
 
 object TestScript{
   implicit val format = Json.format[TestScript]
@@ -235,7 +142,6 @@ object TestScript{
           "scenarii" -> testScript.scenarii)
       }
   }
-
   implicit object BSONReader extends BSONDocumentReader[TestScript] {
     def read(doc: BSONDocument): TestScript = {
       val id = doc.getAs[BSONObjectID]("_id").get.stringify
@@ -274,77 +180,9 @@ object AutoSetupConfigWithRefs{
 }
 
 
-object  ServiceEntityConfigWithRefs{
-    implicit object ServiceEntityConfigurationWriter extends BSONDocumentWriter[ServiceEntityConfigWithRefs] {
-    def write(configuration: ServiceEntityConfigWithRefs): BSONDocument = 
-      configuration.id match {
-        case None => BSONDocument("name"-> configuration.name, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
-        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> configuration.name, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
-      }
-  }
-
-  implicit object ServiceEntityConfigurationReader extends BSONDocumentReader[ServiceEntityConfigWithRefs] {
-    def read(doc: BSONDocument): ServiceEntityConfigWithRefs = {
-      val id = doc.getAs[BSONObjectID]("_id").get.stringify
-      val name = doc.getAs[String]("name").get
-      val ctype = doc.getAs[String]("type").get
-      val rows = doc.getAs[List[DBRef]]("rows").getOrElse(List())
-      ServiceEntityConfigWithRefs(Option[String](id), name, ctype, Option[List[DBRef]](rows))
-    }
-  }
-}
-
-object ServiceEntityConfig{
-    implicit val autoSetupConfigReader: Reads[ServiceEntityConfig]= (
-      (__ \ "id").readNullable[String] and
-      (__ \ "name").read[String] and
-      (__ \ "type").read[String] and
-      (__ \ "rows").readNullable[List[EntityField]])(ServiceEntityConfig.apply(_,_ , _,_)
-    )
-
-    implicit val autoSetupConfigWriter: Writes[ServiceEntityConfig] = (
-    (__ \ "id").writeNullable[String] and
-    (__ \ "name").write[String] and
-    (__ \ "type").write[String] and
-    (__ \ "rows").writeNullable[List[EntityField]])(unlift(ServiceEntityConfig.unapply))
-
-  implicit object ServiceEntityConfigurationWriter extends BSONDocumentWriter[ServiceEntityConfig] {
-    def formatName(name: String): String = {
-      name.trim.replace(" ", "_").replace("'", "_").replace("°", "_")
-    }
-    def write(configuration: ServiceEntityConfig): BSONDocument = {
-      val formatedName = formatName(configuration.name)
-      configuration.id match {
-        case None => BSONDocument("name"-> formatedName, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
-        case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> formatedName, "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()))
-      }
-    }
-  }
-
-  implicit object ServiceEntityConfigurationReader extends BSONDocumentReader[ServiceEntityConfig] {
-    def read(doc: BSONDocument): ServiceEntityConfig = {
-      val id = doc.getAs[BSONObjectID]("_id").get.stringify
-      val name = doc.getAs[String]("name").get
-      val ctype = doc.getAs[String]("type").get
-      val rows = doc.getAs[List[EntityField]]("rows").getOrElse(List())
-      ServiceEntityConfig(Option[String](id), name, ctype, Option[List[EntityField]](rows))
-    }
-  }
-}
-
-
-
 object ConfigurationSyntax {
 
-  implicit val configSyntaxReader: Reads[ConfigurationSyntax] = (
-    (__ \ "sentence").read[String]
-    and (__ \ "typed_sentence").read[String]
-    and (__ \ "description").read[String])(ConfigurationSyntax.apply(_,_,_))
-
-  implicit val configSyntaxWriter: Writes[ConfigurationSyntax] = (
-    (__ \ "sentence").write[String] and
-    (__ \ "typed_sentence").write[String] and
-    (__ \ "description").write[String])(unlift(ConfigurationSyntax.unapply))
+  implicit val format = Json.format[ConfigurationSyntax]
 
   implicit object ConfigurationSyntaxReader extends BSONDocumentReader[ConfigurationSyntax] {
     def read(doc: BSONDocument): ConfigurationSyntax = {
@@ -366,15 +204,7 @@ object ConfigurationSyntax {
 
 object ConfigurationRow {
 
-  implicit val configRowReader: Reads[ConfigurationRow] = (
-    (__ \ "type").read[String] and
-    (__ \ "name").read[String] and 
-    (__ \ "syntax").read[List[ConfigurationSyntax]])(ConfigurationRow.apply(_,_,_))
-
-  implicit val configRowWriter: Writes[ConfigurationRow] = (
-    (__ \ "type").write[String] and
-    (__ \ "name").write[String] and
-    (__ \ "syntax").write[List[ConfigurationSyntax]])(unlift(ConfigurationRow.unapply))
+  implicit val format = Json.format[ConfigurationRow]
 
   implicit object ConfigurationRowWriter extends BSONDocumentWriter[ConfigurationRow] {
     def write(configurationRow: ConfigurationRow): BSONDocument = BSONDocument(
@@ -396,15 +226,7 @@ object ConfigurationRow {
 
 object MacroConfiguration {
 
-  implicit val configReader: Reads[MacroConfiguration] = (
-    (__ \ "id").readNullable[String] and  
-    (__ \ "type").read[String]
-    and (__ \ "rows").read[List[ConfigurationRow]])(MacroConfiguration.apply(_, _, _))
-
-  implicit val configWriter: Writes[MacroConfiguration] = (
-    (__ \ "id").writeNullable[String] and  
-    (__ \ "type").write[String] and
-    (__ \ "rows").write[List[ConfigurationRow]])(unlift(MacroConfiguration.unapply))
+  implicit val format = Json.format[MacroConfiguration]
 
   implicit object ConfigurationWriter extends BSONDocumentWriter[MacroConfiguration] {
     def write(configuration: MacroConfiguration): BSONDocument = 

@@ -47,8 +47,8 @@ GET         /loadConfiguration                            controllers.Configurat
 POST        /saveConfiguration                            controllers.ConfigurationController.saveConfiguration()
 
 # Ajax routes: Repository Controller
-GET         /loadAutoConfiguration                        controllers.RepositoryController.loadAutoConfiguration()
-GET         /loadWebPageRepository                        controllers.RepositoryController.loadWebPageRepository()
+GET         /loadAutoConfiguration/:idProject             controllers.RepositoryController.loadAutoConfiguration(idProject: String)
+GET         /loadWebPageRepository/:idProject             controllers.RepositoryController.loadWebPageRepository(idProject: String)
 POST        /saveAutoSetupConfiguration                   controllers.RepositoryController.saveAutoConfig()
 POST        /saveAutoConfigBlock                          controllers.RepositoryController.saveAutoConfigBlock()
 GET         /loadRepository                               controllers.RepositoryController.loadRepository()
@@ -56,9 +56,9 @@ POST        /saveRepository                               controllers.Repository
 POST        /deleteObject                                 controllers.RepositoryController.deleteObject()
 
 # Ajax routes: Scenarii Controller
-GET         /loadScenariiList                             controllers.ScenarioController.loadScenariiList()
-GET         /loadScenarii                                 controllers.ScenarioController.loadScenarii()
-GET         /wikiScenarii                                 controllers.ScenarioController.loadWikifiedScenarii()
+GET         /loadScenariiList/:idProject                  controllers.ScenarioController.loadScenariiList(idProject: String)
+GET         /loadScenarii/:idProject                      controllers.ScenarioController.loadScenarii(idProject: String)
+GET         /wikiScenarii/:idProject                      controllers.ScenarioController.loadWikifiedScenarii(idProject: String)
 GET         /loadScenarioSteps/:id                        controllers.ScenarioController.loadScenarioSteps(id: String)
 GET         /loadScenarioCtx/:scenarioType                controllers.ScenarioController.loadScenarioCtx(scenarioType: String)
 POST        /saveScenarii                                 controllers.ScenarioController.saveScenarii()

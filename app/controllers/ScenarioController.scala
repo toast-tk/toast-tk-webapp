@@ -2,6 +2,7 @@
 package controllers
 
 import boot.AppBoot
+import controllers.mongo.scenario.Scenario
 
 import io.toast.tk.runtime.parse._
 import io.toast.tk.dao.domain.impl.test.block.TestPage
@@ -16,6 +17,7 @@ import play.api.libs.json.Writes._
 import play.api.libs.json._
 import play.api.mvc._
 import controllers.parsers.WebPageElement
+import reactivemongo.api.commands.UpdateWriteResult
 
 import scala.concurrent._
 import scala.concurrent.duration.Duration
@@ -85,7 +87,7 @@ object ScenarioController extends Controller {
       }
 
       var res = "h1. Name:" + scenario.name + "\n"
-      res = res + "#scenario id:" + scenario.id.get + "\n"
+      res = res + "#scenario id:" + scenario._id.get + "\n"
       res = res + "#scenario driver:" + scenario.driver + "\n"
       res = res + "|| scenario || " + scenario.cType + " ||\n"
       res = res + lines
@@ -96,7 +98,7 @@ object ScenarioController extends Controller {
         //Case where the scenario has been freshly imported from the client
         val lines = scenario.rows.getOrElse("").split("\n").toList.map(row => "|" + row +"|").mkString("\n")
         var res = "h1. Name:" + scenario.name + "\n"
-        res = res + "#scenario id:" + scenario.id.get + "\n"
+        res = res + "#scenario id:" + scenario._id.get + "\n"
         res = res + "#scenario driver:" + scenario.driver + "\n"
         res = res + "|| scenario || " + scenario.cType + " ||\n"
         res = res + lines
@@ -109,11 +111,11 @@ object ScenarioController extends Controller {
   /**
    * load to wiki scenarii
    * Scenario: (id: Option[String], cType: String, driver: String,rows: String)
-   * || scenario || swing ||
+   * || scenario || web ||
    * |Type *toto* in *LoginDialog.loginTextField*|
    */
-  def loadWikifiedScenarii() = Action.async {
-    conn.loadScenarii.map {
+  def loadWikifiedScenarii(idProject: String) = Action.async {
+    conn.loadScenarii(idProject).map {
       scenarii => {
         val response = for (scenario <- scenarii) yield wikifiedScenario(scenario)
         Ok(Json.toJson(response))
@@ -131,13 +133,13 @@ object ScenarioController extends Controller {
             case Failure(e) => throw e
             case Success(hasNode) => {
               hasNode match {
-              case true => {
-                Ok("scenario deleted !")
+                case true => {
+                  Ok("scenario deleted !")
+                }
+                case false => {
+                  BadRequest("Error: selected has child Node")
+                }
               }
-              case false => {
-                BadRequest("Error: selected has child Node")
-              }
-            }
           }
         }
     }.recoverTotal {
@@ -150,46 +152,18 @@ object ScenarioController extends Controller {
    */
    def saveScenarii() = Action(parse.json) { implicit request =>
     request.body.validate[Scenario].map {
-      case scenario: Scenario =>
-      scenario.id match {
-        case None => {
-          val scenarioWithId :Scenario = Scenario(Some(BSONObjectID.generate.stringify),
-            scenario.name,
-            scenario.cType,
-            scenario.driver,
-            scenario.rows,
-            scenario.parent
-            )
-          Await.ready(conn.insertScenario(scenarioWithId), Duration.Inf).value.get match {
-            case Failure(e) => throw e
-            case Success(isInserted) => {
-             isInserted match {
-              case true => {
-                def extendedObject(obj: JsObject) = {
-                  obj + ("columns" -> DomainController.scenarioDescriptorProvider((obj \ "type").as[String]))
-                }
-                val flatResponse = extendedObject(Json.toJson(scenarioWithId).as[JsObject])
-                Ok(Json.toJson(flatResponse))
-              }
-              case false => { BadRequest("Node already exists")}
+      case scenario: Scenario => {
+        val result: UpdateWriteResult = Await.result(conn.upsertScenario(scenario), Duration.Inf)
+        if (result.ok) {
+            def extendedObject(obj: JsObject) = {
+              obj + ("columns" -> DomainController.scenarioDescriptorProvider((obj \ "type").as[String]))
             }
-          }
+            val flatResponse = extendedObject(Json.toJson(scenario).as[JsObject])
+            Ok(Json.toJson(flatResponse))
+        } else {
+          BadRequest("Node already exists")
         }
       }
-      case _ => {
-        Await.ready(conn.saveScenario(scenario), Duration.Inf).value.get match {
-          case Failure(e) => throw e
-          case Success(isInserted) => {
-           isInserted match {
-            case true => {
-              Ok(Json.toJson(scenario))
-            }
-            case false => { BadRequest("save err: Node already exists")}
-          }
-        }
-      }
-    }
-  }
   }.recoverTotal {
     e => BadRequest("Detected error:" + JsError.toJson(e))
   }
@@ -199,8 +173,8 @@ object ScenarioController extends Controller {
   /**
    * load to init scenarii
    */
-  def loadScenarii() = Action.async {
-    conn.loadScenarii.map {
+  def loadScenarii(idProject: String) = Action.async {
+    conn.loadScenarii(idProject).map {
       scenarii => {
         val input = Json.toJson(scenarii).as[JsArray]
         def extendedObject(obj: JsObject) = {
@@ -223,10 +197,12 @@ object ScenarioController extends Controller {
   /**
    * load to init scenarii
    */
-  def loadScenariiList() = Action.async {
-    conn.loadScenarii.map {
+  def loadScenariiList(idProject: String) = Action.async {
+    conn.loadScenarii(idProject).map {
       scenarii => {
-        val result:List[JsObject] = for (scenario <- scenarii) yield ( Json.obj("id" -> scenario.id.get, "name" -> scenario.name) )
+        val result:List[JsObject] = for (scenario <- scenarii) yield (
+          Json.obj("id" -> scenario._id.get.stringify,
+                   "name" -> scenario.name) )
         val input = Json.toJson(scenarii).as[JsArray]
         val response = for (i <- input.value) yield i.as[JsObject]
         Ok(Json.toJson(result))
