@@ -10,18 +10,18 @@
     <li class="list-group-item" ng-repeat="usr in userList">
     <div style="display: inline-block;">
       <h4><i class="fa fa-user"></i> {{usr.login}} 
-        <span class="label label-success" ng-if="user.id == usr.id">It's you !</span> 
+        <span class="label label-success" ng-if="user._id == usr._id">It's you !</span>
       </h4> 
       <span >{{usr.firstName}} {{usr.lastName}}</span>
     </div>
       <div style="display: inline-block; float: right;">
        <button  class="btn btn-default btn-xs btn-edit1"
-                ng-click="editUser(usr.id)">
+                ng-click="editUser(usr._id)">
           <i class="fa fa-edit"></i>
        </button>
-       <button ng-if="user.id != usr.id" 
+       <button ng-if="user._id != usr._id"
                class="pull-right btn btn-default btn-xs btn-danger1" 
-               ng-click="deleteUser(usr.id)">
+               ng-click="deleteUser(usr._id)">
           <i class="fa fa-trash"></i>
        </button>
       </div>

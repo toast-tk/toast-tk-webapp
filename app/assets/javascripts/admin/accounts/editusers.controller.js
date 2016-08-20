@@ -24,7 +24,7 @@ define(["angular"], function (angular) {
                     if(response.status === 200){
                         toastr.success('Account removed successfully !');
                         $scope.userList.forEach(function(user,index){
-                            if(user.id == id){
+                            if(user._id == id){
                                 $scope.userList.splice(index,1);
                             }
                         });
