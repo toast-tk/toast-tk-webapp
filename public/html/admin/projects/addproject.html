@@ -20,7 +20,7 @@
                 <div class="form-group" ng-class="{'has-error' : (projectForm.description.$dirty || isNewProjectFormSubmitted)  && (projectForm.description.$error.required || (projectForm.description.$invalid && projectForm.description.$touched))  }">
                     <label for="description" class="col-sm-2 control-label">Description</label>
                     <div class="col-sm-6">
-                        <textarea name="description" ng-model="newroject.description" class="form-control" id="description" placeholder="Description" required minLength="12"></textarea>
+                        <textarea name="description" ng-model="newProject.description" class="form-control" id="description" placeholder="Description" required minLength="12"></textarea>
                         <div ng-if=" (projectForm.description.$dirty || isNewProjectFormSubmitted) && (projectForm.description.$invalid && projectForm.description.$touched)" class="alert alert-danger field-error-alert" role="alert">
                             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                             <span class="sr-only">Error:</span>
