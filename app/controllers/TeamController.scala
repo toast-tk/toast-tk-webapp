@@ -21,35 +21,28 @@ object TeamController extends Controller {
 
 	def saveTeam() = Action(parse.json) { implicit request =>
 		request.body.validate[Team].map {
-			case team: Team =>
-			team._id match {
-				case None => {
-					val teamWithId : Team = Team(team.name, team.description)
-					Await.ready(conn.saveTeam(teamWithId), Duration.Inf).value.get match {
-						case Failure(e) => throw e
-						case Success(isInserted) => {
-							isInserted match {
-								case true => {
-									val flatResponse = Json.toJson(teamWithId).as[JsObject]
-									Ok(Json.toJson(flatResponse))
-								}
-								case false => { BadRequest("Team already exists")}
-							}
-						}
-					}
-				}
-			}
-			}.recoverTotal {
+			case team: Team => {
+          Await.ready(conn.saveTeam(team), Duration.Inf).value.get match {
+            case Failure(e) => throw e
+            case Success(isInserted) => {
+              isInserted match {
+                case true => Ok(Json.toJson(team))
+                case false => BadRequest("Team already exists")
+              }
+            }
+          }
+        }
+    }.recoverTotal {
 				e => BadRequest("Detected error:" + JsError.toJson(e))
-			}
-		}
+    }
+  }
 
-		def getAllTeams() = Action.async {
-			conn.getAllTeams().map {
-				teams => {
-					Ok(Json.toJson(teams))
-				}
-			}
-		}
+  def getAllTeams() = Action.async {
+    conn.getAllTeams().map {
+      teams => {
+        Ok(Json.toJson(teams))
+      }
+    }
+  }
 
 }

@@ -1,0 +1,26 @@
+<div class="container-fluid" style="overflow: hidden;">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-user-plus fa-fw"></i> Edit Projects
+            </h3>
+        </div>
+        <div class="panel-body">
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="project in projectList">
+                    <div style="display: inline-block;">
+                        <h4>
+                            <i class="fa fa-user"></i> {{project.name}}
+                        </h4>
+                        <span >{{project.description}}</span>
+                    </div>
+                    <div style="display: inline-block; float: right;">
+                        <button  class="btn btn-default btn-xs btn-edit1"
+                                 ng-click="editProject(project._id)">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

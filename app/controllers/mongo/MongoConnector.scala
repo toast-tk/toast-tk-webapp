@@ -1,13 +1,9 @@
 package controllers.mongo
 
-import java.lang.Exception
-import java.lang.Exception
-
 import controllers.mongo.project.{Project, ProjectCollection}
 import controllers.mongo.repository.RepositoryCollection
 import controllers.mongo.scenario.{Scenario, ScenarioCollection}
 
-import play.api.libs.json.Writes._
 import play.api.libs.json._
 import reactivemongo.api.{MongoDriver, _}
 import reactivemongo.bson._
@@ -15,11 +11,9 @@ import reactivemongo.api.commands.{UpdateWriteResult, WriteResult}
 import reactivemongo.bson.Producer.nameValue2Producer
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Promise, Awaitable, Future, Await}
-import scala.util.control.Exception
+import scala.concurrent.{ Future}
 import scala.util.{Failure, Success}
 import controllers.parsers.EntityField
-import controllers.parsers.WebPageElement
 
 import controllers.mongo.teams._
 import controllers.mongo.users._
@@ -34,10 +28,6 @@ object MongoConnector extends App {
 }
 
 case class MongoConnector(driver: MongoDriver, servers: List[String], database: String){
-  def findScenario(scenarioName: String, maybeProject: Option[Project]) = {
-    scenarioCollection.findProjectScenario(scenarioName, maybeProject)
-  }
-
 
   val db = driver.connection(servers)(database)
   val userCollection = UserCollection(open_collection("users"))
@@ -96,11 +86,22 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   }
 
   def saveTeam(team: Team)  : Future[Boolean] = {
+    for{
+      project <- team.projects
+    } yield (projectCollection.save(project))
     teamCollection.save(team)
   }
 
   def getAllTeams() : Future[List[Team]] ={
     teamCollection.getAllTeams()
+  }
+
+  def getAllProjects(): Future[List[Project]]  = {
+    projectCollection.list()
+  }
+
+  def getProject(idProject: String): Future[Option[Project]] = {
+    projectCollection.one(idProject)
   }
 
   def saveConfiguration(conf: MacroConfiguration) {
@@ -117,15 +118,9 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
   }
 
-
-
-
   def findRepositoriesByNameAndProject(maybeProject: Option[Project], repositoryName: String) = {
     repositoryCollection.findRepositoriesByNameAndProject(maybeProject.get, repositoryName)
   }
-
-
-
 
   def deleteObject(autoSetupId: String) {
     val collection = open_collection("repository")
@@ -259,4 +254,14 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     val configurations = collection.find(query).cursor[MacroConfiguration]().collect[List]()
     configurations
   }
+
+  def saveProject(project: Project) = {
+    projectCollection.save(project)
+  }
+
+  def findScenario(scenarioName: String, maybeProject: Option[Project]) = {
+    scenarioCollection.findProjectScenario(scenarioName, maybeProject)
+  }
+
+
 }

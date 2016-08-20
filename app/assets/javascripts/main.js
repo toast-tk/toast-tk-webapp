@@ -136,7 +136,10 @@
         "editUsersCtrl" : ["./admin/accounts/editusers.controller"],
         "validatorDirective" : ["./admin/accounts/validator.directive"],
         "addTeamCtrl" : ["./admin/teams/addteam.controller"],
-        "editTeamCtrl" : ["./admin/teams/editteam.controller"]
+        "editTeamCtrl" : ["./admin/teams/editteam.controller"],
+        "addProjectCtrl" : ["./admin/projects/addproject.controller"],
+        "editProjectCtrl" : ["./admin/projects/editproject.controller"],
+        "editProjectsCtrl" : ["./admin/projects/editprojects.controller"]
     }
   });
 
@@ -145,14 +148,22 @@
             "homeCtrl",
             "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!config/icon.constants.config.json",
             "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl", "editUsersCtrl", "validatorDirective", "addTeamCtrl", "editTeamCtrl", "editUserCtrl",
-
+            "addProjectCtrl", "editProjectCtrl", "editProjectsCtrl",
 
             "clientService",
             "componentsDir", "sortable", "ngProgress", 
             "angular-ui-tree", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix", "jwtClient", "ngTagsInput"],
-          function(a, b, routerConfig, configConfig, treeLayoutService, login, loginService, loginResolverService, settingsCtrl, newSettingsModalCtrl, repository, scenario, campaign, utilsScenarioService, home, sidebarmenu, layout, layoutService, newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile,
-           adminLayoutCtrl, adminSidebarmenu, addUserCtrl, editUsersCtrl, validatorDirective, addTeamCtrl, editTeamCtrl, editUserCtrl) {
+          function(a, b, routerConfig, configConfig, treeLayoutService,
+                   login, loginService, loginResolverService, settingsCtrl,
+                   newSettingsModalCtrl, repository, scenario, campaign,
+                   utilsScenarioService, home, sidebarmenu, layout, layoutService,
+                   newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile,
+                   adminLayoutCtrl, adminSidebarmenu,
+                   addUserCtrl, editUsersCtrl, validatorDirective,
+                   addTeamCtrl, editTeamCtrl, editUserCtrl,
+                   addProjectCtrl, editProjectCtrl, editProjectsCtrl
+          ) {
 
               var app = angular.module("app", 
                 ['ui.router', "play.routing", "ngAnimate",
@@ -190,14 +201,20 @@
               /* admin */
               app.controller("AdminLayoutCtrl", adminLayoutCtrl.AdminLayoutCtrl);
               app.controller("AdminSidebarMenuCtrl", adminSidebarmenu.AdminSidebarMenuCtrl);
+
               app.controller("AddUserCtrl", addUserCtrl.AddUserCtrl);
               app.controller("EditUserCtrl", editUserCtrl.EditUserCtrl);
               app.controller("EditUsersCtrl", editUsersCtrl.EditUsersCtrl);
+
               app.directive("login", validatorDirective.Login);
               app.directive("email", validatorDirective.Email);
-              
+
               app.controller("AddTeamCtrl", addTeamCtrl.AddTeamCtrl);
               app.controller("EditTeamCtrl", editTeamCtrl.EditTeamCtrl);
+
+              app.controller("AddProjectCtrl", addProjectCtrl.AddProjectCtrl);
+              app.controller("EditProjectCtrl", editProjectCtrl.EditProjectCtrl);
+              app.controller("EditProjectsCtrl", editProjectsCtrl.EditProjectsCtrl);
               
               app.config(routerConfig.RouterConfig);
               app.config(configConfig.ConfigConfig);

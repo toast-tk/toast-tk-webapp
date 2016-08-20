@@ -150,7 +150,36 @@ define(["angular", "exports"], function (angular, exports) {
                         controller: "EditTeamCtrl"
                       }
                     }
-                  });
+                  }).state('adminLayout.addProject', {
+                          url: "/project",
+                          cache: false,
+                          views: {
+                              'content': {
+                                  templateUrl: "assets/html/admin/projects/addproject.html",
+                                  controller: "AddProjectCtrl"
+                              }
+                          }
+                      })
+                      .state('adminLayout.editProject', {
+                          url: "/project/edit/:idProject",
+                          cache: false,
+                          views: {
+                              'content': {
+                                  templateUrl: "assets/html/admin/projects/editproject.html",
+                                  controller: "EditProjectCtrl"
+                              }
+                          }
+                      })
+                      .state('adminLayout.editProjects', {
+                          url: "/project",
+                          cache: false,
+                          views: {
+                              'content': {
+                                  templateUrl: "assets/html/admin/projects/editprojects.html",
+                                  controller: "EditProjectsCtrl"
+                              }
+                          }
+                      });
                  $urlRouterProvider.when('','/');
                  $urlRouterProvider.otherwise('/');
     }

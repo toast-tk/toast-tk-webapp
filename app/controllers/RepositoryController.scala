@@ -2,12 +2,10 @@
 package controllers
 
 import boot.AppBoot
-import controllers.mongo.project.Project
 import controllers.mongo.{RepositoryImpl}
 import play.api.libs.json.{JsError, JsObject, JsArray, Json}
 import play.api.mvc.{Controller, Action}
 import toast.engine.DAOJavaWrapper
-import scala.collection.JavaConversions._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 object RepositoryController extends Controller {

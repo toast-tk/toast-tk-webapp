@@ -3,7 +3,6 @@ define(["angular"], function (angular) {
     return {
         AddTeamCtrl: function ($scope, playRoutes, LoginService, toastr) {
             var user  = LoginService.currentUser();
-
         	$scope.createNewTeam = function(){
                 $scope.isNewTeamFormSubmitted = true;
                 if($scope.teamForm.$valid){
@@ -17,11 +16,9 @@ define(["angular"], function (angular) {
                         } else {
                             toastr.error('Error: '+ response.data);
                         }
-                       
                     });
                 }
             }
-
         }
     };
 });
