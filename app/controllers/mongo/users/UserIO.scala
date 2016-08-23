@@ -18,7 +18,8 @@ case class User(login: String,
                 token : Option[String] = None,
                 isActive : Option[Boolean] = Some(true),
                 lastConnection : Option[String] = Some("11/11/1111"),
-                override val _id: Option[BSONObjectID] = Some(BSONObjectID.generate)) extends Identifiable
+                override val _id: Option[BSONObjectID] = Some(BSONObjectID.generate),
+                idProject: Option[String] = None) extends Identifiable
 
 
 object User extends BSONObjectIdFormats {

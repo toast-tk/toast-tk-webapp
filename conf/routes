@@ -20,10 +20,12 @@ GET           /users                                        controllers.UserCont
 POST          /user                                         controllers.UserController.saveUser()
 GET           /logout                                       controllers.Application.logout()
 GET           /logout/:id                                   controllers.UserController.logout(id: String)
+GET           /user/projects/:id                            controllers.UserController.getUserProjects(id: String)
 
 # Ajax routes: Teams
 POST          /team                                         controllers.TeamController.saveTeam()
 GET           /teams                                        controllers.TeamController.getAllTeams()
+GET           /team/:id                                     controllers.TeamController.getTeam(id: String)
 
 # Ajax Domain Controller 
 GET           /loadAutoSetupCtx/:setupType                  controllers.Application.loadAutoSetupCtx(setupType: String)
@@ -67,7 +69,7 @@ POST          /deleteScenarii                               controllers.Scenario
 
 # Ajax routes: Test Plan Controller
 POST          /saveProject                                  controllers.TestPlanController.saveProject()
-GET           /loadProject/:idProject                       controllers.TestPlanController.loadProject(idProject: String)
+GET           /loadProject/v1/:idProject                    controllers.TestPlanController.loadProject(idProject: String)
 GET           /loadProjectReport/:projectName               controllers.TestPlanController.loadProjectReport(projectName:String)
 GET           /test                                         controllers.TestPlanController.loadTestReport()
 

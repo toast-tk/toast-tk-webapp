@@ -95,7 +95,8 @@ case class UserCollection(collection: BSONCollection){
                 "teams" -> user.teams.getOrElse(List()),
                 "token" -> user.token.getOrElse(""),
                 "isActive" -> user.isActive.getOrElse(false),
-                "lastConnection" -> user.lastConnection.getOrElse("11/11/1111")
+                "lastConnection" -> user.lastConnection.getOrElse("11/11/1111"),
+               "idProject" -> user.idProject
               )
             ),
             upsert=false

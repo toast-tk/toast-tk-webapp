@@ -1,6 +1,7 @@
 package controllers
 
 import boot.AppBoot
+import controllers.ProjectController._
 
 import play.api.mvc._
 import play.api.libs.json.Json
@@ -35,6 +36,10 @@ object TeamController extends Controller {
     }.recoverTotal {
 				e => BadRequest("Detected error:" + JsError.toJson(e))
     }
+  }
+
+  def getTeam(idTeam: String) = Action.async {
+    conn.getTeam(idTeam).map{team => Ok(Json.toJson(team))}
   }
 
   def getAllTeams() = Action.async {

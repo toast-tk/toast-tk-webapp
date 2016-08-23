@@ -112,6 +112,7 @@
         "sortable": "./libs/sortable",
         "homeCtrl": ['./features/home'],
         "loginCtrl" : ['auth/login'],
+        "MainProjectCtrl": ['auth/projects'],
         "loginService" : ['auth/login.service'],
         "loginResolverService" : ['auth/login.resolver.service'],
         "sidebarmenu": ['features/layout/sidebar.menu.controller'],
@@ -136,6 +137,7 @@
         "editUsersCtrl" : ["./admin/accounts/editusers.controller"],
         "validatorDirective" : ["./admin/accounts/validator.directive"],
         "addTeamCtrl" : ["./admin/teams/addteam.controller"],
+        "editTeamsCtrl" : ["./admin/teams/editteams.controller"],
         "editTeamCtrl" : ["./admin/teams/editteam.controller"],
         "addProjectCtrl" : ["./admin/projects/addproject.controller"],
         "editProjectCtrl" : ["./admin/projects/editproject.controller"],
@@ -147,9 +149,11 @@
             "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "ScenarioCtrl", "CampaignCtrl", "utilsScenarioService", 
             "homeCtrl",
             "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!config/icon.constants.config.json",
-            "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl", "editUsersCtrl", "validatorDirective", "addTeamCtrl", "editTeamCtrl", "editUserCtrl",
+            "adminLayoutCtrl", "adminSidebarmenu",
+            "addUserCtrl", "editUsersCtrl", "validatorDirective",
+            "addTeamCtrl", "editTeamsCtrl", "editTeamCtrl", "editUserCtrl",
             "addProjectCtrl", "editProjectCtrl", "editProjectsCtrl",
-
+            "MainProjectCtrl",
             "clientService",
             "componentsDir", "sortable", "ngProgress", 
             "angular-ui-tree", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
@@ -161,8 +165,9 @@
                    newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile,
                    adminLayoutCtrl, adminSidebarmenu,
                    addUserCtrl, editUsersCtrl, validatorDirective,
-                   addTeamCtrl, editTeamCtrl, editUserCtrl,
-                   addProjectCtrl, editProjectCtrl, editProjectsCtrl
+                   addTeamCtrl,editTeamsCtrl, editTeamCtrl, editUserCtrl,
+                   addProjectCtrl, editProjectCtrl, editProjectsCtrl,
+                   MainProjectCtrl
           ) {
 
               var app = angular.module("app", 
@@ -171,6 +176,7 @@
                 "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap", "xeditable", "sidesplit", "webix","angucomplete-alt","toastr","ngTagsInput"]);
               
               app.controller("LoginCtrl", login.LoginCtrl);
+              app.controller("MainProjectCtrl", MainProjectCtrl.MainProjectCtrl);
               app.controller("MainCtrl", home.MainCtrl);
 
               app.controller("ScenarioCtrl", scenario.ScenarioCtrl);
@@ -211,6 +217,7 @@
 
               app.controller("AddTeamCtrl", addTeamCtrl.AddTeamCtrl);
               app.controller("EditTeamCtrl", editTeamCtrl.EditTeamCtrl);
+              app.controller("EditTeamsCtrl", editTeamsCtrl.EditTeamsCtrl);
 
               app.controller("AddProjectCtrl", addProjectCtrl.AddProjectCtrl);
               app.controller("EditProjectCtrl", editProjectCtrl.EditProjectCtrl);

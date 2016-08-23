@@ -1,27 +1,53 @@
- <div class="container-fluid" style="overflow: hidden;">
-
-  <div class="panel panel-default">
-   <div class="panel-heading">
-    <h3 class="panel-title"><i class="fa fa-team-plus fa-fw"></i> edit team
-    </h3>
-   </div>
-   <div class="panel-body">
-    <ul class="list-group">
-    <li class="list-group-item" ng-repeat="tm in teamList">
-    <div style="display: inline-block;">
-      <h4><i class="fa fa-team"></i> {{tm.name}}</h4> 
-      <span >{{tm.description}}</span>
+<div id="adminAddTeam" class="container-fluid" style="overflow: hidden;">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-user-plus fa-fw"></i>
+                Edit a Team
+            </h3>
+        </div>
+        <div class="panel-body">
+            <form name="teamForm" class="form-horizontal" ng-submit="saveTeam()" novalidate>
+                <div class="form-group" ng-class="{'has-error' : (teamForm.name.$dirty || isNewTeamFormSubmitted)  && (teamForm.name.$error.required || (teamForm.name.$invalid && teamForm.name.$touched))  }">
+                    <label for="name" class="col-sm-2 control-label">Name</label>
+                    <div class="col-sm-6">
+                        <input name="name" ng-model="newTeam.name" class="form-control" id="name" placeholder="Name" required minLength="5">
+                        <div ng-if=" (teamForm.name.$dirty || isNewTeamFormSubmitted) && (teamForm.name.$invalid && teamForm.name.$touched)" class="alert alert-danger field-error-alert" role="alert">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            Too short team name, should be at least 5 !
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'has-error' : (teamForm.description.$dirty || isNewTeamFormSubmitted)  && (teamForm.description.$error.required || (teamForm.description.$invalid && teamForm.description.$touched))  }">
+                    <label for="description" class="col-sm-2 control-label">Description</label>
+                    <div class="col-sm-6">
+                        <textarea name="description" ng-model="newTeam.description" class="form-control" id="description" placeholder="Description" required minLength="12"></textarea>
+                        <div ng-if=" (teamForm.description.$dirty || isNewTeamFormSubmitted) && (teamForm.description.$invalid && teamForm.description.$touched)" class="alert alert-danger field-error-alert" role="alert">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            Too short team description, should be at least 12 !
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <i class="fa fa-cog fa-fw"></i> Projects
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="projects" class="col-sm-2 control-label">Projects</label>
+                            <div class="col-sm-10">
+                                <tags-input ng-model="newTeam.projects" style="height:15px;" display-property="name" add-from-autocomplete-only="true">
+                                    <auto-complete source="loadProjects()" load-on-down-arrow="true"></auto-complete>
+                                </tags-input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-default pull-right">Save</button>
+            </form>
+        </div>
     </div>
-      <div style="display: inline-block; float: right;">
-       <button  class="btn btn-default btn-xs btn-edit1" ng-click="editUser(tm._id)">
-        <i class="fa fa-edit"></i>
-       </button>
-       <button ng-if="team._id != tm._id" class="pull-right btn btn-default btn-xs btn-danger1" ng-click="deleteUser(tm._id)">
-        <i class="fa fa-trash"></i>
-       </button>
-      </div>
-     </li>
-    </ul>
-    </div>
-   </div>
- </div>
+</div>

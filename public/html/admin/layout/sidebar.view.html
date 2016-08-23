@@ -37,31 +37,31 @@
                                     <span  ng-if="isCollapsed===false">Add team</span>
                                 </a>
                             </li>
-                            <li ng-class="{'active' : currentState === 'adminLayout.editTeam'}">
-                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.editTeam')">
+                            <li ng-class="{'active' : currentState === 'adminLayout.editTeams'}">
+                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.editTeams')">
                                     <i class="fa fa-user-plus fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
-                                    <span  ng-if="isCollapsed===false">Edit team</span>
+                                    <span  ng-if="isCollapsed===false">Edit teams</span>
                                 </a>
                             </li>
                         </ul>
                     </li>
                     <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#projectCollapse">
-                            <i class="fa fa-users fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
+                            <i class="fa fa-cubes fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
                             <span  ng-if="isCollapsed===false">Projects</span>
                             <i class="fa fa-fw fa-caret-down"></i>
                         </a>
                         <ul id="projectCollapse" class="collapse">
                             <li ng-class="{'active' : currentState === 'adminLayout.addProject'}">
                                 <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.addProject')">
-                                    <i class="fa fa-user-plus fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
+                                    <i class="fa fa-cube fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
                                     <span  ng-if="isCollapsed===false">Add project</span>
                                 </a>
                             </li>
                             <li ng-class="{'active' : currentState === 'adminLayout.editProjects'}">
                                 <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.editProjects')">
-                                    <i class="fa fa-user-plus fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
-                                    <span  ng-if="isCollapsed===false">Edit project</span>
+                                    <i class="fa fa-cube fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
+                                    <span  ng-if="isCollapsed===false">Edit projects</span>
                                 </a>
                             </li>
                         </ul>

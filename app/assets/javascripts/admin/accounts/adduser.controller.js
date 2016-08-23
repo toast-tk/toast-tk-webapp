@@ -2,7 +2,6 @@ define(["angular","CryptoJS/sha256"], function (angular, SHA256) {
     "use strict";
     return {
         AddUserCtrl: function ($scope, $q, playRoutes, toastr) {
-        	$scope.greeting = "Hello World!";
             $scope.isNewUserFormSubmitted = false;
             $scope.newUser = {};
     
@@ -17,7 +16,7 @@ define(["angular","CryptoJS/sha256"], function (angular, SHA256) {
                 if($scope.userForm.$valid){
                     var selectedTeamList = [];
                     ($scope.newUser.teams|| []).forEach(function(team){
-                        selectedTeamList.push(team.name); //TODO add object here !
+                        selectedTeamList.push(team); //TODO add object here !
                     });
                     $scope.newUser.teams = selectedTeamList ;
                     $scope.newUser.password = SHA256($scope.newUser.password).toString();
@@ -32,7 +31,6 @@ define(["angular","CryptoJS/sha256"], function (angular, SHA256) {
             }
 
             $scope.loadTeams = function(){
-                var teamNameList =  [];
                 return playRoutes.controllers.TeamController.getAllTeams().get();
             }
 

@@ -263,5 +263,9 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     scenarioCollection.findProjectScenario(scenarioName, maybeProject)
   }
 
+  def getTeam(idTeam: String) = {
+    teamCollection.findTeamBy(BSONDocument("_id"-> BSONObjectID(idTeam)))
+  }
+
 
 }

@@ -1,14 +1,15 @@
 package controllers
 
 import boot.AppBoot
+import com.google.gson.JsonObject
 import controllers.mongo.MongoConnector
+import controllers.mongo.project.Project
 import controllers.mongo.users._
 import play.api.mvc._
-import play.api.libs.json.Json
+import play.api.libs.json._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
-import play.api.libs.json._
 
 import scala.concurrent._
 import scala.concurrent.duration.Duration
@@ -23,7 +24,7 @@ trait InnerUserController {
 
 	def user(id: String) = Action.async {
 		conn.editUser(id).map {
-	        user => { 
+	        user => {
 	        	Ok(Json.toJson(user).as[JsObject] - "password")
 	   		}
     }
@@ -109,4 +110,14 @@ trait InnerUserController {
 		}
 	}
 
+  def getUserProjects(id: String) = Action.async {
+    conn.editUser(id).map {
+      user => {
+        val projects = for (team <- user.get.teams.get; project <- team.projects
+        ) yield (Json.obj("team" -> team.name, "project" -> project))
+        Ok(Json.toJson(projects))
+      }
+    }
+  }
+  
 }

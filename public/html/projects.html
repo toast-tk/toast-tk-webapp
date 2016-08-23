@@ -1,0 +1,28 @@
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div ng-include src="'assets/html/layout/topmenu.view.html'"></div>
+</nav>
+<div class="panel panel-default" style="position: absolute; margin: auto; width: 100%; top: 10%;">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="fa fa-cubes fa-fw"></i> Select Project <small> - navigate related scenarios, components & reports</small>
+        </h3>
+    </div>
+    <div class="panel-body">
+        <ul class="list-group">
+            <li class="list-group-item" ng-repeat="project in projectList">
+                <div style="display: inline-block;">
+                    <h4>
+                        <i class="fa fa-cube"></i> {{project.name}}
+                    </h4>
+                    <span >{{project.description}}</span>
+                </div>
+                <div style="display: inline-block; float: right;">
+                    <button  class="btn btn-default btn-lg btn-edit1"
+                             ng-click="selectProject(project._id)">
+                        <i class="fa fa-eye"></i>
+                    </button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

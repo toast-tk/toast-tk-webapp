@@ -1,7 +1,9 @@
 package controllers.mongo.teams
+
+import scala.concurrent.duration.Duration
 import scala.util.{Failure, Success}
 
-import scala.concurrent.{Promise, Future}
+import scala.concurrent.{Await, Promise, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import reactivemongo.api.collections.bson.BSONCollection
@@ -36,7 +38,7 @@ case class TeamCollection(collection: BSONCollection){
 				BSONDocument(
 					"name" -> team.name
 					)
-				).map{
+				).map{ //FIXME: change to flatMap
 				case None => {
 					collection.insert(team).onComplete {
 						case Failure(e) => throw e
@@ -44,9 +46,10 @@ case class TeamCollection(collection: BSONCollection){
 					}
 					true
 				}
-				case Some(team) => {
-					println(s"[+] successfully found ${team._id} and $team !")
-					false
+				case Some(t) => {
+					println(s"[+] successfully found ${t._id} and $team !")
+          Await.ready(collection.update(BSONDocument("_id" -> t._id),team,upsert=true), Duration.Inf)
+          true
 				}
 			}
 	}

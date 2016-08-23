@@ -17,7 +17,7 @@ define(["angular"], function(angular) {
                         controller: 'AdminSidebarMenuCtrl',
                         appendTo : angular.element('#sidebarmenu'),
                         width : "225px",
-                        position : "left",
+                        position : "left"
         });
 
 		$sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(isCollapsedRetour){
