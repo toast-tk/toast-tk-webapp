@@ -9,6 +9,7 @@ import scala.util.{Success, Failure}
 
 
 case class Project(name: String,
+                   description: Option[String] = None,
                    override val _id: Option[BSONObjectID] = Some(BSONObjectID.generate)) extends Identifiable
 
 

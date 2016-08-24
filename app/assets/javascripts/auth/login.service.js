@@ -4,6 +4,8 @@ define(["angular","jwtClient"], function (angular, JWT) {
         LoginService: function ($state, playRoutes) {
             var self = this ;
             self.user = null;
+            self.project = null;
+
             return {
                 login: login,
                 logout: logout,
@@ -11,6 +13,7 @@ define(["angular","jwtClient"], function (angular, JWT) {
                 currentUser: currentUser,
                 setUserProject: setUserProject,
                 hasDefaultProject: hasDefaultProject,
+                getDefaultProjectId: getDefaultProjectId,
                 getUserProject: getUserProject,
                 sync : sync
             }
@@ -26,14 +29,12 @@ define(["angular","jwtClient"], function (angular, JWT) {
                     } else {
                         logout();
                     }
-                    // return playRoutes.controllers.Users.user(3).get(); // return promise so we can chain easily
                 }).then(function(response) {
                     console.log("login unexpected problem ", response);
                 });
             }
 
             function logout() {
-                console.log("self.user", self.user);
                 playRoutes.controllers.UserController.logout(self.user.id).get().then(function (response) {
                     JWT.forget();
                     sync();
@@ -43,30 +44,47 @@ define(["angular","jwtClient"], function (angular, JWT) {
 
             // Test if a user is currently authenticated
             function isAuthenticated() {
-                return !!self.user;
+                return !!currentUser();
             }
 
             // Test if a user has a default project defined
             function hasDefaultProject() {
-                return !!self.user.idProject;
+                sync();
+                return self.user.idProject !== null && angular.isDefined(self.user.idProject);
             }
 
             // Return the current user
             function currentUser() {
+                sync();
                 return self.user;
             }
 
+            function getDefaultProjectId(){
+                sync();
+                return self.user.idProject;
+            }
+
             function setUserProject(idProject){
-                if(self.isAuthenticated()){
-                    self.user.idProject = idProject;
-                    var promise = playRoutes.controllers.UserController.saveUser(self.user).get();
+                if(this.isAuthenticated()){
+                    var userCopy = angular.copy(self.user);
+                    userCopy.idProject = idProject;
+                    var promise = playRoutes.controllers.UserController.saveUser().post(userCopy).then(function(response){
+                        var savedUser = response.data;
+                        var newSession = JWT.remember();
+                        newSession.claim.user = savedUser;
+                        JWT.keep(newSession);
+                        sync();
+                    });
                     return promise;
                 }
             }
 
             function getUserProject(idProject){
-                if(self.isAuthenticated() && self.hasDefaultProject()){
-                    var promise = playRoutes.controllers.ProjectController.getProject(idProject).get();
+                if(this.isAuthenticated() === true && this.hasDefaultProject()){
+                    var promise = playRoutes.controllers.ProjectController.getProject(idProject).get().then(function(response){
+                        self.project = response.data;
+                        return self.project;
+                    });
                     return promise;
                 }
             }

@@ -4,6 +4,7 @@ import boot.AppBoot
 import com.google.gson.JsonObject
 import controllers.mongo.MongoConnector
 import controllers.mongo.project.Project
+import controllers.mongo.teams.Team
 import controllers.mongo.users._
 import play.api.mvc._
 import play.api.libs.json._
@@ -110,13 +111,18 @@ trait InnerUserController {
 		}
 	}
 
-  def getUserProjects(id: String) = Action.async {
-    conn.editUser(id).map {
-      user => {
-        val projects = for (team <- user.get.teams.get; project <- team.projects
-        ) yield (Json.obj("team" -> team.name, "project" -> project))
-        Ok(Json.toJson(projects))
+  def getUserProjects(id: String) = Action {
+    val result: Option[User] = Await.result(conn.editUser(id), Duration.Inf)
+    result match {
+      case Some(user)=> {
+        val proxyTeams:List[Team] = user.teams.getOrElse(List());
+        val resultTeams: List[Team] = for (proxyTeam <- proxyTeams;
+                                     team <- Await.result(conn.getTeam(proxyTeam._id.get.stringify),Duration.Inf)) yield (team)
+        val result: List[JsObject] = for (team <- resultTeams; project <- team.projects)
+          yield (Json.obj("team" -> team.name, "project" -> Json.toJson(project)))
+        Ok(Json.toJson(result))
       }
+      case None => BadRequest("No user found with provided id !")
     }
   }
   

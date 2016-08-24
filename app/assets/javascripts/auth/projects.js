@@ -3,20 +3,30 @@ define(["angular"], function(angular) {
 
     return {
         MainProjectCtrl: function($rootScope, $scope, playRoutes, $state, LoginService, toastr) {
-            var user = LoginService.currentUser();
-            var promise = playRoutes.controllers.UserController.getUserProjects(user._id).get();
+            $scope.user = LoginService.currentUser();
+            var promise = playRoutes.controllers.UserController.getUserProjects($scope.user._id).get();
             promise.then(function(response){
                 $scope.projectList = response.data || [];
             });
 
             $scope.selectProject = function(idProject) {
                 LoginService.setUserProject(idProject).then(function () {
-                    $state.go("layout.scenario");
+                    LoginService.getUserProject(idProject).then(function(){
+                        $state.go("layout.scenario");
+                    })
                 }, function (error) {
-                    toastr.error('Invalid username or password!');
+                    toastr.error('Error: Setting default project failed !');
                 });
-
             };
+
+            $scope.logout = function(){
+                LoginService.logout();
+                $state.go('login');
+            }
+
+            $scope.goToState = function(stateName){
+                $state.go(stateName);
+            }
         }
     };
 

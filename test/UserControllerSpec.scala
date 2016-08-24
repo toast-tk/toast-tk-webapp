@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit
 import akka.util.Timeout
 import boot.AppBoot
 import controllers.mongo.MongoConnector
+import controllers.mongo.project.Project
 import controllers.mongo.teams.Team
 import controllers.mongo.users.User
 import controllers.{UserController, InnerUserController}
@@ -13,7 +14,7 @@ import org.scalatest.{BeforeAndAfterAll, BeforeAndAfter}
 import org.scalatest.junit.JUnitRunner
 import org.scalatestplus.play.PlaySpec
 import de.flapdoodle.embed.mongo.distribution.Version
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Controller
 import play.api.test.{FakeApplication, Helpers, FakeRequest}
 import scala.concurrent.duration.Duration
@@ -63,6 +64,17 @@ class UserControllerSpec extends PlaySpec
       userTeams.length mustEqual 1
       userTeams.head.name mustBe "default"
     }
+
+    "4: admin user is part of the default team having one default project" in {
+      val controller = new TestUserController()
+      val userResult: Future[Result] = controller.getAllUsers().apply(FakeRequest())
+      val idUser = Helpers.contentAsJson(userResult).as[List[User]].head._id.get.stringify
+      val projectResult: Future[Result] = controller.getUserProjects(idUser).apply(FakeRequest())
+      val projects = Helpers.contentAsJson(projectResult).as[List[JsObject]]
+      projects.length mustEqual 1
+      (projects(0) \ "project" \ "name").as[String] mustBe "default"
+    }
+
   }
 
   override def afterAll {

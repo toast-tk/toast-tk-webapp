@@ -32,11 +32,7 @@ case class UserCollection(collection: BSONCollection){
     val query = BSONDocument("login" -> user.login, "password" -> user.password)
     var authPersonOpt: Option[User] = None;
     var token: Option[String] = None;
-    val userFuture =
-      collection.
-        find(query).
-        cursor[User]().
-        collect[List]()
+    val userFuture = collection.find(query).cursor[User]().collect[List]()
     Await.result(userFuture.map { users =>
       for (person <- users) {
         token = Some(BearerTokenGenerator.generateToken)
@@ -99,11 +95,10 @@ case class UserCollection(collection: BSONCollection){
                "idProject" -> user.idProject
               )
             ),
-            upsert=false
+            upsert=true
           ).onComplete {
             case Failure(e) => throw e
             case Success(_) => println("successfully saved configuration !")
-              
           }
           true
         }

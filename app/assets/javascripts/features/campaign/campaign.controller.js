@@ -1,9 +1,13 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        CampaignCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $window, $timeout, $sideSplit, LayoutService) {
-            $scope.projects = [];
+        CampaignCtrl: function ($rootScope, $scope, playRoutes,
+                                ngProgress, $window, $timeout,
+                                $sideSplit, LayoutService,
+                                defaultProject) {
 
+            $scope.defaultProject = defaultProject
+            $scope.projects = [];
 
             /* begin : adjusting page content size */
             $scope.effectContentWidth = LayoutService.reAdjustContentSize();
@@ -18,7 +22,7 @@ define(["angular"], function (angular) {
                 $scope.displayReport($scope.selectedProject);
             }
 
-            playRoutes.controllers.ScenarioController.loadScenarii().get().then(function (response) {
+            playRoutes.controllers.ScenarioController.loadScenarii($scope.defaultProject._id).get().then(function (response) {
                 var data = response.data || [];
                 $scope.scenarii = data;
             });
@@ -47,8 +51,10 @@ define(["angular"], function (angular) {
                 campaign.scenarii.splice(campaign.scenarii.indexOf(scenario), 1);
             }
 
-            $scope.saveProject = function (project) {
-                playRoutes.controllers.TestPlanController.saveProject().post(project).then(function (response) {
+            $scope.saveProject = function (testPlan) {
+                var testPlanToSave = testPlan;
+                testPanToSave.project = $scope.defaultProject;
+                playRoutes.controllers.TestPlanController.saveProject().post(testPanToSave).then(function (response) {
                     load();
                 });
             }
@@ -73,7 +79,7 @@ define(["angular"], function (angular) {
             }
 
             function load() {
-                playRoutes.controllers.TestPlanController.loadProject().get().then(function (response) {
+                playRoutes.controllers.TestPlanController.loadProject($scope.defaultProject._id).get().then(function (response) {
                     var data = response.data || [];
                     $scope.projects = data;
                 });

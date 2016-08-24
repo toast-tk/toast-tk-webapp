@@ -1,24 +1,27 @@
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div ng-include src="'assets/html/layout/topmenu.view.html'"></div>
 </nav>
-<div class="panel panel-default" style="position: absolute; margin: auto; width: 100%; top: 10%;">
+<div class="panel panel-default" style="position: absolute; margin: auto; width: 100%; top: 50px;">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <i class="fa fa-cubes fa-fw"></i> Select Project <small> - navigate related scenarios, components & reports</small>
+            <i class="fa fa-cubes fa-fw"></i> Select Your Default Project <small> - navigate related scenarios, components & reports</small>
         </h3>
     </div>
     <div class="panel-body">
         <ul class="list-group">
-            <li class="list-group-item" ng-repeat="project in projectList">
+            <li class="list-group-item" ng-repeat="result in projectList">
                 <div style="display: inline-block;">
                     <h4>
-                        <i class="fa fa-cube"></i> {{project.name}}
+                        <i class="fa fa-cube fa-lg"></i> {{result.project.name}}
                     </h4>
-                    <span >{{project.description}}</span>
+                    <span >{{result.project.description}}</span>
+                    <span>
+                        <i class="fa fa-users fa-xs"></i> Team: {{result.team}}
+                    </span>
                 </div>
                 <div style="display: inline-block; float: right;">
                     <button  class="btn btn-default btn-lg btn-edit1"
-                             ng-click="selectProject(project._id)">
+                             ng-click="selectProject(result.project._id)">
                         <i class="fa fa-eye"></i>
                     </button>
                 </div>

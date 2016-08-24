@@ -5,7 +5,6 @@ version := "1.3-rc4"
 scalaVersion := "2.11.8"
 
 resolvers += Resolver.mavenLocal
-//resolvers += "Local Maven Repository" at "file:///d:/Apps/m2/repository"
 
 resolvers += "MavenSnapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
@@ -21,7 +20,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "bootstrap" % "3.2.0-1",
   "io.toast-tk" % "toast-tk-runtime" % "0.1.4-SNAPSHOT",
   "io.toast-tk" % "toast-tk-dao-api" % "0.1.4-SNAPSHOT",
-  "io.toast-tk" % "toast-tk-selenium-plugin" % "0.1.4-SNAPSHOT",
+  "org.seleniumhq.selenium" % "selenium-java" % "2.46.0",
+  //"io.toast-tk" % "toast-tk-selenium-plugin" % "0.1.4-SNAPSHOT",
   "io.toast-tk" % "toast-tk-interpret" % "0.1.4-SNAPSHOT",
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0",
   "com.pauldijou" %% "jwt-play" % "0.5.1",

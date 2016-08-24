@@ -37,9 +37,12 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   val scenarioCollection = ScenarioCollection(open_collection("scenarii"), repositoryCollection)
 
   def init() = {
-    teamCollection.initDefaultTeam().map{
-      team =>
-        userCollection.initAdminAccount(team)
+    projectCollection.initDefault().map{
+      project =>
+        teamCollection.initDefaultTeam(project).map{
+          team =>
+            userCollection.initAdminAccount(team)
+        }
     }
   }
 
@@ -78,7 +81,6 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   }
 
   def editUser(id: String): Future[Option[User]] = {
-
     val collection = open_collection("users")
     val bsonId = BSONObjectID(id)
     val query = BSONDocument("_id" -> bsonId)

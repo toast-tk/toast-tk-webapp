@@ -1,5 +1,7 @@
 package controllers.mongo.teams
 
+import controllers.mongo.project.Project
+
 import scala.concurrent.duration.Duration
 import scala.util.{Failure, Success}
 
@@ -12,7 +14,7 @@ import reactivemongo.bson.{BSONDocument}
 
 case class TeamCollection(collection: BSONCollection){
 
-  def initDefaultTeam(): Future[Team] = {
+  def initDefaultTeam(project: Project): Future[Team] = {
     val defaultTeamName:String = "default"
     findTeamBy(BSONDocument(
       "name" -> defaultTeamName
@@ -21,13 +23,15 @@ case class TeamCollection(collection: BSONCollection){
         case Some(t) => Future.successful(t)
         case None => {
           val p = Promise[Team]
-          val defaultTeam = new Team(name=defaultTeamName, description ="default team")
+          val defaultTeam = new Team(name=defaultTeamName,
+            description ="default team",
+            projects = List(project)
+          )
           collection.insert(defaultTeam).onComplete {
             case Failure(e) => throw e
             case Success(_) => p.success(defaultTeam)
           }
-          val f: Future[Team] = p.future
-          f
+          p.future
         }
       }
     )

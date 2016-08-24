@@ -81,7 +81,7 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
     }
     val jsonRowsAsString = Json.stringify(Json.toJson(outputRows.reverse))
     Scenario(_id = scenario._id, name= scenario.name,
-      cType = scenario.cType,
+      `type` = scenario.`type`,
       driver = scenario.driver,
       rows = Some(jsonRowsAsString),
       parent= scenario.parent, project = scenario.project)
@@ -108,7 +108,7 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
     val jsonRowsAsString = Json.stringify(Json.toJson(outputRows))
     Scenario(_id = scenario._id,
       name= scenario.name,
-      cType = scenario.cType,
+      `type` = scenario.`type`,
       driver = scenario.driver,
       rows = Some(jsonRowsAsString),
       parent= scenario.parent,

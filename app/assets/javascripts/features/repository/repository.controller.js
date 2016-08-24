@@ -1,7 +1,11 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $timeout, $uibModal, $sideSplit, LayoutService, toastr, ICONS) {
+        RepositoryCtrl: function ($rootScope, $scope, playRoutes,
+                                  ngProgress, $timeout, $uibModal,
+                                  $sideSplit, LayoutService, toastr, ICONS,
+                                  defaultProject) {
+            $scope.defaultProject = defaultProject;
             $scope.run_config_types = [ "swing page", "web page"];
             $scope.autosetups = [];
             $scope.newAutoSetupRow = {};
@@ -73,6 +77,7 @@ define(["angular"], function (angular) {
             $scope.saveAutoConfigBlock = function (autosetup) {
                 var deepCopy = angular.copy(autosetup);
                 delete deepCopy.columns;
+                deepCopy.project = $scope.defaultProject;
                 playRoutes.controllers.RepositoryController.saveAutoConfigBlock().post(deepCopy).then(function (response) {
                      __init__();
                      toastr.success('Saved Objet repository elements !');
@@ -91,9 +96,9 @@ define(["angular"], function (angular) {
             function __init__() {
                 if(angular.isDefined($scope.autoSetupConfigFilter) && $scope.autoSetupConfigFilter != ""){
                     if($scope.autoSetupConfigFilter == "swing page"){
-                        playRoutes.controllers.RepositoryController.loadAutoConfiguration().get().then(handleResult);
+                        playRoutes.controllers.RepositoryController.loadAutoConfiguration($scope.defaultProject._id).get().then(handleResult);
                     }else if ($scope.autoSetupConfigFilter == "web page"){
-                        playRoutes.controllers.RepositoryController.loadWebPageRepository().get().then(handleResult);
+                        playRoutes.controllers.RepositoryController.loadWebPageRepository($scope.defaultProject._id).get().then(handleResult);
                     }
                 }
 
@@ -105,7 +110,6 @@ define(["angular"], function (angular) {
                     $scope.autosetups = autosetups || [];
                 }
             }
-
 
             __init__();
         }

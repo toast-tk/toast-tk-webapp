@@ -5,18 +5,19 @@ define(["angular"], function(angular) {
     	}
 
 
-	LayoutCtrl.$inject = ['$scope','$sideSplit','$state','$http','$timeout',"checkLoggedAndGetUser"];
+	LayoutCtrl.$inject = ['$scope','$sideSplit','$state', 'LoginService', 'user', 'defaultProject'];
 
-	function LayoutCtrl($scope, $sideSplit, $state, $http, $timeout, LoginService, checkLoggedAndGetUser) {
+	function LayoutCtrl($scope, $sideSplit, $state, LoginService, user, defaultProject) {
 		$scope.isCollapsed = false;
-		$scope.user = checkLoggedAndGetUser ;
+		$scope.user = user;
+        $scope.project = defaultProject;
 
 		$sideSplit.open({ 
                         templateUrl: 'assets/html/layout/sidebar.view.html',
                         controller: 'SidebarMenuCtrl',
                         appendTo : angular.element('#sidebarmenu'),
                         width : "225px",
-                        position : "left",
+                        position : "left"
         });
 
 		$sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(isCollapsedRetour){
@@ -27,19 +28,8 @@ define(["angular"], function(angular) {
 		$scope.logout = function(){
 			LoginService.logout();
 			$state.go('login');
-				/*$http.get('/logout').then(function(){
-
-					$state.transitionTo($state.current, {}, {location : "replace", reload: true});
-			});*/
 		}
 
-		/*
-		$scope.collapse = function(){
-			 $sideSplit.close({ 
-                             id: angular.element('#sidebarmenu'),
-                             message :"collapsed!"
-                      });
-		};*/
 	}
 
 });

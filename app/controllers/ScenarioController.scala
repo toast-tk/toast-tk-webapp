@@ -80,7 +80,7 @@ object ScenarioController extends Controller {
       var res = "h1. Name:" + scenario.name + "\n"
       res = res + "#scenario id:" + scenario._id.get + "\n"
       res = res + "#scenario driver:" + scenario.driver + "\n"
-      res = res + "|| scenario || " + scenario.cType + " ||\n"
+      res = res + "|| scenario || " + scenario.`type` + " ||\n"
       res = res + lines
       
       JsString(res)
@@ -91,7 +91,7 @@ object ScenarioController extends Controller {
         var res = "h1. Name:" + scenario.name + "\n"
         res = res + "#scenario id:" + scenario._id.get + "\n"
         res = res + "#scenario driver:" + scenario.driver + "\n"
-        res = res + "|| scenario || " + scenario.cType + " ||\n"
+        res = res + "|| scenario || " + scenario.`type` + " ||\n"
         res = res + lines
 
         JsString(res)
@@ -225,7 +225,7 @@ object ScenarioController extends Controller {
             } else {
               scenario.rows.getOrElse("").split("\n").toList.mkString("\n")
             }
-            Ok(Json.toJson(Json.obj("type" -> scenario.cType,"rows" -> lines)))
+            Ok(Json.toJson(Json.obj("type" -> scenario.`type`,"rows" -> lines)))
         }
         case None => BadRequest("Scenario not found !")
       } 

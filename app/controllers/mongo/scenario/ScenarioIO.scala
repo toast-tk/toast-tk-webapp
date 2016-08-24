@@ -8,7 +8,7 @@ import reactivemongo.bson._
 
 case class Scenario(
                      name: String,
-                     cType: String,
+                     `type`: String,
                      driver: String,
                      rows: Option[String] = None,
                      parent: Option[String] = None,

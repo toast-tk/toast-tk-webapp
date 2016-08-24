@@ -19,7 +19,7 @@ case class WebPage(id: Option[String],
                    project: Option[Project]) extends Page
 case class WebPageElement(id: Option[String],
                           name: String,
-                          elementType: String,
+                          `type`: String,
                           locator: String,
                           method: Option[String],
                           position: Option[Int])
@@ -56,14 +56,14 @@ object WebPageElementBSONWriter extends BSONDocumentWriter[WebPageElement] {
         case None => BSONDocument(
                 "_id" -> BSONObjectID.generate,
                 "name"-> formatName(wpe.name),
-                "type" -> wpe.elementType,
+                "type" -> wpe.`type`,
                 "locator" -> wpe.locator,
                 "method" -> wpe.method,
                 "position" -> wpe.position)
         case value:Option[String] => BSONDocument(
                 "_id" -> BSONObjectID(wpe.id.get),
                 "name"-> formatName(wpe.name),
-                "type" -> wpe.elementType,
+                "type" -> wpe.`type`,
                 "locator" -> wpe.locator,
                 "method" -> wpe.method,
                 "position" -> wpe.position)

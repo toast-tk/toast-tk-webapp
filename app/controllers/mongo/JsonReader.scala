@@ -36,6 +36,11 @@ abstract class IdentifiableCollection[T<:Identifiable](collection: BSONCollectio
     results
   }
 
+  def findBy(query: BSONDocument)(implicit writer: BSONDocumentReader[T], ex: ExecutionContext):Future[Option[T]] = {
+    val result = collection.find(query).one[T]
+    result
+  }
+
   def one(id: String)(implicit writer: BSONDocumentReader[T], ex: ExecutionContext):Future[Option[T]] = {
     val query = BSONDocument("_id" -> BSONObjectID(id))
     val result = collection.find(query).one[T]
@@ -48,11 +53,11 @@ case class ConfigurationSyntax(sentence: String, typed_sentence: String, descrip
 case class ConfigurationRow(group: String, name: String, syntax: List[ConfigurationSyntax])
 case class MacroConfiguration(id: Option[String], cType: String, rows: List[ConfigurationRow])
 
-case class ServiceEntityConfig(id: Option[String], name: String, cType: String, rows: Option[List[EntityField]])
-case class ServiceEntityConfigWithRefs(id: Option[String], name: String, cType: String, rows: Option[List[DBRef]])
+case class ServiceEntityConfig(id: Option[String], name: String, `type`: String, rows: Option[List[EntityField]])
+case class ServiceEntityConfigWithRefs(id: Option[String], name: String, `type`: String, rows: Option[List[DBRef]])
 case class AutoSetupConfigWithRefs(id: Option[String],
                                    name: String,
-                                   cType: String,
+                                   `type`: String,
                                    rows: Option[List[DBRef]],
                                    project: Option[Project])
 
@@ -156,11 +161,11 @@ object AutoSetupConfigWithRefs{
   implicit object AutoSetupConfigurationWriter extends BSONDocumentWriter[AutoSetupConfigWithRefs] {
     def write(configuration: AutoSetupConfigWithRefs): BSONDocument = 
       configuration.id match {
-        case None => BSONDocument("name"-> configuration.name, "type" -> configuration.cType,
+        case None => BSONDocument("name"-> configuration.name, "type" -> configuration.`type`,
           "rows" -> configuration.rows.getOrElse(List()),
           "project" -> configuration.project.get)
         case value:Option[String] => BSONDocument("_id" -> BSONObjectID(value.get), "name"-> configuration.name,
-          "type" -> configuration.cType, "rows" -> configuration.rows.getOrElse(List()),
+          "type" -> configuration.`type`, "rows" -> configuration.rows.getOrElse(List()),
           "project" -> configuration.project.get)
       }
   }

@@ -1,18 +1,18 @@
- <div id="wrapper">
+<div id="wrapper">
 
-        <!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-<!-- Brand and toggle get grouped for better mobile display -->
-            <div ng-include src="'assets/html/layout/topmenu.view.html'"></div>
-            <div class="collapse navbar-collapse navbar-ex1-collapse">
-                 <div id="sidebarmenu"></div>
-            </div>
-        </nav>
-
-        <div id="page-wrapper" ng-class="{'page-wrapper-collapsed': isCollapsed === true, 'page-wrapper' : isCollapsed === false }">
-          <div ui-view="content"></div>
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div ng-include src="'assets/html/layout/topmenu.view.html'"></div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <div id="sidebarmenu"></div>
         </div>
-        <!-- /#page-wrapper -->
+    </nav>
 
+    <div id="page-wrapper" ng-class="{'page-wrapper-collapsed': isCollapsed === true, 'page-wrapper' : isCollapsed === false }">
+        <div ui-view="content"></div>
     </div>
-    <!-- /#wrapper -->
+    <!-- /#page-wrapper -->
+
+</div>
+<!-- /#wrapper -->

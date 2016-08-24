@@ -38,7 +38,7 @@ case class RepositoryCollection(collection: BSONCollection, elementCollection: B
           loadedElementFutureList.map(elements => RepositoryImpl(
             id = configurationWithRef.id,
             name = configurationWithRef.name,
-            cType = configurationWithRef.cType,
+            `type` = configurationWithRef.`type`,
             rows = Some(elements.flatMap(_.toList)),
             project = configurationWithRef.project)
           )
@@ -73,7 +73,7 @@ case class RepositoryCollection(collection: BSONCollection, elementCollection: B
       case _ => List()
     }
     val autoSetupWithRefs: AutoSetupConfigWithRefs = AutoSetupConfigWithRefs (
-      id = repository.id, name = repository.name, cType = repository.cType, rows = Some(dbRefs), project = repository.project
+      id = repository.id, name = repository.name, `type` = repository.`type`, rows = Some(dbRefs), project = repository.project
     )
 
     println("[+] successfully saved configuration elements, persisting configuration..")

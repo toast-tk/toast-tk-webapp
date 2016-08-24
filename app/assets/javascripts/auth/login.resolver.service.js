@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        ResolversService : function (LoginService, $state, $q) {
+        ResolversService : function (LoginService, $state, $q, playRoutes) {
 
             return {
                 checkLoggedLoginResolve : checkLoggedLoginResolve,
@@ -18,9 +18,12 @@ define(["angular"], function (angular) {
                         $state.go("project");
                         deferred.reject();
                     }else{
-                       $state.go("layout.scenario");
-                       deferred.resolve();
+                        $state.go("layout.scenario");
+                        deferred.resolve();
                     }
+                }else {
+                    $state.go("login");
+                    deferred.reject();
                 }
                 return deferred.promise;
             }
@@ -29,22 +32,35 @@ define(["angular"], function (angular) {
                 var deferred = $q.defer();
                 LoginService.sync()
                 if (LoginService.isAuthenticated() === true) {
-                    var user  = LoginService.currentUser();
+                    var user = LoginService.currentUser();
                     deferred.resolve(user);
-                } else {
-                    $state.go("login");
+                }else{
                     deferred.reject();
                 }
                 return deferred.promise;
             }
 
-            function checkDefaultProjectResolve(){
+            function checkDefaultProjectResolve(user){
                 var deferred = $q.defer();
                 LoginService.sync()
-                if (LoginService.hasDefaultProject() === false) {
-                    $state.go("project");
+                if (!LoginService.isAuthenticated()) {
+                    $state.go("login");
+                    deferred.reject();
                 }
-                deferred.resolve();
+                else if (!LoginService.hasDefaultProject()) {
+                    $state.go("project");
+                    deferred.reject();
+                }else{
+                    var idProject = LoginService.getDefaultProjectId();
+                    playRoutes.controllers.ProjectController.getProject(idProject).get().then(function(response){
+                        var project = response.data;
+                        deferred.resolve(project);
+                    }, function(error){
+                        console.log(error);
+                        $state.go("project");
+                        deferred.reject();
+                    });
+                }
                 return deferred.promise;
             }
         }

@@ -77,7 +77,7 @@ object Application extends Controller {
     scenarioR.map {
       case scenario: InspectedScenario =>
         val logInstance = Scenario(name = scenario.name,
-                                  cType = "swing", 
+                                  `type` = "swing",
                                   driver = "swing", 
                                   rows = Some(scenario.steps),
                                   parent = Some("0"),
@@ -101,10 +101,10 @@ object Application extends Controller {
       repository => {
         def wikifiedObject(page: RepositoryImpl): JsValue = {
           var res = "page id:" + page.id.get + "\n"
-          res = res + "|| setup || " +  page.cType + " || " + page.name + " ||\n"
+          res = res + "|| setup || " +  page.`type` + " || " + page.name + " ||\n"
           res = res + "| name | type | locator |\n"
           for (row <- page.rows.getOrElse(List())) {
-            res = res + "|" + row.name + "|" + row.elementType + "|" + row.locator + "|\n"
+            res = res + "|" + row.name + "|" + row.`type` + "|" + row.locator + "|\n"
           }
           res = res + "\n"
           JsString(res)
@@ -121,10 +121,10 @@ object Application extends Controller {
       repository => {
         def wikifiedObject(page: RepositoryImpl): JsValue = {
           var res = "page id:" + page.id.get + "\n"
-          res = res + "|| setup || " +  page.cType + " || " + page.name + " ||\n"
+          res = res + "|| setup || " +  page.`type` + " || " + page.name + " ||\n"
           res = res + "| name | type | locator | method | position |\n"
           for (row <- page.rows.getOrElse(List())) {
-            res = res + "|" + row.name + "|" + row.elementType + "|" + row.locator + "|" + row.method.getOrElse("CSS") + "|" + row.position.getOrElse(0) + "|\n"
+            res = res + "|" + row.name + "|" + row.`type` + "|" + row.locator + "|" + row.method.getOrElse("CSS") + "|" + row.position.getOrElse(0) + "|\n"
           }
           res = res + "\n"
           JsString(res)

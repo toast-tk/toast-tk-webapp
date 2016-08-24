@@ -5,12 +5,12 @@ define(["angular"], function(angular) {
     	}
 
 
-	AdminLayoutCtrl.$inject = ['$scope','$sideSplit','$state','$http','$timeout','checkLoggedAndGetUser'];
+	AdminLayoutCtrl.$inject = ['$scope','$sideSplit','$state', 'user', 'defaultProject'];
 
-	function AdminLayoutCtrl($scope, $sideSplit, $state, $http, $timeout, LoginService, checkLoggedAndGetUser) {
+	function AdminLayoutCtrl($scope, $sideSplit, $state, user, defaultProject) {
 		$scope.isCollapsed = false;
-		$scope.user = checkLoggedAndGetUser ;
-
+		$scope.user = user ;
+        $scope.project = defaultProject;
 
 		$sideSplit.open({ 
                         templateUrl: 'assets/html/admin/layout/sidebar.view.html',
@@ -29,6 +29,10 @@ define(["angular"], function(angular) {
 			LoginService.logout();
 			$state.go('login');
 		}
+
+        $scope.goToState = function(stateName){
+            $state.go(stateName);
+        }
 	}
 
 });
