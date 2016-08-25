@@ -18,7 +18,7 @@ import reactivemongo.api.commands.WriteResult
 
 import java.security.SecureRandom
 
-case class UserCollection(collection: BSONCollection){
+case class kUserCollection(collection: BSONCollection){
   def initAdminAccount(team: Team): Future[Boolean] = {
     persistDefaultSuperAdminUser(team)
   }
@@ -65,7 +65,12 @@ case class UserCollection(collection: BSONCollection){
 
   def saveUser(user: User)  : Future[Boolean] = {
     findUserBy(
-      BSONDocument("login" -> user.login, "email" -> user.email)
+      BSONDocument(
+        "$or" -> BSONArray(
+          BSONDocument("_id" -> user._id.get),
+          BSONDocument("login" -> user.login, "email" -> user.email)
+        )
+      )
     ).map{
       case None => {
         println("[+] inserting user information : " + user._id.get.stringify)
