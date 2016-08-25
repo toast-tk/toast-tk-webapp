@@ -18,7 +18,7 @@ import reactivemongo.api.commands.WriteResult
 
 import java.security.SecureRandom
 
-case class kUserCollection(collection: BSONCollection){
+case class UserCollection(collection: BSONCollection){
   def initAdminAccount(team: Team): Future[Boolean] = {
     persistDefaultSuperAdminUser(team)
   }
