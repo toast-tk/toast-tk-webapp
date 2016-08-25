@@ -19,7 +19,7 @@ abstract class IdentifiableCollection[T<:Identifiable](collection: BSONCollectio
 
   def save(identifiable: T)(implicit writer: BSONDocumentWriter[T], ex: ExecutionContext): Future[T] = {
     val p = Promise[T]
-    collection.update(BSONDocument("_id" -> identifiable._id), identifiable, upsert = true).onComplete {
+    collection.update(BSONDocument("_id" -> identifiable._id), BSONDocument("$set" -> identifiable), upsert = true).onComplete {
       case Failure(e) => {
         throw e
       }

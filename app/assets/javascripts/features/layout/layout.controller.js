@@ -30,6 +30,9 @@ define(["angular"], function(angular) {
 			$state.go('login');
 		}
 
+        $scope.goToState = function(stateName){
+            $state.go(stateName);
+        }
 	}
 
 });

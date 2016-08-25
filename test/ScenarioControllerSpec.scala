@@ -43,7 +43,7 @@ class ScenarioControllerSpec extends PlaySpec
   "ScenarioCollection" should {
     "1: save a scenario with no ID" in {
       val collection:ScenarioCollection = AppBoot.conn.scenarioCollection
-      val newScenario = new Scenario(name="scenario", cType="web", driver="", project = Some(myProject))
+      val newScenario = new Scenario(name="scenario", `type`="web", driver="", project = Some(myProject))
       val result: Scenario = Await.result(collection.save(newScenario), Duration.Inf)
       val jsonId: JsString = ((Json.toJson(result).as[JsObject]) \ "_id").as[JsString]
       jsonId.value mustEqual result._id.get.stringify
@@ -51,9 +51,9 @@ class ScenarioControllerSpec extends PlaySpec
 
     "2: upsert a scenario with ID" in {
       val collection:ScenarioCollection = AppBoot.conn.scenarioCollection
-      val newScenario = new Scenario(name="scenario", cType="web", driver="", project = Some(myProject))
+      val newScenario = new Scenario(name="scenario", `type`="web", driver="", project = Some(myProject))
       Await.ready(collection.save(newScenario), Duration.Inf)
-      val updatedScenario = new Scenario(name="scenario", cType="web", driver="update", project = Some(myProject), _id=newScenario._id)
+      val updatedScenario = new Scenario(name="scenario", `type`="web", driver="update", project = Some(myProject), _id=newScenario._id)
       Await.ready(collection.save(updatedScenario), Duration.Inf)
       val result: Option[Scenario] = Await.result(collection.one(newScenario._id.get.stringify), Duration.Inf)
       result.isDefined mustBe true
@@ -62,9 +62,9 @@ class ScenarioControllerSpec extends PlaySpec
 
     "3: find a scenario by name and project" in {
       val collection:ScenarioCollection = AppBoot.conn.scenarioCollection
-      val scenario1 = new Scenario(name="scenario", cType="web", driver="", project = Some(myProject))
+      val scenario1 = new Scenario(name="scenario", `type`="web", driver="", project = Some(myProject))
       Await.ready(collection.save(scenario1), Duration.Inf)
-      val scenario2 = new Scenario(name="scenario", cType="web", driver="", project = Some(myProject2))
+      val scenario2 = new Scenario(name="scenario", `type`="web", driver="", project = Some(myProject2))
       Await.ready(collection.save(scenario2), Duration.Inf)
       val result: Option[Scenario] = Await.result(collection.findProjectScenario("scenario", scenario2.project), Duration.Inf)
       result.isDefined mustBe true

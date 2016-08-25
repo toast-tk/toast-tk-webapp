@@ -21,9 +21,8 @@ define(["angular"], function (angular) {
                         $state.go("layout.scenario");
                         deferred.resolve();
                     }
-                }else {
-                    $state.go("login");
-                    deferred.reject();
+                }else{
+                    deferred.resolve();
                 }
                 return deferred.promise;
             }

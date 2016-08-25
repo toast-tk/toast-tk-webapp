@@ -1,5 +1,7 @@
 package controllers.mongo.users
 
+import java.util.Date
+
 import controllers.mongo.teams.Team
 
 import scala.util.{Failure, Success}
@@ -45,8 +47,9 @@ case class UserCollection(collection: BSONCollection){
           person.teams,
           token,
           Some(true),
-          None,
-          person._id)
+          person.lastConnection,
+          person._id,
+          person.idProject)
         authPersonOpt = Some(authPerson)
         println(s"dataobj Token ----> ${authPersonOpt}")
         saveUser(authPerson)
@@ -61,76 +64,68 @@ case class UserCollection(collection: BSONCollection){
   }
 
   def saveUser(user: User)  : Future[Boolean] = {
-    findUserBy(BSONDocument(
-        "$or" -> BSONArray(
-          BSONDocument(
-            "_id" -> BSONDocument("$ne" -> user._id),
-            "login" -> user.login
-            ),
-          BSONDocument(
-            "_id" -> BSONDocument("$ne" -> user._id),
-            "email" -> user.email
-            )
-          )
-        )
-       ).map{
-        case None => {
-          collection.insert(user).onComplete {
-            case Failure(e) => throw e
-            case Success(_) => println("[+] successfully inserted ${user.id} and $user !")
-          }
-          true
+    findUserBy(
+      BSONDocument("login" -> user.login, "email" -> user.email)
+    ).map{
+      case None => {
+        println("[+] inserting user information : " + user._id.get.stringify)
+        collection.insert(user).onComplete {
+          case Failure(e) => throw e
+          case Success(_) => println("[+] successfully inserted ${user.id} and $user !")
         }
-        case Some(foundUser) => {
-          collection.update(BSONDocument("_id" -> foundUser._id),
-            BSONDocument(
-              "$set" -> BSONDocument(
-                "firstName"-> user.firstName,
-                "lastName" -> user.lastName,
-                "email" -> user.email,
-                "teams" -> user.teams.getOrElse(List()),
-                "token" -> user.token.getOrElse(""),
-                "isActive" -> user.isActive.getOrElse(false),
-                "lastConnection" -> user.lastConnection.getOrElse("11/11/1111"),
-               "idProject" -> user.idProject
-              )
-            ),
-            upsert=true
-          ).onComplete {
-            case Failure(e) => throw e
-            case Success(_) => println("successfully saved configuration !")
-          }
-          true
-        }
+        true
       }
+      case Some(foundUser) => {
+        println("[+] updating user information : " + foundUser._id.get.stringify)
+        collection.update(BSONDocument("_id" -> foundUser._id),
+          BSONDocument(
+            "$set" -> BSONDocument(
+              "firstName"-> user.firstName,
+              "lastName" -> user.lastName,
+              "email" -> user.email,
+              "teams" -> user.teams.getOrElse(List()),
+              "token" -> user.token.getOrElse(""),
+              "isActive" -> true,
+              "lastConnection" -> user.lastConnection.getOrElse(new Date().toString),
+              "idProject" -> user.idProject
+            )
+          ),
+          upsert=false
+        ).onComplete {
+          case Failure(e) => throw e
+          case Success(_) => println("successfully saved configuration !")
+        }
+        true
+      }
+    }
   }
 
   def disconnectUser(id : String) : Future[Boolean] = {
     findUserBy(
-          BSONDocument(
-            "_id" -> BSONObjectID(id)
-            )
-       ).map{
-        case None => {
-          println(s"[+] User not found, could not disconnect properly !")
-          false
-        }
-        case Some(user) => {
-          println(s"[+] disconnecting ${user._id} and $user !")
-          collection.update(BSONDocument("_id" -> BSONObjectID(id)), 
-              BSONDocument(
-                "$set" -> BSONDocument(
-                     "isActive" -> false
-                  )
-              ),
-              upsert=false
-            ).onComplete {
-            case Failure(e) => throw e
-            case Success(_) => println("successfully saved configuration !")
-          }
-          true
-        }
+      BSONDocument(
+        "_id" -> BSONObjectID(id)
+      )
+    ).map{
+      case None => {
+        println(s"[+] User not found, could not disconnect properly !")
+        false
       }
+      case Some(user) => {
+        println(s"[+] disconnecting ${user._id} and $user !")
+        collection.update(BSONDocument("_id" -> BSONObjectID(id)),
+          BSONDocument(
+            "$set" -> BSONDocument(
+              "isActive" -> false
+            )
+          ),
+          upsert=false
+        ).onComplete {
+          case Failure(e) => throw e
+          case Success(_) => println("successfully saved configuration !")
+        }
+        true
+      }
+    }
   }
 
   def findUserBy(query: BSONDocument): Future[Option[User]] = {
