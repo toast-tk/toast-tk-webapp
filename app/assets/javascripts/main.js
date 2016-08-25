@@ -154,10 +154,12 @@
             "addTeamCtrl", "editTeamsCtrl", "editTeamCtrl", "editUserCtrl",
             "addProjectCtrl", "editProjectCtrl", "editProjectsCtrl",
             "MainProjectCtrl",
+
             "clientService",
             "componentsDir", "sortable", "ngProgress", 
             "angular-ui-tree", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix", "jwtClient", "ngTagsInput"],
+
           function(a, b, routerConfig, configConfig, treeLayoutService,
                    login, loginService, loginResolverService, settingsCtrl,
                    newSettingsModalCtrl, repository, scenario, campaign,
@@ -222,6 +224,7 @@
               app.controller("AddProjectCtrl", addProjectCtrl.AddProjectCtrl);
               app.controller("EditProjectCtrl", editProjectCtrl.EditProjectCtrl);
               app.controller("EditProjectsCtrl", editProjectsCtrl.EditProjectsCtrl);
+
               
               app.config(routerConfig.RouterConfig);
               app.config(configConfig.ConfigConfig);
