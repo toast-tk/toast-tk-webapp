@@ -1,121 +1,232 @@
 define(["angular", "exports"], function (angular, exports) {
-  'use strict';
+    'use strict';
 
-  RouterConfig.$inject = ["$stateProvider", "$urlRouterProvider"];
+    RouterConfig.$inject = ["$stateProvider", "$urlRouterProvider"];
 
-   function RouterConfig($stateProvider, $urlRouterProvider){
+    function RouterConfig($stateProvider, $urlRouterProvider){
 
-                  $stateProvider
-                  .state('login', {
-                      url: "/",
-                       views: {
-                           'main': {
-                      templateUrl: "assets/html/login.html", 
-                      controller: "LoginCtrl",
-                      resolve:{
-                        checkLoggedLogin : ["LoginResolverService", function (LoginResolverService){
-                          return LoginResolverService.checkLoggedLoginResolve() ;
+        $stateProvider.state('login', {
+            url: "/",
+            views: {
+                'main': {
+                    templateUrl: "assets/html/login.html",
+                    controller: "LoginCtrl",
+                    resolve: {
+                        user: ["LoginResolverService", function(resolver){
+                            return resolver.checkLoggedLoginResolve();
                         }]
-                      }
-                        }
-                      }
-                  }) 
-                  .state('layout', {
-                    url: "/",
-                    abstract: true,
-                    cache: false,
-                    views: {
-                      'main': {
-                        templateUrl: "assets/html/layout/layout.view.html",
-                        controller: "LayoutCtrl",
-                        resolve:{
-                          checkLoggedAndGetUser : ["LoginResolverService", function (LoginResolverService){
-                            return LoginResolverService.checkLoggedAndGetUserResolve() ;
-                          }]
-                        }
-                      }
                     }
-                  })
-                  .state('main', {
-                    url: "/main",
-                    cache: false,
-                    views: {
-                     'main': {
-                      templateUrl: "assets/html/editor.html", 
-                      controller: "MainCtrl"
+                }
+            }
+        }).state('layout', {
+            url: "/",
+            abstract: true,
+            cache: false,
+            views: {
+                'main': {
+                    templateUrl: "assets/html/layout/layout.view.html",
+                    controller: "LayoutCtrl",
+                    resolve:{
+                        user : ["LoginResolverService", function (resolver){
+                            return resolver.checkLoggedAndGetUserResolve() ;
+                        }],
+                        defaultProject : ["LoginResolverService", "user", function (resolver, user){
+                            return resolver.checkDefaultProjectResolve(user) ;
+                        }]
                     }
-                  }
-                })
-                  .state('layout.settings', {
-                    url: "settings",
-                    cache: false,
-                    views: {
-                      'content':{
-                       templateUrl: "assets/html/settings/settings.html",
-                       controller: "SettingsCtrl"
-                     }
-                   }
-                 })
-                  .state('layout.repository', {
-                    url: "repository",
-                    cache: false,
-                    views: {
-                      'content':{
-                       templateUrl: "assets/html/repository/repository.html",
-                       controller: "RepositoryCtrl"
-                     }
-                   }
-                 })
-                  .state('layout.scenario', {
-                    url: "scenario",
-                    cache: false,
-                    views: {
-                      'content':{
-                       templateUrl: "assets/html/scenario/scenario.html",
-                       controller: "ScenarioCtrl"
-                     }
-                   }
-                 })
-                  .state('layout.campaign', {
-                    url: "campaign",
-                    cache: false,
-                    views: {
-                      'content':{
-                       templateUrl: "assets/html/campaign/campaign.html",
-                       controller: "CampaignCtrl"
-                     }
-                   }
-                 })
-                  .state('adminLayout', {
-                    url: "/panel",
-                    cache: false,
-                    views: {
-                      'main': {
-                        templateUrl: "assets/html/admin/layout/layout.view.html",
-                        controller: "AdminLayoutCtrl",
-                        resolve:{
-                          checkLoggedAndGetUser : ["LoginResolverService", function (LoginResolverService){
-                            return LoginResolverService.checkLoggedAndGetUserResolve() ;
-                          }]
-                        }
-                      }
+                }
+            }
+        }).state('main', {
+            url: "main",
+            cache: false,
+            views: {
+                'main': {
+                    templateUrl: "assets/html/editor.html",
+                    controller: "MainCtrl"
+                }
+            }
+        }).state('project', {
+            url: "/project",
+            cache: false,
+            views: {
+                'main':{
+                    templateUrl: "assets/html/projects.html",
+                    controller: "MainProjectCtrl"
+                }
+            }
+        }).state('layout.settings', {
+            url: "settings",
+            cache: false,
+            views: {
+                'content':{
+                    templateUrl: "assets/html/settings/settings.html",
+                    controller: "SettingsCtrl",
+                    resolve:{
+                        user : ["LoginResolverService", function (resolver){
+                            return resolver.checkLoggedAndGetUserResolve() ;
+                        }],
+                        defaultProject : ["LoginResolverService", "user", function (resolver, user){
+                            return resolver.checkDefaultProjectResolve(user) ;
+                        }]
                     }
-                  })
-                  .state('adminLayout.addUser', {
-                    url: "/user",
-                    cache: false,
-                    views: {
-                      'content': {
-                        templateUrl: "assets/html/admin/accounts/adduser.html",
-                        controller: "AddUserCtrl"
-                      }
+                }
+            }
+        }).state('layout.repository', {
+            url: "repository",
+            cache: false,
+            views: {
+                'content':{
+                    templateUrl: "assets/html/repository/repository.html",
+                    controller: "RepositoryCtrl",
+                    resolve:{
+                        user : ["LoginResolverService", function (resolver){
+                            return resolver.checkLoggedAndGetUserResolve() ;
+                        }],
+                        defaultProject : ["LoginResolverService", "user", function (resolver, user){
+                            return resolver.checkDefaultProjectResolve(user) ;
+                        }]
                     }
-                  });
-                 $urlRouterProvider.when('','/');
-                 $urlRouterProvider.otherwise('/');
+                }
+            }
+        }).state('layout.scenario', {
+            url: "scenario",
+            cache: false,
+            views: {
+                'content':{
+                    templateUrl: "assets/html/scenario/scenario.html",
+                    controller: "ScenarioCtrl",
+                    resolve:{
+                        user : ["LoginResolverService", function (resolver){
+                            return resolver.checkLoggedAndGetUserResolve() ;
+                        }],
+                        defaultProject : ["LoginResolverService", "user", function (resolver, user){
+                            return resolver.checkDefaultProjectResolve(user) ;
+                        }]
+                    }
+                }
+            }
+        }).state('layout.campaign', {
+            url: "campaign",
+            cache: false,
+            views: {
+                'content':{
+                    templateUrl: "assets/html/campaign/campaign.html",
+                    controller: "CampaignCtrl",
+                    resolve:{
+                        user : ["LoginResolverService", function (resolver){
+                            return resolver.checkLoggedAndGetUserResolve() ;
+                        }],
+                        defaultProject : ["LoginResolverService", "user", function (resolver, user){
+                            return resolver.checkDefaultProjectResolve(user) ;
+                        }]
+                    }
+                }
+            }
+        }).state('adminLayout', {
+            url: "/admin",
+            cache: false,
+            views: {
+                'main': {
+                    templateUrl: "assets/html/admin/layout/layout.view.html",
+                    controller: "AdminLayoutCtrl",
+                    resolve:{
+                        user : ["LoginResolverService", function (resolver){
+                            return resolver.checkLoggedAndGetUserResolve() ;
+                        }],
+                        defaultProject : ["LoginResolverService", "user", function (resolver, user){
+                            return resolver.checkDefaultProjectResolve(user) ;
+                        }]
+                    }
+                }
+            }
+        }).state('adminLayout.addUser', {
+            url: "/user",
+            cache: false,
+            views: {
+                'content': {
+                    templateUrl: "assets/html/admin/accounts/adduser.html",
+                    controller: "AddUserCtrl"
+                }
+            }
+        }).state('adminLayout.editUser', {
+            url: "/user/edit/:idUser",
+            cache: false,
+            views: {
+                'content': {
+                    templateUrl: "assets/html/admin/accounts/edituser.html",
+                    controller: "EditUserCtrl"
+                }
+            }
+        }).state('adminLayout.editUsers', {
+            url: "/users",
+            cache: false,
+            views: {
+                'content': {
+                    templateUrl: "assets/html/admin/accounts/editusers.html",
+                    controller: "EditUsersCtrl"
+                }
+            }
+        }).state('adminLayout.addTeam', {
+            url: "/team",
+            cache: false,
+            views: {
+                'content': {
+                    templateUrl: "assets/html/admin/accounts/addteam.html",
+                    controller: "AddTeamCtrl"
+                }
+            }
+        }).state('adminLayout.editTeams', {
+            url: "/teams",
+            cache: false,
+            views: {
+                'content': {
+                    templateUrl: "assets/html/admin/accounts/editteams.html",
+                    controller: "EditTeamsCtrl"
+                }
+            }
+        }).state('adminLayout.editTeam', {
+            url: "/team/edit/:idTeam",
+            cache: false,
+            views: {
+                'content': {
+                    templateUrl: "assets/html/admin/accounts/editteam.html",
+                    controller: "EditTeamCtrl"
+                }
+            }
+        }).state('adminLayout.addProject', {
+            url: "/project",
+            cache: false,
+            views: {
+                'content': {
+                    templateUrl: "assets/html/admin/projects/addproject.html",
+                    controller: "AddProjectCtrl"
+                }
+            }
+        }).state('adminLayout.editProject', {
+            url: "/project/edit/:idProject",
+            cache: false,
+            views: {
+                'content': {
+                    templateUrl: "assets/html/admin/projects/editproject.html",
+                    controller: "EditProjectCtrl"
+                }
+            }
+        }).state('adminLayout.editProjects', {
+            url: "/projects",
+            cache: false,
+            views: {
+                'content': {
+                    templateUrl: "assets/html/admin/projects/editprojects.html",
+                    controller: "EditProjectsCtrl"
+                }
+            }
+        });
+
+        $urlRouterProvider.when('','/');
+        $urlRouterProvider.otherwise('/');
     }
     /* END : router config function */
-    
+
     exports.RouterConfig = RouterConfig
 
 

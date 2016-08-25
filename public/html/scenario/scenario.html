@@ -55,7 +55,7 @@
                                 <i class="col-md-2 fa fa-folder-open fa-5x"></i>
                                 <div class="col-md-9" style="border-left: 1px solid #ccc; margin-left: 6px;">
                                 <div ng-repeat="content in folderContents">
-                                  <div class="btn btn-sm" ng-click="selectNode(content.id)">
+                                  <div class="btn btn-sm" ng-click="selectNode(content._id)">
                                   <i class="{{ICONS[content.type]}} fa-fw"></i> {{content.name}}
                                   </div>
                                 </div>
@@ -123,6 +123,7 @@
                               ng-keyup="$event.keyCode == 13 && changeEditedStep()"
                               ng-model="newStepModel"
                               selected-object="newStepSelected"
+                              input-changed="newStepChanged"
                               initial-value="r['patterns']"
                               template-url="/assets/html/scenario/editstep.angucomplete.template.html"
                               placeholder="Type here.."
@@ -150,6 +151,7 @@
                               ng-keyup="$event.keyCode == 13 && addNewStep()"
                               ng-model="newStepModel"
                               selected-object="newStepSelected"
+                              input-changed="newStepChanged"
                               template-url="/assets/html/scenario/action.angucomplete.template.html"
                               placeholder="Type here.."
                               maxlength="50"

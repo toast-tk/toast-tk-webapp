@@ -6,9 +6,7 @@ import controllers.mongo.MacroConfiguration
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Controller, Action}
 
-/**
- * Created by blackbox on 02/05/15.
- */
+
 object ConfigurationController extends Controller {
 
   private val conn = AppBoot.conn

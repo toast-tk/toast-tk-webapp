@@ -4,70 +4,83 @@
 
 
 # Home page
-GET         /                                             controllers.Application.index
+GET           /                                             controllers.Application.index
 
 # JavaScript routes
-GET         /jsroutes.js                                  controllers.JavaScript.jsRoutes()
+GET           /jsroutes.js                                  controllers.JavaScript.jsRoutes()
 
 # AJAX APP routes
-GET         /loadEnvConfiguration                         controllers.Application.loadEnvConfiguration()
+GET           /loadEnvConfiguration                         controllers.Application.loadEnvConfiguration()
 
 # Ajax routes: Users
-POST        /login                                        controllers.Application.login()
-GET         /users/:id                                    controllers.Users.user(id: Long)
-GET         /logout                                       controllers.Application.logout()
+POST          /login                                        controllers.Application.login()
+GET           /users/:id                                    controllers.UserController.user(id: String)
+DELETE        /users/:id                                    controllers.UserController.deleteUser(id: String)
+GET           /users                                        controllers.UserController.getAllUsers()
+POST          /user                                         controllers.UserController.saveUser()
+GET           /logout                                       controllers.Application.logout()
+GET           /logout/:id                                   controllers.UserController.logout(id: String)
+GET           /user/projects/:id                            controllers.UserController.getUserProjects(id: String)
 
-# Ajax Domain Controller
-GET         /loadAutoSetupCtx/:setupType                  controllers.Application.loadAutoSetupCtx(setupType: String)
-GET         /loadCtxTagData/:itemName                     controllers.Application.loadCtxTagData(itemName: String)
-GET         /loadCtxSentences/:confType                   controllers.Application.loadCtxSentences(confType:String)
-GET         /typeDescriptor                               controllers.DomainController.typeDescriptor()
+# Ajax routes: Teams
+POST          /team                                         controllers.TeamController.saveTeam()
+GET           /teams                                        controllers.TeamController.getAllTeams()
+GET           /team/:id                                     controllers.TeamController.getTeam(id: String)
+
+# Ajax Domain Controller 
+GET           /loadAutoSetupCtx/:setupType                  controllers.Application.loadAutoSetupCtx(setupType: String)
+GET           /loadCtxTagData/:itemName/:idProject          controllers.Application.loadCtxTagData(itemName: String,  idProject: String)
+GET           /loadCtxSentences/:confType                   controllers.Application.loadCtxSentences(confType:String)
+GET           /typeDescriptor                               controllers.DomainController.typeDescriptor()
 
 # Ajax for API controller
-POST        /postConnector                                controllers.Application.onConnectorReceived()
-POST        /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
-GET         /loadWikifiedRepository                       controllers.Application.loadWikifiedRepository()
-GET         /loadwebWikifiedRepository                    controllers.Application.loadWebWikifiedRepository()
-GET         /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
-GET         /loadSentences/:confType                      controllers.Application.loadSentences(confType:String)
-POST        /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
-GET         /susbcribe/:host                              controllers.DriverController.subscribeDriver(host:String)
-GET         /socket/stream                                controllers.DriverController.registerFrontWebsocketService()
-POST        /record                                       controllers.DriverController.publishRecordedAction()
+POST          /postConnector                                controllers.Application.onConnectorReceived()
+POST          /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
+GET           /loadWikifiedRepository/:idProject            controllers.Application.loadWikifiedRepository(idProject: String)
+GET           /loadWebWikifiedRepository/:idProject         controllers.Application.loadWebWikifiedRepository(idProject: String)
+GET           /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
+GET           /loadSentences/:confType                      controllers.Application.loadSentences(confType:String)
+POST          /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
+GET           /susbcribe/:host                              controllers.DriverController.subscribeDriver(host:String)
+GET           /socket/stream                                controllers.DriverController.registerFrontWebsocketService()
+POST          /record                                       controllers.DriverController.publishRecordedAction()
 
 # Ajax routes: Configuration Controller
-GET         /loadConfiguration                            controllers.ConfigurationController.loadConfiguration()
-POST        /saveConfiguration                            controllers.ConfigurationController.saveConfiguration()
+GET           /loadConfiguration                            controllers.ConfigurationController.loadConfiguration()
+POST          /saveConfiguration                            controllers.ConfigurationController.saveConfiguration()
 
 # Ajax routes: Repository Controller
-GET         /loadAutoConfiguration                        controllers.RepositoryController.loadAutoConfiguration()
-GET         /loadServiceEntityRepository                  controllers.RepositoryController.loadServiceEntityRepository()
-GET         /loadWebPageRepository                        controllers.RepositoryController.loadWebPageRepository()
-POST        /saveAutoSetupConfiguration                   controllers.RepositoryController.saveAutoConfig()
-POST        /saveServiceConfigBlock                       controllers.RepositoryController.saveServiceConfigBlock()
-POST        /saveAutoConfigBlock                          controllers.RepositoryController.saveAutoConfigBlock()
-GET         /loadRepository                               controllers.RepositoryController.loadRepository()
-POST        /saveRepository                               controllers.RepositoryController.saveRepository()
-POST        /deleteObject                                 controllers.RepositoryController.deleteObject()
+GET           /loadAutoConfiguration/:idProject             controllers.RepositoryController.loadAutoConfiguration(idProject: String)
+GET           /loadWebPageRepository/:idProject             controllers.RepositoryController.loadWebPageRepository(idProject: String)
+POST          /saveAutoSetupConfiguration                   controllers.RepositoryController.saveAutoConfig()
+POST          /saveAutoConfigBlock                          controllers.RepositoryController.saveAutoConfigBlock()
+GET           /loadRepository                               controllers.RepositoryController.loadRepository()
+POST          /saveRepository                               controllers.RepositoryController.saveRepository()
+POST          /deleteObject                                 controllers.RepositoryController.deleteObject()
 
 # Ajax routes: Scenarii Controller
-GET         /loadScenariiList                             controllers.ScenarioController.loadScenariiList()
-GET         /loadScenarii                                 controllers.ScenarioController.loadScenarii()
-GET         /wikiScenarii                                 controllers.ScenarioController.loadWikifiedScenarii()
-GET         /loadScenarioSteps/:id                        controllers.ScenarioController.loadScenarioSteps(id: String)
-GET         /loadScenarioCtx/:scenarioType                controllers.ScenarioController.loadScenarioCtx(scenarioType: String)
-POST        /saveScenarii                                 controllers.ScenarioController.saveScenarii()
-POST        /deleteScenarii                               controllers.ScenarioController.deleteScenarii()
+GET           /loadScenariiList/:idProject                  controllers.ScenarioController.loadScenariiList(idProject: String)
+GET           /loadScenarii/:idProject                      controllers.ScenarioController.loadScenarii(idProject: String)
+GET           /wikiScenarii/:idProject                      controllers.ScenarioController.loadWikifiedScenarii(idProject: String)
+GET           /loadScenarioSteps/:id                        controllers.ScenarioController.loadScenarioSteps(id: String)
+GET           /loadScenarioCtx/:scenarioType                controllers.ScenarioController.loadScenarioCtx(scenarioType: String)
+POST          /saveScenarii                                 controllers.ScenarioController.saveScenarii()
+POST          /deleteScenarii                               controllers.ScenarioController.deleteScenarii()
+
+# Ajax routes: Test Plan Controller
+POST          /saveProject                                  controllers.TestPlanController.saveProject()
+GET           /loadProject/v1/:idProject                    controllers.TestPlanController.loadProject(idProject: String)
+GET           /loadProjectReport/:projectName               controllers.TestPlanController.loadProjectReport(projectName:String)
+GET           /test                                         controllers.TestPlanController.loadTestReport()
 
 # Ajax routes: Project Controller
-POST        /saveProject                                  controllers.ProjectController.saveProject()
-GET         /loadProject                                  controllers.ProjectController.loadProject()
-GET         /loadProjectReport/:projectName               controllers.ProjectController.loadProjectReport(projectName:String)
-GET         /test                                         controllers.ProjectController.loadTestReport()
+POST          /project                                      controllers.ProjectController.saveProject()
+GET           /projects/:idProject                          controllers.ProjectController.getProject(idProject: String)
+GET           /projects                                     controllers.ProjectController.getAllProjects()
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                                 controllers.Assets.at(path="/public", file)
+GET           /assets/*file                                 controllers.Assets.at(path="/public", file)
 
 # Map the webjar static assets to the /webjars URL
-GET         /webjars/*file                                controllers.WebJarAssets.at(file)
+GET           /webjars/*file                                controllers.WebJarAssets.at(file)
 

@@ -4,9 +4,10 @@ var mkdirp = require('mkdirp');
 var del = require('del');
 
  var destLib = 'libs'
- var srcLib = ['node_modules/**/**', 
+ var srcLib = ['node_modules/**/**',
+ 'bower_components/**/**',
  '!node_modules/**/node_modules/**',
- '!node_modules/**/lib/**',
+ //'!node_modules/**/lib/**',
  '!node_modules/**/test/**',
  '!node_modules/**/examples/**',
  ];
@@ -16,10 +17,17 @@ var del = require('del');
  	del(['node_modules'], cb);
  });
 
+ gulp.task('clean-bower', function (cb) {
+ 	del(['bower_components'], cb);
+ });
+
  /* for resteing libs copy */
  gulp.task('clean-libs', function (cb) {
  	del(['libs'], cb);
  });
+
+  gulp.task('clean-all',['clean-libs','clean-bower','clean-node']);
+
 
  /* default tasks */
  gulp.task('mkdir', function() {
@@ -41,8 +49,15 @@ var del = require('del');
  	.pipe(gulp.dest(destLib));
  });
 
+ gulp.task('css', function() {
+ 	 gulp.src(srcLib)
+ 	.pipe(filter('**/*.css'))
+ 	.pipe(gulp.dest(destLib));
+ });
+
+
 // Default Task
-gulp.task('default', ['mkdir','js']);
+gulp.task('default', ['mkdir','js','css']);
 
 // reset and copy
 gulp.task('reset-default', ['clean-libs','mkdir','js']);

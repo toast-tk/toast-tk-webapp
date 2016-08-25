@@ -1,21 +1,22 @@
 package boot
 
 import controllers.mongo._
-import java.util.logging.{ Logger => JLogger }
+import controllers.mongo.users._
+import java.util.logging.{Logger => JLogger}
+
 import play.api.Logger
-import play.api.libs.Codecs
 import java.io.IOException
-import de.flapdoodle.embed.mongo.{ Command, MongodStarter, MongodProcess, MongodExecutable }
+
+import de.flapdoodle.embed.mongo.{Command, MongodExecutable, MongodProcess, MongodStarter}
 import de.flapdoodle.embed.process.distribution.GenericVersion
 import de.flapdoodle.embed.process.distribution.Distribution
-import de.flapdoodle.embed.mongo.config.{ ArtifactStoreBuilder, DownloadConfigBuilder,  Net, MongodConfigBuilder, RuntimeConfigBuilder, Storage }
+import de.flapdoodle.embed.mongo.config.{ArtifactStoreBuilder, DownloadConfigBuilder, MongodConfigBuilder, Net, RuntimeConfigBuilder, Storage}
 import de.flapdoodle.embed.process.runtime.Network
 import de.flapdoodle.embed.mongo.distribution.Versions
 import de.flapdoodle.embed.process.config.io.ProcessOutput
 import de.flapdoodle.embed.process.io.directories.UserTempDirInPlatformTempDir
 import de.flapdoodle.embed.process.extract.UserTempNaming
-import toast.engine.ToastRuntimeJavaWrapper
-import controllers.DomainController
+import toast.engine.DAOJavaWrapper
 
 object MongoExeFactory {
   def apply(port: Int, versionNumber: String, dataPath:String) = {
@@ -92,15 +93,9 @@ object AppBoot extends play.api.GlobalSettings {
   override def onStart(app: play.api.Application): Unit = {
     Logger.info(s"[+] Initializing DB settings...")
     
-    def persistDefaultSuperAdminUser() = {
-      var adminPwd = Codecs.sha1("admin")
-      conn.saveUser(User(Some("111111111111111111111111"),"admin", adminPwd, "administrateur", "user", "admin@toastWebApp.com", None, None, true, None))
-
-    }
-
     def persistDefaultConfiguration(confId: Option[String]) = {
       var congifMap = Map[String, List[ConfigurationSyntax]]()
-      val fixtureDescriptorList = ToastRuntimeJavaWrapper.actionAdapterSentenceList
+      val fixtureDescriptorList = DAOJavaWrapper.actionAdapterSentenceList
       for (descriptor <- fixtureDescriptorList) {
         val fixtureType: String = descriptor.fixtureType
         val fixtureName: String = descriptor.name
@@ -116,16 +111,7 @@ object AppBoot extends play.api.GlobalSettings {
     }
 
     import scala.concurrent.ExecutionContext.Implicits.global
-    conn.loadDefaultSuperAdminUser().map { 
-      user => user match {
-        case None => {
-          persistDefaultSuperAdminUser()
-        }
-        case Some(user) => {
-           persistDefaultSuperAdminUser()
-        }
-      }
-    }
+    conn.init()
     conn.loadDefaultConfiguration().map { 
       configuration => configuration match {
         case None => {

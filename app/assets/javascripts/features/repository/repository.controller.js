@@ -1,8 +1,12 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        RepositoryCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $timeout, $modal, $sideSplit, LayoutService, toastr, ICONS) {
-            $scope.run_config_types = [ "swing page", "web page", "service entity"];
+        RepositoryCtrl: function ($rootScope, $scope, playRoutes,
+                                  ngProgress, $timeout, $uibModal,
+                                  $sideSplit, LayoutService, toastr, ICONS,
+                                  defaultProject) {
+            $scope.defaultProject = defaultProject;
+            $scope.run_config_types = [ "swing page", "web page"];
             $scope.autosetups = [];
             $scope.newAutoSetupRow = {};
             $scope.selectedAutoSetupConfigType = "";
@@ -28,7 +32,7 @@ define(["angular"], function (angular) {
             /* BEGIN : open & add object modal */
             $scope.addNewObject = function(){
                 var modalScope = $scope.$new(true);
-                    var modalInstance = $modal.open({
+                    var modalInstance = $uibModal.open({
                         animation: $scope.animationsEnabled,
                         templateUrl: 'assets/html/repository/newobject.modal.repository.html',
                         controller:'newObjectModalCtrl'
@@ -63,18 +67,6 @@ define(["angular"], function (angular) {
                 $scope.autosetup = autosetup;
             } 
 
-            /*
-                $scope.saveAutoConfig = function () {
-                    var deepCopy = angular.copy($scope.autosetups);
-                    deepCopy = deepCopy.map(function (autoSetup) {
-                        delete autoSetup.columns;
-                        return autoSetup;
-                    });
-                    playRoutes.controllers.Application.saveAutoConfig().post(deepCopy).then(function (response) {
-                        load();
-                    });
-                };
-            */
 
            $scope.deleteObject = function(autosetup){
                 playRoutes.controllers.RepositoryController.deleteObject().post(angular.toJson(autosetup.id)).then(function () {
@@ -85,17 +77,11 @@ define(["angular"], function (angular) {
             $scope.saveAutoConfigBlock = function (autosetup) {
                 var deepCopy = angular.copy(autosetup);
                 delete deepCopy.columns;
-                if(deepCopy.type === "service entity"){
-                    playRoutes.controllers.RepositoryController.saveServiceConfigBlock().post(deepCopy).then(function (response) {
-                         __init__();
-                         toastr.success('Saved Objet repository elements !');
-                    });            
-                }else{
-                    playRoutes.controllers.RepositoryController.saveAutoConfigBlock().post(deepCopy).then(function (response) {
-                         __init__();
-                         toastr.success('Saved Objet repository elements !');
-                    });
-                }
+                deepCopy.project = $scope.defaultProject;
+                playRoutes.controllers.RepositoryController.saveAutoConfigBlock().post(deepCopy).then(function (response) {
+                     __init__();
+                     toastr.success('Saved Objet repository elements !');
+                });
             };
 
             $scope.deleteRow = function (row, autosetup) {
@@ -110,11 +96,9 @@ define(["angular"], function (angular) {
             function __init__() {
                 if(angular.isDefined($scope.autoSetupConfigFilter) && $scope.autoSetupConfigFilter != ""){
                     if($scope.autoSetupConfigFilter == "swing page"){
-                        playRoutes.controllers.RepositoryController.loadAutoConfiguration().get().then(handleResult);
+                        playRoutes.controllers.RepositoryController.loadAutoConfiguration($scope.defaultProject._id).get().then(handleResult);
                     }else if ($scope.autoSetupConfigFilter == "web page"){
-                        playRoutes.controllers.RepositoryController.loadWebPageRepository().get().then(handleResult);
-                    }else if ($scope.autoSetupConfigFilter == "service entity"){
-                        playRoutes.controllers.RepositoryController.loadServiceEntityRepository().get().then(handleResult);
+                        playRoutes.controllers.RepositoryController.loadWebPageRepository($scope.defaultProject._id).get().then(handleResult);
                     }
                 }
 
@@ -126,7 +110,6 @@ define(["angular"], function (angular) {
                     $scope.autosetups = autosetups || [];
                 }
             }
-
 
             __init__();
         }

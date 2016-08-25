@@ -16,9 +16,56 @@
                                     <span  ng-if="isCollapsed===false">Add account</span>
                                 </a>
                             </li>
+                            <li ng-class="{'active' : currentState === 'adminLayout.editUsers'}">
+                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.editUsers')">
+                                    <i class="fa fa-user-plus fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
+                                    <span  ng-if="isCollapsed===false">Edit accounts</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
-
+                    <li>
+                        <a href="javascript:;" data-toggle="collapse" data-target="#TeamCollapse">
+                        <i class="fa fa-users fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
+                            <span  ng-if="isCollapsed===false">Teams</span>
+                            <i class="fa fa-fw fa-caret-down"></i>
+                        </a>
+                        <ul id="TeamCollapse" class="collapse">
+                            <li ng-class="{'active' : currentState === 'adminLayout.addTeam'}">
+                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.addTeam')">
+                                    <i class="fa fa-user-plus fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
+                                    <span  ng-if="isCollapsed===false">Add team</span>
+                                </a>
+                            </li>
+                            <li ng-class="{'active' : currentState === 'adminLayout.editTeams'}">
+                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.editTeams')">
+                                    <i class="fa fa-user-plus fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
+                                    <span  ng-if="isCollapsed===false">Edit teams</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;" data-toggle="collapse" data-target="#projectCollapse">
+                            <i class="fa fa-cubes fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
+                            <span  ng-if="isCollapsed===false">Projects</span>
+                            <i class="fa fa-fw fa-caret-down"></i>
+                        </a>
+                        <ul id="projectCollapse" class="collapse">
+                            <li ng-class="{'active' : currentState === 'adminLayout.addProject'}">
+                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.addProject')">
+                                    <i class="fa fa-cube fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
+                                    <span  ng-if="isCollapsed===false">Add project</span>
+                                </a>
+                            </li>
+                            <li ng-class="{'active' : currentState === 'adminLayout.editProjects'}">
+                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.editProjects')">
+                                    <i class="fa fa-cube fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
+                                    <span  ng-if="isCollapsed===false">Edit projects</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                      <li style="position: fixed; bottom: 0;">
                         <a ng-click="collapse()">
                         <i  ng-if="isCollapsed===false" style="width: 100%;" class="btn fa fa-lg fa-chevron-circle-left" ng-class="{'fa-2x': isCollapsed === true}"></i>

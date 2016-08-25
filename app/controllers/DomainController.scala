@@ -6,8 +6,8 @@ import play.api.Play.current
 import play.api.libs.json.Writes._
 import play.api.libs.json._
 import play.api.mvc._
-import com.synaptix.toast.runtime._
-import com.synaptix.toast.runtime.bean._
+import io.toast.tk.runtime._
+import io.toast.tk.runtime.bean._
 import scala.collection.JavaConversions._
 import org.apache.commons.io.IOUtils
 import java.nio.charset.Charset
@@ -29,24 +29,31 @@ trait InnerDomainController {
   }
 
   def findActionItemByCategoryAndType(actionCategory: ActionCategory, actionType: ActionType) = {
-    val actionItem: ActionItem = actionItems.filter(actionItem => actionItem.kind == actionType && actionItem.category == actionCategory).head
+    val actionItem: ActionItem = actionItems
+      .filter(actionItem => actionItem.kind == actionType && actionItem.category == actionCategory).head
     actionItem
   }
 
     def findActionItemByCategoryAndType(actionCategory: String, actionType: String) = {
-    val actionItem: ActionItem = actionItems.filter(actionItem => actionItem.kind.name() == actionType && actionItem.category.name() == actionCategory).head
+    val actionItem: ActionItem = actionItems
+      .filter(actionItem => actionItem.kind.name() == actionType && actionItem.category.name() == actionCategory).head
     actionItem
   }
 
   def autoSetupCtxProvider(setupType: String): JsArray = {
     setupType match {
       case "web page" => Json.arr(Json.obj("name" -> "name", "descriptor" -> Json.obj()),
-        Json.obj("name" -> "type", "descriptor" -> Json.obj("type" -> Json.arr("button", "link"))),
+        Json.obj("name" -> "type", "descriptor" -> Json.obj("type" ->
+          Json.arr("input", "button", "link", "other"))),
         Json.obj("name" -> "locator", "descriptor" -> Json.obj()),
-        Json.obj("name" -> "method", "descriptor" -> Json.obj("type" -> Json.arr("CSS", "XPATH", "ID"))),
+        Json.obj("name" -> "method", "descriptor" ->
+          Json.obj("type" ->
+            Json.arr("CSS", "XPATH", "ID"))),
         Json.obj("name" -> "position", "descriptor" -> Json.obj()))
       case "swing page" => Json.arr(Json.obj("name" -> "name", "descriptor" -> Json.obj()),
-        Json.obj("name" -> "type", "descriptor" -> Json.obj("type" -> Json.arr("button", "input", "menu", "table", "timeline", "date", "list", "checkbox", "other"))),
+        Json.obj("name" -> "type", "descriptor" ->
+          Json.obj("type" ->
+            Json.arr("button", "input", "menu", "table", "timeline", "date", "list", "checkbox", "other"))),
         Json.obj("name" -> "locator", "descriptor" -> Json.obj()))
       case "service entity" => Json.arr(Json.obj("name" -> "name", "descriptor" -> Json.obj()),
         Json.obj("name" -> "alias", "descriptor" -> Json.obj()),

@@ -1,8 +1,10 @@
 package controllers
 
 import boot.AppBoot
+import controllers.mongo.scenario.Scenario
 import play.api.Logger
 import controllers.mongo._
+import controllers.mongo.users._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Writes._
 import play.api.libs.json._
@@ -63,7 +65,7 @@ object Application extends Controller {
     request.body.validate[InspectedPage].map {
       case page: InspectedPage =>
         val pageElements = for (itemLocator <- page.items) yield WebPageElement(None, "", "", itemLocator, Some(""), Some(0))
-        conn.saveAutoConfiguration(AutoSetupConfig(None, page.name, "swing page", Some(pageElements)))
+        conn.saveAutoConfiguration(RepositoryImpl(None, page.name, "swing page", Some(pageElements), None))
         Ok("received inspected page...")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
@@ -74,12 +76,13 @@ object Application extends Controller {
     val scenarioR = Json.fromJson(request.body)(Json.format[InspectedScenario])
     scenarioR.map {
       case scenario: InspectedScenario =>
-        val logInstance = Scenario(id = None, 
-                                  name = scenario.name, 
-                                  cType = "swing", 
+        val logInstance = Scenario(name = scenario.name,
+                                  `type` = "swing",
                                   driver = "swing", 
                                   rows = Some(scenario.steps),
-                                  parent = Some("0"))
+                                  parent = Some("0"),
+                                  project = None
+        )
         conn.savePlainScenario(logInstance)
         Ok("scenario saved !")
     }.recoverTotal {
@@ -93,15 +96,15 @@ object Application extends Controller {
    * case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: List[WebPageElement])
    * WebPageElement(name: String, elementType: String, locator: String, method: String, position: Int)
    */
-  def loadWikifiedRepository() = Action.async {
-    conn.loadSwingPageRepository.map {
+  def loadWikifiedRepository(idProject: String)  = Action.async {
+    conn.loadSwingPageRepository(idProject).map {
       repository => {
-        def wikifiedObject(page: AutoSetupConfig): JsValue = {
+        def wikifiedObject(page: RepositoryImpl): JsValue = {
           var res = "page id:" + page.id.get + "\n"
-          res = res + "|| setup || " +  page.cType + " || " + page.name + " ||\n"
+          res = res + "|| setup || " +  page.`type` + " || " + page.name + " ||\n"
           res = res + "| name | type | locator |\n"
           for (row <- page.rows.getOrElse(List())) {
-            res = res + "|" + row.name + "|" + row.elementType + "|" + row.locator + "|\n"
+            res = res + "|" + row.name + "|" + row.`type` + "|" + row.locator + "|\n"
           }
           res = res + "\n"
           JsString(res)
@@ -113,15 +116,15 @@ object Application extends Controller {
   }
 
 
-  def loadWebWikifiedRepository() = Action.async {
-    conn.loadWebPageRepository().map {
+  def loadWebWikifiedRepository(idProject: String) = Action.async {
+    conn.loadWebPageRepository(idProject).map {
       repository => {
-        def wikifiedObject(page: AutoSetupConfig): JsValue = {
+        def wikifiedObject(page: RepositoryImpl): JsValue = {
           var res = "page id:" + page.id.get + "\n"
-          res = res + "|| setup || " +  page.cType + " || " + page.name + " ||\n"
+          res = res + "|| setup || " +  page.`type` + " || " + page.name + " ||\n"
           res = res + "| name | type | locator | method | position |\n"
           for (row <- page.rows.getOrElse(List())) {
-            res = res + "|" + row.name + "|" + row.elementType + "|" + row.locator + "|" + row.method.getOrElse("CSS") + "|" + row.position.getOrElse(0) + "|\n"
+            res = res + "|" + row.name + "|" + row.`type` + "|" + row.locator + "|" + row.method.getOrElse("CSS") + "|" + row.position.getOrElse(0) + "|\n"
           }
           res = res + "\n"
           JsString(res)
@@ -185,11 +188,11 @@ object Application extends Controller {
    * a context = { itemName [WebPageItem, Entity..], other values to refine the result set}
    *
    */
-  def loadCtxTagData(itemName: String) = Action.async {
+  def loadCtxTagData(itemName: String, idProject: String) = Action.async {
     itemName match {
       case "web" => {
         var res = List[JsValue]();
-        conn.loadWebPagesFromRepository().map {
+        conn.loadWebPageRepository(idProject).map {
           pageConfigurations => {
             for (page <- pageConfigurations) {
               val pageElements = page.rows.getOrElse(List()).sortWith(_.name < _.name);
@@ -208,7 +211,7 @@ object Application extends Controller {
       }
       case "swing" => {
         var res = List[JsValue]();
-        conn.loadSwingPagesFromRepository().map {
+        conn.loadSwingPageRepository(idProject).map {
           pageConfigurations => {
             for (page <- pageConfigurations) {
               val pageElements = page.rows.getOrElse(List()).sortWith(_.name < _.name);
