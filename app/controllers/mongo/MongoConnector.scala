@@ -1,5 +1,7 @@
 package controllers.mongo
 
+import java.util.concurrent.TimeUnit
+
 import controllers.mongo.project.{Project, ProjectCollection}
 import controllers.mongo.repository.RepositoryCollection
 import controllers.mongo.scenario.{Scenario, ScenarioCollection}
@@ -11,7 +13,8 @@ import reactivemongo.api.commands.{UpdateWriteResult, WriteResult}
 import reactivemongo.bson.Producer.nameValue2Producer
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success}
 import controllers.parsers.EntityField
 
@@ -35,6 +38,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   val repositoryCollection = RepositoryCollection(open_collection("repository"), open_collection("elements"))
   val projectCollection = ProjectCollection(open_collection("projects"))
   val scenarioCollection = ScenarioCollection(open_collection("scenarii"), repositoryCollection)
+  val timeout = Duration(5, TimeUnit.SECONDS)
 
   def init() = {
     projectCollection.initDefault().map{
@@ -269,5 +273,17 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     teamCollection.findTeamBy(BSONDocument("_id"-> BSONObjectID(idTeam)))
   }
 
+  def hasValidToken(token: String): Option[Project] = {
+    val userResult: Option[User] = Await.result(userCollection.findUserBy(BSONDocument("token" -> token)), timeout)
+    val projectResult: Option[Project] = userResult.map {
+      user => {
+        user.idProject match {
+          case Some(id) => Await.result(projectCollection.one(id), timeout).get
+          //case None => None
+        }
+      }
+    }
+    projectResult
+  }
 
 }

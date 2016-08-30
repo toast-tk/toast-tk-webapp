@@ -35,7 +35,7 @@ class UserControllerSpec extends PlaySpec
   override def beforeAll {
     mongoProps = mongoStart(27017, Version.V3_3_1)
     val connector: MongoConnector = MongoConnector()
-    AppBoot.conn = connector;
+    AppBoot.db = connector;
     Await.ready(connector.init(), Duration.Inf).value.get
   }
 
@@ -74,6 +74,7 @@ class UserControllerSpec extends PlaySpec
       projects.length mustEqual 1
       (projects(0) \ "project" \ "name").as[String] mustBe "default"
     }
+
 
   }
 

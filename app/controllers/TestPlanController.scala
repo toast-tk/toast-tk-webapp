@@ -32,7 +32,7 @@ object TestPlanController  extends Controller {
   implicit val sFormat = Json.format[ScenarioWrapper]
   implicit val campaignFormat = Json.format[Cpgn]
   implicit val testPlanFormat = Json.format[TestPlan]
-  private val conn = AppBoot.conn
+  private val db = AppBoot.db
 
   /**
    * load to init test plan
@@ -87,7 +87,7 @@ object TestPlanController  extends Controller {
         val testPagelist = new java.util.ArrayList[ITestPage]()
         val testPages = (for (c <- campaigns; wrapper <- c.scenarii) yield {
 
-                          Await.result(conn.findScenario(wrapper.scenario.get.name, project).map{
+                          Await.result(db.findScenario(wrapper.scenario.get.name, project).map{
                           case None => {
                             println(s"[+] Scenario not found, could not saveProject !")
                           }

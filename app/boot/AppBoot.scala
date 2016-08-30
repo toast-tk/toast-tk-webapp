@@ -51,7 +51,7 @@ object AppBoot extends play.api.GlobalSettings {
   val KeyMongoDbVersion = "embed.mongo.dbversion"
   val KeyJnlpAddr= "jnlp.host"
   
-  var conn: MongoConnector = _
+  var db: MongoConnector = _
   var jnlpHost: String = "" 
   private var _mongoExe: MongodExecutable = _
   private var process: MongodProcess = _
@@ -66,25 +66,25 @@ object AppBoot extends play.api.GlobalSettings {
        if(enabled){
           startLocalMongoInstance(app) 
           Logger.info(s"[+] Connecting to local mongoDB instance !")
-          conn = MongoConnector()
+          db = MongoConnector()
        }else{
           val mongoUrl = conf.getString(KeyMongoDbUrl).getOrElse("localhost")
           Logger.info(s"[+] Connecting to mongoUrl: $mongoUrl")
-          conn = MongoConnector(mongoUrl)
+          db = MongoConnector(mongoUrl)
        }
     } else {
        val enabled = conf.getBoolean("embed.mongo.enabled").getOrElse(false);
        if(enabled){
           startLocalMongoInstance(app)
           Logger.info(s"[+] Connecting to local mongoDB instance !")
-          conn = MongoConnector()
+          db = MongoConnector()
        }else {
           val mongoUrl = conf.getString(KeyMongoDbUrl).getOrElse(throw new RuntimeException(s"$KeyMongoDbUrl is missing in your configuration"))
           Logger.info(s"[+] Connecting to mongoUrl: $mongoUrl")
-          conn = MongoConnector(mongoUrl)
+          db = MongoConnector(mongoUrl)
        }
     } 
-    conn match {
+    db match {
       case conn: MongoConnector => Logger.info(s"[+] DB connection established..")
       case _ => Logger.error(s"[-] DB connection not established..")
     }
@@ -107,12 +107,12 @@ object AppBoot extends play.api.GlobalSettings {
         congifMap = congifMap + (key -> newSyntaxRows)
       }
       val configurationRows = for ((k,v) <- congifMap) yield( ConfigurationRow(k.split(":")(0),k.split(":")(1),v) )
-      conn.saveConfiguration(MacroConfiguration(confId, "default", configurationRows.toList))
+      db.saveConfiguration(MacroConfiguration(confId, "default", configurationRows.toList))
     }
 
     import scala.concurrent.ExecutionContext.Implicits.global
-    conn.init()
-    conn.loadDefaultConfiguration().map { 
+    db.init()
+    db.loadDefaultConfiguration().map {
       configuration => configuration match {
         case None => {
           persistDefaultConfiguration(None)
@@ -125,7 +125,7 @@ object AppBoot extends play.api.GlobalSettings {
   }
 
   override def onStop(app: play.api.Application): Unit = {
-    conn.close()
+    db.close()
     stopMongo()
   }
 

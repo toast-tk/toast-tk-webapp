@@ -1,11 +1,13 @@
 package controllers
 
 
+import boot.AppBoot
+
 import scala.collection.JavaConversions._
 
 import io.toast.tk.dao.domain.impl.repository.{ElementImpl, RepositoryImpl}
 import io.toast.tk.swing.agent.interpret.MongoRepositoryCacheWrapper
-import controllers.mongo.MappedWebEventRecord
+import controllers.mongo.{MongoConnector, MappedWebEventRecord}
 import play.api.Logger
 import play.api.libs.json.{JsError, JsResult, Json}
 import play.api.mvc._
@@ -18,15 +20,16 @@ import toast.engine.DAOJavaWrapper
 
 
 case class RecordedSentence(sentence:String, ids:List[String])
+case class AgentInformation(token: String, host: String)
 
 object DriverController extends Controller{
 
-
-  val drivers: mutable.Stack[String] = mutable.Stack[String]();
+  val drivers: mutable.Stack[AgentInformation] = mutable.Stack[AgentInformation]();
   var channel: Option[Concurrent.Channel[String]] = None
   val mongoCacheWrapper:MongoRepositoryCacheWrapper = new MongoRepositoryCacheWrapper()
   mongoCacheWrapper.initCache(DAOJavaWrapper.repositoryDaoService);
   val interpretationProvider:InterpretationProvider = new InterpretationProvider(mongoCacheWrapper)
+  val db: MongoConnector = AppBoot.db
 
 
   /**
@@ -41,17 +44,36 @@ object DriverController extends Controller{
     }
   }
 
+
   /**
-   * Any driver that may push sentences, will be registred here
-   *
-   * @param host
+   * Check if provided token belongs to a user having a default project
+   * @param token
    * @return
    */
-  def subscribeDriver(host: String) = Action {
-    request => {
-      drivers.push(host);
-      channel.foreach(_.push("driver:" + host))
-      Ok("driver registered: " + host)
+  private def checkToken(token: String): Boolean = {
+    db.hasValidToken(token);
+  }
+
+  /**
+   * Any agente that may push sentences, will be registered here
+   *
+   * @param agentInformation
+   * @return
+   */
+  def subscribeDriver() = Action(parse.json) {
+    implicit request => {
+
+
+      implicit val recordFormat = Json.format[AgentInformation]
+      request.body.validate[AgentInformation].map {
+        case agentInformation:AgentInformation =>
+          checkToken(agentInformation.token)
+          drivers.push(agentInformation);
+          channel.foreach(_.push("driver:" + host))
+          Ok("driver registered: " + agentInformation.host)
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toJson(e))
+      }
     }
   }
 
@@ -95,25 +117,25 @@ object DriverController extends Controller{
 
   def buildFormat(mappedEventRecord:MappedWebEventRecord): Option[String] = {
     val interpret:IActionInterpret  = interpretationProvider.getSentenceBuilder(mappedEventRecord.component.getOrElse(""));
-    if (interpret == null){
-      None
-    }
-    else{
-      implicit val recordFormat = Json.format[RecordedSentence]
-      val eventRecord:WebEventRecord = getRecord(mappedEventRecord)
-      val sentence:String = interpret.getSentence(eventRecord)
-      if(mongoCacheWrapper.getLastKnownContainer != null){
-        mongoCacheWrapper.saveLastKnownContainer()
-        val rows:List[ElementImpl] = interpret.getElements().toList
-        val ids:List[String] = rows.map(e => e.getIdAsString)
-        val record: RecordedSentence = RecordedSentence(sentence, ids)
-        val recordAsJson:String = Json.toJson(record).toString()
-        interpret.clearElements()
-        Some(recordAsJson)
-      }else{
-        val record: RecordedSentence = RecordedSentence(sentence, List())
-        val recordAsJson:String = Json.toJson(record).toString()
-        Some(recordAsJson)
+    interpret match {
+      case null => None
+      case interpret:IActionInterpret => {
+        implicit val recordFormat = Json.format[RecordedSentence]
+        val eventRecord:WebEventRecord = getRecord(mappedEventRecord)
+        val sentence:String = interpret.getSentence(eventRecord)
+        if(mongoCacheWrapper.getLastKnownContainer != null){
+          mongoCacheWrapper.saveLastKnownContainer()
+          val rows:List[ElementImpl] = interpret.getElements().toList
+          val ids:List[String] = rows.map(e => e.getIdAsString)
+          val record: RecordedSentence = RecordedSentence(sentence, ids)
+          val recordAsJson:String = Json.toJson(record).toString()
+          interpret.clearElements()
+          Some(recordAsJson)
+        }else{
+          val record: RecordedSentence = RecordedSentence(sentence, List())
+          val recordAsJson:String = Json.toJson(record).toString()
+          Some(recordAsJson)
+        }
       }
     }
   }

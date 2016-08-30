@@ -41,7 +41,9 @@ GET           /loadWebWikifiedRepository/:idProject         controllers.Applicat
 GET           /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
 GET           /loadSentences/:confType                      controllers.Application.loadSentences(confType:String)
 POST          /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
-GET           /susbcribe/:host                              controllers.DriverController.subscribeDriver(host:String)
+
+# Ajax routes: Agent API Controller
+POST          /agent/susbcribe                              controllers.DriverController.subscribeDriver(host:String)
 GET           /socket/stream                                controllers.DriverController.registerFrontWebsocketService()
 POST          /record                                       controllers.DriverController.publishRecordedAction()
 

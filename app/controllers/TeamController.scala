@@ -1,5 +1,7 @@
 package controllers
 
+import java.util.concurrent.TimeUnit
+
 import boot.AppBoot
 import controllers.ProjectController._
 
@@ -18,12 +20,13 @@ import controllers.mongo.teams._
 
 object TeamController extends Controller {
 
-  private val conn = AppBoot.conn
+  private val db = AppBoot.db
+  val timeout = Duration(5, TimeUnit.SECONDS)
 
 	def saveTeam() = Action(parse.json) { implicit request =>
 		request.body.validate[Team].map {
 			case team: Team => {
-          Await.ready(conn.saveTeam(team), Duration.Inf).value.get match {
+          Await.ready(db.saveTeam(team), timeout).value.get match {
             case Failure(e) => throw e
             case Success(isInserted) => {
               isInserted match {
@@ -39,11 +42,11 @@ object TeamController extends Controller {
   }
 
   def getTeam(idTeam: String) = Action.async {
-    conn.getTeam(idTeam).map{team => Ok(Json.toJson(team))}
+    db.getTeam(idTeam).map{team => Ok(Json.toJson(team))}
   }
 
   def getAllTeams() = Action.async {
-    conn.getAllTeams().map {
+    db.getAllTeams().map {
       teams => {
         Ok(Json.toJson(teams))
       }

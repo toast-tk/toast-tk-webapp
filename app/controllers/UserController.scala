@@ -1,17 +1,13 @@
 package controllers
 
+import java.util.concurrent.TimeUnit
+
 import boot.AppBoot
-import com.google.gson.JsonObject
-import controllers.mongo.MongoConnector
-import controllers.mongo.project.Project
 import controllers.mongo.teams.Team
 import controllers.mongo.users._
 import play.api.mvc._
 import play.api.libs.json._
 import scala.concurrent.ExecutionContext.Implicits.global
-
-import reactivemongo.bson.{BSONDocument, BSONObjectID}
-
 import scala.concurrent._
 import scala.concurrent.duration.Duration
 import scala.util.{Failure, Success, Try}
@@ -21,10 +17,11 @@ object UserController extends Controller with InnerUserController
 trait InnerUserController {
   this: Controller =>
 
-  private val conn = AppBoot.conn
+  private val db = AppBoot.db
+  val timeout = Duration(5, TimeUnit.SECONDS)
 
 	def user(id: String) = Action.async {
-		conn.editUser(id).map {
+		db.editUser(id).map {
 	        user => {
 	        	Ok(Json.toJson(user).as[JsObject] - "password")
 	   		}
@@ -32,7 +29,7 @@ trait InnerUserController {
 	}
 
 	def logout(id: String) = Action {
-		Await.ready(conn.disconnectUser(id), Duration.Inf).value.get match {
+		Await.ready(db.disconnectUser(id), timeout).value.get match {
 			case Failure(e) => throw e
 			case Success(isInserted) => {
 				isInserted match {
@@ -54,7 +51,7 @@ trait InnerUserController {
                                            user.firstName, user.lastName,
                                            user.email, user.teams)
 
-							Await.ready(conn.saveUser(userWithId), Duration.Inf).value.get match {
+							Await.ready(db.saveUser(userWithId), timeout).value.get match {
 								case Failure(e) => {
                   throw e
                 }
@@ -70,7 +67,7 @@ trait InnerUserController {
 							}
 						}
 						case _ => {
-							Await.ready(conn.saveUser(user), Duration.Inf).value.get match {
+							Await.ready(db.saveUser(user), timeout).value.get match {
 								case Failure(e) => {
                   throw e
                 }
@@ -89,7 +86,7 @@ trait InnerUserController {
 		}
 
 	def getAllUsers() = Action.async {
-		conn.getAllUsers().map {
+		db.getAllUsers().map {
       users => {
         val publicUserList = users.map {
           user =>
@@ -101,7 +98,7 @@ trait InnerUserController {
 	}
 
 	def deleteUser(id: String) = Action {
-		Await.ready(conn.removeUser(id), Duration.Inf).value.get match {
+		Await.ready(db.removeUser(id), timeout).value.get match {
 			case Failure(e) => {
         throw e
       }
@@ -112,12 +109,12 @@ trait InnerUserController {
 	}
 
   def getUserProjects(id: String) = Action {
-    val result: Option[User] = Await.result(conn.editUser(id), Duration.Inf)
+    val result: Option[User] = Await.result(db.editUser(id), timeout)
     result match {
       case Some(user)=> {
         val proxyTeams:List[Team] = user.teams.getOrElse(List());
         val resultTeams: List[Team] = for (proxyTeam <- proxyTeams;
-                                     team <- Await.result(conn.getTeam(proxyTeam._id.get.stringify),Duration.Inf)) yield (team)
+                                     team <- Await.result(db.getTeam(proxyTeam._id.get.stringify), timeout)) yield (team)
         val result: List[JsObject] = for (team <- resultTeams; project <- team.projects)
           yield (Json.obj("team" -> team.name, "project" -> Json.toJson(project)))
         Ok(Json.toJson(result))
