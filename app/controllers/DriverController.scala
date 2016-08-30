@@ -50,7 +50,7 @@ object DriverController extends Controller{
    * @param token
    * @return
    */
-  private def checkToken(token: String): Boolean = {
+  private def checkToken(token: String){
     db.hasValidToken(token);
   }
 
