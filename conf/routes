@@ -43,8 +43,8 @@ GET           /loadSentences/:confType                      controllers.Applicat
 POST          /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
 
 # Ajax routes: Agent API Controller
-POST          /agent/susbcribe                              controllers.DriverController.subscribeDriver()
-GET           /socket/stream                                controllers.DriverController.registerFrontWebsocketService()
+POST          /susbcribe                                    controllers.DriverController.subscribeDriver()
+GET           /socket/stream                                controllers.DriverController.registerFrontWebsocketService(token: Option[String])
 POST          /record                                       controllers.DriverController.publishRecordedAction()
 
 # Ajax routes: Configuration Controller

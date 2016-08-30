@@ -1,7 +1,7 @@
 define(["angular","jwtClient"], function (angular, JWT) {
     "use strict";
     return {
-        LoginService: function ($state, playRoutes) {
+        LoginService: ["$state","playRoutes", "ClientService", function ($state, playRoutes, ClientService) {
             var self = this ;
             self.user = null;
             self.project = null;
@@ -92,8 +92,11 @@ define(["angular","jwtClient"], function (angular, JWT) {
             function sync() {
                 var session = JWT.remember();
                 self.user = session && session.claim && session.claim.user;
+                if(self.user){
+                    ClientService.opensocket(self.user.token)
+                }
             }
-        }
+        }]
         /* END : LoginService function */
     }
 });

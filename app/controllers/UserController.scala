@@ -1,5 +1,6 @@
 package controllers
 
+import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
 import boot.AppBoot
@@ -47,9 +48,10 @@ trait InnerUserController {
 			case user: User =>
 				user._id match {
 						case None => {
+              val userToken: String = user.token.getOrElse(BearerTokenGenerator.generateToken())
 							val userWithId : User = User(user.login, user.password,
                                            user.firstName, user.lastName,
-                                           user.email, user.teams)
+                                           user.email, user.teams, Some(userToken))
 
 							Await.ready(db.saveUser(userWithId), timeout).value.get match {
 								case Failure(e) => {

@@ -19,6 +19,7 @@ import reactivemongo.api.commands.WriteResult
 import java.security.SecureRandom
 
 case class UserCollection(collection: BSONCollection){
+
   def initAdminAccount(team: Team): Future[Boolean] = {
     persistDefaultSuperAdminUser(team)
   }
@@ -33,11 +34,10 @@ case class UserCollection(collection: BSONCollection){
     var isAuthenticated = false
     val query = BSONDocument("login" -> user.login, "password" -> user.password)
     var authPersonOpt: Option[User] = None;
-    var token: Option[String] = None;
     val userFuture = collection.find(query).cursor[User]().collect[List]()
+    //FIXME we must find only one user in here !!
     Await.result(userFuture.map { users =>
       for (person <- users) {
-        token = Some(BearerTokenGenerator.generateToken)
         val authPerson = User(
           person.login,
           person.password,
@@ -45,7 +45,7 @@ case class UserCollection(collection: BSONCollection){
           person.lastName,
           person.email,
           person.teams,
-          token,
+          person.token,
           Some(true),
           person.lastConnection,
           person._id,
@@ -74,6 +74,7 @@ case class UserCollection(collection: BSONCollection){
     ).map{
       case None => {
         println("[+] inserting user information : " + user._id.get.stringify)
+
         collection.insert(user).onComplete {
           case Failure(e) => throw e
           case Success(_) => println("[+] successfully inserted ${user.id} and $user !")
@@ -89,7 +90,7 @@ case class UserCollection(collection: BSONCollection){
               "lastName" -> user.lastName,
               "email" -> user.email,
               "teams" -> user.teams.getOrElse(List()),
-              "token" -> user.token.getOrElse(""),
+              "token" -> user.token.getOrElse(foundUser.token.get),
               "isActive" -> true,
               "lastConnection" -> user.lastConnection.getOrElse(new Date().toString),
               "idProject" -> user.idProject
@@ -163,30 +164,30 @@ case class UserCollection(collection: BSONCollection){
         lastName = "user",
         email = "admin@toastWebApp.com",
         teams = Some(List(team)),
-        token = None,
         lastConnection = None
       )
     )
 
   }
 
-  object BearerTokenGenerator {
-    val TOKEN_LENGTH = 32
-    val TOKEN_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._"
-    val secureRandom = new SecureRandom()
+}
 
-    def generateToken:String = {
-      generateToken(TOKEN_LENGTH)
+
+object BearerTokenGenerator {
+  val TOKEN_LENGTH = 32
+  val TOKEN_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._"
+  val secureRandom = new SecureRandom()
+
+  def generateToken() :String = {
+    generateToken(TOKEN_LENGTH)
+  }
+
+  def generateToken(tokenLength: Int): String = {
+    if(tokenLength == 0){
+      ""
     }
-
-    def generateToken(tokenLength: Int): String = {
-      if(tokenLength == 0){
-        ""
-      }
-      else {
-        TOKEN_CHARS(secureRandom.nextInt(TOKEN_CHARS.length())) + generateToken(tokenLength - 1)
-      }
-
+    else {
+      TOKEN_CHARS(secureRandom.nextInt(TOKEN_CHARS.length())) + generateToken(tokenLength - 1)
     }
 
   }

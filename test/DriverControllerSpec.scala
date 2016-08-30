@@ -28,19 +28,20 @@ class DriverControllerSpec extends PlaySpec
 
   class TestUserController extends Controller with InnerUserController
   var mongoProps: MongodProps = null
-  implicit val timeout: Timeout = new Timeout(2, TimeUnit.SECONDS)
+  var initialised: Boolean = false
 
   override def beforeAll {
     mongoProps = mongoStart(27017, Version.V3_3_1)
     val connector: MongoConnector = MongoConnector()
     AppBoot.db = connector;
-    Await.ready(connector.init(), Duration.Inf).value.get
+    initialised = Await.result(Await.result(Await.result(connector.init(), Duration.Inf), Duration.Inf), Duration.Inf)
   }
 
   "Driver Controller" should {
     "1: be able to find a user token project through db connector" in {
       val adminUser = Await.result(AppBoot.db.getAllUsers(), Duration.Inf)(0)
-      adminUser.token must not be null
+      println("token -> " + adminUser.token)
+      adminUser.token must not be None
     }
   }
 

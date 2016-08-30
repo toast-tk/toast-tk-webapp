@@ -30,6 +30,7 @@ define(["angular"], function (angular) {
             $scope.addRowBefore = addRowBefore;
             $scope.recordActions= recordActions;
             $scope.driver = undefined;
+            $scope.agentIsActive = ClientService.socketIsActive
 
 
             /**
@@ -38,6 +39,11 @@ define(["angular"], function (angular) {
             ClientService.setDriverListener(function(data){
                 $scope.$apply(function(){
                     $scope.driver = data;
+                    if(data === null){
+                        $scope.agentIsActive = false;
+                    }else{
+                        $scope.agentIsActive = true;
+                    }
                 })
             });
 
@@ -342,7 +348,7 @@ define(["angular"], function (angular) {
                     /* end : adjusting page content size */
 
                     /* begin : generation de la tree */
-// FIX TODO : l'initiatisation crée une boucle infinie 
+                    // FIX TODO : l'initiatisation crée une boucle infinie
                     if(doBuildTree === true){
                         $scope.scenarii.map(function (scenario) {
                             if(scenario.template === true ){

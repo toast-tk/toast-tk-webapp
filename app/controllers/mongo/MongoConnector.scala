@@ -54,7 +54,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     repositoryCollection.saveAutoConfiguration(impl)
   }
 
-  implicit val scenarioRowsFormat = Json.format[ScenarioRows] 
+  implicit val scenarioRowsFormat = Json.format[ScenarioRows]
 
   def close(): Unit = {
     db.connection.close()
@@ -146,22 +146,22 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
         }
         true
       }
-       case true => {
+      case true => {
         false
-       }
-     }
+      }
+    }
   }
 
   def hasChildNodes(nodeId : String): Future[Boolean] ={
-     val collection = open_collection("scenarii")
-     collection.find(BSONDocument("parent" -> nodeId)).one[Scenario].map{
+    val collection = open_collection("scenarii")
+    collection.find(BSONDocument("parent" -> nodeId)).one[Scenario].map{
       case None => {
         false
       }
       case Some(childNode) => {
         true
       }
-     }
+    }
   }
 
   def savePlainScenario(scenario: Scenario) {
@@ -273,17 +273,19 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     teamCollection.findTeamBy(BSONDocument("_id"-> BSONObjectID(idTeam)))
   }
 
-  def hasValidToken(token: String): Option[Project] = {
+  def userProjectPair(token: String): (Option[User], Option[Project]) = {
     val userResult: Option[User] = Await.result(userCollection.findUserBy(BSONDocument("token" -> token)), timeout)
-    val projectResult: Option[Project] = userResult.map {
-      user => {
-        user.idProject match {
-          case Some(id) => Await.result(projectCollection.one(id), timeout).get
-          //case None => None
+    userResult match {
+      case Some(user) => {
+        val projectResult: Option[Project] = user.idProject match {
+          case Some(id) => Await.result(projectCollection.one(id), timeout)
+          case None => None
         }
+        (userResult, projectResult)
       }
+      case None => (None, None)
     }
-    projectResult
+
   }
 
 }

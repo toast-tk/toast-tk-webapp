@@ -46,6 +46,7 @@ class UserControllerSpec extends PlaySpec
         val users = Helpers.contentAsJson(result).as[List[User]]
         users.length mustEqual 1
         users.head.password mustBe None
+        users.head.token must not be None
     }
 
     "2: retrieves default admin user" in {

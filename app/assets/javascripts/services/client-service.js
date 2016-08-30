@@ -1,178 +1,192 @@
 define(["angular"], function (angular) {
-  	"use strict";
+    "use strict";
 
-  	// The module - will be referenced by other modules
-  	var module = angular.module("tk.services", ["play.routing"]);
+    // The module - will be referenced by other modules
+    var module = angular.module("tk.services", ["play.routing"]);
+
     module.constant('webSocket', WebSocket);
-  	module.factory('ClientService', function(playRoutes,webSocket){
-  		var factory = {};
+    module.factory('ClientService', ["playRoutes","webSocket",
+        function(playRoutes, webSocket){
+            var factory = {};
 
-        factory.recorders = [];
-        factory.socketIsActive = false;
-        factory.recorderListener = null;
-        factory.sentenceListener = null;
-        factory.regexList = [];
-        factory.regexMap = {};
-
-        var socket = new webSocket('ws://localhost:9000/socket/stream');
-
-        // When the connection is open, send some data to the server
-        socket.onopen = function (event) {
-            factory.socketIsActive = true;
-            console.log(event)
-        };
-
-        socket.onclose = function (error) {
+            factory.recorders = [];
             factory.socketIsActive = false;
-        };
+            factory.recorderListener = null;
+            factory.sentenceListener = null;
+            factory.accessToken = null;
 
-        socket.onerror = function (error) {
-            factory.socketIsActive = false;
-        };
+            factory.regexList = [];
+            factory.regexMap = {};
 
-        socket.onmessage = function (event) {
-            var data = event.data;
-            if(data.startsWith("driver:")){
-                if(factory.recorderListener){
-                    factory.recorderListener(data);
+
+            factory.opensocket = function(accessToken){
+                if(factory.accessToken === null){
+                    factory.accessToken = accessToken;
+                    var socket = new webSocket('ws://localhost:9000/socket/stream?token=' + accessToken);
+
+                    // When the connection is open, send some data to the server
+                    socket.onopen = function (event) {
+                        factory.socketIsActive = true;
+                        console.log(event)
+                    };
+
+                    socket.onclose = function (error) {
+                        console.log("Websocket connection closed");
+                        factory.socketIsActive = false;
+                        factory.recorderListener(null);
+                        factory.accessToken = null;
+                    };
+
+                    socket.onerror = function (error) {
+                        factory.socketIsActive = false;
+                        factory.recorderListener(null);
+                        factory.accessToken = null;
+                    };
+
+                    socket.onmessage = function (event) {
+                        var data = event.data;
+                        if(data.startsWith("driver:")){
+                            if(factory.recorderListener){
+                                factory.recorderListener(data);
+                            }
+                            console.log("No driver listener defined")
+                        }
+                        if(data.startsWith("sentence: ")){
+                            var sentenceRecord = angular.fromJson(data.substring("sentence: ".length))
+                            if(factory.sentenceListener){
+                                factory.sentenceListener(sentenceRecord);
+                            }else{
+                                console.log("No sentence listener defined")
+                            }
+                        }
+                        console.log(event.data)
+                    };
                 }
-                console.log("No driver listener defined")
             }
-            if(data.startsWith("sentence: ")){
-                var sentenceRecord = angular.fromJson(data.substring("sentence: ".length))
-                if(factory.sentenceListener){
-                    factory.sentenceListener(sentenceRecord);
-                }else{
-                    console.log("No sentence listener defined")
-                }
+
+            factory.setDriverListener = function(listener){
+                factory.recorderListener = listener;
             }
-            console.log(event.data)
-        };
+
+            factory.setSentenceListener = function(listener){
+                factory.sentenceListener = listener;
+            }
+
+            factory.init = function(){
+                playRoutes.controllers.DomainController.typeDescriptor().get().then(function(response){
+                    factory.typeDescriptor = response.data || [];
+                });
+            }
+
+            factory.loadRegexList = function(scenariiKind, callback){
+                playRoutes.controllers.Application.loadCtxSentences(scenariiKind).get().then(function(response){
+                    var url = response.config.url.split("/")
+                    var scenariiKind = url[url.length -1];
+                    var list = [];
+                    var connectorConfigGroups = response.data;
+                    for(var j = 0; j< connectorConfigGroups.length; j++){
+                        for (var k=0; k< connectorConfigGroups[j].rows.length; k++){
+                            var connectorConfig = connectorConfigGroups[j].rows;
+                            if(connectorConfig[k].type == scenariiKind){
+                                list = list.concat( connectorConfig[k].syntax || []);
+                            }
+                        }
+                    }
+                    factory.regexList = factory.regexList.concat(list || []);
+                    factory.regexMap[scenariiKind] = list;
+                    callback.call(callback, scenariiKind, list);
+                });
+            }
+
+            factory.convertToPatternSentence = function(sentence){
+                return factory.convertSentence(sentence, getActionItemPattern);
+            };
 
 
-        factory.setDriverListener = function(listener){
-            factory.recorderListener = listener;
-        }
-
-        factory.setSentenceListener = function(listener){
-            factory.sentenceListener = listener;
-        }
-
-        factory.init = function(){
-			playRoutes.controllers.DomainController.typeDescriptor().get().then(function(response){
-				factory.typeDescriptor = response.data || [];
-	    	});	
-		}
-
-		factory.loadRegexList = function(scenariiKind, callback){
-			playRoutes.controllers.Application.loadCtxSentences(scenariiKind).get().then(function(response){
-                var url = response.config.url.split("/")
-                var scenariiKind = url[url.length -1];
-                var list = [];
-                var connectorConfigGroups = response.data;
-                for(var j = 0; j< connectorConfigGroups.length; j++){
-                    for (var k=0; k< connectorConfigGroups[j].rows.length; k++){
-                        var connectorConfig = connectorConfigGroups[j].rows;
-                        if(connectorConfig[k].type == scenariiKind){
-                            list = list.concat( connectorConfig[k].syntax || []);
+            factory.actionItemType = function(actionItem){
+                var match = /{{([\w:]+)}}/gi.exec(actionItem);
+                if(match != null) {
+                    var actionItemDefinition = match[1];
+                    var groupArray = actionItemDefinition.split(":");
+                    if(groupArray.length == 1) {
+                        return {
+                            category : groupArray[0],
+                            type: "string"
+                        }
+                    }
+                    else if(groupArray.length == 2) {
+                        return {
+                            category : groupArray[0],
+                            type: groupArray[1]
+                        }
+                    }
+                    else if(groupArray.length == 3) {
+                        return {
+                            category : groupArray[0],
+                            type: groupArray[1]
                         }
                     }
                 }
-                factory.regexList = factory.regexList.concat(list || []);
-                factory.regexMap[scenariiKind] = list;
-                callback.call(callback, scenariiKind, list);
-            });
-		}
-
-		factory.convertToPatternSentence = function(sentence){
-			return factory.convertSentence(sentence, getActionItemPattern);
-		};
-
-
-        factory.actionItemType = function(actionItem){
-            var match = /{{([\w:]+)}}/gi.exec(actionItem);
-            if(match != null) {
-                var actionItemDefinition = match[1];
-                var groupArray = actionItemDefinition.split(":");
-                if(groupArray.length == 1) {
-                    return {
-                        category : groupArray[0],
-                        type: "string"
-                    }
-                }
-                else if(groupArray.length == 2) {
-                    return {
-                        category : groupArray[0],
-                        type: groupArray[1]
-                    }
-                }
-                else if(groupArray.length == 3) {
-                    return {
-                        category : groupArray[0],
-                        type: groupArray[1]
-                    }
-                }
             }
-        }
 
-		factory.convertSentence = function(sentence, callback){
-			var convertedSentence = sentence;
-            var actionItemRegex = /{{([\w:]+)}}/gi;
-			var match = actionItemRegex.exec(sentence);
-			while(match != null) {
-				var actionItemDefinition = match[1];
-				var groupArray = actionItemDefinition.split(":");
-				var regex = null;
-				if(groupArray.length == 1) {
-					var category = groupArray[0];
-					regex = callback.call(callback, category, "string");
-				}
-				else if(groupArray.length == 2) {
-					var category = groupArray[0];
-					var type = groupArray[1];
-					regex = callback.call(callback, category, type);
-				}
-				else if(groupArray.length == 3) {
-					var category = groupArray[1];
-					var type = groupArray[2];
-					regex = callback.call(callback, category, type);
-				}
-				if(regex != null) {
-					convertedSentence = convertedSentence.replace(new RegExp(match[0], 'g'), regex);
-				}
-				match = actionItemRegex.exec(convertedSentence);
-			}
-			return convertedSentence;
-		}
+            factory.convertSentence = function(sentence, callback){
+                var convertedSentence = sentence;
+                var actionItemRegex = /{{([\w:]+)}}/gi;
+                var match = actionItemRegex.exec(sentence);
+                while(match != null) {
+                    var actionItemDefinition = match[1];
+                    var groupArray = actionItemDefinition.split(":");
+                    var regex = null;
+                    if(groupArray.length == 1) {
+                        var category = groupArray[0];
+                        regex = callback.call(callback, category, "string");
+                    }
+                    else if(groupArray.length == 2) {
+                        var category = groupArray[0];
+                        var type = groupArray[1];
+                        regex = callback.call(callback, category, type);
+                    }
+                    else if(groupArray.length == 3) {
+                        var category = groupArray[1];
+                        var type = groupArray[2];
+                        regex = callback.call(callback, category, type);
+                    }
+                    if(regex != null) {
+                        convertedSentence = convertedSentence.replace(new RegExp(match[0], 'g'), regex);
+                    }
+                    match = actionItemRegex.exec(convertedSentence);
+                }
+                return convertedSentence;
+            }
 
-  		factory.convertToRegexSentence = function(sentence, callback){
-			return factory.convertSentence(sentence, getActionItemRegex);
-		}
+            factory.convertToRegexSentence = function(sentence, callback){
+                return factory.convertSentence(sentence, getActionItemRegex);
+            }
 
-		function getActionItemPattern(category, type){
-			for(var i = 0; i < factory.typeDescriptor.length; i++){
-				var descriptor = factory.typeDescriptor[i];
-				if(descriptor.category == category) {
-					if(descriptor.kind  == type) {
-						return descriptor.replacement;
-					}
-				}
-			}
-			return null;
-		}
+            function getActionItemPattern(category, type){
+                for(var i = 0; i < factory.typeDescriptor.length; i++){
+                    var descriptor = factory.typeDescriptor[i];
+                    if(descriptor.category == category) {
+                        if(descriptor.kind  == type) {
+                            return descriptor.replacement;
+                        }
+                    }
+                }
+                return null;
+            }
 
-		function getActionItemRegex(category, type){
-			for(var i = 0; i < factory.typeDescriptor.length; i++){
-				var descriptor = factory.typeDescriptor[i];
-				if(descriptor.category == category) {
-					if(descriptor.kind  == type) {
-						return descriptor.regex;
-					}
-				}
-			}
-			return null;
-		}
-  		factory.init();
-  		return factory;
-  	});
+            function getActionItemRegex(category, type){
+                for(var i = 0; i < factory.typeDescriptor.length; i++){
+                    var descriptor = factory.typeDescriptor[i];
+                    if(descriptor.category == category) {
+                        if(descriptor.kind  == type) {
+                            return descriptor.regex;
+                        }
+                    }
+                }
+                return null;
+            }
+            factory.init();
+            return factory;
+        }]);
 });
