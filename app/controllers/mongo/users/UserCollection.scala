@@ -31,11 +31,11 @@ case class UserCollection(collection: BSONCollection){
   }
 
   def AuthenticateUser(user : InspectedUser) : Option[User] = {
-    var isAuthenticated = false
+
     val query = BSONDocument("login" -> user.login, "password" -> user.password)
     var authPersonOpt: Option[User] = None;
     val userFuture = collection.find(query).cursor[User]().collect[List]()
-    //FIXME we must find only one user in here !!
+    //FIXME: we must find only one user in here !!
     Await.result(userFuture.map { users =>
       for (person <- users) {
         val authPerson = User(
@@ -51,15 +51,11 @@ case class UserCollection(collection: BSONCollection){
           person._id,
           person.idProject)
         authPersonOpt = Some(authPerson)
-        println(s"dataobj Token ----> ${authPersonOpt}")
         saveUser(authPerson)
         val firstName = authPerson.firstName
-        isAuthenticated = true
-        println(s"found $firstName $isAuthenticated")
         authPersonOpt
       }
     }, 5 seconds)
-    println(s"just here $isAuthenticated")
     authPersonOpt
   }
 

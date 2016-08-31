@@ -2,22 +2,21 @@ define(["angular"], function (angular) {
     "use strict";
 
     // The module - will be referenced by other modules
-    var module = angular.module("tk.services", ["play.routing"]);
+    var module = angular.module('tk.services', ['play.routing']);
 
     module.constant('webSocket', WebSocket);
-    module.factory('ClientService', ["playRoutes","webSocket",
+    module.factory('ClientService', ['playRoutes','webSocket',
         function(playRoutes, webSocket){
             var factory = {};
-
             factory.recorders = [];
             factory.socketIsActive = false;
-            factory.recorderListener = null;
-            factory.sentenceListener = null;
+            factory.registerAgentListener = function(callback){
+                factory.agentListenerCallback = callback;
+            };
             factory.accessToken = null;
-
+            factory.agents = [];
             factory.regexList = [];
             factory.regexMap = {};
-
 
             factory.opensocket = function(accessToken){
                 if(factory.accessToken === null){
@@ -31,45 +30,67 @@ define(["angular"], function (angular) {
                     };
 
                     socket.onclose = function (error) {
-                        console.log("Websocket connection closed");
-                        factory.socketIsActive = false;
-                        factory.recorderListener(null);
-                        factory.accessToken = null;
+                        console.log('WebSocket: connection closed');
+                        resetWS();
                     };
 
                     socket.onerror = function (error) {
-                        factory.socketIsActive = false;
-                        factory.recorderListener(null);
-                        factory.accessToken = null;
+                        console.log('WebSocket: connection on error');
+                        resetWS();
                     };
+
+                    var resetWS = function(){
+                        factory.socketIsActive = false;
+                        factory.agentListenerCallback = undefined;
+                        factory.accessToken = null;
+                    }
 
                     socket.onmessage = function (event) {
-                        var data = event.data;
-                        if(data.startsWith("driver:")){
-                            if(factory.recorderListener){
-                                factory.recorderListener(data);
+                        try{
+                            console.log("WebSocket: received ws data: " + event.data);
+                            var agent = angular.fromJson(event.data);
+                            if(agent){
+                                if(agent.sentence){
+                                    if(factory.agentListenerCallback){
+                                        factory.agentListenerCallback.call(this, 'sentence', agent);
+                                    } else {
+                                        console.log('WebSocket: no agent sentence listener defined');
+                                    }
+                                }else {
+                                    if(agent.isAlive === true){
+                                        var result = factory.agents.filter(function( obj ) {
+                                            return obj.host === agent.host && object.token === agent.token;
+                                        });
+                                        if(result.length === 0){
+                                            console.log('WebSocket: new agent available at host: ' + agent.host);
+                                            factory.agents.push(agent);
+                                            if(factory.agentListenerCallback){
+                                                factory.agentListenerCallback.call(this, 'set', factory.agents);
+                                            } else {
+                                                console.log('WebSocket: no agent listener defined');
+                                            }
+                                        }
+                                    }else {
+                                        var indexOfAgent = factory.agents.findIndex(function( obj ) {
+                                            return obj.host === agent.host && object.token === agent.token;
+                                        });
+                                        console.log('Agent is no longer active at host: ' + agent.host);
+                                        var agentToRemove = factory.agents[indexOfAgent];
+                                        factory.agents.splice(indexOfAgent, 1);
+                                        if(factory.agentListenerCallback){
+                                            factory.agentListenerCallback.call(this, 'set', factory.agents);
+                                            factory.agentListenerCallback.call(this, 'unset', agentToRemove);
+                                        } else {
+                                            console.log('WebSocket: no agent listener defined');
+                                        }
+                                    }
+                                }
                             }
-                            console.log("No driver listener defined")
+                        }catch(e){
+                            console.log('WebSocket: error processing web socket message: ' + event);
                         }
-                        if(data.startsWith("sentence: ")){
-                            var sentenceRecord = angular.fromJson(data.substring("sentence: ".length))
-                            if(factory.sentenceListener){
-                                factory.sentenceListener(sentenceRecord);
-                            }else{
-                                console.log("No sentence listener defined")
-                            }
-                        }
-                        console.log(event.data)
                     };
                 }
-            }
-
-            factory.setDriverListener = function(listener){
-                factory.recorderListener = listener;
-            }
-
-            factory.setSentenceListener = function(listener){
-                factory.sentenceListener = listener;
             }
 
             factory.init = function(){
@@ -101,7 +122,6 @@ define(["angular"], function (angular) {
             factory.convertToPatternSentence = function(sentence){
                 return factory.convertSentence(sentence, getActionItemPattern);
             };
-
 
             factory.actionItemType = function(actionItem){
                 var match = /{{([\w:]+)}}/gi.exec(actionItem);
@@ -186,7 +206,9 @@ define(["angular"], function (angular) {
                 }
                 return null;
             }
+
             factory.init();
+
             return factory;
         }]);
 });

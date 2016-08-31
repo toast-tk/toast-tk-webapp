@@ -3,7 +3,7 @@
     <div webix-ui id="contentWebixLayout"> <!--layout rows with type "space" are created-->
         <div height="51" >
             <h3 class="page-header" >
-                <i class="fa fa-fw fa-pencil-square-o"></i>  Scenarii Edition <small> Test scripts</small>
+                <i class="fa fa-fw fa-pencil-square-o"></i>  Scenario Edition - <small> Test scripts</small>
             </h3>
         </div>
         <div view="cols"> <!--Webix layout cols are initialized-->
@@ -73,7 +73,7 @@
                                 <span ng-if="isEditScenarioName===false">{{scenario.name}}</span>
                                 <input type="text" ng-if="isEditScenarioName===true" ng-model="scenario.name"/>
                                 <div class="pull-right" style="margin: -5px;">
-                                    <button class="btn btn-default btn-success btn-xs" ng-if="agentIsActive===true" ng-click="recordActions()"> <i class="fa fa-gear"></i>Record</button>
+                                    <span ng-if="agents.length > 0" ng-dropdown-multiselect="" options="agents" selected-model="agent" extra-settings="agentDropdownSettings" translation-texts="translationTexts"></span>
                                     <button class="btn btn-default btn-warning btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
                                     <button class="btn btn-default btn-primary btn-xs" data-ng-click="saveScenarii(scenario)"> <i class="fa fa-floppy-o"></i> Save</button>
                                     <button class="btn btn-default btn-danger btn-xs" data-ng-click="deleteScenarii(scenario)"><i class="fa fa-trash"></i> Delete</button>
