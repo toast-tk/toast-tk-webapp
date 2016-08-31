@@ -23,6 +23,8 @@ import io.toast.tk.core.agent.interpret.WebEventRecord
 import io.toast.tk.action.interpret.web.{InterpretationProvider, IActionInterpret}
 import toast.engine.DAOJavaWrapper
 
+import scala.util.{Failure, Success}
+
 
 case class RecordedSentence(sentence:String, ids:List[String])
 case class AgentInformation(token: String, host: String, isAlive: Option[Boolean] = Some(true), sentence: Option[RecordedSentence] = None)
@@ -48,7 +50,7 @@ object AgentController extends Controller{
   /**
    * 5 seconds agent checkAlive
    */
-  /**Future {
+  Future {
     while (true) {
       Thread.sleep(5 * 1000);
       if (agents.size > 0) {
@@ -80,7 +82,7 @@ object AgentController extends Controller{
         }
       }
     }
-  }*/
+  }
 
   private def unregisterAgent(token: String, host: String): Unit ={
     agents -= token
