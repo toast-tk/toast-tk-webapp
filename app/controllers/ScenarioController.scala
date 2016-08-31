@@ -21,7 +21,7 @@ import scala.util.{Try, Success, Failure}
 object ScenarioController extends Controller {
 
   implicit val scenarioRowsFormat = Json.format[ScenarioRows]
-  private val conn = AppBoot.conn
+  private val db = AppBoot.db
   private lazy val regex = """\{\{[\w:]+\}\}""".r
 
   private def populatePatterns(rows: String): List[String] = {
@@ -106,7 +106,7 @@ object ScenarioController extends Controller {
    * |Type *toto* in *LoginDialog.loginTextField*|
    */
   def loadWikifiedScenarii(idProject: String) = Action.async {
-    conn.loadScenarii(idProject).map {
+    db.loadScenarii(idProject).map {
       scenarii => {
         val response = for (scenario <- scenarii) yield wikifiedScenario(scenario)
         Ok(Json.toJson(response))
@@ -120,7 +120,7 @@ object ScenarioController extends Controller {
   def deleteScenarii() = Action(parse.json) { implicit request =>
     request.body.validate[String].map {
       case scenariiId: String =>
-       Await.ready(conn.deleteScenarii(scenariiId), Duration.Inf).value.get match {
+       Await.ready(db.deleteScenarii(scenariiId), Duration.Inf).value.get match {
             case Failure(e) => throw e
             case Success(hasNode) => {
               hasNode match {
@@ -144,7 +144,7 @@ object ScenarioController extends Controller {
    def saveScenarii() = Action(parse.json) { implicit request =>
     request.body.validate[Scenario].map {
       case scenario: Scenario => {
-        val result: UpdateWriteResult = Await.result(conn.upsertScenario(scenario), Duration.Inf)
+        val result: UpdateWriteResult = Await.result(db.upsertScenario(scenario), Duration.Inf)
         if (result.ok) {
             def extendedObject(obj: JsObject) = {
               obj + ("columns" -> DomainController.scenarioDescriptorProvider((obj \ "type").as[String]))
@@ -165,7 +165,7 @@ object ScenarioController extends Controller {
    * load to init scenarii
    */
   def loadScenarii(idProject: String) = Action.async {
-    conn.loadScenarii(idProject).map {
+    db.loadScenarii(idProject).map {
       scenarii => {
         val input = Json.toJson(scenarii).as[JsArray]
         def extendedObject(obj: JsObject) = {
@@ -189,7 +189,7 @@ object ScenarioController extends Controller {
    * load to init scenarii
    */
   def loadScenariiList(idProject: String) = Action.async {
-    conn.loadScenarii(idProject).map {
+    db.loadScenarii(idProject).map {
       scenarii => {
         val result:List[JsObject] = for (scenario <- scenarii) yield (
           Json.obj("id" -> scenario._id.get.stringify,
@@ -205,7 +205,7 @@ object ScenarioController extends Controller {
    * load scenario steps
    */
   def loadScenarioSteps(id: String) = Action.async {
-    conn.loadScenarioById(id).map {
+    db.loadScenarioById(id).map {
       result => result match {
         case Some(scenario) => {
             val scenarioRows: List[ScenarioRows] = Json.parse(scenario.rows.getOrElse("[]")).as[List[ScenarioRows]]

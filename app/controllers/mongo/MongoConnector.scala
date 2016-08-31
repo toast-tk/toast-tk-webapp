@@ -1,5 +1,7 @@
 package controllers.mongo
 
+import java.util.concurrent.TimeUnit
+
 import controllers.mongo.project.{Project, ProjectCollection}
 import controllers.mongo.repository.RepositoryCollection
 import controllers.mongo.scenario.{Scenario, ScenarioCollection}
@@ -11,7 +13,8 @@ import reactivemongo.api.commands.{UpdateWriteResult, WriteResult}
 import reactivemongo.bson.Producer.nameValue2Producer
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success}
 import controllers.parsers.EntityField
 
@@ -35,6 +38,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   val repositoryCollection = RepositoryCollection(open_collection("repository"), open_collection("elements"))
   val projectCollection = ProjectCollection(open_collection("projects"))
   val scenarioCollection = ScenarioCollection(open_collection("scenarii"), repositoryCollection)
+  val timeout = Duration(5, TimeUnit.SECONDS)
 
   def init() = {
     projectCollection.initDefault().map{
@@ -50,7 +54,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     repositoryCollection.saveAutoConfiguration(impl)
   }
 
-  implicit val scenarioRowsFormat = Json.format[ScenarioRows] 
+  implicit val scenarioRowsFormat = Json.format[ScenarioRows]
 
   def close(): Unit = {
     db.connection.close()
@@ -142,22 +146,22 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
         }
         true
       }
-       case true => {
+      case true => {
         false
-       }
-     }
+      }
+    }
   }
 
   def hasChildNodes(nodeId : String): Future[Boolean] ={
-     val collection = open_collection("scenarii")
-     collection.find(BSONDocument("parent" -> nodeId)).one[Scenario].map{
+    val collection = open_collection("scenarii")
+    collection.find(BSONDocument("parent" -> nodeId)).one[Scenario].map{
       case None => {
         false
       }
       case Some(childNode) => {
         true
       }
-     }
+    }
   }
 
   def savePlainScenario(scenario: Scenario) {
@@ -269,5 +273,19 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     teamCollection.findTeamBy(BSONDocument("_id"-> BSONObjectID(idTeam)))
   }
 
+  def userProjectPair(token: String): (Option[User], Option[Project]) = {
+    val userResult: Option[User] = Await.result(userCollection.findUserBy(BSONDocument("token" -> token)), timeout)
+    userResult match {
+      case Some(user) => {
+        val projectResult: Option[Project] = user.idProject match {
+          case Some(id) => Await.result(projectCollection.one(id), timeout)
+          case None => None
+        }
+        (userResult, projectResult)
+      }
+      case None => (None, None)
+    }
+
+  }
 
 }

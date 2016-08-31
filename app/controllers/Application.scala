@@ -13,7 +13,7 @@ import controllers.parsers.WebPageElement
 import pdi.jwt._
 
 object Application extends Controller {
-  private val conn = AppBoot.conn
+  private val db = AppBoot.db
   private val jnlpHost = AppBoot.jnlpHost
 
   def index = Action {  request =>
@@ -29,7 +29,7 @@ object Application extends Controller {
     Logger.info(s"Loging ${request.body}")
      request.body.validate[InspectedUser].map {
       case user: InspectedUser =>
-      var authUser : Option[User] = conn.AuthenticateUser(user) ;
+      var authUser : Option[User] = db.AuthenticateUser(user) ;
       val token = authUser map {_.token} getOrElse("")
       Logger.info(s"Loging result {$authUser}")
       if(token != ""){  
@@ -65,7 +65,7 @@ object Application extends Controller {
     request.body.validate[InspectedPage].map {
       case page: InspectedPage =>
         val pageElements = for (itemLocator <- page.items) yield WebPageElement(None, "", "", itemLocator, Some(""), Some(0))
-        conn.saveAutoConfiguration(RepositoryImpl(None, page.name, "swing page", Some(pageElements), None))
+        db.saveAutoConfiguration(RepositoryImpl(None, page.name, "swing page", Some(pageElements), None))
         Ok("received inspected page...")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
@@ -83,7 +83,7 @@ object Application extends Controller {
                                   parent = Some("0"),
                                   project = None
         )
-        conn.savePlainScenario(logInstance)
+        db.savePlainScenario(logInstance)
         Ok("scenario saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
@@ -97,7 +97,7 @@ object Application extends Controller {
    * WebPageElement(name: String, elementType: String, locator: String, method: String, position: Int)
    */
   def loadWikifiedRepository(idProject: String)  = Action.async {
-    conn.loadSwingPageRepository(idProject).map {
+    db.loadSwingPageRepository(idProject).map {
       repository => {
         def wikifiedObject(page: RepositoryImpl): JsValue = {
           var res = "page id:" + page.id.get + "\n"
@@ -117,7 +117,7 @@ object Application extends Controller {
 
 
   def loadWebWikifiedRepository(idProject: String) = Action.async {
-    conn.loadWebPageRepository(idProject).map {
+    db.loadWebPageRepository(idProject).map {
       repository => {
         def wikifiedObject(page: RepositoryImpl): JsValue = {
           var res = "page id:" + page.id.get + "\n"
@@ -139,7 +139,7 @@ object Application extends Controller {
    * load services json descriptors
    */
   def loadServiceDescriptors(serviceType: String, driverName: String) = Action.async {
-    conn.loadConfStaticSentences(serviceType, driverName).map {
+    db.loadConfStaticSentences(serviceType, driverName).map {
       sentences => {
         val out = for (s <- sentences) yield (Json.parse(s) \\ "patterns")
         val outSentences = out.flatMap { x => x}
@@ -152,7 +152,7 @@ object Application extends Controller {
    * get all possible pattern sentences for a given scenario type
    */
   def loadCtxSentences(confType: String) = Action.async {
-    conn.loadConfigurationSentences(confType).map {
+    db.loadConfigurationSentences(confType).map {
       configurations => {
         Ok(Json.toJson(configurations))
       }
@@ -167,7 +167,7 @@ object Application extends Controller {
    * @return
    */
   def loadSentences(confType: String) = Action.async {
-    conn.loadConfigurationSentences(confType).map {
+    db.loadConfigurationSentences(confType).map {
       configurations => {
         var res = List[ConfigurationSyntax]();
         for (configuration <- configurations) {
@@ -192,7 +192,7 @@ object Application extends Controller {
     itemName match {
       case "web" => {
         var res = List[JsValue]();
-        conn.loadWebPageRepository(idProject).map {
+        db.loadWebPageRepository(idProject).map {
           pageConfigurations => {
             for (page <- pageConfigurations) {
               val pageElements = page.rows.getOrElse(List()).sortWith(_.name < _.name);
@@ -211,7 +211,7 @@ object Application extends Controller {
       }
       case "swing" => {
         var res = List[JsValue]();
-        conn.loadSwingPageRepository(idProject).map {
+        db.loadSwingPageRepository(idProject).map {
           pageConfigurations => {
             for (page <- pageConfigurations) {
               val pageElements = page.rows.getOrElse(List()).sortWith(_.name < _.name);
@@ -251,7 +251,7 @@ object Application extends Controller {
     
       formerConfiguration match {
         case None => {
-          conn.saveConfiguration(MacroConfiguration(None, fixtureDescriptor.name, configurationRows.toList))
+          db.saveConfiguration(MacroConfiguration(None, fixtureDescriptor.name, configurationRows.toList))
         }
         case Some(conf) => {
           val rows = for {
@@ -260,7 +260,7 @@ object Application extends Controller {
              && !macroConfigurationRow.group.equals(configurationRows.head.group))
           } yield(macroConfigurationRow)
           val rowsToPersist = configurationRows.head :: rows
-          conn.saveConfiguration(MacroConfiguration(conf.id, fixtureDescriptor.name, rowsToPersist.toList))
+          db.saveConfiguration(MacroConfiguration(conf.id, fixtureDescriptor.name, rowsToPersist.toList))
         }
       }
   }
@@ -271,7 +271,7 @@ object Application extends Controller {
   def onConnectorReceived = Action(parse.json) { implicit request =>
     request.body.validate[MojoFixtureDescriptor].map {
       case fixtureDescriptor: MojoFixtureDescriptor =>
-        conn.loadMacroConfiguration(fixtureDescriptor.name).map { 
+        db.loadMacroConfiguration(fixtureDescriptor.name).map {
           configuration => configuration match {
             case None => {
               persistConfiguration(None, fixtureDescriptor)

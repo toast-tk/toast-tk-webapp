@@ -10,13 +10,13 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 object RepositoryController extends Controller {
 
-  private val conn = AppBoot.conn
+  private val db = AppBoot.db
 
   /**
    * load to init repository configuration
    */
   def loadAutoConfiguration(idProject: String) = Action.async {
-      conn.loadSwingPageRepository(idProject).map {
+      db.loadSwingPageRepository(idProject).map {
         repository => {
           val input = Json.toJson(repository).as[JsArray]
           def extendedObject(obj: JsObject) = {
@@ -33,7 +33,7 @@ object RepositoryController extends Controller {
    * load to init repository configuration
    */
   def loadWebPageRepository(idProject: String) = Action.async {
-    conn.loadWebPageRepository(idProject).map {
+    db.loadWebPageRepository(idProject).map {
       repository => {
         val input = Json.toJson(repository).as[JsArray]
         def extendedObject(obj: JsObject) = {
@@ -53,7 +53,7 @@ object RepositoryController extends Controller {
       case configs: Seq[RepositoryImpl] =>
         for {
           conf <- configs
-        } yield conn.saveAutoConfiguration(conf)
+        } yield db.saveAutoConfiguration(conf)
         Ok("auto configuration saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
@@ -67,7 +67,7 @@ object RepositoryController extends Controller {
   def deleteObject = Action(parse.json) { implicit request =>
     request.body.validate[String].map {
       case autoSetupId: String =>
-        conn.deleteObject(autoSetupId)
+        db.deleteObject(autoSetupId)
         Ok("object deleted !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
@@ -80,8 +80,8 @@ object RepositoryController extends Controller {
   def saveAutoConfigBlock() = Action(parse.json) { implicit request =>
     request.body.validate[RepositoryImpl].map {
       case config: RepositoryImpl =>
-        conn.saveAutoConfiguration(config)
-        conn.refactorScenarii(config)
+        db.saveAutoConfiguration(config)
+        db.refactorScenarii(config)
         Ok("auto configuration saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
@@ -100,7 +100,7 @@ object RepositoryController extends Controller {
       case configs: Seq[RepositoryImpl] =>
         for {
           conf <- configs
-        } yield conn.saveAutoConfiguration(conf)
+        } yield db.saveAutoConfiguration(conf)
         Ok("auto configuration saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))

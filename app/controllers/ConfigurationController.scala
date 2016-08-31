@@ -9,13 +9,13 @@ import play.api.mvc.{Controller, Action}
 
 object ConfigurationController extends Controller {
 
-  private val conn = AppBoot.conn
+  private val db = AppBoot.db
 
   /**
    * load to init configuration
    */
   def loadConfiguration() = Action.async {
-    conn.loadConfiguration.map {
+    db.loadConfiguration.map {
       configurations => {
         Ok(Json.toJson(configurations))
       }
@@ -30,7 +30,7 @@ object ConfigurationController extends Controller {
       case configs: Seq[MacroConfiguration] =>
         for {
           conf <- configs
-        } yield conn.saveConfiguration(conf)
+        } yield db.saveConfiguration(conf)
         Ok("configuration saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))

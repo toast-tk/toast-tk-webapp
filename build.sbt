@@ -11,6 +11,7 @@ resolvers += "MavenSnapshots" at "https://oss.sonatype.org/content/repositories/
 resolvers += "Typesafe" at "http://repo.typesafe.com/typesafe/releases/"
 
 libraryDependencies ++= Seq(
+  ws,
   "com.google.code.gson" % "gson" % "2.5",
   "org.reactivemongo" % "reactivemongo_2.11" % "0.11.7",
   "org.webjars" % "jquery" % "1.7.2",
@@ -21,7 +22,6 @@ libraryDependencies ++= Seq(
   "io.toast-tk" % "toast-tk-runtime" % "0.1.4-SNAPSHOT",
   "io.toast-tk" % "toast-tk-dao-api" % "0.1.4-SNAPSHOT",
   "org.seleniumhq.selenium" % "selenium-java" % "2.46.0",
-  //"io.toast-tk" % "toast-tk-selenium-plugin" % "0.1.4-SNAPSHOT",
   "io.toast-tk" % "toast-tk-interpret" % "0.1.4-SNAPSHOT",
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0",
   "com.pauldijou" %% "jwt-play" % "0.5.1",

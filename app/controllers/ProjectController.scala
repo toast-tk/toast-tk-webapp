@@ -13,7 +13,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 object ProjectController extends Controller {
 
-  private val conn = AppBoot.conn
+  private val db = AppBoot.db
 
   /**
    * Save Project
@@ -21,7 +21,7 @@ object ProjectController extends Controller {
   def saveProject() = Action(parse.json) { implicit request =>
     request.body.validate[Project].map {
       case project: Project =>
-        Await.ready(conn.saveProject(project), Duration.Inf)
+        Await.ready(db.saveProject(project), Duration.Inf)
         Ok("project saved !")
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
@@ -29,10 +29,10 @@ object ProjectController extends Controller {
   }
 
   def getProject(idProject: String) = Action.async {
-    conn.getProject(idProject).map{project => Ok(Json.toJson(project))}
+    db.getProject(idProject).map{project => Ok(Json.toJson(project))}
   }
 
   def getAllProjects() = Action.async {
-    conn.getAllProjects().map{projects => Ok(Json.toJson(projects))}
+    db.getAllProjects().map{projects => Ok(Json.toJson(projects))}
   }
 }

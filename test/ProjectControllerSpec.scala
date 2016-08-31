@@ -34,14 +34,14 @@ class ProjectControllerSpec extends PlaySpec
   override def beforeAll {
     mongoProps = mongoStart(27017, Version.V3_3_1)
     val connector: MongoConnector = MongoConnector()
-    AppBoot.conn = connector;
+    AppBoot.db = connector;
     Await.ready(connector.init(), Duration.Inf).value.get
   }
 
   "ProjectCollection" should {
     "1: save project" in {
         val project:Project = new Project(name = "Project")
-        val future: Future[Project] = AppBoot.conn.projectCollection.save(project)
+        val future: Future[Project] = AppBoot.db.projectCollection.save(project)
         whenReady(future) {
           result => {
             result._id must not be None
@@ -50,7 +50,7 @@ class ProjectControllerSpec extends PlaySpec
     }
 
     "2: list all projects" in {
-      val future: Future[List[Project]] = AppBoot.conn.projectCollection.list()
+      val future: Future[List[Project]] = AppBoot.db.projectCollection.list()
       whenReady(future) {
         result => {
           result.length mustEqual 1

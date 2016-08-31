@@ -33,7 +33,7 @@ class RepositoryControllerSpec extends PlaySpec
   override def beforeAll {
     mongoProps = mongoStart(27017, Version.V3_3_1)
     val connector: MongoConnector = MongoConnector()
-    AppBoot.conn = connector;
+    AppBoot.db = connector;
     Await.ready(connector.init(), Duration.Inf)
   }
 
@@ -42,12 +42,12 @@ class RepositoryControllerSpec extends PlaySpec
       val name: String = "Project"
       val project: Project = new Project(name)
       val reposFuture: Future[List[RepositoryImpl]] = for{
-        res1 <- AppBoot.conn.projectCollection.save(project)
+        res1 <- AppBoot.db.projectCollection.save(project)
         res2 <- {
           val repository = new RepositoryImpl(None, "repo", "web page", None, Some(res1))
-          AppBoot.conn.repositoryCollection.saveAutoConfiguration(repository)
+          AppBoot.db.repositoryCollection.saveAutoConfiguration(repository)
         }
-        res3 <- AppBoot.conn.repositoryCollection.findProjectRepositories(res1)
+        res3 <- AppBoot.db.repositoryCollection.findProjectRepositories(res1)
       } yield res3
 
       val results: List[RepositoryImpl] = Await.result(reposFuture, Duration.Inf)

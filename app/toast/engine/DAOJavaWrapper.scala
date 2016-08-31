@@ -13,13 +13,18 @@ import scala.collection.JavaConverters._
 object DAOJavaWrapper {
 
   val toast_db = "play_db";
-  val mongoDBHost = "localhost"
-  val mongoDBPort = 27017
-  //val mongoDBHost = Play.current.configuration.getString("db.mongo.host").getOrElse("localhost")
-  //val mongoDBPort = Play.current.configuration.getInt("db.mongo.port").getOrElse(27017)
+  val toast_test_execution_history_db = "test_project_db";
+  val mongoDBHost = Play.maybeApplication match {
+    case Some(app) => app.configuration.getString("db.mongo.host").getOrElse("localhost")
+    case _ => "localhost"
+  }
+  val mongoDBPort = Play.maybeApplication match {
+    case Some(app) => app.configuration.getInt("db.mongo.port").getOrElse(27017)
+    case _ => 27017
+  }
   DAOManager.getInstance(mongoDBHost, mongoDBPort) //init db connection parameters for the reporter
   private lazy val injector = com.google.inject.Guice.createInjector(new MongoModule(mongoDBHost,mongoDBPort));
-  lazy val testPlanService = injector.getInstance(classOf[TestPlanDaoService.Factory])create("test_project_db");
+  lazy val testPlanService = injector.getInstance(classOf[TestPlanDaoService.Factory])create(toast_test_execution_history_db);
   lazy val repositoryDaoService = injector.getInstance(classOf[RepositoryDaoService.Factory])create(toast_db);
   lazy val userDaoService = injector.getInstance(classOf[UserDaoService.Factory])create(toast_db);
   lazy val teamDaoService = injector.getInstance(classOf[TeamDaoService.Factory])create(toast_db);
