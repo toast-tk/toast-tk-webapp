@@ -8,9 +8,9 @@ import play.api.mvc.WebSocket.FrameFormatter
 
 import scala.collection.JavaConversions._
 import scala.concurrent._
-import io.toast.tk.dao.domain.impl.repository.{ElementImpl}
+import io.toast.tk.dao.domain.impl.repository.{ProjectImpl, ElementImpl}
 import io.toast.tk.swing.agent.interpret.MongoRepositoryCacheWrapper
-import controllers.mongo.{MongoConnector, MappedWebEventRecord}
+import controllers.mongo.{RepositoryImpl, MongoConnector, MappedWebEventRecord}
 import play.api.Logger
 import scala.concurrent.duration._
 import play.api.libs.ws._
@@ -41,11 +41,9 @@ object AgentController extends Controller{
   implicit val agentInfoFormat = Json.format[AgentInformation]
   implicit val wsAgentInfoFormatter = FrameFormatter.jsonFrame[AgentInformation]
 
-  val mongoCacheWrapper:MongoRepositoryCacheWrapper = new MongoRepositoryCacheWrapper()
-  mongoCacheWrapper.initCache(DAOJavaWrapper.repositoryDaoService);
+  val mongoCacheWrapper:MongoRepositoryCacheWrapper = new MongoRepositoryCacheWrapper(DAOJavaWrapper.repositoryDaoService)
   val interpretationProvider:InterpretationProvider = new InterpretationProvider(mongoCacheWrapper)
   val db: MongoConnector = AppBoot.db
-
 
   /**
    * 5 seconds agent checkAlive
@@ -185,37 +183,92 @@ object AgentController extends Controller{
    *
    * @return
    */
-  def publishRecordedAction = Action(parse.json) {
+  def publishRecordedAction = Action.async(parse.json) {
     implicit request => {
       implicit val recordFormat = Json.format[MappedWebEventRecord]
       val maybeToken = request.headers.get("Token")
+
       maybeToken match {
         case Some(token) => {
-          request.body.validate[MappedWebEventRecord].map {
-            case webEventRecord:MappedWebEventRecord => {
-              val sentence = buildFormat(webEventRecord)
-              sentence match {
-                case Some(s) => {
-                  val agents1: AgentInformation = agents(token)
-                  val agentInformation = AgentInformation(agents1.token, agents1.host, Some(true), sentence)
-                  users(token)._2.push(agentInformation)
+          if(agents contains token){
+            request.body.validate[MappedWebEventRecord].map {
+              case webEventRecord:MappedWebEventRecord => {
+                db.userProjectPair(token) match {
+                  case (Some(user), Some(project)) => {
+                    val sentence = buildFormat(webEventRecord, project)
+                    sentence match {
+                      case Some(s) => {
+                        val agents1: AgentInformation = agents(token)
+                        val agentInformation = AgentInformation(agents1.token, agents1.host, Some(true), sentence)
+                        users(token)._2.push(agentInformation)
+                        Future.successful{
+                          Ok("event processed !")
+                        }
+                      }
+                      case None =>
+                        Logger.info(s"No sentence for provided event")
+                        Future.successful{
+                          Ok("No sentence for provided event !")
+                        }
+                    }
+                  }
+                  case _ => Future.successful{
+                    BadRequest(s"No Project/User pair found for @token($token)")
+                  }
                 }
-                case None => Logger.info(s"No sentence for provided")
+
               }
-              Ok("event processed !")
+            }.recoverTotal {
+              e => Future.successful{
+                BadRequest("Detected error:" + JsError.toJson(e))
+              }
             }
-          }.recoverTotal {
-            e => BadRequest("Detected error:" + JsError.toJson(e))
+          } else {
+            Future.successful {
+              BadRequest(s"Detected error: Agent not registered with @token($token)")
+            }
           }
         }
         case None => {
-          BadRequest("Token Rejected -> " + maybeToken)
+          Future.successful{
+            BadRequest(s"Token Rejected @token($maybeToken)")
+          }
         }
       }
     }
   }
 
-  def asWebEventRecord(record: MappedWebEventRecord): WebEventRecord = {
+  private def buildFormat(mappedEventRecord:MappedWebEventRecord, project: Project): Option[RecordedSentence] = {
+    val interpret:IActionInterpret  = interpretationProvider.getSentenceBuilder(mappedEventRecord.component.getOrElse(""));
+    interpret match {
+      case null => None
+      case interpret:IActionInterpret => {
+        val eventRecord:WebEventRecord = asWebEventRecord(mappedEventRecord)
+        val projectImpl:ProjectImpl = asProjectImpl(project)
+        val sentence:String = interpret.getSentence(eventRecord, projectImpl)
+        interpret.getRepository() match {
+          case null => Some(RecordedSentence(sentence, List()))
+          case repository:RepositoryImpl => {
+            mongoCacheWrapper.saveRepository(repository)
+            val rows:List[ElementImpl] = interpret.getElements().toList
+            val ids:List[String] = rows.map(e => e.getIdAsString)
+            val record: RecordedSentence = RecordedSentence(sentence, ids)
+            Some(record)
+          }
+        }
+      }
+    }
+  }
+
+  private def asProjectImpl(project: Project): ProjectImpl ={
+    val projectImpl:ProjectImpl = new ProjectImpl();
+    projectImpl.setDescription(project.description.getOrElse(""))
+    projectImpl.setName(project.name)
+    projectImpl.setId(project._id.get.stringify)
+    projectImpl
+  }
+
+  private def asWebEventRecord(record: MappedWebEventRecord): WebEventRecord = {
     val eventRecord:WebEventRecord = new WebEventRecord();
     eventRecord.setId(record.id.getOrElse(""))
     eventRecord.setComponent(record.component.getOrElse(""))
@@ -223,29 +276,10 @@ object AgentController extends Controller{
     eventRecord.setParent(record.parent.getOrElse(""))
     eventRecord.setValue(record.value.getOrElse(""))
     eventRecord.setTarget(record.target.getOrElse(""))
+    eventRecord.setPath(record.path.getOrElse(""))
     eventRecord.setEventType(record.eventType.getOrElse(""))
     eventRecord
   }
 
-  def buildFormat(mappedEventRecord:MappedWebEventRecord): Option[RecordedSentence] = {
-    val interpret:IActionInterpret  = interpretationProvider.getSentenceBuilder(mappedEventRecord.component.getOrElse(""));
-    interpret match {
-      case null => None
-      case interpret:IActionInterpret => {
-        val eventRecord:WebEventRecord = asWebEventRecord(mappedEventRecord)
-        val sentence:String = interpret.getSentence(eventRecord)
-        if(mongoCacheWrapper.getLastKnownContainer != null){
-          mongoCacheWrapper.saveLastKnownContainer()
-          val rows:List[ElementImpl] = interpret.getElements().toList
-          val ids:List[String] = rows.map(e => e.getIdAsString)
-          val record: RecordedSentence = RecordedSentence(sentence, ids)
-          interpret.clearElements()
-          Some(record)
-        }else{
-          Some(RecordedSentence(sentence, List()))
-        }
-      }
-    }
-  }
 
 }
