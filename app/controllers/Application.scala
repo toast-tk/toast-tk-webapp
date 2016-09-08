@@ -1,6 +1,7 @@
 package controllers
 
 import boot.AppBoot
+import controllers.mongo.project.Project
 import controllers.mongo.scenario.Scenario
 import play.api.Logger
 import controllers.mongo._
@@ -96,27 +97,36 @@ object Application extends Controller {
    * case class AutoSetupConfig(id: Option[String], name: String, cType: String, rows: List[WebPageElement])
    * WebPageElement(name: String, elementType: String, locator: String, method: String, position: Int)
    */
-  def loadWikifiedRepository(idProject: String)  = Action.async {
-    db.loadSwingPageRepository(idProject).map {
-      repository => {
-        def wikifiedObject(page: RepositoryImpl): JsValue = {
-          var res = "page id:" + page.id.get + "\n"
-          res = res + "|| setup || " +  page.`type` + " || " + page.name + " ||\n"
-          res = res + "| name | type | locator |\n"
-          for (row <- page.rows.getOrElse(List())) {
-            res = res + "|" + row.name + "|" + row.`type` + "|" + row.locator + "|\n"
+  def loadWikifiedRepository(apiKey: String)  = Action.async {
+    val pair: (Option[User], Option[Project]) = db.userProjectPair(apiKey)
+    pair match {
+      case (Some(user), Some(project)) => {
+        db.loadSwingPageRepository(project._id.get.stringify).map {
+          repository => {
+            def wikifiedObject(page: RepositoryImpl): JsValue = {
+              var res = "page id:" + page.id.get + "\n"
+              res = res + "|| setup || " +  page.`type` + " || " + page.name + " ||\n"
+              res = res + "| name | type | locator |\n"
+              for (row <- page.rows.getOrElse(List())) {
+                res = res + "|" + row.name + "|" + row.`type` + "|" + row.locator + "|\n"
+              }
+              res = res + "\n"
+              JsString(res)
+            }
+            val response = for (page <- repository) yield wikifiedObject(page)
+            Future{
+              Ok(Json.toJson(response))
+            }
           }
-          res = res + "\n"
-          JsString(res)
         }
-        val response = for (page <- repository) yield wikifiedObject(page)
-        Ok(Json.toJson(response))
       }
+      case _ => BadRequest("Detected error: no project available")
     }
+
   }
 
 
-  def loadWebWikifiedRepository(idProject: String) = Action.async {
+  def loadWebWikifiedRepository(apiKey: String) = Action.async {
     db.loadWebPageRepository(idProject).map {
       repository => {
         def wikifiedObject(page: RepositoryImpl): JsValue = {

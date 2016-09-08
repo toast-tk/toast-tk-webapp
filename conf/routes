@@ -36,8 +36,8 @@ GET           /typeDescriptor                               controllers.DomainCo
 # Ajax for API controller
 POST          /postConnector                                controllers.Application.onConnectorReceived()
 POST          /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
-GET           /loadWikifiedRepository/:idProject            controllers.Application.loadWikifiedRepository(idProject: String)
-GET           /loadWebWikifiedRepository/:idProject         controllers.Application.loadWebWikifiedRepository(idProject: String)
+GET           /loadWikifiedRepository/:apiKey               controllers.Application.loadWikifiedRepository(apiKey: String)
+GET           /loadWebWikifiedRepository/:apiKey            controllers.Application.loadWebWikifiedRepository(apiKey: String)
 GET           /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
 GET           /loadSentences/:confType                      controllers.Application.loadSentences(confType:String)
 POST          /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
@@ -63,7 +63,7 @@ POST          /deleteObject                                 controllers.Reposito
 # Ajax routes: Scenarii Controller
 GET           /loadScenariiList/:idProject                  controllers.ScenarioController.loadScenariiList(idProject: String)
 GET           /loadScenarii/:idProject                      controllers.ScenarioController.loadScenarii(idProject: String)
-GET           /wikiScenarii/:idProject                      controllers.ScenarioController.loadWikifiedScenarii(idProject: String)
+GET           /wikiScenarii/:apiKey                         controllers.ScenarioController.loadWikifiedScenarii(idProject: String)
 GET           /loadScenarioSteps/:id                        controllers.ScenarioController.loadScenarioSteps(id: String)
 GET           /loadScenarioCtx/:scenarioType                controllers.ScenarioController.loadScenarioCtx(scenarioType: String)
 POST          /saveScenarii                                 controllers.ScenarioController.saveScenarii()
