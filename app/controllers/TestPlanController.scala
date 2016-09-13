@@ -1,5 +1,7 @@
 package controllers
 
+import java.util.concurrent.TimeUnit
+
 import boot.AppBoot
 import controllers.mongo.project.Project
 import controllers.mongo.scenario.Scenario
@@ -28,7 +30,7 @@ case class TestPlan(id: Option[String], name: String, iterations: Option[Short],
 object TestPlanController  extends Controller {
   lazy val testPlanService = DAOJavaWrapper.testPlanService
   lazy val projectService = DAOJavaWrapper.proectService
-
+  val timeout = Duration(5, TimeUnit.SECONDS)
   implicit val sFormat = Json.format[ScenarioWrapper]
   implicit val campaignFormat = Json.format[Cpgn]
   implicit val testPlanFormat = Json.format[TestPlan]
@@ -85,16 +87,17 @@ object TestPlanController  extends Controller {
         val campaign = new Campaign()
         campaign.setName(cpgn.name)
         val testPagelist = new java.util.ArrayList[ITestPage]()
-        val testPages = (for (c <- campaigns; wrapper <- c.scenarii) yield {
-
-                          Await.result(db.findScenario(wrapper.scenario.get.name, project).map{
+        val testPages = (
+          for (c <- campaigns; wrapper <- c.scenarii) yield {
+                          Logger.info(s"[+] Trying to convert Scenario ${wrapper.scenario} !")
+                          Await.result(db.findScenario(wrapper.name.get, project).map{
                           case None => {
-                            println(s"[+] Scenario not found, could not saveProject !")
+                            Logger.info(s"[+] Scenario ${wrapper.scenario} not found, could not saveProject !")
                           }
                           case Some(scenario) => {
                               parseTestPage(scenario, ScenarioController.wikifiedScenario(scenario).as[String])
                             }
-                          }, Duration.Inf).asInstanceOf[ITestPage]
+                          }, timeout).asInstanceOf[ITestPage]
         })
         for (tPage <- testPages) {
           testPagelist.add(tPage)
