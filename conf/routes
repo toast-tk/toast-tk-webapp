@@ -63,7 +63,7 @@ POST          /deleteObject                                 controllers.Reposito
 # Ajax routes: Scenarii Controller
 GET           /loadScenariiList/:idProject                  controllers.ScenarioController.loadScenariiList(idProject: String)
 GET           /loadScenarii/:idProject                      controllers.ScenarioController.loadScenarii(idProject: String)
-GET           /wikiScenarii/:apiKey                         controllers.ScenarioController.loadWikifiedScenarii(idProject: String)
+GET           /wikiScenarii/:apiKey                         controllers.ScenarioController.loadWikifiedScenarii(apiKey: String)
 GET           /loadScenarioSteps/:id                        controllers.ScenarioController.loadScenarioSteps(id: String)
 GET           /loadScenarioCtx/:scenarioType                controllers.ScenarioController.loadScenarioCtx(scenarioType: String)
 POST          /saveScenarii                                 controllers.ScenarioController.saveScenarii()

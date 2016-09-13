@@ -2,7 +2,7 @@
 package controllers
 
 import boot.AppBoot
-import controllers.mongo.{RepositoryImpl}
+import controllers.mongo.{Repository}
 import play.api.libs.json.{JsError, JsObject, JsArray, Json}
 import play.api.mvc.{Controller, Action}
 import toast.engine.DAOJavaWrapper
@@ -49,8 +49,8 @@ object RepositoryController extends Controller {
    * Save Auto config
    */
   def saveAutoConfig() = Action(parse.json) { implicit request =>
-    request.body.validate[Seq[RepositoryImpl]].map {
-      case configs: Seq[RepositoryImpl] =>
+    request.body.validate[Seq[Repository]].map {
+      case configs: Seq[Repository] =>
         for {
           conf <- configs
         } yield db.saveAutoConfiguration(conf)
@@ -78,8 +78,8 @@ object RepositoryController extends Controller {
    * Save Auto config block with test refactoring
    */
   def saveAutoConfigBlock() = Action(parse.json) { implicit request =>
-    request.body.validate[RepositoryImpl].map {
-      case config: RepositoryImpl =>
+    request.body.validate[Repository].map {
+      case config: Repository =>
         db.saveAutoConfiguration(config)
         db.refactorScenarii(config)
         Ok("auto configuration saved !")
@@ -96,8 +96,8 @@ object RepositoryController extends Controller {
   }
 
   def saveRepository() = Action(parse.json) { implicit request =>
-    request.body.validate[Seq[RepositoryImpl]].map {
-      case configs: Seq[RepositoryImpl] =>
+    request.body.validate[Seq[Repository]].map {
+      case configs: Seq[Repository] =>
         for {
           conf <- configs
         } yield db.saveAutoConfiguration(conf)

@@ -50,7 +50,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     }
   }
 
-  def saveAutoConfiguration(impl: RepositoryImpl) ={
+  def saveAutoConfiguration(impl: Repository) ={
     repositoryCollection.saveAutoConfiguration(impl)
   }
 
@@ -188,7 +188,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     result
   }
 
-  def refactorScenarii(impl: RepositoryImpl) = {
+  def refactorScenarii(impl: Repository) = {
     scenarioCollection.refactorScenarii(impl)
   }
 
@@ -202,7 +202,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     future
   }
 
-  def loadWebPageRepository(idProject: String): Future[List[RepositoryImpl]] = {
+  def loadWebPageRepository(idProject: String): Future[List[Repository]] = {
     val future = for{
       project <- projectCollection.one(idProject)
       result <- repositoryCollection.findProjectWebRepositories(project.get)
@@ -211,7 +211,7 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     future
   }
 
-  def loadSwingPageRepository(idProject: String): Future[List[RepositoryImpl]] = {
+  def loadSwingPageRepository(idProject: String): Future[List[Repository]] = {
     val future = for{
       project <- projectCollection.one(idProject)
       result <-  repositoryCollection.findProjectSwingRepositories(project.get)

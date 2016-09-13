@@ -1,7 +1,7 @@
 package controllers.mongo.repository
 
 import controllers.mongo.project.Project
-import controllers.mongo.{RepositoryImpl, AutoSetupConfigWithRefs, DBRef}
+import controllers.mongo.{Repository, Repository$, AutoSetupConfigWithRefs, DBRef}
 import controllers.parsers.{WebPageElementBSONWriter, WebPageElement}
 import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.api.commands.UpdateWriteResult
@@ -16,11 +16,11 @@ case class RepositoryCollection(collection: BSONCollection, elementCollection: B
     findRepositories(BSONDocument("name" -> name, "project" -> project))
   }
 
-  def findProjectSwingRepositories(project: Project): Future[List[RepositoryImpl]] = {
+  def findProjectSwingRepositories(project: Project): Future[List[Repository]] = {
     findRepositories(BSONDocument("type" -> "swing page", "project" -> project))
   }
 
-  def findProjectWebRepositories(project: Project): Future[List[RepositoryImpl]] = {
+  def findProjectWebRepositories(project: Project): Future[List[Repository]] = {
     findRepositories(BSONDocument("type" -> "web page", "project" -> project))
   }
 
@@ -28,14 +28,14 @@ case class RepositoryCollection(collection: BSONCollection, elementCollection: B
     findRepositories(BSONDocument("project" -> project))
   }
 
-  private def findRepositories(query: BSONDocument): Future[List[RepositoryImpl]] = {
+  private def findRepositories(query: BSONDocument): Future[List[Repository]] = {
     val configurationWithRefs: Future[List[AutoSetupConfigWithRefs]] = collection.find(query).sort(BSONDocument("name" -> 1)).cursor[AutoSetupConfigWithRefs]().collect[List]()
     // re-compute as repository
-    def convertItems(configurationWithRef: AutoSetupConfigWithRefs): Future[RepositoryImpl] = {
+    def convertItems(configurationWithRef: AutoSetupConfigWithRefs): Future[Repository] = {
       configurationWithRef.rows match {
         case Some(refs) => {
           val loadedElementFutureList: Future[List[Option[WebPageElement]]] = Future.sequence(for( ref <- refs ) yield loadElement(ref.id))
-          loadedElementFutureList.map(elements => RepositoryImpl(
+          loadedElementFutureList.map(elements => Repository(
             id = configurationWithRef.id,
             name = configurationWithRef.name,
             `type` = configurationWithRef.`type`,
@@ -45,16 +45,16 @@ case class RepositoryCollection(collection: BSONCollection, elementCollection: B
         }
       }
     }
-    val convertedListFuture: Future[List[RepositoryImpl]] = configurationWithRefs.flatMap {
+    val convertedListFuture: Future[List[Repository]] = configurationWithRefs.flatMap {
       configurationWithRefs => {
-        val configFutureList: Future[List[RepositoryImpl]] = Future.sequence(for (configurationWithRef <- configurationWithRefs) yield convertItems(configurationWithRef))
+        val configFutureList: Future[List[Repository]] = Future.sequence(for (configurationWithRef <- configurationWithRefs) yield convertItems(configurationWithRef))
         configFutureList
       }
     }
     convertedListFuture
   }
 
-  def saveAutoConfiguration(repository: RepositoryImpl): Future[Boolean] = {
+  def saveAutoConfiguration(repository: Repository): Future[Boolean] = {
     val elementsToPersist: List[WebPageElement] = repository.rows.getOrElse(List())
     val elementAsBsonDocuments: List[BSONDocument] = for(element <- elementsToPersist) yield WebPageElementBSONWriter.write(element)
     val listOfFutures: List[Future[UpdateWriteResult]] = for(element <- elementAsBsonDocuments) yield saveContainerElement(element)

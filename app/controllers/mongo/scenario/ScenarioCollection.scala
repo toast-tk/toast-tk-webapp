@@ -53,7 +53,7 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
         if(mapping.id.equals("component")){ //lame hack, to fix as soon as possible on editor.js side also
         val pageName = mapping.value.split("[.]")(0)
           val componentName = mapping.value.split("[.]")(1)
-          val pages: List[RepositoryImpl] = {
+          val pages: List[Repository] = {
             Await.result(repo.findRepositoriesByNameAndProject(scenario.project.get, pageName), 10 seconds)
           }
           if(pages.isDefinedAt(0)){
@@ -87,7 +87,7 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
       parent= scenario.parent, project = scenario.project)
   }
 
-  def refactorScenario(scenario: Scenario, config: RepositoryImpl):  Scenario = {
+  def refactorScenario(scenario: Scenario, config: Repository):  Scenario = {
     val scenarioRows = convertJsonToScenarioRows(scenario)
     var outputRows = List[ScenarioRows]()
     for(row <- scenarioRows){
@@ -115,7 +115,7 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
       project = scenario.project)
   }
 
-  def refactorScenarii(config: RepositoryImpl) {
+  def refactorScenarii(config: Repository) {
 
     if(config.id != null){
       // BIG OPERATION !! to improve, for instance open a new future
@@ -134,7 +134,7 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
   }
 
 
-  def isScenarioPatternImpacted(scenario: Scenario, config: RepositoryImpl) : Boolean = {
+  def isScenarioPatternImpacted(scenario: Scenario, config: Repository) : Boolean = {
     var isImpacted = false
     if(scenario.rows != null){
       try{

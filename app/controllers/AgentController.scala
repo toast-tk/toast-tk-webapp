@@ -10,7 +10,7 @@ import scala.collection.JavaConversions._
 import scala.concurrent._
 import io.toast.tk.dao.domain.impl.repository.{ProjectImpl, ElementImpl}
 import io.toast.tk.swing.agent.interpret.MongoRepositoryCacheWrapper
-import controllers.mongo.{RepositoryImpl, MongoConnector, MappedWebEventRecord}
+import controllers.mongo.{Repository, MongoConnector, MappedWebEventRecord}
 import play.api.Logger
 import scala.concurrent.duration._
 import play.api.libs.ws._
@@ -248,7 +248,7 @@ object AgentController extends Controller{
         val sentence:String = interpret.getSentence(eventRecord, projectImpl)
         interpret.getRepository() match {
           case null => Some(RecordedSentence(sentence, List()))
-          case repository:RepositoryImpl => {
+          case repository:Repository => {
             mongoCacheWrapper.saveRepository(repository)
             val rows:List[ElementImpl] = interpret.getElements().toList
             val ids:List[String] = rows.map(e => e.getIdAsString)
