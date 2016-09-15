@@ -120,7 +120,7 @@ object TestPlanController  extends Controller {
 
     request.body.validate[TestPlan].map {
       case project: TestPlan => {
-        testPlanService.saveReferenceProject(tranformProject(project))
+        testPlanService.saveTemplate(tranformProject(project))
 
         Ok("Test Plan saved !")
       }

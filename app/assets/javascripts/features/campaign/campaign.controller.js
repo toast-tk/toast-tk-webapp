@@ -71,6 +71,12 @@ define(["angular"], function (angular) {
                 $scope.reportUrl = "/loadProjectReport/" + selectedProject.name ; 
             }
 
+            $scope.knowScenario = function(name){
+                if(name === undefined) return true;
+                var result = $.grep($scope.scenarii, function(e){ return e.name == name; });
+                return result.length > 0;
+            }
+
             $scope.openReportInNewPage = function (selectedProject) {
                 $window.open("/loadProjectReport/" + selectedProject.name);
 /*                playRoutes.controllers.ProjectController.loadProjectReport(project.name).get().then(function (response) {

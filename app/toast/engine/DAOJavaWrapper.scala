@@ -22,7 +22,7 @@ object DAOJavaWrapper {
     case Some(app) => app.configuration.getInt("db.mongo.port").getOrElse(27017)
     case _ => 27017
   }
-  DAOManager.getInstance(mongoDBHost, mongoDBPort) //init db connection parameters for the reporter
+  DAOManager.init(mongoDBHost, mongoDBPort) //init db connection parameters for the reporter
   private lazy val injector = com.google.inject.Guice.createInjector(new MongoModule(mongoDBHost,mongoDBPort));
   lazy val testPlanService = injector.getInstance(classOf[TestPlanDaoService.Factory])create(toast_test_execution_history_db);
   lazy val repositoryDaoService = injector.getInstance(classOf[RepositoryDaoService.Factory])create(toast_db);

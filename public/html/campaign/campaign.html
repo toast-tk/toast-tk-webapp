@@ -78,13 +78,17 @@
  	 												<ul ui-sortable ng-model="campaign.scenarii">
  	 													<li ng-repeat="scenario in campaign.scenarii">
  	 														Scenario Name:
- 	 														{{scenario.name}}
- 	 														<select ng-model="scenario.name" 
- 	 																ng-options="reference.name as reference.name for reference in scenarii"/>
-	 														<button class="btn btn-xs"
- 	 																data-ng-click="deleteScenario(scenario, campaign)">
- 	 															<i class="fa fa-trash"></i>
- 	 														</button>
+                                                            <span ng-if="!knowScenario(scenario.name)">
+                                                                {{scenario.name}}
+                                                            </span>
+                                                            <span ng-if="knowScenario(scenario.name)">
+                                                                <select ng-model="scenario.name"
+                                                                        ng-options="reference.name as reference.name for reference in scenarii"/>
+                                                                <button class="btn btn-xs"
+                                                                        data-ng-click="deleteScenario(scenario, campaign)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </span>
  	 													</li>
  	 												</ul>
  	 											</div>
