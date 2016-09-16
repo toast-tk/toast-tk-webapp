@@ -16,6 +16,8 @@ import de.flapdoodle.embed.process.config.io.ProcessOutput
 import de.flapdoodle.embed.process.io.directories.UserTempDirInPlatformTempDir
 import de.flapdoodle.embed.process.extract.UserTempNaming
 import toast.engine.DAOJavaWrapper
+import com.github.jmkgreen.morphia.logging.MorphiaLoggerFactory
+import com.github.jmkgreen.morphia.logging.slf4j.SLF4JLogrImplFactory
 
 object MongoExeFactory {
   def apply(port: Int, versionNumber: String, dataPath:String) = {
@@ -55,7 +57,9 @@ object AppBoot extends play.api.GlobalSettings {
   private var _mongoExe: MongodExecutable = _
   private var process: MongodProcess = _
 
-  
+  MorphiaLoggerFactory.reset()
+  MorphiaLoggerFactory.registerLogger(classOf[SLF4JLogrImplFactory])
+
   override def beforeStart(app: play.api.Application): Unit = {
     Logger.info(s"[+] Preparing Toast Tk Web App environment..")
     val conf: play.api.Configuration = app.configuration

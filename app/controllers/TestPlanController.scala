@@ -7,6 +7,7 @@ import controllers.mongo.project.Project
 import controllers.mongo.scenario.Scenario
 import io.toast.tk.dao.domain.impl.report.{TestPlanImpl, Campaign}
 import io.toast.tk.dao.domain.impl.test.block.ITestPage
+import io.toast.tk.dao.service.dao.access.test.TestPageFromProxy
 import io.toast.tk.runtime.parse.TestParser
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.json.{Json, JsError}
@@ -23,12 +24,13 @@ import scala.collection.JavaConverters._
 
 
 
-case class ScenarioWrapper(id: Option[String], name: Option[String], scenario: Option[Scenario])
+case class ScenarioWrapper(id: Option[String], name: Option[String], idScenario: Option[String])
 case class Cpgn(id: Option[String], name: String, scenarii: List[ScenarioWrapper])
 case class TestPlan(id: Option[String], name: String, iterations: Option[Short], campaigns: List[Cpgn], project: Option[Project])
 
 object TestPlanController  extends Controller {
   lazy val testPlanService = DAOJavaWrapper.testPlanService
+  lazy val testPageService = DAOJavaWrapper.testPageService
   lazy val projectService = DAOJavaWrapper.proectService
   val timeout = Duration(5, TimeUnit.SECONDS)
   implicit val sFormat = Json.format[ScenarioWrapper]
@@ -48,10 +50,11 @@ object TestPlanController  extends Controller {
       while (campaigns.hasNext()) {
         val campaign = campaigns.next()
         var scns = List[ScenarioWrapper]()
-        val scenarii = campaign.getTestCases().iterator
-        while (scenarii.hasNext()) {
-          val scenario = scenarii.next()
-          scns = ScenarioWrapper(Some(scenario.getIdAsString()),Some(scenario.getName()), None) :: scns
+        val testPages = campaign.getTestCases().iterator
+        while (testPages.hasNext()) {
+          val testPage = testPages.next()
+          val maybeIdScenario = if (testPage.getIdScenario() == null) None else Some(testPage.getIdScenario())
+          scns = ScenarioWrapper(Some(testPage.getIdAsString()),Some(testPage.getName()), maybeIdScenario) :: scns
         }
         cmpgs = Cpgn(Some(campaign.getIdAsString()), campaign.getName(), scns.reverse) :: cmpgs
       }
@@ -71,13 +74,14 @@ object TestPlanController  extends Controller {
   def saveProject() = Action(parse.json) { implicit request =>
     val parser = new TestParser()
 
-    def parseTestPage(scenario: Scenario, wikiScenario: String): ITestPage = {
-      val testPage = parser.readString(wikiScenario, scenario.name)
-      scenario._id match {
+    def parseTestPage(idSourceScenario: String, idTestPage: Option[String], scenario: Scenario, wikiScenario: String): ITestPage = {
+      val testPage:ITestPage = parser.readString(wikiScenario, scenario.name)
+      idTestPage match {
         case None => {}
-        case Some(id) => testPage.setId(id.stringify)
+        case Some(id) => testPage.setId(id)
       }
       testPage.setName(scenario.name)
+      testPage.setIdScenario(idSourceScenario)
       testPage
     }
 
@@ -86,28 +90,67 @@ object TestPlanController  extends Controller {
       for (cpgn <- campaigns) {
         val campaign = new Campaign()
         campaign.setName(cpgn.name)
-        val testPagelist = new java.util.ArrayList[ITestPage]()
-        val testPages = (
-          for (c <- campaigns; wrapper <- c.scenarii) yield {
-                          Logger.info(s"[+] Trying to convert Scenario ${wrapper.scenario} !")
-                          Await.result(db.findScenario(wrapper.name.get, project).map{
-                          case None => {
-                            Logger.info(s"[+] Scenario ${wrapper.scenario} not found, could not saveProject !")
-                          }
-                          case Some(scenario) => {
-                              parseTestPage(scenario, ScenarioController.wikifiedScenario(scenario).as[String])
+        val testPageList = new java.util.ArrayList[ITestPage]()
+        val testPages:List[Option[ITestPage]] = for (c <- campaigns; wrapper <- c.scenarii) yield {
+            wrapper.idScenario match {
+              case None => {
+                Await.result(db.findScenario(wrapper.name.get, project).map{
+                  case None => {
+                    Logger.info(s"[+] Scenario @name(${wrapper.name}) with @idScenario(${wrapper.idScenario})!")
+                    Logger.info(s"[+] Trying to find test page @name(${wrapper.name}) with @id(${wrapper.id})..")
+                    wrapper.id match{
+                      case Some(id) => {
+                          val maybeTestPage = testPageService.getById(id)
+                          val resultPage:Option[ITestPage] = maybeTestPage match {
+                            case null => {
+                              Logger.info(s"[+] No test page found with @id(${id})")
+                              None
                             }
-                          }, timeout).asInstanceOf[ITestPage]
-        })
-        for (tPage <- testPages) {
-          testPagelist.add(tPage)
+                            case iTestPage => {
+                              Logger.info(s"[+] Found test page @name(${iTestPage.getName()}) with @id(${iTestPage.getIdAsString()})")
+                              Some(iTestPage)
+                            }
+                          }
+                          resultPage
+                        }
+                        case None => {
+                          Logger.info(s"[+] Scenario @name(${wrapper.name}) with @idScenario(${wrapper.idScenario}) not found !")
+                          None
+                        }
+                      }
+                    }
+                    case Some(scenario) => {
+                      val idScenario = scenario._id.get.stringify
+                      Some(parseTestPage(idScenario, wrapper.id, scenario, ScenarioController.wikifiedScenario(scenario).as[String]))
+                    }
+                }, timeout)
+              }
+              case Some(idScenario) => {
+                Await.result(db.findScenarioById(idScenario).map{
+                  case None => {
+                    Logger.info(s"[+] Scenario @name(${wrapper.name}) with @idScenario(${idScenario}) not found !")
+                    None
+                  }
+                  case Some(scenario) => {
+                    val idScenario = wrapper.idScenario.get
+                    Some(parseTestPage(idScenario, wrapper.id, scenario, ScenarioController.wikifiedScenario(scenario).as[String]))
+                  }
+                }, timeout)
+              }
+            }
         }
-        campaign.setTestCases(testPagelist)
+        val resultPages = testPages.filter(item => !item.equals(None))
+        for (maybePage <- resultPages)  {
+          Logger.info(s"[+] Add @name(${maybePage.get.getName()}) with @idScenario(${maybePage.get.getIdScenario()}) and @id(${maybePage.get.getIdAsString()}}) !")
+          testPageList.add(maybePage.get)
+        }
+        campaign.setTestCases(testPageList)
         list.add(campaign)
       }
       list
     }
-    def tranformProject(tp: TestPlan): TestPlanImpl = {
+
+    def tranformTestPlan(tp: TestPlan): TestPlanImpl = {
       val testPlan = new TestPlanImpl()
       testPlan.setName(tp.name)
       if(tp.project.isDefined){
@@ -119,10 +162,17 @@ object TestPlanController  extends Controller {
     }
 
     request.body.validate[TestPlan].map {
-      case project: TestPlan => {
-        testPlanService.saveTemplate(tranformProject(project))
-
-        Ok("Test Plan saved !")
+      case testPlan: TestPlan => {
+        testPlan.id match {
+          case None => {
+            testPlanService.saveTemplate(tranformTestPlan(testPlan))
+            Ok("Test Plan saved !")
+          }
+          case Some(id) => {
+            testPlanService.updateTemplateFromTestPlan(tranformTestPlan(testPlan))
+            Ok("Test Plan updated !")
+          }
+        }
       }
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))

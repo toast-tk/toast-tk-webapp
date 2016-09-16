@@ -1,5 +1,6 @@
 package toast.engine
 
+import io.toast.tk.dao.service.dao.access.test.TestPageDaoService
 import play.api.Play
 import io.toast.tk.adapter._
 import io.toast.tk.dao.guice.MongoModule
@@ -25,6 +26,7 @@ object DAOJavaWrapper {
   DAOManager.init(mongoDBHost, mongoDBPort) //init db connection parameters for the reporter
   private lazy val injector = com.google.inject.Guice.createInjector(new MongoModule(mongoDBHost,mongoDBPort));
   lazy val testPlanService = injector.getInstance(classOf[TestPlanDaoService.Factory])create(toast_test_execution_history_db);
+  lazy val testPageService = injector.getInstance(classOf[TestPageDaoService.Factory])create(toast_test_execution_history_db);
   lazy val repositoryDaoService = injector.getInstance(classOf[RepositoryDaoService.Factory])create(toast_db);
   lazy val userDaoService = injector.getInstance(classOf[UserDaoService.Factory])create(toast_db);
   lazy val teamDaoService = injector.getInstance(classOf[TeamDaoService.Factory])create(toast_db);

@@ -22,6 +22,13 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
     findOneScenarioBy(query)
   }
 
+  def findScenarioById(id: String) = {
+    val query = BSONDocument(
+      "_id" -> BSONObjectID(id)
+    )
+    findOneScenarioBy(query)
+  }
+
 
   def findProjectScenarios(project: Project) = {
     val query = BSONDocument("project" -> project)
