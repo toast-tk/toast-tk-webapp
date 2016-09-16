@@ -19,7 +19,7 @@ define(["angular"], function (angular) {
 
             $scope.selectProject = function(project){
                 $scope.selectedProject = project;
-                $scope.displayReport($scope.selectedProject);
+                //$scope.displayReport($scope.selectedProject);
             }
 
             playRoutes.controllers.ScenarioController.loadScenarii($scope.defaultProject._id).get().then(function (response) {
@@ -53,8 +53,8 @@ define(["angular"], function (angular) {
 
             $scope.saveProject = function (testPlan) {
                 var testPlanToSave = testPlan;
-                testPanToSave.project = $scope.defaultProject;
-                playRoutes.controllers.TestPlanController.saveProject().post(testPanToSave).then(function (response) {
+                testPlanToSave.project = $scope.defaultProject;
+                playRoutes.controllers.TestPlanController.saveProject().post(testPlanToSave).then(function (response) {
                     load();
                 });
             }
@@ -69,6 +69,12 @@ define(["angular"], function (angular) {
 
             $scope.displayReport = function (selectedProject) {
                 $scope.reportUrl = "/loadProjectReport/" + selectedProject.name ; 
+            }
+
+            $scope.knowScenario = function(name){
+                if(name === undefined) return true;
+                var result = $.grep($scope.scenarii, function(e){ return e.name == name; });
+                return result.length > 0;
             }
 
             $scope.openReportInNewPage = function (selectedProject) {

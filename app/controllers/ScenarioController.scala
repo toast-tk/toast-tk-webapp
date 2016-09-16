@@ -2,9 +2,12 @@
 package controllers
 
 import boot.AppBoot
+import controllers.Application._
+import controllers.mongo.project.Project
 import controllers.mongo.scenario.Scenario
 
 import controllers.mongo._
+import controllers.mongo.users.User
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Reads._
 import play.api.libs.json.Writes._
@@ -105,13 +108,22 @@ object ScenarioController extends Controller {
    * || scenario || web ||
    * |Type *toto* in *LoginDialog.loginTextField*|
    */
-  def loadWikifiedScenarii(idProject: String) = Action.async {
-    db.loadScenarii(idProject).map {
-      scenarii => {
-        val response = for (scenario <- scenarii) yield wikifiedScenario(scenario)
-        Ok(Json.toJson(response))
+  def loadWikifiedScenarii(apiKey: String) = Action.async {
+    val pair: (Option[User], Option[Project]) = db.userProjectPair(apiKey)
+    pair match {
+      case (Some(user), Some(project)) => {
+        db.loadScenarii(project._id.get.stringify).map {
+          scenarii => {
+            val response = for (scenario <- scenarii) yield wikifiedScenario(scenario)
+            Ok(Json.toJson(response))
+          }
+        }
+      }
+      case _ => Future{
+        BadRequest(s"Detected error: no project available @apiKey(${apiKey})")
       }
     }
+
   }
 
   /**

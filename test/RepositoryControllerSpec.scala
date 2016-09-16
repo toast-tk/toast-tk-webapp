@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 import akka.util.Timeout
 import boot.AppBoot
 import com.github.simplyscala.{MongoEmbedDatabase, MongodProps}
-import controllers.mongo.{Repository$, MongoConnector}
+import controllers.mongo.{Repository, Repository$, MongoConnector}
 import controllers.mongo.project.Project
 import controllers.parsers.WebPageElement
 import de.flapdoodle.embed.mongo.distribution.Version

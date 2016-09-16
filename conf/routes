@@ -72,7 +72,7 @@ POST          /deleteScenarii                               controllers.Scenario
 # Ajax routes: Test Plan Controller
 POST          /saveProject                                  controllers.TestPlanController.saveProject()
 GET           /loadProject/v1/:idProject                    controllers.TestPlanController.loadProject(idProject: String)
-GET           /loadProjectReport/:projectName               controllers.TestPlanController.loadProjectReport(projectName:String)
+GET           /loadProjectReport/*projectName               controllers.TestPlanController.loadProjectReport(projectName:String)
 GET           /test                                         controllers.TestPlanController.loadTestReport()
 
 # Ajax routes: Project Controller

@@ -131,7 +131,7 @@ object Application extends Controller {
     val pair: (Option[User], Option[Project]) = db.userProjectPair(apiKey)
     pair match {
       case (Some(user), Some(project)) => {
-        db.loadWebPageRepository(apiKey).map {
+        db.loadWebPageRepository(project._id.get.stringify).map {
           repository => {
             def wikifiedObject(page: Repository): JsValue = {
               var res = "page id:" + page.id.get + "\n"
