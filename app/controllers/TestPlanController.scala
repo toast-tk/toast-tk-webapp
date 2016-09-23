@@ -91,7 +91,7 @@ object TestPlanController  extends Controller {
         val campaign = new Campaign()
         campaign.setName(cpgn.name)
         val testPageList = new java.util.ArrayList[ITestPage]()
-        val testPages:List[Option[ITestPage]] = for (c <- campaigns; wrapper <- c.scenarii) yield {
+        val testPages:List[Option[ITestPage]] = for (wrapper <- cpgn.scenarii) yield {
             wrapper.idScenario match {
               case None => {
                 Await.result(db.findScenario(wrapper.name.get, project).map{
