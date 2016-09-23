@@ -53,7 +53,7 @@ define(["angular"], function (angular) {
                         columns: autoSetupDescriptor,
                         rows: []
                     };
-                    $scope.autosetups.push();
+                    $scope.autosetups.push(newSetupBlock);
                     $scope.autosetup = newSetupBlock;
                 });
             };

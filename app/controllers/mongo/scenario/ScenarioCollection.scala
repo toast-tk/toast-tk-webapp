@@ -38,7 +38,9 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
 
   def upsertScenario(scenario: Scenario) : Future[UpdateWriteResult] = {
     val update: Future[UpdateWriteResult] = {
-      collection.update(BSONDocument("_id" -> scenario._id), updateScenario(scenario), upsert=true)
+      val scenarioToSave = updateScenario(scenario)
+      val updateWriteResult = collection.update(BSONDocument("_id" -> scenarioToSave._id), scenarioToSave, upsert=true)
+      updateWriteResult
     }
     update
   }
@@ -51,7 +53,6 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
   def updateScenario(scenario: Scenario):  Scenario = {
     import scala.util.control.Breaks._
     val scenarioRows: List[ScenarioRows] = convertJsonToScenarioRows(scenario)
-    println(scenarioRows)
     var outputRows = List[ScenarioRows]()
     for(row <- scenarioRows){
       var outputMappings = List[ScenarioRowMapping]()
@@ -87,11 +88,26 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
       outputRows = ScenarioRows(patterns = row.patterns, kind = row.kind, mappings = Some(outputMappings)) :: outputRows
     }
     val jsonRowsAsString = Json.stringify(Json.toJson(outputRows.reverse))
-    Scenario(_id = scenario._id, name= scenario.name,
-      `type` = scenario.`type`,
-      driver = scenario.driver,
-      rows = Some(jsonRowsAsString),
-      parent= scenario.parent, project = scenario.project)
+    scenario._id match {
+      case None => {
+        Scenario(
+        name= scenario.name,
+        `type` = scenario.`type`,
+        driver = scenario.driver,
+        rows = Some(jsonRowsAsString),
+        parent= scenario.parent,
+        project = scenario.project)
+      }
+      case _ => {
+        Scenario(_id = scenario._id,
+        name= scenario.name,
+        `type` = scenario.`type`,
+        driver = scenario.driver,
+        rows = Some(jsonRowsAsString),
+        parent= scenario.parent,
+        project = scenario.project)
+      }
+    }
   }
 
   def refactorScenario(scenario: Scenario, config: Repository):  Scenario = {
@@ -113,13 +129,28 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
 
     }
     val jsonRowsAsString = Json.stringify(Json.toJson(outputRows))
-    Scenario(_id = scenario._id,
-      name= scenario.name,
-      `type` = scenario.`type`,
-      driver = scenario.driver,
-      rows = Some(jsonRowsAsString),
-      parent= scenario.parent,
-      project = scenario.project)
+    
+    scenario._id match {
+      case None => {
+        Scenario(
+        name= scenario.name,
+        `type` = scenario.`type`,
+        driver = scenario.driver,
+        rows = Some(jsonRowsAsString),
+        parent= scenario.parent,
+        project = scenario.project)
+      }
+      case _ => {
+        Scenario(_id = scenario._id,
+        name= scenario.name,
+        `type` = scenario.`type`,
+        driver = scenario.driver,
+        rows = Some(jsonRowsAsString),
+        parent= scenario.parent,
+        project = scenario.project)
+      }
+    }
+    
   }
 
   def refactorScenarii(config: Repository) {

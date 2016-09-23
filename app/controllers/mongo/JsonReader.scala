@@ -12,7 +12,7 @@ import scala.util.{Success, Failure}
 
 
 abstract class Identifiable {
-  def _id : Option[BSONObjectID]
+  def _id : Option[BSONObjectID] 
 }
 
 abstract class IdentifiableCollection[T<:Identifiable](collection: BSONCollection){

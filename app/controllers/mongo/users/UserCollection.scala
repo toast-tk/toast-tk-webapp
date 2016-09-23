@@ -159,13 +159,12 @@ case class UserCollection(collection: BSONCollection){
         firstName = "administrateur",
         lastName = "user",
         email = "admin@toastWebApp.com",
+        token = Some(BearerTokenGenerator.generateToken()),
         teams = Some(List(team)),
         lastConnection = None
       )
     )
-
   }
-
 }
 
 
