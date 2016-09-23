@@ -13,19 +13,19 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 case class RepositoryCollection(collection: BSONCollection, elementCollection: BSONCollection) {
   def findRepositoriesByNameAndProject(project: Project, name: String) = {
-    findRepositories(BSONDocument("name" -> name, "project" -> project))
+    findRepositories(BSONDocument("name" -> name, "project._id" -> project._id.get))
   }
 
   def findProjectSwingRepositories(project: Project): Future[List[Repository]] = {
-    findRepositories(BSONDocument("type" -> "swing page", "project" -> project))
+    findRepositories(BSONDocument("type" -> "swing page", "project._id" -> project._id.get))
   }
 
   def findProjectWebRepositories(project: Project): Future[List[Repository]] = {
-    findRepositories(BSONDocument("type" -> "web page", "project" -> project))
+    findRepositories(BSONDocument("type" -> "web page", "project._id" -> project._id.get))
   }
 
   def findProjectRepositories(project: Project) = {
-    findRepositories(BSONDocument("project" -> project))
+    findRepositories(BSONDocument("project._id" -> project._id.get))
   }
 
   private def findRepositories(query: BSONDocument): Future[List[Repository]] = {

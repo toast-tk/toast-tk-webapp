@@ -92,10 +92,25 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
   }
 
   def saveTeam(team: Team)  : Future[Boolean] = {
-    for{
+    val projects:List[Project] = for{
       project <- team.projects
-    } yield (projectCollection.save(project))
-    teamCollection.save(team)
+    } yield (Await.result(projectCollection.save(project), timeout))
+    team._id match {
+      case None => {
+        val newTeam = Team( name = team.name,
+                description = team.description,
+                projects = projects) 
+        teamCollection.save(newTeam)
+      }
+      case _ => {
+        val newTeam = Team(
+                _id = team._id,
+                name = team.name,
+                description =  team.description,
+                projects = projects) 
+        teamCollection.save(newTeam)
+      }
+    }
   }
 
   def getAllTeams() : Future[List[Team]] ={
@@ -261,8 +276,18 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     configurations
   }
 
-  def saveProject(project: Project) = {
-    projectCollection.save(project)
+  def saveProject(project: Project): Project = {
+    project._id match {
+      case None => {
+        var newProject = Project(name = project.name, description = project.description)
+        projectCollection.save(newProject)
+        newProject
+      }
+      case _ => {
+        projectCollection.save(project)
+        project
+      }
+    }
   }
 
   def findScenario(scenarioName: String, maybeProject: Option[Project]) = {

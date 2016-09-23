@@ -153,6 +153,9 @@ define(["angular"], function (angular) {
               console.log("removing:", self.selectedNode);
               if(self.selectedNode != 0){
                   self.selectedTree.remove(self.selectedNode);  
+                  delete self.selectedElementId;
+                  delete self.selectedItem;
+
               } else {
                    console.log("select a node:");
               } 

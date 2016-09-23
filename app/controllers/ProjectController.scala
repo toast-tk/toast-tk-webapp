@@ -20,9 +20,10 @@ object ProjectController extends Controller {
    */
   def saveProject() = Action(parse.json) { implicit request =>
     request.body.validate[Project].map {
-      case project: Project =>
-        Await.ready(db.saveProject(project), Duration.Inf)
+      case project: Project =>{
+        db.saveProject(project)
         Ok("project saved !")
+      } 
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
     }

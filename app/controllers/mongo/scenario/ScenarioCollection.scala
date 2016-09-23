@@ -17,7 +17,7 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
 
   def findProjectScenario(scenarioName: String, maybeProject: Option[Project]) = {
     val query = BSONDocument(
-      "name" -> scenarioName, "project" -> maybeProject
+      "name" -> scenarioName, "project._id" -> maybeProject.get._id.get
     )
     findOneScenarioBy(query)
   }
@@ -31,7 +31,7 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
 
 
   def findProjectScenarios(project: Project) = {
-    val query = BSONDocument("project" -> project)
+    val query = BSONDocument("project._id" -> project._id.get)
     val scenarii = collection.find(query).cursor[Scenario]().collect[List]()
     scenarii
   }
