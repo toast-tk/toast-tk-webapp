@@ -246,15 +246,15 @@ object AgentController extends Controller{
         val eventRecord:WebEventRecord = asWebEventRecord(mappedEventRecord)
         val projectImpl:ProjectImpl = asProjectImpl(project)
         val sentence:String = interpret.getSentence(eventRecord, projectImpl)
-        interpret.getRepository() match {
-          case null => Some(RecordedSentence(sentence, List()))
-          case repository:Repository => {
-            mongoCacheWrapper.saveRepository(repository)
+        if (interpret.getRepository() == null) {
+          Some(RecordedSentence(sentence, List()))
+        }
+        else {
+            mongoCacheWrapper.saveRepository(interpret.getRepository())
             val rows:List[ElementImpl] = interpret.getElements().toList
             val ids:List[String] = rows.map(e => e.getIdAsString)
             val record: RecordedSentence = RecordedSentence(sentence, ids)
             Some(record)
-          }
         }
       }
     }
