@@ -21,8 +21,16 @@ define(["angular"], function (angular) {
               selectNode: selectNode
             }
 
+            function clearSelection(){
+              self.selectedNode = 0 ;
+              self.concernedNode = 0 ;
+              delete self.selectedElementId;
+              delete self.selectedItem;
+            }
+
             /**/
             function build(treeContainer, dataTree , templateFunction){
+              clearSelection();
               var treeExplorerPromise = $q.defer();
               self.dataTree = dataTree;
               if(angular.element('#'+ treeContainer).length){
@@ -153,9 +161,7 @@ define(["angular"], function (angular) {
               console.log("removing:", self.selectedNode);
               if(self.selectedNode != 0){
                   self.selectedTree.remove(self.selectedNode);  
-                  delete self.selectedElementId;
-                  delete self.selectedItem;
-
+                  clearSelection();
               } else {
                    console.log("select a node:");
               } 

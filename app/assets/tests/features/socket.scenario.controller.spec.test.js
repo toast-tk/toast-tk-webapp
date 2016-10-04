@@ -77,7 +77,6 @@ define(['angular','angular-mocks', 'scenarioCtrl','features','treeLayoutService'
                 console.log("test messge", message().data);
                 receiveMessage(message());
             });
-
         });
     });
 
