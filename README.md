@@ -16,15 +16,17 @@ db.mongo.host="localhost"
 
 ```
 > cd app\assets\
-> npm run setup
+> npm install
+> bower install
+> gulp
 ```
 
 ## 4- Run playframework backend : 
 
 ```
 > cd ../..
-> sbt clean 
 > sbt reload 
+> sbt update
 > sbt compile 
 > sbt run
 ```
