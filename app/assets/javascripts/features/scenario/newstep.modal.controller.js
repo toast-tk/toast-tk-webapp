@@ -43,16 +43,20 @@ define(["angular"], function (angular) {
                 var scenarioCopy = angular.copy(scenario);
                 scenarioCopy.rows = JSON.stringify(scenarioCopy.rows);
                 delete scenarioCopy.columns;
-                delete scenarioCopy.id;
-                delete scenarioCopy._id;
                 scenarioCopy.project = $scope.project;
+                scenarioCopy.parent = scenarioCopy.parent.toString();
                 playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function (savedScenario) {
                     TreeLayoutService.add(savedScenario.data).then(function(newId){
-                        console.log("saved scenario", savedScenario.data);
-                        $uibModalInstance.close(savedScenario.data);
+                        savedScenario.data.id = newId;
+                        playRoutes.controllers.ScenarioController.saveScenarii().post(savedScenario.data).then(function (response) {
+                            console.log("scenario saved ", savedScenario.data);
+                            $uibModalInstance.close(response.data);
+                        },function(){
+                            toastr.error('Could Not save new node: Error 10 !');
+                        });
                     });
                 },function(){
-                    toastr.error('Could Not save new node !');
+                    toastr.error('Could Not save new node: Error 11 !');
                     //TODO; #fix should remove added node here
                 });
             };

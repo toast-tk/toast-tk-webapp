@@ -156,12 +156,14 @@ object ScenarioController extends Controller {
    def saveScenarii() = Action(parse.json) { implicit request =>
     request.body.validate[Scenario].map {
       case scenario: Scenario => {
-        val result: UpdateWriteResult = Await.result(db.upsertScenario(scenario), Duration.Inf)
+        val persistenceTuple: (Future[UpdateWriteResult], Scenario) = db.upsertScenario(scenario)
+        val persistedScenario: Scenario = persistenceTuple._2
+        val result: UpdateWriteResult = Await.result(persistenceTuple._1, Duration.Inf)
         if (result.ok) {
             def extendedObject(obj: JsObject) = {
               obj + ("columns" -> DomainController.scenarioDescriptorProvider((obj \ "type").as[String]))
             }
-            val flatResponse = extendedObject(Json.toJson(scenario).as[JsObject])
+            val flatResponse = extendedObject(Json.toJson(persistedScenario).as[JsObject])
             Ok(Json.toJson(flatResponse))
         } else {
           BadRequest("Node already exists")
@@ -203,9 +205,7 @@ object ScenarioController extends Controller {
   def loadScenariiList(idProject: String) = Action.async {
     db.loadScenarii(idProject).map {
       scenarii => {
-        val result:List[JsObject] = for (scenario <- scenarii) yield (
-          Json.obj("id" -> scenario._id.get.stringify,
-                   "name" -> scenario.name) )
+        val result:List[JsObject] = for (scenario <- scenarii) yield ( Json.obj("id" -> scenario._id.get.stringify, "name" -> scenario.name) )
         val input = Json.toJson(scenarii).as[JsArray]
         val response = for (i <- input.value) yield i.as[JsObject]
         Ok(Json.toJson(result))

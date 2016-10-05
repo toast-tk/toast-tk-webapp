@@ -31,16 +31,17 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
 
 
   def findProjectScenarios(project: Project) = {
-    val query = BSONDocument("project._id" -> project._id.get)
-    val scenarii = collection.find(query).cursor[Scenario]().collect[List]()
+    val query = BSONDocument("project._id" -> project._id.get)  
+    val sortBy = BSONDocument("creationDate" -> -1)
+    val scenarii = collection.find(query).sort(sortBy).cursor[Scenario]().collect[List]()
     scenarii
   }
 
-  def upsertScenario(scenario: Scenario) : Future[UpdateWriteResult] = {
-    val update: Future[UpdateWriteResult] = {
+  def upsertScenario(scenario: Scenario) : (Future[UpdateWriteResult], Scenario) = {
+    val update: (Future[UpdateWriteResult], Scenario)  = {
       val scenarioToSave = updateScenario(scenario)
       val updateWriteResult = collection.update(BSONDocument("_id" -> scenarioToSave._id), scenarioToSave, upsert=true)
-      updateWriteResult
+      (updateWriteResult, scenarioToSave)
     }
     update
   }
@@ -96,7 +97,8 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
         driver = scenario.driver,
         rows = Some(jsonRowsAsString),
         parent= scenario.parent,
-        project = scenario.project)
+        project = scenario.project,
+        id = scenario.id)
       }
       case _ => {
         Scenario(_id = scenario._id,
@@ -105,7 +107,8 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
         driver = scenario.driver,
         rows = Some(jsonRowsAsString),
         parent= scenario.parent,
-        project = scenario.project)
+        project = scenario.project,
+        id = scenario.id)
       }
     }
   }
@@ -138,7 +141,8 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
         driver = scenario.driver,
         rows = Some(jsonRowsAsString),
         parent= scenario.parent,
-        project = scenario.project)
+        project = scenario.project,
+        id = scenario.id)
       }
       case _ => {
         Scenario(_id = scenario._id,
@@ -147,7 +151,8 @@ case class ScenarioCollection(collection: BSONCollection, repo: RepositoryCollec
         driver = scenario.driver,
         rows = Some(jsonRowsAsString),
         parent= scenario.parent,
-        project = scenario.project)
+        project = scenario.project,
+        id = scenario.id)
       }
     }
     
