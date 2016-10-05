@@ -198,8 +198,8 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     configurations
   }
 
-  def upsertScenario(scenario: Scenario): Future[UpdateWriteResult] =  {
-    val result: Future[UpdateWriteResult] = scenarioCollection.upsertScenario(scenario)
+  def upsertScenario(scenario: Scenario): (Future[UpdateWriteResult], Scenario) =  {
+    val result: (Future[UpdateWriteResult], Scenario) = scenarioCollection.upsertScenario(scenario)
     result
   }
 

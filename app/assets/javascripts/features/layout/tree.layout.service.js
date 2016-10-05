@@ -34,22 +34,22 @@ define(["angular"], function (angular) {
               var treeExplorerPromise = $q.defer();
               self.dataTree = dataTree;
               if(angular.element('#'+ treeContainer).length){
-                var value = 
                 webix.ready(function(){
                  var treeExplorer = new webix.ui({
                   container: treeContainer,
                   rows:[
-                  { cols:[
-                    {
-                      template:"<i class='fa fa-filter fa-lg' style='margin-top: 10px;''></i>",
-                      type: "clean",
-                      width:20
-                    },
-                    {
-                      view:"text",
-                      id:"filterField"
-                    }
-                    ]},
+                        { cols:[
+                                {
+                                  template:"<i class='fa fa-filter fa-lg' style='margin-top: 10px;''></i>",
+                                  type: "clean",
+                                  width:20
+                                },
+                                {
+                                  view:"text",
+                                  id:"filterField"
+                                }
+                              ]   
+                        },
                     {
                       view:"tree",
                       type:"lineTree",
@@ -59,7 +59,7 @@ define(["angular"], function (angular) {
                       template: templateFunction,
                       data : dataTree,
                       type:{
-                       folder:function(obj, common){
+                            folder:function(obj, common){
                                  //if open folder
                                  if (obj.$count && obj.open) {
                                   return "<div class='webix_tree_folder_open'></div>";
@@ -211,7 +211,7 @@ define(["angular"], function (angular) {
             var childNodes = [];
             $$("tree1").data.eachChild(id, function(obj){ 
                 childNodes.push(obj);
-              console.log(obj.id); 
+                console.log(obj.id); 
             });
             return childNodes ;
            }

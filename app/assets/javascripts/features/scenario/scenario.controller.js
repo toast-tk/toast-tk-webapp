@@ -215,7 +215,7 @@ define(["angular"], function (angular) {
                 currentStep= row;
             }
 
-            $scope.changeEditedStep= changeEditedStep ;
+            $scope.changeEditedStep = changeEditedStep;
             function changeEditedStep(){
                 if(isNewStepResolved==false){
                     newCustomStepSelected(currentStep['patterns']);
