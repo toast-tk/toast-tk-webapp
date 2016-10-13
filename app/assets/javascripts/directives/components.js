@@ -60,7 +60,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 	    };
 	});
 	
-	module.directive('pattern', function ($compile, playRoutes, $rootScope, $filter) {
+	module.directive('pattern', function ($compile, playRoutes, $filter, $rootScope) {
 	    return {
 	    	restrict: 'A',
 	    	scope: {    
@@ -69,6 +69,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 					   patternColumn: "@",
 				       patternContext: "@",
 					   patternModel: "=",
+					   project: "@",
 					   callback: '&onPatternChange'
 					},   	
 	        link: function ($scope, element, attrs) { 
@@ -104,7 +105,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 									initialiseValueScope(tagIsolatedScope, tagPosition);
 								}
 								else if(varCategory == "component"){
-									initialiseOptionScope(tagIsolatedScope, tagPosition, varCategory, varType);
+									initialiseOptionScope(tagIsolatedScope, tagPosition, varCategory, varType, $scope.project);
 								}
 								
 								var replacementTagElement = $compile(replacementTag)(tagIsolatedScope);
@@ -124,8 +125,8 @@ define(["angular", "qTags"], function (angular, qTags) {
 	        	});
 
 
-				function initialiseOptionScope(tagIsolatedScope, tagPosition, varCategory, varType){
-					playRoutes.controllers.Application.loadCtxTagData(varType).get().then(function(response){
+				function initialiseOptionScope(tagIsolatedScope, tagPosition, varCategory, varType, idProject){
+					playRoutes.controllers.Application.loadCtxTagData(varType, idProject).get().then(function(response){
 						var tagValue;
 						var options = [];
 						var selected_option_label = undefined;
@@ -138,7 +139,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 							for(var i=0; i < mappings.length; i++){
 								if(mappings[i].pos == tagPosition){
 									tagValue = $scope.patternModel.mappings[i].id;
-									selected_option_label = $scope.patternModel.mappings[i].val;
+									selected_option_label = $scope.patternModel.mappings[i].value;
 									break;
 								}
 							}
@@ -177,7 +178,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 						var mappings = $scope.patternModel.mappings;
 						for(var i=0; i < mappings.length; i++){
 							if(mappings[i].pos == tagPosition){
-								tagValue = mappings[i].val;
+								tagValue = mappings[i].value;
 								break;
 							}
 						}

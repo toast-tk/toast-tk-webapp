@@ -52,19 +52,19 @@ object AgentController extends Controller{
     while (true) {
       Thread.sleep(5 * 1000);
       if (agents.size > 0) {
-        Logger.info(s"Checking ${agents.size} agents status.." )
+        Logger.debug(s"Checking ${agents.size} agents status.." )
       }
       for(agent <- agents){
         Future {
           val agentPort = 4444
           val url = "http://" + agent._2.host.split(":")(0) + ":" + agentPort + "/record/ping"
-          Logger.info(s"Pinging url - $url" )
+          Logger.debug(s"Pinging url - $url" )
           import play.api.Play.current
           WS.url(url).withRequestTimeout(5 * 1000).get().onComplete(
             _ match {
               case Success(response) => {
                 if(response.status == 200){
-                  Logger.info(s"Agent @host(${agent._2.host}) is alive !")
+                  Logger.debug(s"Agent @host(${agent._2.host}) is alive !")
                 }else {
                   unregisterAgent(agent._2.token, agent._2.host)
                   Logger.warn(s"Agent @host(${agent._2.host}) returned ${response.status} - removed from registry!")
@@ -93,43 +93,62 @@ object AgentController extends Controller{
    * incoming sentences to.
    * @return
    */
-  def registerFrontWebsocketService (userToken: Option[String]) =  WebSocket.using[AgentInformation] {
+  def registerFrontWebsocketService (maybeToken: Option[String]) =  WebSocket.using[AgentInformation] {
     request => {
       Logger.info(s"New incoming websocket connection -> ${request.headers}" )
-      val userTokenValue = userToken.get
-      Logger.info(s"New incoming websocket connection <- token -> $userTokenValue")
-      hasUserAndProject(userTokenValue) match {
-        case true => {
-          if(users contains userTokenValue) {
-            /**
-             * existing user
-             */
-            Logger.info(s"Ignoring new request, user already connected <- token -> $userTokenValue")
-            (Iteratee.ignore[AgentInformation], users(userTokenValue)._1)
-          }
-          else {
-            val (enumerator, channel): (Enumerator[AgentInformation], Concurrent.Channel[AgentInformation]) = Concurrent.broadcast[AgentInformation]
-            users += ((userTokenValue, (enumerator, channel)))
-            val iteratee = Iteratee.foreach[AgentInformation](msg => {
-              //do something with the message
-            }).map{ _ => {
-              /**
-               * user closed his websocket client, so remove the user
-               */
-              users(userTokenValue)._2.eofAndEnd()
-              users -= userTokenValue
-            }}
-            Logger.info(s"Websocket approved, user connected <- token -> $userTokenValue")
-            (iteratee, enumerator)
+      maybeToken match {
+        case Some(userTokenValue) => {
+          Logger.info(s"New incoming websocket connection <- token -> $userTokenValue")
+          hasUserAndProject(userTokenValue) match {
+            case true => {
+              if(users contains userTokenValue) {
+                /**
+                 * existing user
+                 */
+                Logger.info(s"Ignoring new request, user already connected <- token -> $userTokenValue")
+                (Iteratee.ignore[AgentInformation], users(userTokenValue)._1)
+              }
+              else {
+                val (enumerator, channel): (Enumerator[AgentInformation], Concurrent.Channel[AgentInformation]) = Concurrent.broadcast[AgentInformation]
+                users += ((userTokenValue, (enumerator, channel)))
+                val iteratee = Iteratee.foreach[AgentInformation](msg => {
+                  //do something with the message
+                }).map{ _ => {
+                  /**
+                   * user closed his websocket client, so remove the user
+                   */
+                  users(userTokenValue)._2.eofAndEnd()
+                  users -= userTokenValue
+                }}
+                Logger.info(s"Websocket approved, user connected <- token -> $userTokenValue")
+                (iteratee, enumerator)
+              }
+            }
+            case false => {
+              (Iteratee.ignore[AgentInformation], Enumerator.empty[AgentInformation].andThen(Enumerator.eof))
+            }
           }
         }
-        case false => {
+        case _ => {
+          Logger.info(s"No token provided, websocket connection request ignored")
           (Iteratee.ignore[AgentInformation], Enumerator.empty[AgentInformation].andThen(Enumerator.eof))
         }
       }
     }
   }
 
+ /**
+   * List of agents registered with provided token
+   * @param token
+   * @return
+   */
+  def getAgents(token: String) = Action {
+    if(agents.keySet.exists(_ == token)){
+      Ok(Json.toJson(List(agents(token))))
+    }else {
+      Ok(Json.toJson(List[AgentInformation]()))
+    }
+  }
 
   /**
    * Check if provided token belongs to a user having a default project

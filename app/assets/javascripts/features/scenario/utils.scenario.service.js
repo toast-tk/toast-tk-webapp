@@ -97,8 +97,8 @@ define(["angular"], function (angular) {
       /* END : templatize one scenario row (or scentence)  */
 
       /* BEGIN  : performs model update */
-      function onPatternValueChange(row, position, identifier, value) {
-        var newVal = {id: identifier, pos: position, val: value};
+      function onPatternValueChange(row, position, identifier, data) {
+        var newVal = {id: identifier, pos: position, value: data};
         if (angular.isUndefined(row.mappings)) {
           row.mappings = [];
           row.mappings.push(newVal);
@@ -145,15 +145,15 @@ define(["angular"], function (angular) {
       function setMappingForScenarioRow(scenarioRow, pattern, typeSentence, MapElementsIds){
         var scenarioSentenceWithValues = scenarioRow.patterns;
         scenarioRow.patterns = typeSentence;
-        var patternValue = pattern;
-        var tag = getRegexTag(patternValue);
+        var patternValue = typeSentence;
+        var tag = getRegexTag(typeSentence);
         var tags = [];
         var tagPosition = 0;
         var componentPosition = 0;
         while (tag != null) {
           tags.push(tag);
           var tagName = tags[tagPosition][0];      
-          var mappingValue = splitScenarioWithValues(scenarioSentenceWithValues)[getIndex(pattern.split(" "), tagName)];
+          var mappingValue = splitScenarioWithValues(scenarioSentenceWithValues)[getIndex(patternValue.split(" "), tagName)];
           patternValue = replaceIndex(patternValue, tagName,  tags[tagPosition].index , mappingValue);
           var varType = ClientService.actionItemType(tagName).category;
           if(MapElementsIds != null){

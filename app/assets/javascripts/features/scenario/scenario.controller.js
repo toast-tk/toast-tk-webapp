@@ -52,22 +52,35 @@ define(["angular"], function (angular) {
 
             ClientService.registerAgentListener(function(order, info){
                 if(order === 'set'){
-                    $scope.$apply(function() {
+                    if(!$scope.$$phase) {
+                      $scope.$apply(function() {
                         $scope.agents = info || [];
-                    });
+                      });
+                    }else {
+                        $scope.agents = info || [];
+                    }
+                    
                 }
                 if(order === 'unset'){
-                    $scope.$apply(function() {
-                        if($scope.agent.length === 1 && info.token === $scope.agent[0].token){
-                            $scope.agent = [];
+                    if(!$scope.$$phase) {
+                      $scope.$apply(function() {
+                        if($scope.agent && info.token === $scope.agent.token){
+                            $scope.agent = undefined;
                         }
-                    });
+                      });
+                    }else {
+                        if($scope.agent && info.token === $scope.agent.token){
+                            $scope.agent = undefined;
+                        }
+                    }
+                    
                 }
                 if(order === 'sentence'){
                     //received sentence comes from selected agent
-                    if($scope.agent.length === 1 && info.token === $scope.agent[0].token){
+                    if($scope.agent && info.token === $scope.agent.token){
                         var data = info.sentence;
-                        $scope.$apply(function(){
+                        if(!$scope.$$phase) {
+                          $scope.$apply(function(){
                             if(!angular.isObject(data.sentence)){
                                 data.row = {
                                     "patterns" : data.sentence
@@ -76,7 +89,17 @@ define(["angular"], function (angular) {
                                 console.log("data.row : ", JSON.stringify(data.row));
                                 $scope.scenario.rows.push(angular.copy(data.row));
                             }
-                        });
+                          });
+                        }else {
+                            if(!angular.isObject(data.sentence)){
+                                data.row = {
+                                    "patterns" : data.sentence
+                                }
+                                UtilsScenarioService.templatizeRow(data.row, "web", data.ids);
+                                console.log("data.row : ", JSON.stringify(data.row));
+                                $scope.scenario.rows.push(angular.copy(data.row));
+                            }
+                        }
                     }
                 }
                 $scope.agentIsActive = ClientService.socketIsActive && $scope.agents.length > 0;
@@ -93,7 +116,7 @@ define(["angular"], function (angular) {
                 TreeLayoutService.adjustTreeSize(treeExplorer);
                 $scope.addNodeToParent = function(nodeType){
                     TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
-                        return (!angular.isDefined(selectedItem.data) && selectedItem.type !="folder");
+                        return (!angular.isDefined(selectedItem.data) && selectedItem.type != "folder");
                     }).then(function(){
                         var modalScope = $scope.$new(true);
                         modalScope.newNodeType = nodeType;
@@ -306,6 +329,7 @@ define(["angular"], function (angular) {
             $scope.regexFullList=[];
 
             function __init__(doBuildTree) {
+      
                 for(var i =0 ; i < $scope.scenario_types.length; i++){
                     var scenariiKind = $scope.scenario_types[i];
                     ClientService.loadRegexList(scenariiKind, function(scenariiKind, list){
