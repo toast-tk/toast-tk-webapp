@@ -42,7 +42,12 @@ define(["angular", "exports"], function (angular, exports) {
             views: {
                 'main': {
                     templateUrl: "assets/html/editor.html",
-                    controller: "MainCtrl"
+                    controller: "MainCtrl",
+                    resolve: {
+                        user: ["LoginResolverService", function(resolver){
+                            return resolver.checkLoggedLoginResolve();
+                        }]
+                    }
                 }
             }
         }).state('project', {
@@ -51,7 +56,12 @@ define(["angular", "exports"], function (angular, exports) {
             views: {
                 'main':{
                     templateUrl: "assets/html/projects.html",
-                    controller: "MainProjectCtrl"
+                    controller: "MainProjectCtrl",
+                    resolve: {
+                        user: ["LoginResolverService", function(resolver){
+                            return resolver.checkLoggedLoginResolve();
+                        }]
+                    }
                 }
             }
         }).state('layout.settings', {
@@ -145,7 +155,12 @@ define(["angular", "exports"], function (angular, exports) {
             views: {
                 'content': {
                     templateUrl: "assets/html/admin/accounts/adduser.html",
-                    controller: "AddUserCtrl"
+                    controller: "AddUserCtrl",
+                    resolve: {
+                        user: ["LoginResolverService", function(resolver){
+                            return resolver.checkLoggedLoginResolve();
+                        }]
+                    }
                 }
             }
         }).state('adminLayout.editUser', {
@@ -154,7 +169,12 @@ define(["angular", "exports"], function (angular, exports) {
             views: {
                 'content': {
                     templateUrl: "assets/html/admin/accounts/edituser.html",
-                    controller: "EditUserCtrl"
+                    controller: "EditUserCtrl",
+                    resolve: {
+                        user: ["LoginResolverService", function(resolver){
+                            return resolver.checkLoggedLoginResolve();
+                        }]
+                    }
                 }
             }
         }).state('adminLayout.editUsers', {
@@ -163,7 +183,12 @@ define(["angular", "exports"], function (angular, exports) {
             views: {
                 'content': {
                     templateUrl: "assets/html/admin/accounts/editusers.html",
-                    controller: "EditUsersCtrl"
+                    controller: "EditUsersCtrl",
+                    resolve: {
+                        user: ["LoginResolverService", function(resolver){
+                            return resolver.checkLoggedLoginResolve();
+                        }]
+                    }
                 }
             }
         }).state('adminLayout.addTeam', {
@@ -172,7 +197,12 @@ define(["angular", "exports"], function (angular, exports) {
             views: {
                 'content': {
                     templateUrl: "assets/html/admin/accounts/addteam.html",
-                    controller: "AddTeamCtrl"
+                    controller: "AddTeamCtrl",
+                    resolve: {
+                        user: ["LoginResolverService", function(resolver){
+                            return resolver.checkLoggedLoginResolve();
+                        }]
+                    }
                 }
             }
         }).state('adminLayout.editTeams', {
@@ -181,7 +211,12 @@ define(["angular", "exports"], function (angular, exports) {
             views: {
                 'content': {
                     templateUrl: "assets/html/admin/accounts/editteams.html",
-                    controller: "EditTeamsCtrl"
+                    controller: "EditTeamsCtrl",
+                    resolve: {
+                        user: ["LoginResolverService", function(resolver){
+                            return resolver.checkLoggedLoginResolve();
+                        }]
+                    }
                 }
             }
         }).state('adminLayout.editTeam', {
@@ -190,7 +225,12 @@ define(["angular", "exports"], function (angular, exports) {
             views: {
                 'content': {
                     templateUrl: "assets/html/admin/accounts/editteam.html",
-                    controller: "EditTeamCtrl"
+                    controller: "EditTeamCtrl",
+                    resolve: {
+                        user: ["LoginResolverService", function(resolver){
+                            return resolver.checkLoggedLoginResolve();
+                        }]
+                    }
                 }
             }
         }).state('adminLayout.addProject', {
@@ -199,7 +239,12 @@ define(["angular", "exports"], function (angular, exports) {
             views: {
                 'content': {
                     templateUrl: "assets/html/admin/projects/addproject.html",
-                    controller: "AddProjectCtrl"
+                    controller: "AddProjectCtrl",
+                    resolve: {
+                        user: ["LoginResolverService", function(resolver){
+                            return resolver.checkLoggedLoginResolve();
+                        }]
+                    }
                 }
             }
         }).state('adminLayout.editProject', {
@@ -208,7 +253,12 @@ define(["angular", "exports"], function (angular, exports) {
             views: {
                 'content': {
                     templateUrl: "assets/html/admin/projects/editproject.html",
-                    controller: "EditProjectCtrl"
+                    controller: "EditProjectCtrl",
+                    resolve: {
+                        user: ["LoginResolverService", function(resolver){
+                            return resolver.checkLoggedLoginResolve();
+                        }]
+                    }
                 }
             }
         }).state('adminLayout.editProjects', {
@@ -217,7 +267,12 @@ define(["angular", "exports"], function (angular, exports) {
             views: {
                 'content': {
                     templateUrl: "assets/html/admin/projects/editprojects.html",
-                    controller: "EditProjectsCtrl"
+                    controller: "EditProjectsCtrl",
+                    resolve: {
+                        user: ["LoginResolverService", function(resolver){
+                            return resolver.checkLoggedLoginResolve();
+                        }]
+                    }
                 }
             }
         });
@@ -228,6 +283,4 @@ define(["angular", "exports"], function (angular, exports) {
     /* END : router config function */
 
     exports.RouterConfig = RouterConfig
-
-
 });

@@ -116,6 +116,7 @@
                                       pattern-model="r"
                                       pattern-column="{{scenario.columns[0].name}}"
                                       pattern-context="{{scenario.type}}"
+                                      project="{{defaultProject._id}}"
                                       on-pattern-change="onPatternValueChange(row, position, identifier, value)">
                               </span>
                                             <div ng-if="editableStepIndex == $index"  class="col-md-11"

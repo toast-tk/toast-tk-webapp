@@ -46,6 +46,7 @@ POST          /saveNewInspectedScenario                     controllers.Applicat
 POST          /susbcribe                                    controllers.AgentController.subscribe()
 GET           /socket/stream                                controllers.AgentController.registerFrontWebsocketService(token: Option[String])
 POST          /record                                       controllers.AgentController.publishRecordedAction()
+GET           /agent/:userToken                             controllers.AgentController.getAgents(userToken: String)
 
 # Ajax routes: Configuration Controller
 GET           /loadConfiguration                            controllers.ConfigurationController.loadConfiguration()

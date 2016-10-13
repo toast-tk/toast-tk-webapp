@@ -12,6 +12,10 @@ define(["angular"], function (angular) {
             factory.socketIsActive = false;
             factory.registerAgentListener = function(callback){
                 factory.agentListenerCallback = callback;
+                playRoutes.controllers.AgentController.getAgents(factory.accessToken).get().then(function (response) {
+                    factory.agents  = response.data || [];
+                    factory.agentListenerCallback.call(this, 'set', factory.agents);
+                });
             };
             factory.accessToken = null;
             factory.agents = [];
@@ -41,7 +45,6 @@ define(["angular"], function (angular) {
 
                     var resetWS = function(){
                         factory.socketIsActive = false;
-                        factory.agentListenerCallback = undefined;
                         factory.accessToken = null;
                     }
 
@@ -108,7 +111,7 @@ define(["angular"], function (angular) {
                     for(var j = 0; j< connectorConfigGroups.length; j++){
                         for (var k=0; k< connectorConfigGroups[j].rows.length; k++){
                             var connectorConfig = connectorConfigGroups[j].rows;
-                            if(connectorConfig[k].type == scenariiKind){
+                            if(connectorConfig[k].group == scenariiKind){
                                 list = list.concat( connectorConfig[k].syntax || []);
                             }
                         }

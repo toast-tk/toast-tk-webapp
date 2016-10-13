@@ -5,6 +5,9 @@ import java.util.Date
 import controllers.mongo.teams.Team
 
 import scala.util.{Failure, Success}
+import play.api.Logger
+import java.util.concurrent.TimeUnit
+
 
 import scala.concurrent.duration._
 import scala.concurrent.Future
@@ -20,8 +23,19 @@ import java.security.SecureRandom
 
 case class UserCollection(collection: BSONCollection){
 
+  val adminLogin = "admin"
+  val timeout = Duration(15, TimeUnit.SECONDS)
+
   def initAdminAccount(team: Team): Future[Boolean] = {
-    persistDefaultSuperAdminUser(team)
+    loadUser(adminLogin).map{
+      case Some(user) => {
+        //NO-OP
+        true
+      }
+      case _ => {
+        Await.result(persistDefaultSuperAdminUser(team), timeout)
+      }
+    }
   }
 
   def loadUser(login: String): Future[Option[User]] = {
@@ -64,12 +78,12 @@ case class UserCollection(collection: BSONCollection){
       BSONDocument(
         "$or" -> BSONArray(
           BSONDocument("_id" -> user._id.get),
-          BSONDocument("login" -> user.login, "email" -> user.email)
+          BSONDocument("login" -> user.login)
         )
       )
     ).map{
       case None => {
-        println("[+] inserting user information : " + user._id.get.stringify)
+        Logger.info("[+] inserting user information : " + user._id.get.stringify)
 
         collection.insert(user).onComplete {
           case Failure(e) => throw e
@@ -78,7 +92,16 @@ case class UserCollection(collection: BSONCollection){
         true
       }
       case Some(foundUser) => {
-        println("[+] updating user information : " + foundUser._id.get.stringify)
+        Logger.info("[+] updating user information : " + foundUser._id.get.stringify)
+        val userToken = if(user.token == None){
+            if(foundUser.token == None){
+              BearerTokenGenerator.generateToken()
+            }else {
+              foundUser.token.get 
+            }
+        }else{
+            user.token.get
+        }
         collection.update(BSONDocument("_id" -> foundUser._id),
           BSONDocument(
             "$set" -> BSONDocument(
@@ -86,7 +109,7 @@ case class UserCollection(collection: BSONCollection){
               "lastName" -> user.lastName,
               "email" -> user.email,
               "teams" -> user.teams.getOrElse(List()),
-              "token" -> user.token.getOrElse(foundUser.token.get),
+              "token" -> userToken,
               "isActive" -> true,
               "lastConnection" -> user.lastConnection.getOrElse(new Date().toString),
               "idProject" -> user.idProject
@@ -109,7 +132,7 @@ case class UserCollection(collection: BSONCollection){
       )
     ).map{
       case None => {
-        println(s"[+] User not found, could not disconnect properly !")
+        Logger.info(s"[+] User not found, could not disconnect properly !")
         false
       }
       case Some(user) => {
@@ -156,10 +179,9 @@ case class UserCollection(collection: BSONCollection){
       User(
         login = "admin",
         password = Some(adminPwd),
-        firstName = "administrateur",
-        lastName = "user",
-        email = "admin@toastWebApp.com",
-        token = Some(BearerTokenGenerator.generateToken()),
+        firstName = "Administrator",
+        lastName = "",
+        email = "admin@toast-tk.io",
         teams = Some(List(team)),
         lastConnection = None
       )
