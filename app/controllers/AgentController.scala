@@ -1,7 +1,7 @@
 package controllers
 
 
-import boot.AppBoot
+import boot.{ApiKeyProtected, AppBoot}
 import controllers.mongo.project.Project
 import controllers.mongo.users.User
 import play.api.mvc.WebSocket.FrameFormatter
@@ -96,6 +96,10 @@ object AgentController extends Controller{
   def registerFrontWebsocketService (maybeToken: Option[String]) =  WebSocket.using[AgentInformation] {
     request => {
       Logger.info(s"New incoming websocket connection -> ${request.headers}" )
+      //open websocket only for local host !
+      //TODO: check request host !
+
+
       maybeToken match {
         case Some(userTokenValue) => {
           Logger.info(s"New incoming websocket connection <- token -> $userTokenValue")
@@ -137,6 +141,16 @@ object AgentController extends Controller{
     }
   }
 
+  private def hasUserAndProject(token: String): Boolean = {
+    val pair: (Option[User], Option[Project]) = db.userProjectPair(token)
+    pair match {
+      case (Some(user), Some(project)) => {
+        true
+      }
+      case _ => false
+    }
+  }
+
  /**
    * List of agents registered with provided token
    * @param token
@@ -150,20 +164,6 @@ object AgentController extends Controller{
     }
   }
 
-  /**
-   * Check if provided token belongs to a user having a default project
-   * @param token
-   * @return
-   */
-  private def hasUserAndProject(token: String): Boolean = {
-    val pair: (Option[User], Option[Project]) = db.userProjectPair(token)
-    pair match {
-      case (Some(user), Some(project)) => {
-        true
-      }
-      case _ => false
-    }
-  }
 
   /**
    * Any agent that may push sentences, will be registered here
@@ -171,25 +171,17 @@ object AgentController extends Controller{
    * @param AgentInformation (host and user token)
    * @return
    */
+  @ApiKeyProtected
   def subscribe(): Action[JsValue] = Action(parse.json) {
     implicit request => {
       request.body.validate[AgentInformation].map {
-        case agentInformation:AgentInformation =>
-          val requestHost = request.headers.get("Host").get
-          val maybeToken = request.headers.get("Token")
-          hasUserAndProject(agentInformation.token) match {
-            case true => {
+        case agentInformation:AgentInformation => {
               agents += ((agentInformation.token, agentInformation))
-
               val agentInformationToPublish = AgentInformation(agentInformation.token, agentInformation.host, Some(true))
               users(agentInformation.token)._2.push(agentInformationToPublish)
               Logger.info(s"Agent registration accepted for token -> ${agentInformation.token}")
               Ok("driver registered: " + agentInformation.host)
-            }
-            case false => {
-              Logger.warn(s"Agent registration rejected for token -> ${agentInformation.token}")
-              BadRequest("Detected error: No user or project found for provided token")
-            }
+
           }
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toJson(e))
@@ -202,6 +194,7 @@ object AgentController extends Controller{
    *
    * @return
    */
+  @ApiKeyProtected
   def publishRecordedAction = Action.async(parse.json) {
     implicit request => {
       implicit val recordFormat = Json.format[MappedWebEventRecord]

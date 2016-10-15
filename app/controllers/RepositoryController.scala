@@ -1,7 +1,7 @@
 
 package controllers
 
-import boot.AppBoot
+import boot.{JwtProtected, AppBoot}
 import controllers.mongo.{Repository}
 import play.api.libs.json.{JsError, JsObject, JsArray, Json}
 import play.api.mvc.{Controller, Action}
@@ -15,6 +15,7 @@ object RepositoryController extends Controller {
   /**
    * load to init repository configuration
    */
+  @JwtProtected
   def loadAutoConfiguration(idProject: String) = Action.async {
       db.loadSwingPageRepository(idProject).map {
         repository => {
@@ -32,6 +33,7 @@ object RepositoryController extends Controller {
   /**
    * load to init repository configuration
    */
+  @JwtProtected
   def loadWebPageRepository(idProject: String) = Action.async {
     db.loadWebPageRepository(idProject).map {
       repository => {
@@ -48,6 +50,7 @@ object RepositoryController extends Controller {
   /**
    * Save Auto config
    */
+  @JwtProtected
   def saveAutoConfig() = Action(parse.json) { implicit request =>
     request.body.validate[Seq[Repository]].map {
       case configs: Seq[Repository] =>
@@ -64,6 +67,7 @@ object RepositoryController extends Controller {
   *
   * Delete an auto config
   */
+  @JwtProtected
   def deleteObject = Action(parse.json) { implicit request =>
     request.body.validate[String].map {
       case autoSetupId: String =>
@@ -77,6 +81,7 @@ object RepositoryController extends Controller {
   /**
    * Save Auto config block with test refactoring
    */
+  @JwtProtected
   def saveAutoConfigBlock() = Action(parse.json) { implicit request =>
     request.body.validate[Repository].map {
       case config: Repository =>
@@ -91,10 +96,12 @@ object RepositoryController extends Controller {
   /**
    * Load repository
    */
+  @JwtProtected
   def loadRepository() = Action {
     Ok(DAOJavaWrapper.repositoryDaoService.getRepoAsJson())
   }
 
+  @JwtProtected
   def saveRepository() = Action(parse.json) { implicit request =>
     request.body.validate[Seq[Repository]].map {
       case configs: Seq[Repository] =>

@@ -9,8 +9,6 @@ GET           /                                             controllers.Applicat
 # JavaScript routes
 GET           /jsroutes.js                                  controllers.JavaScript.jsRoutes()
 
-# AJAX APP routes
-GET           /loadEnvConfiguration                         controllers.Application.loadEnvConfiguration()
 
 # Ajax routes: Users
 POST          /login                                        controllers.Application.login()
@@ -34,10 +32,10 @@ GET           /loadCtxSentences/:confType                   controllers.Applicat
 GET           /typeDescriptor                               controllers.DomainController.typeDescriptor()
 
 # Ajax for API controller
-POST          /postConnector                                controllers.Application.onConnectorReceived()
+POST          /actionadapter                                controllers.Application.onConnectorReceived()
 POST          /saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
-GET           /loadWikifiedRepository/:apiKey               controllers.Application.loadWikifiedRepository(apiKey: String)
-GET           /loadWebWikifiedRepository/:apiKey            controllers.Application.loadWebWikifiedRepository(apiKey: String)
+GET           /repository/swing/:apiKey                     controllers.Application.loadWikifiedRepository(apiKey: String)
+GET           /repository/web/:apiKey                       controllers.Application.loadWebWikifiedRepository(apiKey: String)
 GET           /loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)
 GET           /loadSentences/:confType                      controllers.Application.loadSentences(confType:String)
 POST          /saveNewInspectedScenario                     controllers.Application.saveNewInspectedScenario()
@@ -64,7 +62,7 @@ POST          /deleteObject                                 controllers.Reposito
 # Ajax routes: Scenarii Controller
 GET           /loadScenariiList/:idProject                  controllers.ScenarioController.loadScenariiList(idProject: String)
 GET           /loadScenarii/:idProject                      controllers.ScenarioController.loadScenarii(idProject: String)
-GET           /wikiScenarii/:apiKey                         controllers.ScenarioController.loadWikifiedScenarii(apiKey: String)
+GET           /scenario/wiki/:apiKey                         controllers.ScenarioController.loadWikifiedScenarii(apiKey: String)
 GET           /loadScenarioSteps/:id                        controllers.ScenarioController.loadScenarioSteps(id: String)
 GET           /loadScenarioCtx/:scenarioType                controllers.ScenarioController.loadScenarioCtx(scenarioType: String)
 POST          /saveScenarii                                 controllers.ScenarioController.saveScenarii()

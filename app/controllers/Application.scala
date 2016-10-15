@@ -1,6 +1,6 @@
 package controllers
 
-import boot.AppBoot
+import boot.{JwtProtected, ApiKeyProtected, AppBoot}
 import controllers.mongo.project.Project
 import controllers.mongo.scenario.Scenario
 import play.api.Logger
@@ -17,18 +17,12 @@ import scala.concurrent.Future
 
 object Application extends Controller {
   private val db = AppBoot.db
-  private val jnlpHost = AppBoot.jnlpHost
 
   def index = Action {  request =>
      Ok(views.html.index())
   }
 
-  def loadEnvConfiguration() = Action{
-    Ok(jnlpHost)
-  }
-
   def login() = Action(parse.json) { implicit request =>
-    //Check credentials and so on...
     Logger.info(s"Loging ${request.body}")
      request.body.validate[InspectedUser].map {
       case user: InspectedUser =>
@@ -38,14 +32,14 @@ object Application extends Controller {
       if(token != ""){  
         Ok.addingToJwtSession("user", Json.toJson(authUser)) 
       } else {
-         Unauthorized("Bad credentials")
+        Unauthorized("Bad credentials")
       }
-        
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
     }
   }
 
+  @JwtProtected
   def logout() = Action {
     Ok("").withNewSession.flashing(
     "success" -> "You've been logged out"
@@ -56,6 +50,7 @@ object Application extends Controller {
    * auto setup - run config
    *
    */
+  @JwtProtected
   def loadAutoSetupCtx(setupType: String) = Action {
     Ok(DomainController.autoSetupCtxProvider(setupType))
   }
@@ -63,6 +58,7 @@ object Application extends Controller {
 
   /**
    * Save new page
+   * TODO: Add Api Key
    */
   def saveNewInspectedPage() = Action(parse.json) { implicit request =>
     request.body.validate[InspectedPage].map {
@@ -75,6 +71,7 @@ object Application extends Controller {
     }
   }
 
+  @ApiKeyProtected
   def saveNewInspectedScenario() = Action(parse.json) { implicit request =>
     val scenarioR = Json.fromJson(request.body)(Json.format[InspectedScenario])
     scenarioR.map {
@@ -126,7 +123,6 @@ object Application extends Controller {
     }
   }
 
-
   def loadWebWikifiedRepository(apiKey: String) = Action.async {
     val pair: (Option[User], Option[Project]) = db.userProjectPair(apiKey)
     pair match {
@@ -158,6 +154,7 @@ object Application extends Controller {
   /**
    * load services json descriptors
    */
+  @JwtProtected
   def loadServiceDescriptors(serviceType: String, driverName: String) = Action.async {
     db.loadConfStaticSentences(serviceType, driverName).map {
       sentences => {
@@ -171,6 +168,7 @@ object Application extends Controller {
   /**
    * get all possible pattern sentences for a given scenario type
    */
+  @JwtProtected
   def loadCtxSentences(confType: String) = Action.async {
     db.loadConfigurationSentences(confType).map {
       configurations => {
@@ -186,6 +184,7 @@ object Application extends Controller {
    * @param context
    * @return
    */
+  @JwtProtected
   def loadSentences(confType: String) = Action.async {
     db.loadConfigurationSentences(confType).map {
       configurations => {
@@ -208,6 +207,7 @@ object Application extends Controller {
    * a context = { itemName [WebPageItem, Entity..], other values to refine the result set}
    *
    */
+  @JwtProtected
   def loadCtxTagData(itemName: String, idProject: String) = Action.async {
     itemName match {
       case "web" => {
@@ -285,9 +285,8 @@ object Application extends Controller {
       }
   }
 
-  /**
-   * 
-   */
+
+  @ApiKeyProtected
   def onConnectorReceived = Action(parse.json) { implicit request =>
     request.body.validate[MojoFixtureDescriptor].map {
       case fixtureDescriptor: MojoFixtureDescriptor =>

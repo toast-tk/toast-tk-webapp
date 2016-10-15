@@ -1,7 +1,7 @@
 
 package controllers
 
-import boot.AppBoot
+import boot.{JwtProtected, AppBoot}
 import controllers.mongo.project.Project
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{Action, Controller}
@@ -18,6 +18,7 @@ object ProjectController extends Controller {
   /**
    * Save Project
    */
+  @JwtProtected
   def saveProject() = Action(parse.json) { implicit request =>
     request.body.validate[Project].map {
       case project: Project =>{
@@ -29,10 +30,12 @@ object ProjectController extends Controller {
     }
   }
 
+  @JwtProtected
   def getProject(idProject: String) = Action.async {
     db.getProject(idProject).map{project => Ok(Json.toJson(project))}
   }
 
+  @JwtProtected
   def getAllProjects() = Action.async {
     db.getAllProjects().map{projects => Ok(Json.toJson(projects))}
   }

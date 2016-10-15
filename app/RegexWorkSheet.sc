@@ -1,21 +1,11 @@
-import scala.collection.mutable
-import scala.util.matching.Regex
 
-println("blah")
-val input = "Type {{value:string}} in";
-val splittedPattern = input.split("\\s+")
-val regex = """\{\{([\.\w:]+)\}\}""".r
-splittedPattern.foreach { word =>
-  word match {
-    case regex(word) =>
-      println (word)
-    case x =>
-      println ("not word: " + x)
-  }
-}
+import scala.reflect.runtime.{universe => ru}
+import scala.reflect.runtime.universe._
 
+import controllers.Application
 
-val a = mutable.Stack[String]()
-a.push("Sal");
+val mirror = ru.runtimeMirror(getClass.getClassLoader)
+val clazz = Class.forName("controllers.Application")
+val reflectedType = mirror.classSymbol(clazz).toType
 
-
+val method = reflectedType.member(TermName("trim"))
