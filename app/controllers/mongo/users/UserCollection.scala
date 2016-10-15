@@ -49,7 +49,7 @@ case class UserCollection(collection: BSONCollection){
     val query = BSONDocument("login" -> user.login, "password" -> user.password)
     var authPersonOpt: Option[User] = None;
     val userFuture = collection.find(query).cursor[User]().collect[List]()
-    //FIXME: we must find only one user in here !!
+    //FIXME: we must find only one user in here and update only lastConnection field !!
     Await.result(userFuture.map { users =>
       for (person <- users) {
         val authPerson = User(
@@ -61,6 +61,7 @@ case class UserCollection(collection: BSONCollection){
           person.teams,
           person.token,
           Some(true),
+          person.isAdmin,
           person.lastConnection,
           person._id,
           person.idProject)

@@ -8,7 +8,6 @@ define(["angular"], function(angular) {
 	SidebarMenuCtrl.$inject = ['$scope', '$state','$sideSplit'];
 
 	function SidebarMenuCtrl($scope, $state, $sideSplit) {
-		$scope.isCollapsed = false;
 		$scope.currentState = $state.current.name ;
 		$scope.collapse = function(){
 			$scope.isCollapsed = !$scope.isCollapsed ;

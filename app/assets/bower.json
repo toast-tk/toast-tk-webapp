@@ -2,8 +2,10 @@
   "name": "toast",
   "version": "0.1.4",
   "authors": [
-    "Sallah Kokaina <sallah.kokaina@gmail.com>",
-    "Akram Tabka <akram.tabka@synaptix-labs.com>"
+    "Sallah Kokaina <sallah.kokaina@gmail.com>"
+  ],
+  "contributors": [
+    "Akram Tabka <akram.tabka@talanlabs.com>"
   ],
   "description": "Toast TK Webapp",
   "license": "Apache 2.0",

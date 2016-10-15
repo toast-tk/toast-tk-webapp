@@ -329,7 +329,6 @@ define(["angular"], function (angular) {
             $scope.regexFullList=[];
 
             function __init__(doBuildTree) {
-      
                 for(var i =0 ; i < $scope.scenario_types.length; i++){
                     var scenariiKind = $scope.scenario_types[i];
                     ClientService.loadRegexList(scenariiKind, function(scenariiKind, list){
@@ -344,7 +343,7 @@ define(["angular"], function (angular) {
                 playRoutes.controllers.ScenarioController.loadScenarii($scope.defaultProject._id).get().then(function (response) {
                     var data = response.data || [];
                     data.map(function (scenario) {
-                        scenario.value = scenario.name; // todo : fix: pour la recherche 
+                        scenario.value = scenario.name;
                         try{
                             scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
                             scenario.template  = true;

@@ -157,10 +157,12 @@
             "addUserCtrl", "editUsersCtrl", "validatorDirective",
             "addTeamCtrl", "editTeamsCtrl", "editTeamCtrl", "editUserCtrl",
             "addProjectCtrl", "editProjectCtrl", "editProjectsCtrl", "MainProjectCtrl",
-            "clientService",
+            "clientService","jwtClient",
             "componentsDir", "sortable", "ngProgress",
-            "angular-ui-tree", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete", "angularDropdown",
-            "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix", "jwtClient", "ngTagsInput"],
+            "angular-ui-tree", "bootstrap", "ui.bootstrap",
+            "angularRoute", "angucomplete", "angularDropdown",
+            "xeditable", "ui.router", "angular-animate", "sidesplit",
+            "angular-toastr", "webix",  "ngTagsInput"],
 
         function(a, b, routerConfig, configConfig, treeLayoutService,
                  login, loginService, loginResolverService, settingsCtrl,
@@ -171,7 +173,7 @@
                  addUserCtrl, editUsersCtrl, validatorDirective,
                  addTeamCtrl,editTeamsCtrl, editTeamCtrl, editUserCtrl,
                  addProjectCtrl, editProjectCtrl, editProjectsCtrl,
-                 MainProjectCtrl
+                 MainProjectCtrl, clientService, JWT
         ) {
 
             var app = angular.module("app",
@@ -232,6 +234,27 @@
 
             app.config(routerConfig.RouterConfig);
             app.config(configConfig.ConfigConfig);
+
+            app.config(['$httpProvider',
+                function($httpProvider) {
+                    $httpProvider.interceptors.push(['$q',
+                        function($q) {
+                            return {
+                                'request': function(config){
+                                    config.headers['Authorization'] = JWT.get();
+                                    return config;
+                                },
+                                'responseError': function(rejection){
+                                    if (rejection.status === 401) {
+                                        console.log("Action is not authorised, please contact your administrator.")
+                                        JWT.forget();
+                                        return $q.reject(rejection);
+                                    }
+                                    return $q.reject(rejection);
+                                }
+                            };
+                        }]);
+            }]);
 
             app.run(function(editableOptions) {
                 editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'

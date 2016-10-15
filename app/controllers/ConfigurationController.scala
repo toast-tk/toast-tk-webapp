@@ -1,6 +1,6 @@
 package controllers
 
-import boot.AppBoot
+import boot.{JwtProtected, AppBoot}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import controllers.mongo.MacroConfiguration
 import play.api.libs.json.{JsError, Json}
@@ -14,6 +14,7 @@ object ConfigurationController extends Controller {
   /**
    * load to init configuration
    */
+  @JwtProtected
   def loadConfiguration() = Action.async {
     db.loadConfiguration.map {
       configurations => {
@@ -25,6 +26,7 @@ object ConfigurationController extends Controller {
   /**
    * Save Meta config
    */
+  @JwtProtected
   def saveConfiguration() = Action(parse.json) { implicit request =>
     request.body.validate[Seq[MacroConfiguration]].map {
       case configs: Seq[MacroConfiguration] =>

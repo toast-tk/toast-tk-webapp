@@ -1,7 +1,7 @@
  
 package controllers
 
-import boot.AppBoot
+import boot.{ApiKeyProtected, JwtProtected, AppBoot}
 import controllers.Application._
 import controllers.mongo.project.Project
 import controllers.mongo.scenario.Scenario
@@ -108,6 +108,7 @@ object ScenarioController extends Controller {
    * || scenario || web ||
    * |Type *toto* in *LoginDialog.loginTextField*|
    */
+  @ApiKeyProtected
   def loadWikifiedScenarii(apiKey: String) = Action.async {
     val pair: (Option[User], Option[Project]) = db.userProjectPair(apiKey)
     pair match {
@@ -129,6 +130,7 @@ object ScenarioController extends Controller {
   /**
    * Delete scenarii
    */
+  @JwtProtected
   def deleteScenarii() = Action(parse.json) { implicit request =>
     request.body.validate[String].map {
       case scenariiId: String =>
@@ -153,7 +155,8 @@ object ScenarioController extends Controller {
   /**
    * Save scenarii
    */
-   def saveScenarii() = Action(parse.json) { implicit request =>
+  @JwtProtected
+  def saveScenarii() = Action(parse.json) { implicit request =>
     request.body.validate[Scenario].map {
       case scenario: Scenario => {
         val persistenceTuple: (Future[UpdateWriteResult], Scenario) = db.upsertScenario(scenario)
@@ -178,6 +181,7 @@ object ScenarioController extends Controller {
   /**
    * load to init scenarii
    */
+  @JwtProtected
   def loadScenarii(idProject: String) = Action.async {
     db.loadScenarii(idProject).map {
       scenarii => {
@@ -194,6 +198,7 @@ object ScenarioController extends Controller {
   /**
    * scenario service type (backend, web, ..)
    */
+  @JwtProtected
   def loadScenarioCtx(scenarioType: String) = Action {
     Ok(DomainController.scenarioDescriptorProvider(scenarioType))
   }
@@ -202,6 +207,7 @@ object ScenarioController extends Controller {
   /**
    * load to init scenarii
    */
+  @JwtProtected
   def loadScenariiList(idProject: String) = Action.async {
     db.loadScenarii(idProject).map {
       scenarii => {
@@ -216,6 +222,7 @@ object ScenarioController extends Controller {
   /**
    * load scenario steps
    */
+  @JwtProtected
   def loadScenarioSteps(id: String) = Action.async {
     db.loadScenarioById(id).map {
       result => result match {

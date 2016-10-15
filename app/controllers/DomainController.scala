@@ -1,6 +1,7 @@
  
 package controllers
 
+import boot.JwtProtected
 import play.api.Play
 import play.api.Play.current
 import play.api.libs.json.Writes._
@@ -21,7 +22,8 @@ trait InnerDomainController {
   val actionItems = ActionItemDescriptionCollector.initActionItems().toList
   type ActionCategory = ActionItem.ActionCategoryEnum
   type ActionType = ActionItem.ActionTypeEnum
-  
+
+  @JwtProtected
   def typeDescriptor () = Action{
     val jsonDescriptor = Play.application.resourceAsStream("type_descriptor.json")
     val jsonString = IOUtils.toString(jsonDescriptor.get, "UTF-8")
@@ -40,6 +42,7 @@ trait InnerDomainController {
     actionItem
   }
 
+  @JwtProtected
   def autoSetupCtxProvider(setupType: String): JsArray = {
     setupType match {
       case "web page" => Json.arr(Json.obj("name" -> "name", "descriptor" -> Json.obj()),
@@ -62,6 +65,7 @@ trait InnerDomainController {
     }
   }
 
+  @JwtProtected
   def scenarioDescriptorProvider(scenarioType: String): JsArray = {
     scenarioType match {
       case "web" => Json.arr(Json.obj("name" -> "patterns", "reference" -> true, "post" -> false),

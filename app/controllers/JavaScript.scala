@@ -33,7 +33,6 @@ object JavaScript extends Controller {
           controllers.routes.javascript.ProjectController.saveProject,
           controllers.routes.javascript.ProjectController.getProject,
           controllers.routes.javascript.ProjectController.getAllProjects,
-          controllers.routes.javascript.Application.loadEnvConfiguration,
           controllers.routes.javascript.Application.logout,
           controllers.routes.javascript.UserController.logout,
           controllers.routes.javascript.UserController.user,

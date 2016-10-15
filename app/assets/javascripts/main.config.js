@@ -4,22 +4,19 @@ define(["angular", "exports"], function (angular, exports) {
   ConfigConfig.$inject = ["toastrConfig"];
 
    function ConfigConfig(toastrConfig){
-
-                   angular.extend(toastrConfig, {
-                    autoDismiss: false,
-                    timeOut: 2000,
-                    extendedTimeOut: 300,
-                    containerId: 'toast-container',
-                    maxOpened: 0,    
-                    newestOnTop: true,
-                    positionClass: 'toast-top-center',
-                    preventDuplicates: false,
-                    preventOpenDuplicates: false,
-                    target: 'body'
-                  });
-
+       angular.extend(toastrConfig, {
+        autoDismiss: false,
+        timeOut: 2000,
+        extendedTimeOut: 300,
+        containerId: 'toast-container',
+        maxOpened: 0,
+        newestOnTop: true,
+        positionClass: 'toast-top-center',
+        preventDuplicates: false,
+        preventOpenDuplicates: false,
+        target: 'body'
+      });
     }
-    /* END : config function */
 
     /* require export */
     exports.ConfigConfig = ConfigConfig

@@ -2,7 +2,7 @@ package controllers
 
 import java.util.concurrent.TimeUnit
 
-import boot.AppBoot
+import boot.{JwtProtected, AppBoot}
 import controllers.mongo.project.Project
 import controllers.mongo.scenario.Scenario
 import io.toast.tk.dao.domain.impl.report.{TestPlanImpl, Campaign}
@@ -41,6 +41,7 @@ object TestPlanController  extends Controller {
   /**
    * load to init test plan
    */
+  @JwtProtected
   def loadProject(idProject:String) = Action {
     val jTestPlans = testPlanService.findAllReferenceProjects(idProject).asScala
     var testPlans = List[TestPlan]()
@@ -71,6 +72,7 @@ object TestPlanController  extends Controller {
   /**
    * Save project
    */
+  @JwtProtected
   def saveProject() = Action(parse.json) { implicit request =>
     val parser = new TestParser()
 
@@ -179,6 +181,7 @@ object TestPlanController  extends Controller {
     }
   }
 
+  @JwtProtected
   def loadProjectReport(name: String) = Action {
     implicit request => {
     val report = HTMLReporter.getProjectHTMLReport(name)
@@ -187,6 +190,7 @@ object TestPlanController  extends Controller {
     }
   }
 
+  @JwtProtected
   def loadTestReport() = Action {
     implicit request => {
       val pName = request.queryString("project")(0);
