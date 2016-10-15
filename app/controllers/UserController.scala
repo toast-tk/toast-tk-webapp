@@ -1,9 +1,8 @@
 package controllers
 
-import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
-import boot.AppBoot
+import boot.{AdminProtected, JwtProtected, AppBoot}
 import controllers.mongo.teams.Team
 import controllers.mongo.users._
 import play.api.mvc._
@@ -21,6 +20,7 @@ trait InnerUserController {
   private val db = AppBoot.db
   val timeout = Duration(5, TimeUnit.SECONDS)
 
+  @JwtProtected
 	def user(id: String) = Action.async {
 		db.editUser(id).map {
 	        user => {
@@ -29,6 +29,7 @@ trait InnerUserController {
     }
 	}
 
+  @JwtProtected
 	def logout(id: String) = Action {
 		Await.ready(db.disconnectUser(id), timeout).value.get match {
 			case Failure(e) => throw e
@@ -43,6 +44,8 @@ trait InnerUserController {
 		}
 	}
 
+  @JwtProtected
+  @AdminProtected
 	def saveUser() = Action(parse.json) { implicit request =>
 		request.body.validate[User].map {
 			case user: User =>
@@ -87,6 +90,8 @@ trait InnerUserController {
 				}
 		}
 
+  @JwtProtected
+  @AdminProtected
 	def getAllUsers() = Action.async {
 		db.getAllUsers().map {
       users => {
@@ -99,6 +104,8 @@ trait InnerUserController {
     }
 	}
 
+  @JwtProtected
+  @AdminProtected
 	def deleteUser(id: String) = Action {
 		Await.ready(db.removeUser(id), timeout).value.get match {
 			case Failure(e) => {
@@ -110,6 +117,7 @@ trait InnerUserController {
 		}
 	}
 
+  @JwtProtected
   def getUserProjects(id: String) = Action {
     val result: Option[User] = Await.result(db.editUser(id), timeout)
     result match {

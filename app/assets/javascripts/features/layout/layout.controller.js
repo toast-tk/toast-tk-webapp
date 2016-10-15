@@ -15,6 +15,7 @@ define(["angular"], function(angular) {
 		$sideSplit.open({ 
                         templateUrl: 'assets/html/layout/sidebar.view.html',
                         controller: 'SidebarMenuCtrl',
+                        scope: $scope,
                         appendTo : angular.element('#sidebarmenu'),
                         width : "225px",
                         position : "left"
@@ -24,6 +25,9 @@ define(["angular"], function(angular) {
 				$scope.isCollapsed = !$scope.isCollapsed ;
 		});
 
+        $scope.editProfile = function(){
+            $state.go("adminLayout.editUser", {idUser: $scope.user._id});
+        }
 
 		$scope.logout = function(){
 			LoginService.logout();

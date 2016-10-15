@@ -5,32 +5,40 @@ define(["angular"], function(angular) {
     	}
 
 
-	AdminLayoutCtrl.$inject = ['$scope','$sideSplit','$state', 'user', 'defaultProject'];
+	AdminLayoutCtrl.$inject = ['$scope','$sideSplit','$state', 'user', 'defaultProject', 'LoginService'];
 
-	function AdminLayoutCtrl($scope, $sideSplit, $state, user, defaultProject) {
+	function AdminLayoutCtrl($scope, $sideSplit, $state, user, defaultProject, LoginService) {
 		$scope.isCollapsed = false;
 		$scope.user = user ;
         $scope.project = defaultProject;
+        $scope.editProfile = editProfile;
+        $scope.logout = logout;
+        $scope.goToState = goToState;
 
-		$sideSplit.open({ 
-                        templateUrl: 'assets/html/admin/layout/sidebar.view.html',
-                        controller: 'AdminSidebarMenuCtrl',
-                        appendTo : angular.element('#sidebarmenu'),
-                        width : "225px",
-                        position : "left"
+
+        $sideSplit.open({
+            templateUrl: 'assets/html/admin/layout/sidebar.view.html',
+            controller: 'AdminSidebarMenuCtrl',
+            scope: $scope,
+            appendTo : angular.element('#sidebarmenu'),
+            width : "225px",
+            position : "left"
+        });
+        $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(isCollapsedRetour){
+            $scope.isCollapsed = !$scope.isCollapsed ;
         });
 
-		$sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(isCollapsedRetour){
-				$scope.isCollapsed = !$scope.isCollapsed ;
-		});
 
+        function editProfile(){
+            $state.go("adminLayout.editUser", {idUser: $scope.user._id});
+        }
 
-		$scope.logout = function(){
+		function logout(){
 			LoginService.logout();
 			$state.go('login');
 		}
 
-        $scope.goToState = function(stateName){
+        function goToState(stateName){
             $state.go(stateName);
         }
 	}

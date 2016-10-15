@@ -18,7 +18,7 @@ define(["angular"], function (angular) {
                         $state.go("project");
                         deferred.reject();
                     }else{
-                        $state.go("layout.scenario");
+                        //$state.go("layout.scenario");
                         deferred.resolve();
                     }
                 }else{

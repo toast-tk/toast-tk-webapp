@@ -14,13 +14,16 @@ import pdi.jwt._
 import toast.engine.DAOJavaWrapper
 import com.github.jmkgreen.morphia.logging.MorphiaLoggerFactory
 import com.github.jmkgreen.morphia.logging.slf4j.SLF4JLogrImplFactory
-import scala.reflect.api.Symbols
 import scala.concurrent.Future
 import scala.reflect.runtime.{universe => ru}
 import scala.reflect.runtime.universe._
 
 @scala.annotation.meta.companionMethod
 class ApiKeyProtected() extends scala.annotation.Annotation with scala.annotation.StaticAnnotation {
+}
+
+@scala.annotation.meta.companionMethod
+class AdminProtected() extends scala.annotation.Annotation with scala.annotation.StaticAnnotation {
 }
 
 @scala.annotation.meta.companionMethod
@@ -32,7 +35,63 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 object AuthorisationFilter extends Filter {
   val mirror = ru.runtimeMirror(getClass.getClassLoader)
+
   def apply(next: (RequestHeader) => Future[Result])(request: RequestHeader): Future[Result] = {
+    val methodSymbol: ru.MethodSymbol = handlerForRoute(request)
+    if(isProtectedWithApiKey(methodSymbol)){
+      checkTokenValidity(next, request)
+    }
+    else if (isJwtProtected(methodSymbol)){
+      checkJwtTokenValidity(next, request, methodSymbol)
+    }
+    else {
+      next(request)
+    }
+  }
+
+  protected def checkJwtTokenValidity(next: (RequestHeader) => Future[Result], request: RequestHeader, methodSymbol: ru.MethodSymbol): Future[Result] = {
+    Logger.debug("received jwt session: " + request.jwtSession)
+    request.jwtSession.getAs[User]("user") match {
+      case Some(user) => {
+        if (user.isActive.get == true) {
+          if (isAdminProtected(methodSymbol)) {
+            if (user.isAdmin.get == true) {
+              next(request)
+            } else {
+              Future(Unauthorized("This action requires admin privileges.").refreshJwtSession(request))
+            }
+          } else {
+            next(request)
+          }
+        } else {
+          Future(Forbidden("User is not active.").refreshJwtSession(request))
+        }
+      }
+      case _ => Future(Redirect("/", 401))
+    }
+  }
+
+  protected def checkTokenValidity(next: (RequestHeader) => Future[Result], request: RequestHeader): Future[Result] = {
+    val maybeToken = request.headers.get("Token")
+    maybeToken match {
+      case Some(token) => {
+        Logger.info("Checking token: " + token)
+        hasUserAndProject(token) match {
+          case true => {
+            next(request)
+          }
+          case false => {
+            Future(Unauthorized("Request rejected: provided api key is invalid !"))
+          }
+        }
+      }
+      case None => {
+        Future(Unauthorized("Request rejected: accessing this route requires an api key !"))
+      }
+    }
+  }
+
+  protected def handlerForRoute(request: RequestHeader): ru.MethodSymbol = {
     if(!request.tags.keySet.contains(Router.Tags.RouteController)){
       Future.successful(NotFound(views.html.notfound()))
     }
@@ -40,42 +99,12 @@ object AuthorisationFilter extends Filter {
     val classSymbolType = mirror.classSymbol(clazz).toType
     val methodName = TermName(request.tags(Router.Tags.RouteActionMethod))
     val classCompanion = classSymbolType.companion
-    val methodSymbol:MethodSymbol = classCompanion.member(methodName).asMethod
-    if(isProtectedWithApiKey(methodSymbol)){
-      val maybeToken = request.headers.get("Token")
-      maybeToken match {
-        case Some(token) => {
-          Logger.info("Checking token: " + token)
-          hasUserAndProject(token) match {
-            case true => {
-              next(request)
-            }
-            case false => {
-              Future (Unauthorized("Request rejected: provided api key is invalid !"))
-            }
-          }
-        }
-        case None => {
-          Future(Unauthorized("Request rejected: accessing this route requires an api key !"))
-        }
-      }
-    }
-    else if (isJwtProtected(methodSymbol)){
-      Logger.info("received jwt session: " + request.jwtSession.getAs[User]("user"))
-      request.jwtSession.getAs[User]("user") match {
-        case Some(user) => {
-          if(user.isActive.get == true){
-            next(request)
-          } else {
-            Future(Forbidden("user is not active yet").refreshJwtSession(request))
-          }
-        }
-        case _ => Future(Ok(views.html.index()))
-      }
-    }
-    else {
-      next(request)
-    }
+    val methodSymbol: MethodSymbol = classCompanion.member(methodName).asMethod
+    methodSymbol
+  }
+
+  def isAdminProtected(method: MethodSymbol): Boolean = {
+    method.annotations.exists(a => a.tree.tpe =:= typeOf[AdminProtected])
   }
 
   def isJwtProtected(method: MethodSymbol): Boolean = {

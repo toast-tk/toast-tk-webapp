@@ -2,7 +2,7 @@ package controllers
 
 import java.util.concurrent.TimeUnit
 
-import boot.{JwtProtected, AppBoot}
+import boot.{AdminProtected, JwtProtected, AppBoot}
 import controllers.ProjectController._
 
 import play.api.mvc._
@@ -24,6 +24,7 @@ object TeamController extends Controller {
   val timeout = Duration(5, TimeUnit.SECONDS)
 
   @JwtProtected
+  @AdminProtected
 	def saveTeam() = Action(parse.json) { implicit request =>
 		request.body.validate[Team].map {
 			case team: Team => {
@@ -48,6 +49,7 @@ object TeamController extends Controller {
   }
 
   @JwtProtected
+  @AdminProtected
   def getAllTeams() = Action.async {
     db.getAllTeams().map {
       teams => {

@@ -3,7 +3,7 @@
 <!--                     <li>
                         <a href="#/main"><i class="fa fa-fw fa-home fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Home</span></a>
                     </li> -->
-                    <li>
+                    <li ng-if="user.isAdmin === true">
                         <a href="javascript:;" data-toggle="collapse" data-target="#demo">
                         <i class="fa fa-users fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
                             <span  ng-if="isCollapsed===false">Accounts</span>
@@ -24,7 +24,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li>
+                    <li ng-if="user.isAdmin === true">
                         <a href="javascript:;" data-toggle="collapse" data-target="#TeamCollapse">
                         <i class="fa fa-users fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
                             <span  ng-if="isCollapsed===false">Teams</span>
@@ -45,7 +45,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li>
+                    <li ng-if="user.isAdmin === true">
                         <a href="javascript:;" data-toggle="collapse" data-target="#projectCollapse">
                             <i class="fa fa-cubes fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
                             <span  ng-if="isCollapsed===false">Projects</span>
@@ -66,7 +66,7 @@
                             </li>
                         </ul>
                     </li>
-                     <li style="position: fixed; bottom: 0;">
+                     <li  style="position: fixed; bottom: 0;">
                         <a ng-click="collapse()">
                         <i  ng-if="isCollapsed===false" style="width: 100%;" class="btn fa fa-lg fa-chevron-circle-left" ng-class="{'fa-2x': isCollapsed === true}"></i>
                         <i  ng-if="isCollapsed===true" class="fa fa-lg fa-chevron-circle-right" ng-class="{'fa-2x': isCollapsed === true}"></i>

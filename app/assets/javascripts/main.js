@@ -159,8 +159,10 @@
             "addProjectCtrl", "editProjectCtrl", "editProjectsCtrl", "MainProjectCtrl",
             "clientService","jwtClient",
             "componentsDir", "sortable", "ngProgress",
-            "angular-ui-tree", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete", "angularDropdown",
-            "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix",  "ngTagsInput"],
+            "angular-ui-tree", "bootstrap", "ui.bootstrap",
+            "angularRoute", "angucomplete", "angularDropdown",
+            "xeditable", "ui.router", "angular-animate", "sidesplit",
+            "angular-toastr", "webix",  "ngTagsInput"],
 
         function(a, b, routerConfig, configConfig, treeLayoutService,
                  login, loginService, loginResolverService, settingsCtrl,
@@ -235,12 +237,20 @@
 
             app.config(['$httpProvider',
                 function($httpProvider) {
-                    $httpProvider.interceptors.push(['$location','$q',
-                        function($location, $q) {
+                    $httpProvider.interceptors.push(['$q',
+                        function($q) {
                             return {
                                 'request': function(config){
                                     config.headers['Authorization'] = JWT.get();
                                     return config;
+                                },
+                                'responseError': function(rejection){
+                                    if (rejection.status === 401) {
+                                        console.log("Action is not authorised, please contact your administrator.")
+                                        JWT.forget();
+                                        return $q.reject(rejection);
+                                    }
+                                    return $q.reject(rejection);
                                 }
                             };
                         }]);

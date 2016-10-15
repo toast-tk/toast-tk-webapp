@@ -1,6 +1,13 @@
 #login.login-page-div{
 	height: 100%;
-    background-color: #222;
+    background-color: rgb(2, 84, 132);
+}
+
+#login .toast-logo{
+    margin: auto;
+    margin-bottom: 20px;
+    position: relative;
+    width: 300px;
 }
 
 #login .login-box{
@@ -11,9 +18,9 @@
     top: 50%;
     margin-top: -220px;
     margin-left: -220px;
+    text-align: center;
 }
 
 #login:has(> body){
-
     margin-top: -50px !important; 
 }

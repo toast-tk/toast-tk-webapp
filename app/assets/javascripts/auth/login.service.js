@@ -38,7 +38,7 @@ define(["angular","jwtClient"], function (angular, JWT) {
                 playRoutes.controllers.UserController.logout(self.user._id).get().then(function (response) {
                     JWT.forget();
                     sync();
-                    $state.go("login");
+                    $state.go('login');
                 });
             }
 

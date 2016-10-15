@@ -17,6 +17,7 @@ case class User(login: String,
                 teams:  Option[List[Team]],
                 token : Option[String] = None,
                 isActive : Option[Boolean] = Some(true),
+                isAdmin:  Option[Boolean] = Some(false),
                 lastConnection : Option[String] = Some("11/11/1111"),
                 override val _id: Option[BSONObjectID] = Some(BSONObjectID.generate),
                 idProject: Option[String] = None) extends Identifiable
