@@ -1,13 +1,14 @@
 package controllers
 
+import java.net.URLDecoder
+import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 
 import boot.{JwtProtected, AppBoot}
 import controllers.mongo.project.Project
 import controllers.mongo.scenario.Scenario
 import io.toast.tk.dao.domain.impl.report.{TestPlanImpl, Campaign}
-import io.toast.tk.dao.domain.impl.test.block.ITestPage
-import io.toast.tk.dao.service.dao.access.test.TestPageFromProxy
+import io.toast.tk.dao.domain.impl.test.block.{ICampaign, ITestPage}
 import io.toast.tk.runtime.parse.TestParser
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.json.{Json, JsError}
@@ -17,25 +18,81 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.collection.immutable.StringOps
 import io.toast.tk.runtime.report.HTMLReporter
 import play.api.Logger
-import reactivemongo.bson.BSONDocument
+import scala.collection.mutable
 import scala.concurrent.duration.Duration
 import scala.concurrent._
 import scala.collection.JavaConverters._
 
 
 
-case class ScenarioWrapper(id: Option[String], name: Option[String], idScenario: Option[String])
-case class Cpgn(id: Option[String], name: String, scenarii: List[ScenarioWrapper])
-case class TestPlan(id: Option[String], name: String, iterations: Option[Short], campaigns: List[Cpgn], project: Option[Project])
+case class TestPageMirror(id: Option[String], name: Option[String], idScenario: Option[String],
+                          executionTime: Long,
+                          technicalErrorNumber: Int,
+                          testFailureNumber: Int,
+                          testSuccessNumber: Int,
+                          isPreviousIsSuccess: Boolean,
+                          previousExecutionTime: Long,
+                          isSuccess: Boolean,
+                          isFatal: Boolean)
+case class CampaignMirror(id: Option[String], name: String, scenarii: List[TestPageMirror])
+case class TestPlanMirror(id: Option[String],
+                          name: String,
+                          iterations: Option[Short],
+                          campaigns: List[CampaignMirror],
+                          project: Option[Project] = None)
+
+object TestPageWrapper {
+  def from(testPage: ITestPage) = {
+    val maybeId = if (testPage.getIdScenario() == null) None else Some(testPage.getIdScenario())
+    new TestPageMirror(
+      Some(testPage.getIdAsString()),
+      Some(testPage.getName()),
+      maybeId,
+      testPage.getExecutionTime(),
+      testPage.getTechnicalErrorNumber(),
+      testPage.getTestFailureNumber(),
+      testPage.getTestSuccessNumber(),
+      testPage.isPreviousIsSuccess(),
+      testPage.getPreviousExecutionTime(),
+      testPage.isSuccess(),
+      testPage.isFatal()
+    )
+  }
+}
+
+object CampaignMirror {
+  def from(campaign: ICampaign) = {
+    var scenarios = List[TestPageMirror]()
+    for (testPage <- campaign.getTestCases.asScala) {
+      scenarios = TestPageWrapper.from(testPage) :: scenarios
+    }
+    new CampaignMirror(Some(campaign.getIdAsString()), campaign.getName(), scenarios.reverse)
+  }
+}
+
+object TestPlanMirror{
+  def from(testPlanImpl: TestPlanImpl) = {
+    var campaignsMirror = List[CampaignMirror]()
+    val campaigns = testPlanImpl.getCampaigns().asScala
+    for (campaign <- campaigns) {
+      campaignsMirror = CampaignMirror.from(campaign) :: campaignsMirror
+    }
+    new TestPlanMirror(
+      Some(testPlanImpl.getId().toString()),
+      testPlanImpl.getName(),
+      Some(testPlanImpl.getIteration()) ,
+      campaignsMirror)
+  }
+}
 
 object TestPlanController  extends Controller {
   lazy val testPlanService = DAOJavaWrapper.testPlanService
   lazy val testPageService = DAOJavaWrapper.testPageService
   lazy val projectService = DAOJavaWrapper.proectService
   val timeout = Duration(5, TimeUnit.SECONDS)
-  implicit val sFormat = Json.format[ScenarioWrapper]
-  implicit val campaignFormat = Json.format[Cpgn]
-  implicit val testPlanFormat = Json.format[TestPlan]
+  implicit val sFormat = Json.format[TestPageMirror]
+  implicit val campaignFormat = Json.format[CampaignMirror]
+  implicit val testPlanFormat = Json.format[TestPlanMirror]
   private val db = AppBoot.db
 
   /**
@@ -44,28 +101,10 @@ object TestPlanController  extends Controller {
   @JwtProtected
   def loadProject(idProject:String) = Action {
     val jTestPlans = testPlanService.findAllReferenceProjects(idProject).asScala
-    var testPlans = List[TestPlan]()
+    var testPlans = List[TestPlanMirror]()
     for(jTestPlan <- jTestPlans){
-      var cmpgs = List[Cpgn]()
-      val campaigns = jTestPlan.getCampaigns().iterator
-      while (campaigns.hasNext()) {
-        val campaign = campaigns.next()
-        var scns = List[ScenarioWrapper]()
-        val testPages = campaign.getTestCases().iterator
-        while (testPages.hasNext()) {
-          val testPage = testPages.next()
-          val maybeIdScenario = if (testPage.getIdScenario() == null) None else Some(testPage.getIdScenario())
-          scns = ScenarioWrapper(Some(testPage.getIdAsString()),Some(testPage.getName()), maybeIdScenario) :: scns
-        }
-        cmpgs = Cpgn(Some(campaign.getIdAsString()), campaign.getName(), scns.reverse) :: cmpgs
-      }
-      testPlans = TestPlan(
-        Some(jTestPlan.getId().toString()),
-        jTestPlan.getName(),
-        Some(jTestPlan.getIteration()) ,
-        cmpgs, None) :: testPlans
+      testPlans = TestPlanMirror.from(jTestPlan) :: testPlans
     }
-
     Ok(Json.toJson(testPlans))
   }
 
@@ -87,7 +126,7 @@ object TestPlanController  extends Controller {
       testPage
     }
 
-    def transformCampaign(project: Option[Project], campaigns: List[Cpgn]): java.util.ArrayList[Campaign] = {
+    def transformCampaign(project: Option[Project], campaigns: List[CampaignMirror]): java.util.ArrayList[Campaign] = {
       val list = new java.util.ArrayList[Campaign]()
       for (cpgn <- campaigns) {
         val campaign = new Campaign()
@@ -152,7 +191,7 @@ object TestPlanController  extends Controller {
       list
     }
 
-    def tranformTestPlan(tp: TestPlan): TestPlanImpl = {
+    def tranformTestPlan(tp: TestPlanMirror): TestPlanImpl = {
       val testPlan = new TestPlanImpl()
       testPlan.setName(tp.name)
       if(tp.project.isDefined){
@@ -163,8 +202,8 @@ object TestPlanController  extends Controller {
       testPlan
     }
 
-    request.body.validate[TestPlan].map {
-      case testPlan: TestPlan => {
+    request.body.validate[TestPlanMirror].map {
+      case testPlan: TestPlanMirror => {
         testPlan.id match {
           case None => {
             testPlanService.saveTemplate(tranformTestPlan(testPlan))
@@ -184,9 +223,12 @@ object TestPlanController  extends Controller {
   @JwtProtected
   def loadProjectReport(name: String) = Action {
     implicit request => {
-    val report = HTMLReporter.getProjectHTMLReport(name)
-    Result(header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
-                  body = Enumerator(new StringOps(report).getBytes()))
+      val testPlanName = URLDecoder.decode(name, "UTF-8")
+      val testPlan:TestPlanImpl = DAOJavaWrapper.testPlanService.getLastByName(testPlanName);
+      val testPlanHistory:mutable.Buffer[TestPlanImpl] = DAOJavaWrapper.testPlanService.getProjectHistory(testPlan).asScala;
+      Ok(Json.toJson(
+        Json.obj("testPlan" -> Json.toJson(TestPlanMirror.from(testPlan)),
+          "history" -> Json.toJson(testPlanHistory.map(testPlan => TestPlanMirror.from(testPlan))))))
     }
   }
 

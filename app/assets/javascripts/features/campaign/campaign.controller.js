@@ -4,10 +4,11 @@ define(["angular"], function (angular) {
         CampaignCtrl: function ($rootScope, $scope, playRoutes,
                                 ngProgress, $window, $timeout,
                                 $sideSplit, LayoutService,
-                                defaultProject) {
+                                defaultProject, ChartUtils) {
 
             $scope.defaultProject = defaultProject
             $scope.projects = [];
+            $scope.view_tab = 'tab1';
 
             /* begin : adjusting page content size */
             $scope.effectContentWidth = LayoutService.reAdjustContentSize();
@@ -19,7 +20,7 @@ define(["angular"], function (angular) {
 
             $scope.selectProject = function(project){
                 $scope.selectedProject = project;
-                //$scope.displayReport($scope.selectedProject);
+                $scope.displayReport(project);
             }
 
             playRoutes.controllers.ScenarioController.loadScenarii($scope.defaultProject._id).get().then(function (response) {
@@ -68,7 +69,23 @@ define(["angular"], function (angular) {
             }
 
             $scope.displayReport = function (selectedProject) {
-                $scope.reportUrl = "/loadProjectReport/" + selectedProject.name ; 
+                playRoutes.controllers.TestPlanController.loadProjectReport(selectedProject.name).get().then(function (response) {
+                    $scope.report = response.data || {};
+                    $scope.report.line = ChartUtils.buildLineChart($scope.report);
+                    $scope.report.pie = ChartUtils.buildPieChart($scope.report);
+                });
+            }
+
+            $scope.changeTab = function(tab) {
+                $scope.view_tab = tab;
+            }
+
+            $scope.getCampaignTotalOk = function(campaign){
+                return ChartUtils.getCampaignTotalOk(campaign);
+            }
+
+            $scope.getCampaignTotalKo = function(campaign){
+                return ChartUtils.getCampaignTotalKo(campaign);
             }
 
             $scope.knowScenario = function(name){

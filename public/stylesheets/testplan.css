@@ -1,0 +1,43 @@
+.panel-toast {
+    border-color: #B4B4B4;
+}
+
+.panel-toast>.panel-heading {
+    border-color: #B4B4B4;
+    background-color: #D2D2D2;
+}
+
+.jumbotron {
+    background-color: #D2D2D2;
+    border: #B4B4B4 solid 1px;
+    padding-top: 23px;
+    padding-bottom: 23px;
+}
+
+.title {
+    font-weight: bold;
+    padding: 20px;
+    color: white;
+}
+
+.pie-container{
+    display: block;
+    height: 51px;
+    width: 313px;
+    margin-left: -50px;
+}
+
+.line-chart-container{
+    text-align: center;
+    display: block;
+    height: 101px;
+    width: 413px;
+}
+
+#report .panel-toast .tab-summary {
+    border: 1px solid #ccc;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    margin-left: -18px;
+    height: 218px;
+}

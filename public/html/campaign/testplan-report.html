@@ -1,0 +1,171 @@
+<div id="report" style="overflow:scroll; height: 100%;">
+    <nav class="navbar navbar-default navbar-inverse"
+         style="border-radius: 0;">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <h3>
+                    <span class="title">{{report.testPlan.name}}</span>
+                </h3>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="title">
+                    <div>Status:  <i class="fa fa-times" style="font-size: 20px; color: #d9534f;"></i></div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="row-fluid">
+        <div class="panel panel-toast"><!-- ng-if="report.history.length > 0"-->
+            <div class="panel-heading">
+                <i class="fa fa-check-square-o"></i>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <ul class="nav nav-tabs nav-stacked nav-pills" role="tablist">
+                            <li ng-class="{'active': view_tab == 'tab1'}">
+                                <a class="btn-lg" ng-click="changeTab('tab1')" href="">Execution Summary</a>
+                            </li>
+                            <li ng-class="{'active': view_tab == 'tab2'}">
+                                <a class="btn-lg" ng-click="changeTab('tab2')" href="">Trend Chart</a>
+                            </li>
+                            <li ng-class="{'active': view_tab == 'tab3'}">
+                                <a class="btn-lg" ng-click="changeTab('tab3')" href="">Performance Chart</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-9 tab-summary">
+                        <div>
+                            <div class="tab-pane" ng-show="view_tab === 'tab1'">
+                                <div class = "row">
+                                    <div class="col-sm-6">
+                                        <ul>
+                                            <li>
+                                                Execution date :
+                                            </li>
+                                            <li>
+                                                Total Duration :
+                                            </li>
+                                            <li>
+                                                Total OK :
+                                            </li>
+                                            <li>
+                                                Total KO :
+                                            </li>
+                                        </ul>
+
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="pie-container">
+                                            <canvas id="pie" class="chart chart-pie"
+                                                    chart-data="report.pie.data"
+                                                    chart-labels="report.pie.labels"
+                                                    chart-options="report.pie.options"
+                                                    chart-colors="report.pie.colours" >
+                                            </canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane" ng-show="view_tab === 'tab2'">
+                                <div class="line-chart-container">
+                                    <canvas id="line" class="chart chart-line"
+                                            chart-data="report.line.data"
+                                            chart-labels="report.line.labels"
+                                            chart-series="report.line.series"
+                                            chart-options="report.line.options">
+                                    </canvas>
+                                </div>
+                            </div>
+                            <div class="tab-pane" ng-show="view_tab === 'tab3'">
+                                <div class="line-chart-container">
+                                    <canvas id="perf-line" class="chart chart-line"
+                                            chart-data="report.line.data"
+                                            chart-labels="report.line.labels"
+                                            chart-series="report.line.series"
+                                            chart-options="report.line.options">
+                                    </canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-toast">
+            <div class="panel-heading">
+                <i class="fa fa-check-square-o"></i> Execution Details
+            </div>
+            <div ng-repeat="campaign in report.testPlan.campaigns">
+                <div class="panel-body">
+                    <div class="panel-group" id="accordion" role="tablist"
+                         aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse"
+                                       data-parent="#accordion" href="#collapseOne"
+                                       aria-expanded="true" aria-controls="collapseOne">
+                                        Campaign: {{campaign.name}} </a>
+                                    <div style="float: right;">
+											<span class="badge" style="background-color: #5cb85c;">
+												<span>{{::getCampaignTotalOk(campaign)}}</span> OK
+											</span> <span class="badge" style="background-color: #d9534f;">
+												<span>{{::getCampaignTotalKo(campaign)}}</span> KO
+											</span>
+                                    </div>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="panel-collapse collapse in" role="tabpanel"
+                             aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Use Case</th>
+                                        <th ng-if="history.length > 0">Prev. Status</th>
+                                        <th>Status</th>
+                                        <th ng-if="history.length > 0">Prev. Duration (ms)</th>
+                                        <th>Duration (ms)</th>
+                                        <th>Details</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="test in campaign.scenarii">
+                                        <td>
+                                            {{test.name}}
+                                        </td>
+                                        <td class="success" ng-if="history.length > 0 && test.previousIsSuccess === true">
+                                            OK
+                                        </td>
+                                        <td class="danger" ng-if="history.length > 0 && test.previousIsSuccess === false">
+                                            KO
+                                        </td>
+                                        <td class="success" ng-if="test.isSuccess === true">
+                                            OK
+                                        </td>
+                                        <td class="danger" ng-if="test.isSuccess === false">
+                                            KO
+                                        </td>
+                                        <td ng-if="history.length > 0" ng-model="test.previousExecutionTime">
+                                            {{test.previousExecutionTime}}
+                                        </td>
+                                        <td>
+                                            {{test.executionTime}}
+                                        </td>
+                                        <td>
+                                            <i class="fa fa-fw fa-eye"></i>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

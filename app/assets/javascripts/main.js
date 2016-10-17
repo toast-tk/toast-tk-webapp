@@ -76,6 +76,9 @@
             },
             'sidebarmenu':{
                 deps: ['angular']
+            },
+            'angularChart': {
+                deps: ['angular', 'chart']
             }
         },
         paths: {
@@ -101,6 +104,8 @@
             "jwtClient" : ['../libs/jwt-client/jwt-client'],
             "ngTagsInput" : ["../libs/ng-tags-input/ng-tags-input.min"],
             "angularDropdown": "../libs/angularjs-dropdown-multiselect/src/angularjs-dropdown-multiselect",
+            "chart": "../libs/chart.js/dist/Chart.min",
+            "angularChart": "../libs/angular-chart.js/dist/angular-chart.min",
 
             "qTags": ['./libs/jquery-textntags'],
             "webix": ['libs/webix'],
@@ -120,6 +125,7 @@
             "sidebarmenu": ['features/layout/sidebar.menu.controller'],
             "layout": ['features/layout/layout.controller'],
             "layoutService" :  ['features/layout/layout.service'],
+            "chartUtils" :  ['services/chart-utils'],
             "treeLayoutService": ['./features/layout/tree.layout.service'],
             "SettingsCtrl" :  ['features/settings/settings.controller'],
             "newSettingsModalCtrl": ["./features/settings/newSettings.modal.controller"],
@@ -157,12 +163,12 @@
             "addUserCtrl", "editUsersCtrl", "validatorDirective",
             "addTeamCtrl", "editTeamsCtrl", "editTeamCtrl", "editUserCtrl",
             "addProjectCtrl", "editProjectCtrl", "editProjectsCtrl", "MainProjectCtrl",
-            "clientService","jwtClient",
+            "clientService","jwtClient", "angularChart",
             "componentsDir", "sortable", "ngProgress",
             "angular-ui-tree", "bootstrap", "ui.bootstrap",
             "angularRoute", "angucomplete", "angularDropdown",
             "xeditable", "ui.router", "angular-animate", "sidesplit",
-            "angular-toastr", "webix",  "ngTagsInput"],
+            "angular-toastr", "webix",  "ngTagsInput", "chartUtils"],
 
         function(a, b, routerConfig, configConfig, treeLayoutService,
                  login, loginService, loginResolverService, settingsCtrl,
@@ -173,15 +179,15 @@
                  addUserCtrl, editUsersCtrl, validatorDirective,
                  addTeamCtrl,editTeamsCtrl, editTeamCtrl, editUserCtrl,
                  addProjectCtrl, editProjectCtrl, editProjectsCtrl,
-                 MainProjectCtrl, clientService, JWT
+                 MainProjectCtrl, clientService, JWT, angularChart
         ) {
 
             var app = angular.module("app",
                 ['ui.router', "play.routing", "ngAnimate",
-                    "tk.components", "tk.services",
+                    "tk.components", "tk.services", "tk.chart.utils",
                     "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap",
                     "xeditable", "sidesplit", "webix","angucomplete-alt",
-                    "toastr","ngTagsInput", "angularjs-dropdown-multiselect"]);
+                    "toastr","ngTagsInput", "angularjs-dropdown-multiselect", "chart.js"]);
 
             app.controller("LoginCtrl", login.LoginCtrl);
             app.controller("MainProjectCtrl", MainProjectCtrl.MainProjectCtrl);
