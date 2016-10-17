@@ -183,6 +183,7 @@ case class UserCollection(collection: BSONCollection){
         firstName = "Administrator",
         lastName = "",
         email = "admin@toast-tk.io",
+        isAdmin = Some(true),
         teams = Some(List(team)),
         lastConnection = None
       )

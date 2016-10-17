@@ -7,6 +7,7 @@ define(["angular","CryptoJS/sha256"], function(angular, SHA256) {
             $scope.user = {};
             $scope.loggedIn = true;
             $rootScope.user = {};
+            $scope.isHiddenLoginForm = false;
             $scope.login = function(credentials) {
 
                 var creds = {
@@ -25,6 +26,13 @@ define(["angular","CryptoJS/sha256"], function(angular, SHA256) {
                 });
 
             };
+
+            $scope.newaccount = {};
+            $scope.askForAccount = function(newaccount){
+                playRoutes.controllers.notifiers.MailNotifierController.askForAccount().post(newaccount).then(function (response) {
+                    console.log("response", response.data);
+                });
+            }
         }
     };
 

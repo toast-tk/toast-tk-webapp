@@ -20,6 +20,8 @@ GET           /logout                                       controllers.Applicat
 GET           /logout/:id                                   controllers.UserController.logout(id: String)
 GET           /user/projects/:id                            controllers.UserController.getUserProjects(id: String)
 
+POST           /notifiers/mail/askForAccount                controllers.notifiers.MailNotifierController.askForAccount()
+
 # Ajax routes: Teams
 POST          /team                                         controllers.TeamController.saveTeam()
 GET           /teams                                        controllers.TeamController.getAllTeams()

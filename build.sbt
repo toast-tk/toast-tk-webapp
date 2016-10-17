@@ -27,7 +27,8 @@ libraryDependencies ++= Seq(
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0",
   "com.pauldijou" %% "jwt-play" % "0.5.1",
   "org.scalatestplus" % "play_2.11" % "1.4.0-M3"% "test",
-  "com.github.simplyscala" %% "scalatest-embedmongo" % "0.2.2" % "test"
+  "com.github.simplyscala" %% "scalatest-embedmongo" % "0.2.2" % "test",
+  "com.typesafe.play" %% "play-mailer" % "4.0.0"
 )
 
 //TODO: move to injected resources @Inject()

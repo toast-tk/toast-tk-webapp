@@ -344,3 +344,9 @@ padding-top: 12px;
     color: #ffffff;
     background-color: #006687 !important;
 }
+
+.center{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

@@ -24,3 +24,18 @@
 #login:has(> body){
     margin-top: -50px !important; 
 }
+
+
+#registration textarea,
+#registration input[type="text"],
+#registration input[type="email"],
+#registration input[type="password"],
+#registration input[type="number"]{
+    border: 1px solid #cdd2d4;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: .5em;
+    max-width: 400px;
+    width: 100%;
+}
+
