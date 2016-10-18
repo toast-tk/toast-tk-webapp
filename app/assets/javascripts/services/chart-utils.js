@@ -7,14 +7,29 @@ define(["angular"], function (angular) {
         function(){
             var factory = {};
 
+            factory.buildPerfLineChart = function(report){
+                var line = {
+                    options: {
+                        responsive : true
+                    }
+                };
+                line.labels = getResultTrendLabels(report.testPlan, report.history);
+                line.series = ['Execution Time'];
+                line.colours = ["#d0e9c6", "#ebcccc", "#FDB45C", "#00ADF9"];
+                line.data = getPerfTrendData(report.testPlan, report.history)
+                return line;
+
+            };
+
             factory.buildLineChart = function(report){
                 var line = {
                     options: {
                         responsive : true
                     }
                 };
-                line.labels = getResultTrendLabels(report.testPlan, report.history)
-                line.series = ['OK', 'KO', 'Not Completed', 'Not Run']
+                line.labels = getResultTrendLabels(report.testPlan, report.history);
+                line.series = ['OK', 'KO', 'Not Completed', 'Not Run'];
+                line.colours = ["#d0e9c6", "#ebcccc", "#FDB45C", "#00ADF9"];
                 line.data = getResultTrendData(report.testPlan, report.history)
                 return line;
             };
@@ -38,14 +53,32 @@ define(["angular"], function (angular) {
 
             function getResultTrendLabels(testPlan, history) {
                 var array = new Array(history.length + 1);
-                var projectIndex = 0;
                 for(var i=0; i < history.length; i++) {
                     array[i] =  "Run " + history[i].iterations;
-                    projectIndex++;
                 }
-                array[projectIndex] = "Run " + testPlan.iterations;
+                array[i] = "Run " + testPlan.iterations;
 
                 return array;
+            }
+
+            function getPerfTrendData(testPlan, history) {
+                var array = new Array(history.length + 1);
+                for(var i=0; i < history.length; i++) {
+                    array[i] = getTotalExecutionTime(history[i]);
+                }
+                array[i] = getTotalExecutionTime(testPlan);
+                return array;
+            }
+
+            function getTotalExecutionTime(testPlan){
+                var total = 0;
+                for(var i=0; i < testPlan.campaigns.length; i++) {
+                    var campaign = testPlan.campaigns[i];
+                    for(var j=0; j < campaign.scenarii.length; j++) {
+                        total = total + campaign.scenarii[i].executionTime;
+                    }
+                }
+                return total;
             }
 
             function getResultTrendData(testPlan, history) {

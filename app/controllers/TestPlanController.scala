@@ -1,7 +1,6 @@
 package controllers
 
 import java.net.URLDecoder
-import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 
 import boot.{JwtProtected, AppBoot}

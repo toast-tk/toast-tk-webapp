@@ -1,3 +1,7 @@
+body{
+    overflow: hidden !important;
+}
+
 footer {
     position: fixed;
     background-color: #D2D2D2;

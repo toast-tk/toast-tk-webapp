@@ -25,6 +25,7 @@ define(["angular"], function (angular) {
                 playRoutes.controllers.TestPlanController.loadProjectReport($stateParams.reportName).get().then(function (response) {
                     $scope.report = response.data || {};
                     $scope.report.line = ChartUtils.buildLineChart($scope.report);
+                    $scope.report.perfline = ChartUtils.buildPerfLineChart($scope.report);
                     $scope.report.pie = ChartUtils.buildPieChart($scope.report);
                 });
             }
