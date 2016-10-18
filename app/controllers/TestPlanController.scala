@@ -96,7 +96,7 @@ object TestPlanController  extends Controller {
   private val db = AppBoot.db
 
   /**
-   * load to init test plan
+   * load to init test plans
    */
   @JwtProtected
   def loadProject(idProject:String) = Action {
@@ -106,6 +106,15 @@ object TestPlanController  extends Controller {
       testPlans = TestPlanMirror.from(jTestPlan) :: testPlans
     }
     Ok(Json.toJson(testPlans))
+  }
+
+  /**
+   * load to init a given test plan setup
+   */
+  @JwtProtected
+  def loadTestPlanSetup(idTestPlan: String) = Action {
+    val jTestPlan:TestPlanImpl = testPlanService.findTestPlanById(idTestPlan)
+    Ok(Json.toJson(TestPlanMirror.from(jTestPlan)))
   }
 
   /**

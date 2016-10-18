@@ -131,7 +131,9 @@
             "newSettingsModalCtrl": ["./features/settings/newSettings.modal.controller"],
             "RepositoryCtrl": ["./features/repository/repository.controller"],
             "ScenarioCtrl": ["./features/scenario/scenario.controller"],
-            "CampaignCtrl": ["./features/campaign/campaign.controller"],
+            "TestPlanCtrl": ["./features/testplan/testplan.controller"],
+            "TestPlanReportCtrl": ["./features/testplan/testplan.report.controller"],
+            "TestPlanSetupCtrl": ["./features/testplan/testplan.setup.controller"],
             "utilsScenarioService" : ["./features/scenario/utils.scenario.service"],
             "newStepService": ["./features/scenario/newstep.service"],
             "newStepModalCtrl": ["./features/scenario/newstep.modal.controller"],
@@ -155,8 +157,9 @@
 
     require(["angular", "playRoutes",  "routerConfig", "configConfig", "treeLayoutService" ,
             "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl",
-            "RepositoryCtrl", "ScenarioCtrl", "CampaignCtrl", "utilsScenarioService",
-            "homeCtrl",
+            "RepositoryCtrl", "ScenarioCtrl", "TestPlanCtrl",
+            "TestPlanReportCtrl","TestPlanSetupCtrl",
+            "utilsScenarioService", "homeCtrl",
             "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl",
             "json!config/icon.constants.config.json",
             "adminLayoutCtrl", "adminSidebarmenu",
@@ -172,7 +175,7 @@
 
         function(a, b, routerConfig, configConfig, treeLayoutService,
                  login, loginService, loginResolverService, settingsCtrl,
-                 newSettingsModalCtrl, repository, scenario, campaign,
+                 newSettingsModalCtrl, repository, scenario, tp, tpReport, tpSetup,
                  utilsScenarioService, home, sidebarmenu, layout, layoutService,
                  newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile,
                  adminLayoutCtrl, adminSidebarmenu,
@@ -200,7 +203,9 @@
 
             app.controller("RepositoryCtrl", repository.RepositoryCtrl);
 
-            app.controller("CampaignCtrl", campaign.CampaignCtrl);
+            app.controller("TestPlanCtrl", tp.TestPlanCtrl);
+            app.controller("TestPlanSetupCtrl", tpSetup.TestPlanSetupCtrl);
+            app.controller("TestPlanReportCtrl", tpReport.TestPlanReportCtrl);
 
             app.controller("SidebarMenuCtrl", sidebarmenu.SidebarMenuCtrl);
             app.controller("LayoutCtrl", layout.LayoutCtrl);

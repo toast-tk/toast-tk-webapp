@@ -1,7 +1,7 @@
 define(["angular"], function (angular) {
     "use strict";
     return {
-        CampaignCtrl: function ($rootScope, $scope, playRoutes,
+        TestPlanReportTestPageCtrl: function ($rootScope, $scope, playRoutes,
                                 ngProgress, $window, $timeout,
                                 $sideSplit, LayoutService,
                                 defaultProject, ChartUtils) {
@@ -15,8 +15,8 @@ define(["angular"], function (angular) {
             webix.event(window, "resize", function(){LayoutService.reAdjustContentSize()});
             $sideSplit.addCollapseCallBack(
                 angular.element('#sidebarmenu'), 
-                function(){LayoutService.reAdjustContentSize()});
-
+                function(){LayoutService.reAdjustContentSize()}
+            );
 
             $scope.selectProject = function(project){
                 $scope.selectedProject = project;
@@ -94,12 +94,6 @@ define(["angular"], function (angular) {
                 return result.length > 0;
             }
 
-            $scope.openReportInNewPage = function (selectedProject) {
-                $window.open("/loadProjectReport/" + selectedProject.name);
-/*                playRoutes.controllers.ProjectController.loadProjectReport(project.name).get().then(function (response) {
-                    console.log(response)
-                });*/
-            }
 
             function load() {
                 playRoutes.controllers.TestPlanController.loadProject($scope.defaultProject._id).get().then(function (response) {

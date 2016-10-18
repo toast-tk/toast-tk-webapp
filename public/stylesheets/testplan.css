@@ -24,7 +24,7 @@
     display: block;
     height: 51px;
     width: 313px;
-    margin-left: -50px;
+    margin-left: -40px;
 }
 
 .line-chart-container{
@@ -32,6 +32,7 @@
     display: block;
     height: 101px;
     width: 413px;
+    margin: auto;
 }
 
 #report .panel-toast .tab-summary {
@@ -40,4 +41,8 @@
     margin: 0 0 10px;
     margin-left: -18px;
     height: 218px;
+}
+
+#report ul.nav-pills a{
+    font-size: 12px;
 }

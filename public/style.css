@@ -4,6 +4,7 @@ body
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
 	font-size: 12px;
 	padding-left: 1em;
+    overflow: hidden !important;
 }
 
 table
