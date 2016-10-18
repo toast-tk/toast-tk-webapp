@@ -1,6 +1,7 @@
 package controllers
 
 import java.net.URLDecoder
+import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 
 import boot.{JwtProtected, AppBoot}
@@ -24,7 +25,9 @@ import scala.collection.JavaConverters._
 
 
 
-case class TestPageMirror(id: Option[String], name: Option[String], idScenario: Option[String],
+case class TestPageMirror(id: Option[String],
+                          name: Option[String],
+                          idScenario: Option[String],
                           executionTime: Long,
                           technicalErrorNumber: Int,
                           testFailureNumber: Int,
@@ -33,11 +36,16 @@ case class TestPageMirror(id: Option[String], name: Option[String], idScenario: 
                           previousExecutionTime: Long,
                           isSuccess: Boolean,
                           isFatal: Boolean)
-case class CampaignMirror(id: Option[String], name: String, scenarii: List[TestPageMirror])
+
+case class CampaignMirror(id: Option[String],
+                          name: String,
+                          scenarii: List[TestPageMirror])
+
 case class TestPlanMirror(id: Option[String],
                           name: String,
                           iterations: Option[Short],
                           campaigns: List[CampaignMirror],
+                          creationDate: String,
                           project: Option[Project] = None)
 
 object TestPageWrapper {
@@ -76,11 +84,13 @@ object TestPlanMirror{
     for (campaign <- campaigns) {
       campaignsMirror = CampaignMirror.from(campaign) :: campaignsMirror
     }
-    new TestPlanMirror(
-      Some(testPlanImpl.getId().toString()),
+    val format = new SimpleDateFormat("dd/MM/yyyy hh:mm")
+    new TestPlanMirror(Some(testPlanImpl.getId().toString()),
       testPlanImpl.getName(),
-      Some(testPlanImpl.getIteration()) ,
-      campaignsMirror)
+      Some(testPlanImpl.getIteration()),
+      campaignsMirror,
+      format.format(testPlanImpl.getCreationDate())
+    )
   }
 }
 
@@ -107,18 +117,12 @@ object TestPlanController  extends Controller {
     Ok(Json.toJson(testPlans))
   }
 
-  /**
-   * load to init a given test plan setup
-   */
   @JwtProtected
   def loadTestPlanSetup(idTestPlan: String) = Action {
     val jTestPlan:TestPlanImpl = testPlanService.findTestPlanById(idTestPlan)
     Ok(Json.toJson(TestPlanMirror.from(jTestPlan)))
   }
 
-  /**
-   * Save project
-   */
   @JwtProtected
   def saveProject() = Action(parse.json) { implicit request =>
     val parser = new TestParser()

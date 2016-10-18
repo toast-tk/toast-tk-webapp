@@ -46,3 +46,13 @@
 #report ul.nav-pills a{
     font-size: 12px;
 }
+
+.badge-info-toast {
+    display: block;
+    border-radius: 0;
+    padding: 4px;
+    margin: 1px;
+    text-align: left;
+    background-color: rgba(0, 0, 0, .125);
+    color: black;
+}

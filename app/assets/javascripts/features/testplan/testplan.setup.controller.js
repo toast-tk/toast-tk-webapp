@@ -9,7 +9,6 @@ define(["angular"], function (angular) {
             $scope.selectedProject = undefined;
             $scope.scenarii = [];
 
-
             $scope.isNotSaved = function (project) {
                 return !angular.isDefined(project.id);
             }

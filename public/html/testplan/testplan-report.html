@@ -7,11 +7,6 @@
                     <span class="title">{{report.testPlan.name}}</span>
                 </h3>
             </div>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="title">
-                    <div>Status:  <i class="fa fa-times" style="font-size: 20px; color: #d9534f;"></i></div>
-                </li>
-            </ul>
         </div>
     </nav>
     <div class="row-fluid">
@@ -40,17 +35,17 @@
                                 <div class = "row">
                                     <div class="col-sm-6">
                                         <ul>
-                                            <li>
-                                                Execution date :
+                                            <li class="badge badge-info-toast">
+                                                Run at : {{::report.testPlan.creationDate}}
                                             </li>
-                                            <li>
-                                                Total Duration :
+                                            <li class="badge badge-info-toast">
+                                                Total Duration : {{::getTotalDuration(report.testPlan)}} s
                                             </li>
-                                            <li>
-                                                Total OK :
+                                            <li class="badge badge-info-toast">
+                                                Total OK : {{::getTotalOk(report.testPlan)}}
                                             </li>
-                                            <li>
-                                                Total KO :
+                                            <li class="badge badge-info-toast">
+                                                Total KO : {{::getTotalKo(report.testPlan)}}
                                             </li>
                                         </ul>
 

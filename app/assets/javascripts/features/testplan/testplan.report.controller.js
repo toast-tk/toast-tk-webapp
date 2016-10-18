@@ -13,6 +13,33 @@ define(["angular"], function (angular) {
                 $scope.view_tab = tab;
             }
 
+
+            $scope.getTotalDuration = function(testPlan){
+                var total = 0;
+                for (var i = 0; i < testPlan.campaigns.length; i++){
+                    for (var j = 0; j < testPlan.campaigns[i].scenarii.length; j++){
+                        total = total + testPlan.campaigns[i].scenarii[j].executionTime;
+                    }
+                }
+                return total/1000;
+            }
+
+            $scope.getTotalOk = function(testPlan){
+                var total = 0;
+                for (var i = 0; i < testPlan.campaigns.length; i++){
+                    total = total + $scope.getCampaignTotalOk(testPlan.campaigns[i]);
+                }
+                return total;
+            }
+
+            $scope.getTotalKo = function(testPlan){
+                var total = 0;
+                for (var i = 0; i < testPlan.campaigns.length; i++){
+                    total = total + $scope.getCampaignTotalKo(testPlan.campaigns[i]);
+                }
+                return total;
+            }
+
             $scope.getCampaignTotalOk = function(campaign){
                 return ChartUtils.getCampaignTotalOk(campaign);
             }
