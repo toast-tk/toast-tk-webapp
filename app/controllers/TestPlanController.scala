@@ -3,20 +3,19 @@ package controllers
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
-
 import boot.{JwtProtected, AppBoot}
 import controllers.mongo.project.Project
 import controllers.mongo.scenario.Scenario
+import io.toast.tk.dao.domain.api.test.ITestResult.ResultKind
 import io.toast.tk.dao.domain.impl.report.{TestPlanImpl, Campaign}
-import io.toast.tk.dao.domain.impl.test.block.{ICampaign, ITestPage}
+import io.toast.tk.dao.domain.impl.test.block.line.TestLine
+import io.toast.tk.dao.domain.impl.test.block._
 import io.toast.tk.runtime.parse.TestParser
-import play.api.libs.iteratee.Enumerator
-import play.api.libs.json.{Json, JsError}
-import play.api.mvc.{ResponseHeader, Result, Action, Controller}
+import play.api.libs.json.{JsValue, Json, JsError}
+import play.api.mvc.{Action, Controller}
+import play.json.extra.{Variants, JsonFormat}
 import toast.engine.DAOJavaWrapper
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import scala.collection.immutable.StringOps
-import io.toast.tk.runtime.report.HTMLReporter
 import play.api.Logger
 import scala.collection.mutable
 import scala.concurrent.duration.Duration
@@ -24,6 +23,21 @@ import scala.concurrent._
 import scala.collection.JavaConverters._
 
 
+
+case class TestLineMirror(test:String,
+                          expected:String,
+                          testResultKind:String,
+                          testResult: String,
+                          contextualSentence: String,
+                          comment: String,
+                          screenshot: Option[String] = None,
+                          executionTime: Long)
+
+case class TestPageBlockMirror(fixtureName: String,
+                               technicalErrorNumber: Int,
+                               testSuccessNumber: Int,
+                               testFailureNumber: Int,
+                               blockLines: List[TestLineMirror])
 
 case class TestPageMirror(id: Option[String],
                           name: Option[String],
@@ -35,7 +49,8 @@ case class TestPageMirror(id: Option[String],
                           isPreviousIsSuccess: Boolean,
                           previousExecutionTime: Long,
                           isSuccess: Boolean,
-                          isFatal: Boolean)
+                          isFatal: Boolean,
+                          blocks: List[TestPageBlockMirror])
 
 case class CampaignMirror(id: Option[String],
                           name: String,
@@ -48,9 +63,75 @@ case class TestPlanMirror(id: Option[String],
                           creationDate: String,
                           project: Option[Project] = None)
 
-object TestPageWrapper {
-  def from(testPage: ITestPage) = {
+object TestLineMirror{
+  def from(line: TestLine): TestLineMirror = {
+    val testResultKind = if(line.getTestResult() == null) "None" else getResultKindAsString(line.getTestResult().getResultKind())
+    val testResult = if(line.getTestResult() == null) "None" else line.getTestResult().getMessage()
+    val sentence = if(line.getTestResult() == null) line.getTest() else line.getTestResult().getContextualTestSentence()
+    val screenshot = if(line.getTestResult == null) None else if (line.getTestResult().getScreenShot() == null) None else Some(line.getTestResult().getScreenShot())
+    new TestLineMirror(line.getTest(),
+      line.getExpected(),
+      testResultKind,
+      testResult,
+      line.getComment(),
+      sentence,
+      screenshot,
+      line.getExecutionTime())
+  }
+
+  private def getResultKindAsString(resultKind: ResultKind):String = {
+    if(ResultKind.SUCCESS.equals(resultKind)) {
+      "success"
+    }
+    else if(ResultKind.ERROR.equals(resultKind)) {
+      "warning"
+    }
+    else if(ResultKind.FAILURE.equals(resultKind)) {
+      "danger"
+    }
+    else if(ResultKind.INFO.equals(resultKind)) {
+      "info"
+    }else {
+      ""
+    }
+  }
+}
+
+object TestPageBlockMirror {
+  def from(block:TestBlock): TestPageBlockMirror = {
+    var lines = for(line <- block.getBlockLines().asScala) yield (TestLineMirror.from(line))
+    new TestPageBlockMirror(block.getFixtureName(),
+      block.getTechnicalErrorNumber(),
+      block.getTestSuccessNumber(),
+      block.getTestFailureNumber(),
+      lines.toList
+    )
+  }
+}
+
+object TestPageMirror {
+  def from(testPage: ITestPage): TestPageMirror = {
     val maybeId = if (testPage.getIdScenario() == null) None else Some(testPage.getIdScenario())
+    def getBlocks(blocks: List[IBlock]): List[TestPageBlockMirror] = {
+      blocks match {
+        case x :: xs  => {
+          x match {
+            case b: TestBlock => {
+              TestPageBlockMirror.from(b) :: getBlocks(xs)
+            }
+            case b: ITestPage => {
+              getBlocks(b.getBlocks().asScala.toList) ++ getBlocks(xs)
+            }
+            case _ => getBlocks(xs)
+          }
+        }
+        case Nil => List()
+      }
+
+    }
+
+    val blocks = testPage.getBlocks().asScala.toList
+    val flattenedBlocks = getBlocks(blocks).reverse
     new TestPageMirror(
       Some(testPage.getIdAsString()),
       Some(testPage.getName()),
@@ -62,23 +143,24 @@ object TestPageWrapper {
       testPage.isPreviousIsSuccess(),
       testPage.getPreviousExecutionTime(),
       testPage.isSuccess(),
-      testPage.isFatal()
+      testPage.isFatal(),
+      flattenedBlocks
     )
   }
 }
 
 object CampaignMirror {
-  def from(campaign: ICampaign) = {
+  def from(campaign: ICampaign):CampaignMirror = {
     var scenarios = List[TestPageMirror]()
     for (testPage <- campaign.getTestCases.asScala) {
-      scenarios = TestPageWrapper.from(testPage) :: scenarios
+      scenarios = TestPageMirror.from(testPage) :: scenarios
     }
     new CampaignMirror(Some(campaign.getIdAsString()), campaign.getName(), scenarios.reverse)
   }
 }
 
 object TestPlanMirror{
-  def from(testPlanImpl: TestPlanImpl) = {
+  def from(testPlanImpl: TestPlanImpl):TestPlanMirror = {
     var campaignsMirror = List[CampaignMirror]()
     val campaigns = testPlanImpl.getCampaigns().asScala
     for (campaign <- campaigns) {
@@ -99,7 +181,10 @@ object TestPlanController  extends Controller {
   lazy val testPageService = DAOJavaWrapper.testPageService
   lazy val projectService = DAOJavaWrapper.proectService
   val timeout = Duration(5, TimeUnit.SECONDS)
-  implicit val sFormat = Json.format[TestPageMirror]
+
+  implicit val testLineFormat = Json.format[TestLineMirror]
+  implicit val testPageBlockFormat = Json.format[TestPageBlockMirror]
+  implicit val testPageFormat = Json.format[TestPageMirror]
   implicit val campaignFormat = Json.format[CampaignMirror]
   implicit val testPlanFormat = Json.format[TestPlanMirror]
   private val db = AppBoot.db
@@ -245,25 +330,22 @@ object TestPlanController  extends Controller {
   }
 
   @JwtProtected
-  def loadTestReport() = Action {
+  def loadTestReport(pName: String, iter:String, tName: String) = Action {
     implicit request => {
-      val pName = request.queryString("project")(0);
-      val iter = request.queryString("iteration")(0);
-      val tName = request.queryString("test")(0);
-      var p = testPlanService.getByNameAndIteration(pName, iter);
-      var pageReport = ""
-      val iteratorCampaign = p.getCampaigns().iterator
-      while (iteratorCampaign.hasNext()) {
-        val iteratorTestPage = iteratorCampaign.next().getTestCases().iterator
-        while(iteratorTestPage.hasNext()){
-          val testPage = iteratorTestPage.next()
-          if (testPage.getName().equals(tName)) {
-            pageReport = HTMLReporter.getTestPageHTMLReport(testPage);
-          }
-        }
+      val testPlanName = URLDecoder.decode(pName, "UTF-8")
+      val testName = URLDecoder.decode(tName, "UTF-8")
+      var p = testPlanService.getByNameAndIteration(testPlanName, iter);
+      val campaigns = p.getCampaigns().asScala
+      val result = for (campaign <- campaigns;
+           testPage <- campaign.getTestCases().asScala;
+           if (testPage.getName().equals(testName))
+      )yield(Ok(Json.toJson(TestPageMirror.from(testPage))))
+      if(result.length > 0){
+        result.head
+      }else {
+        BadRequest("No test found with provided query parameters.")
       }
-      Result( header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
-        body = Enumerator(new StringOps(pageReport).getBytes()))
     }
   }
+
 }

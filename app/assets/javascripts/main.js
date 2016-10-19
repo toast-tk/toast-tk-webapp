@@ -79,7 +79,11 @@
             },
             'angularChart': {
                 deps: ['angular', 'chart']
+            },
+            'angular-ui-lightbox': {
+                deps: ['angular']
             }
+
         },
         paths: {
             'jquery': '../libs/jquery/dist/jquery',
@@ -98,6 +102,7 @@
             "angular-toastr": ['../libs/angular-toastr/dist/angular-toastr.tpls.min'],
             "angucomplete": ['../libs/angucomplete-alt/dist/angucomplete-alt.min'],
             "angular-ui-tree": ['../libs/angular-ui-tree/dist/angular-ui-tree.min'],
+            "angular-ui-lightbox": ['../libs/angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.min'],
             "ui.bootstrap": ['../libs/angular-bootstrap/ui-bootstrap-tpls.min'],
             "ngProgress" : "../libs/ngprogress/build/ngProgress.min",
             "xeditable": ['../libs/angular-xeditable/dist/js/xeditable.min'],
@@ -168,10 +173,10 @@
             "addProjectCtrl", "editProjectCtrl", "editProjectsCtrl", "MainProjectCtrl",
             "clientService","jwtClient", "angularChart",
             "componentsDir", "sortable", "ngProgress",
-            "angular-ui-tree", "bootstrap", "ui.bootstrap",
+            "angular-ui-tree","angular-ui-lightbox", "bootstrap", "ui.bootstrap",
             "angularRoute", "angucomplete", "angularDropdown",
             "xeditable", "ui.router", "angular-animate", "sidesplit",
-            "angular-toastr", "webix",  "ngTagsInput", "chartUtils"],
+            "angular-toastr", "webix",  "ngTagsInput", "chartUtils", 'angular'],
 
         function(a, b, routerConfig, configConfig, treeLayoutService,
                  login, loginService, loginResolverService, settingsCtrl,
@@ -182,7 +187,7 @@
                  addUserCtrl, editUsersCtrl, validatorDirective,
                  addTeamCtrl,editTeamsCtrl, editTeamCtrl, editUserCtrl,
                  addProjectCtrl, editProjectCtrl, editProjectsCtrl,
-                 MainProjectCtrl, clientService, JWT, angularChart
+                 MainProjectCtrl, clientService, JWT
         ) {
 
             var app = angular.module("app",
@@ -190,7 +195,8 @@
                     "tk.components", "tk.services", "tk.chart.utils",
                     "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap",
                     "xeditable", "sidesplit", "webix","angucomplete-alt",
-                    "toastr","ngTagsInput", "angularjs-dropdown-multiselect", "chart.js"]);
+                    "toastr","ngTagsInput", "angularjs-dropdown-multiselect",
+                    "chart.js", "bootstrapLightbox"]);
 
             app.controller("LoginCtrl", login.LoginCtrl);
             app.controller("MainProjectCtrl", MainProjectCtrl.MainProjectCtrl);
@@ -206,6 +212,7 @@
             app.controller("TestPlanCtrl", tp.TestPlanCtrl);
             app.controller("TestPlanSetupCtrl", tpSetup.TestPlanSetupCtrl);
             app.controller("TestPlanReportCtrl", tpReport.TestPlanReportCtrl);
+            app.controller("TestPageReportCtrl", tpReport.TestPageReportCtrl);
 
             app.controller("SidebarMenuCtrl", sidebarmenu.SidebarMenuCtrl);
             app.controller("LayoutCtrl", layout.LayoutCtrl);
@@ -245,7 +252,9 @@
 
             app.config(routerConfig.RouterConfig);
             app.config(configConfig.ConfigConfig);
-
+            app.config(['LightboxProvider', function (LightboxProvider) {
+                LightboxProvider.fullScreenMode = true;
+            }]);
             app.config(['$httpProvider',
                 function($httpProvider) {
                     $httpProvider.interceptors.push(['$q',

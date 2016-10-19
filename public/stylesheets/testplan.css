@@ -1,5 +1,7 @@
 .panel-toast {
     border-color: #B4B4B4;
+    margin-top: -13px;
+    margin-bottom: 13px;
 }
 
 .panel-toast>.panel-heading {
@@ -55,4 +57,8 @@
     text-align: left;
     background-color: rgba(0, 0, 0, .125);
     color: black;
+    text-shadow: 1px 1px 1px rgba(255,255,255,.5);
+
+#report .table {
+    text-align: center;
 }

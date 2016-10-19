@@ -6,6 +6,8 @@ scalaVersion := "2.11.8"
 
 resolvers += Resolver.mavenLocal
 
+resolvers += "Sonatype releases" at "https://oss.sonatype.org/content/repositories/releases"
+
 resolvers += "MavenSnapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
 resolvers += "Typesafe" at "http://repo.typesafe.com/typesafe/releases/"
@@ -27,6 +29,7 @@ libraryDependencies ++= Seq(
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0",
   "com.pauldijou" %% "jwt-play" % "0.5.1",
   "org.scalatestplus" % "play_2.11" % "1.4.0-M3"% "test",
+  "io.megl" % "play-json-extra_2.11" % "2.4.3",
   "com.github.simplyscala" %% "scalatest-embedmongo" % "0.2.2" % "test"
 )
 

@@ -150,7 +150,7 @@ define(["angular", "exports"], function (angular, exports) {
                     }
                 }
         }).state('layout.campaign.report', {
-            url: "/report/:reportName",
+            url: "/report/:idTestPlan/:reportName",
             cache: false,
             views: {
                 'info':{
@@ -162,6 +162,29 @@ define(["angular", "exports"], function (angular, exports) {
                         }],
                         defaultProject : ["LoginResolverService", "user", function (resolver, user){
                             return resolver.checkDefaultProjectResolve(user) ;
+                        }],
+                        report: ["LoginResolverService", "$stateParams", function(resolver, $stateParams){
+                            return resolver.checkSelectedTestPlanResolve($stateParams.reportName) ;
+                        }]
+                    }
+                }
+            }
+        }).state('layout.campaign.test', {
+            url: "/test/:idTestPlan/:reportName/:iteration/:testName",
+            cache: false,
+            views: {
+                'info':{
+                    templateUrl: "assets/html/testplan/testplan-test-report.html",
+                    controller: "TestPageReportCtrl",
+                    resolve:{
+                        user : ["LoginResolverService", function (resolver){
+                            return resolver.checkLoggedAndGetUserResolve() ;
+                        }],
+                        defaultProject : ["LoginResolverService", "user", function (resolver, user){
+                            return resolver.checkDefaultProjectResolve(user) ;
+                        }],
+                        report: ["LoginResolverService", "$stateParams", function(resolver, $stateParams){
+                            return resolver.checkSelectedTestPlanResolve($stateParams.reportName) ;
                         }]
                     }
                 }

@@ -10,85 +10,82 @@
         </div>
     </nav>
     <div class="row-fluid">
-        <div class="panel panel-toast"><!-- ng-if="report.history.length > 0"-->
-            <div class="panel-heading">
-                <i class="fa fa-check-square-o"></i>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-sm-3">
-                        <ul class="nav nav-tabs nav-stacked nav-pills" role="tablist">
-                            <li ng-class="{'active': view_tab == 'tab1'}">
-                                <a class="btn-lg" ng-click="changeTab('tab1')" href="">Summary</a>
-                            </li>
-                            <li ng-class="{'active': view_tab == 'tab2'}">
-                                <a class="btn-lg" ng-click="changeTab('tab2')" href="">Trend Chart</a>
-                            </li>
-                            <li ng-class="{'active': view_tab == 'tab3'}">
-                                <a class="btn-lg" ng-click="changeTab('tab3')" href="">Performance Chart</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-sm-9 tab-summary">
-                        <div>
-                            <div class="tab-pane" ng-show="view_tab === 'tab1'">
-                                <div class = "row">
-                                    <div class="col-sm-6">
-                                        <ul>
-                                            <li class="badge badge-info-toast">
-                                                Run at : {{::report.testPlan.creationDate}}
-                                            </li>
-                                            <li class="badge badge-info-toast">
-                                                Total Duration : {{::getTotalDuration(report.testPlan)}} s
-                                            </li>
-                                            <li class="badge badge-info-toast">
-                                                Total OK : {{::getTotalOk(report.testPlan)}}
-                                            </li>
-                                            <li class="badge badge-info-toast">
-                                                Total KO : {{::getTotalKo(report.testPlan)}}
-                                            </li>
-                                        </ul>
 
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="pie-container">
-                                            <canvas id="pie" class="chart chart-pie"
-                                                    chart-data="report.pie.data"
-                                                    chart-labels="report.pie.labels"
-                                                    chart-options="report.pie.options"
-                                                    chart-colors="report.pie.colours" >
-                                            </canvas>
-                                        </div>
+        <div class="panel-toast">
+            <div class="row">
+                <div class="col-sm-3">
+                    <ul class="nav nav-tabs nav-stacked nav-pills" role="tablist">
+                        <li ng-class="{'active': view_tab == 'tab1'}">
+                            <a class="btn-lg" ng-click="changeTab('tab1')" href="">Summary</a>
+                        </li>
+                        <li ng-class="{'active': view_tab == 'tab2'}">
+                            <a class="btn-lg" ng-click="changeTab('tab2')" href="">Trend Chart</a>
+                        </li>
+                        <li ng-class="{'active': view_tab == 'tab3'}">
+                            <a class="btn-lg" ng-click="changeTab('tab3')" href="">Performance Chart</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-9 tab-summary">
+                    <div>
+                        <div class="tab-pane" ng-show="view_tab === 'tab1'">
+                            <div class = "row">
+                                <div class="col-sm-6">
+                                    <ul>
+                                        <li class="badge badge-info-toast">
+                                            Execution Date : {{::report.testPlan.creationDate}}
+                                        </li>
+                                        <li class="badge badge-info-toast">
+                                            Duration : {{::getTotalDuration(report.testPlan)}} s
+                                        </li>
+                                        <li class="badge badge-info-toast">
+                                            Number of Success : {{::getTotalOk(report.testPlan)}}
+                                        </li>
+                                        <li class="badge badge-info-toast">
+                                            Number Of Failure : {{::getTotalKo(report.testPlan)}}
+                                        </li>
+                                    </ul>
+
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="pie-container">
+                                        <canvas id="pie" class="chart chart-pie"
+                                                chart-data="report.pie.data"
+                                                chart-labels="report.pie.labels"
+                                                chart-options="report.pie.options"
+                                                chart-colors="report.pie.colours" >
+                                        </canvas>
                                     </div>
                                 </div>
+                            </div>
 
+                        </div>
+                        <div class="tab-pane" ng-show="view_tab === 'tab2'">
+                            <div class="line-chart-container">
+                                <canvas id="line" class="chart chart-line"
+                                        chart-data="report.line.data"
+                                        chart-labels="report.line.labels"
+                                        chart-series="report.line.series"
+                                        chart-colors="report.line.colours"
+                                        chart-options="report.line.options">
+                                </canvas>
                             </div>
-                            <div class="tab-pane" ng-show="view_tab === 'tab2'">
-                                <div class="line-chart-container">
-                                    <canvas id="line" class="chart chart-line"
-                                            chart-data="report.line.data"
-                                            chart-labels="report.line.labels"
-                                            chart-series="report.line.series"
-                                            chart-colors="report.line.colours"
-                                            chart-options="report.line.options">
-                                    </canvas>
-                                </div>
-                            </div>
-                            <div class="tab-pane" ng-show="view_tab === 'tab3'">
-                                <div class="line-chart-container">
-                                    <canvas id="perf-line" class="chart chart-line"
-                                            chart-data="report.perfline.data"
-                                            chart-labels="report.perfline.labels"
-                                            chart-series="report.perfline.series"
-                                            chart-options="report.perfline.options">
-                                    </canvas>
-                                </div>
+                        </div>
+                        <div class="tab-pane" ng-show="view_tab === 'tab3'">
+                            <div class="line-chart-container">
+                                <canvas id="perf-line" class="chart chart-line"
+                                        chart-data="report.perfline.data"
+                                        chart-labels="report.perfline.labels"
+                                        chart-series="report.perfline.series"
+                                        chart-options="report.perfline.options">
+                                </canvas>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="panel panel-toast">
             <div class="panel-heading">
                 <i class="fa fa-check-square-o"></i> Execution Details
@@ -152,7 +149,10 @@
                                             {{test.executionTime}}
                                         </td>
                                         <td>
-                                            <i class="fa fa-fw fa-eye"></i>
+                                            <a ng-click="displayTestReport(test.name)">
+                                                <i class="fa fa-fw fa-eye"></i>
+                                                details
+                                            </a>
                                         </td>
                                     </tr>
                                     </tbody>

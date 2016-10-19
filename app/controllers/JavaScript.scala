@@ -29,6 +29,7 @@ object JavaScript extends Controller {
           controllers.routes.javascript.TestPlanController.saveProject,
           controllers.routes.javascript.TestPlanController.loadProject,
           controllers.routes.javascript.TestPlanController.loadProjectReport,
+          controllers.routes.javascript.TestPlanController.loadTestReport,
           controllers.routes.javascript.TestPlanController.loadTestPlanSetup,
           controllers.routes.javascript.ProjectController.saveProject,
           controllers.routes.javascript.ProjectController.getProject,
