@@ -6,7 +6,8 @@ define(["angular"], function (angular) {
             return {
                 checkLoggedLoginResolve : checkLoggedLoginResolve,
                 checkLoggedAndGetUserResolve : checkLoggedAndGetUserResolve,
-                checkDefaultProjectResolve: checkDefaultProjectResolve
+                checkDefaultProjectResolve: checkDefaultProjectResolve,
+                checkSelectedTestPlanResolve: checkSelectedTestPlanResolve
             };
 
             // --------------------- Resolvers ----------------------
@@ -36,6 +37,17 @@ define(["angular"], function (angular) {
                 }else{
                     deferred.reject();
                 }
+                return deferred.promise;
+            }
+
+            function checkSelectedTestPlanResolve(reportName){
+                var deferred = $q.defer();
+                playRoutes.controllers.TestPlanController.loadProjectReport(reportName).get().then(function (response) {
+                    var report = response.data;
+                    deferred.resolve(report);
+                }, function(error){
+                    deferred.reject();
+                });
                 return deferred.promise;
             }
 

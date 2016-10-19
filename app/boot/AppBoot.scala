@@ -196,7 +196,7 @@ object AppBoot extends WithFilters(AuthorisationFilter) {
       val newSyntaxRows =  newConfigurationSyntax :: syntaxRows
       congifMap = congifMap + (key -> newSyntaxRows)
     }
-    val configurationRows = for ((k,v) <- congifMap) yield( ConfigurationRow(k.split(":")(0),k.split(":")(1),v) )
+    val configurationRows = for ((k,v) <- congifMap) yield ( ConfigurationRow(k.split(":")(0),k.split(":")(1),v) )
     db.saveConfiguration(MacroConfiguration(confId, "default", configurationRows.toList))
   }
 
@@ -205,6 +205,7 @@ object AppBoot extends WithFilters(AuthorisationFilter) {
   }
 
   override def onError(request: RequestHeader, throwable: Throwable) = {
+    Logger.error(throwable.getMessage(), throwable)
     Future.successful(InternalServerError(
         views.html.error(new UsefulException(throwable.getMessage, throwable){
       })

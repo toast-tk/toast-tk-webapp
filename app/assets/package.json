@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "angular": "^1.5.3",
+    "angular-chart.js": "^1.0.3",
     "angular-mocks": "^1.5.3",
     "angular-ui-router": "^0.2.18",
     "jasmine-core": "^2.4.1",

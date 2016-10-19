@@ -139,7 +139,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 							for(var i=0; i < mappings.length; i++){
 								if(mappings[i].pos == tagPosition){
 									tagValue = $scope.patternModel.mappings[i].id;
-									selected_option_label = $scope.patternModel.mappings[i].value;
+									selected_option_label = $scope.patternModel.mappings[i].value || $scope.patternModel.mappings[i].val;
 									break;
 								}
 							}
@@ -178,7 +178,7 @@ define(["angular", "qTags"], function (angular, qTags) {
 						var mappings = $scope.patternModel.mappings;
 						for(var i=0; i < mappings.length; i++){
 							if(mappings[i].pos == tagPosition){
-								tagValue = mappings[i].value;
+								tagValue = mappings[i].value || mappings[i].val;
 								break;
 							}
 						}
