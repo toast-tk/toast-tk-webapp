@@ -1,5 +1,5 @@
-    <div id="login" class="vertical-offset-100 login-page-div">
-    	<div class="login-box" ng-hide="isHiddenLoginForm===true" >
+    <div id="login" class="vertical-offset-100 login-page-div" ng-hide="isHiddenLoginForm===true">
+    	<div class="login-box">
             <div>
                  <img class="toast-logo" src="assets/images/toast700w.png">
             </div>
@@ -24,5 +24,5 @@
                 Ask for account and create your team
         </div>
 	    </div>
-<div ng-include="'assets/html/askforaccount.html'" ng-show="isHiddenLoginForm===true"></div>
 </div>
+<div ng-include="'assets/html/askforaccount.html'" ng-controller="AskForAccountCtrl" ng-show="isHiddenLoginForm===true"></div>

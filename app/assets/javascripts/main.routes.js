@@ -5,7 +5,16 @@ define(["angular", "exports"], function (angular, exports) {
 
     function RouterConfig($stateProvider, $urlRouterProvider){
 
-        $stateProvider.state('login', {
+        $stateProvider.state('askForAccount', {
+            url: "/account/ask",
+            views: {
+                'main': {
+                    templateUrl: "assets/html/askForAccount.html",
+                    controller: "AskForAccountCtrl"
+                }
+            }
+        })
+        .state('login', {
             url: "/",
             views: {
                 'main': {

@@ -1,53 +1,45 @@
-<div if="registration" class="row-fluid" style="padding:2%">
-    <div class="col-md-6 col-sm-12">
-        <img class="toast-logo center" src="assets/images/toast700w.png">
-        <div  class="alert alert-success btn btn-lg btn-block" role="alert">
-            Already registred! go to login!
-        </div>
-    </div>
-    <div class="col-md-6 col-sm-12" >
-    <div class="panel panel-default" >
-        <div class="panel-heading">
-            <div class="panel-body">
-                <form accept-charset="UTF-8" role="form" ng-submit="askForAccount(newaccount)" novalid>
-                    <div class="info-message hidden"></div>
-                    <h1>Ask for account</h1>
-                    <hr>
-                    <fieldset>
-                        <div class="form-group">
-                            <label for="Newlogin" style="float: left; font-size: 18px;">Login</label>
-                            <input type="text" ng-model="newaccount.login" name="Newlogin" id="Newlogin" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  SuperToaster" required>
-                            <label for="NewEmail" style="float: left; font-size: 18px;">Email</label>
-                            <input type="text" ng-model="newaccount.email" name="NewEmail" id="NewEmail" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  email@toas-tk.io" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="newTeamName"  style="float: left; font-size: 18px;">What do you want to call your team?</label>
-                            <input type="text" ng-model="newaccount.teamName" name="name" id="newTeamName" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  Super Team">
-                            <label for="newTeamSize"  style="float: left; font-size: 18px;">What size is your Team?</label>
-                            <input type="number" ng-model="newaccount.teamSize" name="newTeamSize" id="newTeamSize" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="NewProject" style="float: left; font-size: 18px;">Every team has a project</label>
-                            <input type="text" ng-model="newaccount.projectName" name="newProjectName" id="NewProjectName" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  Super Project">
-                            <label for="NewProjectDescription"  style="float: left; font-size: 18px;">Description</label>
-                            <textarea type="text"  ng-model="newaccount.projectDescription" name="NewProjectDescription" id="NewProjectDescription" class="form-control" tabindex="0" placeholder="ex.,  A project for ..">
-                                </textarea>
-                        </div>
-                        <!--<label for="name">Nom</label>
-                    <input type="text" name="name" id="name" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  Pierre Mortez">
-                    <label for="newEmail">E-mail</label>
-                    <input type="email" name="email" id="newEmail" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" placeholder="ex.,  contact@sos-amities.fr">
-                    <div id="email-error" class="hidden error-message"></div>-->
-                        <!--<label for="newPassword">Mot de passe</label>
-                        <input type="password" name="password" id="newPassword" tabindex="0" placeholder="ex.,  ••••••••••••">-->
-                        <!--<div id="signup-enterprise-confirmation" class="hidden"> <label> <input type="checkbox"> </label> </div>
-                        <div id="tos-checkbox"> <input id="accept-tos" type="checkbox"> J'accepte les <a href="/legal" target="_blank">conditions de service</a> et la <a href="/privacy" target="_blank">politique de confidentialité</a>. </div>-->
-                        <input id="signup" tabindex="0" type="submit" class="btn btn-lg btn-primary btn-block" value="Go!">
-                    </fieldset>
-                </form>
+<div id="login" class="vertical-offset-100 login-page-div">
+    <div if="registration" class="row-fluid" style="padding:2%">
+        <div class="col-md-6 col-sm-12">
+            <img class="toast-logo center" src="assets/images/toast700w.png">
+            <div  ui-sref="login" ui-sref-opts="{reload: true}" class="alert alert-success btn btn-lg btn-block" role="alert">
+                Already registred! go to login!
             </div>
         </div>
+        <div class="col-md-6 col-sm-12" >
+        <div class="panel panel-default" >
+            <div class="panel-heading">
+                <div class="panel-body">
+                    <form accept-charset="UTF-8" role="form" ng-submit="askForAccount(newaccount)" novalid>
+                        <div class="info-message hidden"></div>
+                        <h1>Ask for account</h1>
+                        <hr>
+                        <fieldset>
+                            <div class="form-group">
+                                <label for="Newlogin" style="float: left; font-size: 18px;">Login</label>
+                                <input type="text" ng-model="newaccount.login" name="Newlogin" id="Newlogin" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  SuperToaster" required>
+                                <label for="NewEmail" style="float: left; font-size: 18px;">Email</label>
+                                <input type="text" ng-model="newaccount.email" name="NewEmail" id="NewEmail" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  email@toas-tk.io" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newTeamName"  style="float: left; font-size: 18px;">What do you want to call your team?</label>
+                                <input type="text" ng-model="newaccount.teamName" name="name" id="newTeamName" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  Super Team">
+                                <label for="newTeamSize"  style="float: left; font-size: 18px;">What size is your Team?</label>
+                                <input type="number" ng-model="newaccount.teamSize" name="newTeamSize" id="newTeamSize" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="NewProject" style="float: left; font-size: 18px;">Every team has a project</label>
+                                <input type="text" ng-model="newaccount.projectName" name="newProjectName" id="NewProjectName" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  Super Project">
+                                <label for="NewProjectDescription"  style="float: left; font-size: 18px;">Description</label>
+                                <textarea type="text"  ng-model="newaccount.projectDescription" name="NewProjectDescription" id="NewProjectDescription" class="form-control" tabindex="0" placeholder="ex.,  A project for ..">
+                                    </textarea>
+                            </div>
+                            <input id="signup" tabindex="0" type="submit" class="btn btn-lg btn-primary btn-block" value="Go!">
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        </div>
     </div>
-    </div>
-
 </div>
