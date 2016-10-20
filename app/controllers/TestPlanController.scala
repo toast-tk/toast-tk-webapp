@@ -64,7 +64,7 @@ case class TestPlanMirror(id: Option[String],
                           project: Option[Project] = None)
 
 object TestLineMirror{
-  def from(line: TestLine): TestLineMirror = {
+  def from(line: TestLine): TestLineMirror = {   
     val testResultKind = if(line.getTestResult() == null) "None" else getResultKindAsString(line.getTestResult().getResultKind())
     val testResult = if(line.getTestResult() == null) "None" else line.getTestResult().getMessage()
     val sentence = if(line.getTestResult() == null) line.getTest() else line.getTestResult().getContextualTestSentence()
@@ -73,8 +73,8 @@ object TestLineMirror{
       line.getExpected(),
       testResultKind,
       testResult,
-      line.getComment(),
       sentence,
+      line.getComment(),
       screenshot,
       line.getExecutionTime())
   }
