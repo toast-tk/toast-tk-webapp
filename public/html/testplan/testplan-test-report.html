@@ -46,7 +46,12 @@
                                     </tr>
                                     <tr ng-repeat="line in block.blockLines">
                                         <td class="{{::line.testResultKind}}">
-                                            <button ng-if='line.contextualSentence !== null' uib-popover="{{::line.test}}" popover-trigger="'mouseenter'" class="btn btn-xs btn-info"><i class="fa fa-fw fa-info"></i></button>
+                                            <button ng-if='line.contextualSentence !== null' 
+                                                    popover-trigger="mouseenter" 
+                                                    popover-placement="right" 
+                                                    uib-popover="{{::line.contextualSentence}}"
+                                                    class="btn btn-xs btn-info">
+                                                    <i class="fa fa-fw fa-info"></i></button>
                                         </td>
                                         <td>
                                             {{::line.test}}
