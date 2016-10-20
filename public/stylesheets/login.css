@@ -39,3 +39,12 @@
     width: 100%;
 }
 
+input.ng-dirty.ng-invalid-required,
+input.ng-dirty.ng-valid-required.ng-invalid.ng-touched {
+    border-color: #f04124;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+}
+.error-label{
+    color: #f04124;
+}
