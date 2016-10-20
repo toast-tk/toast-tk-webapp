@@ -4,7 +4,7 @@
 define(["angular"], function(angular) {
     "use strict";
     return {
-        AskForAccountCtrl: function($scope,$state) {
+        AskForAccountCtrl: function($scope, playRoutes) {
             $scope.newaccount = {};
             $scope.askForAccount = function(newaccount){
                 playRoutes.controllers.notifiers.MailNotifierController.askForAccount().post(newaccount).then(function (response) {

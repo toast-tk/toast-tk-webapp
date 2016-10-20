@@ -1,9 +1,12 @@
 <div id="login" class="vertical-offset-100 login-page-div">
     <div if="registration" class="row-fluid" style="padding:2%">
-        <div class="col-md-6 col-sm-12">
-            <img class="toast-logo center" src="assets/images/toast700w.png">
-            <div  ui-sref="login" ui-sref-opts="{reload: true}" class="alert alert-success btn btn-lg btn-block" role="alert">
-                Already registred! go to login!
+        <div class="col-md-6 col-sm-12 jumbotron" style="background-color: rgba(0, 0, 0, 0.05);">
+            <div class="container">
+                <img class="toast-logo center" src="assets/images/toast700w.png">
+                <h3></h3>
+                <div  ui-sref="login" ui-sref-opts="{reload: true}" class="alert-success btn btn-lg btn-block" role="alert">
+                    Already registred! go to login!
+                </div>
             </div>
         </div>
         <div class="col-md-6 col-sm-12" >
@@ -19,17 +22,17 @@
                                 <label for="Newlogin" style="float: left; font-size: 18px;">Login</label>
                                 <input type="text" ng-model="newaccount.login" name="Newlogin" id="Newlogin" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  SuperToaster" required>
                                 <label for="NewEmail" style="float: left; font-size: 18px;">Email</label>
-                                <input type="text" ng-model="newaccount.email" name="NewEmail" id="NewEmail" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  email@toas-tk.io" required>
+                                <input type="email" ng-model="newaccount.email" name="NewEmail" id="NewEmail" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  email@toas-tk.io" required>
                             </div>
                             <div class="form-group">
                                 <label for="newTeamName"  style="float: left; font-size: 18px;">What do you want to call your team?</label>
-                                <input type="text" ng-model="newaccount.teamName" name="name" id="newTeamName" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  Super Team">
+                                <input type="text" ng-model="newaccount.teamName" name="name" id="newTeamName" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  Super Team" required>
                                 <label for="newTeamSize"  style="float: left; font-size: 18px;">What size is your Team?</label>
                                 <input type="number" ng-model="newaccount.teamSize" name="newTeamSize" id="newTeamSize" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="NewProject" style="float: left; font-size: 18px;">Every team has a project</label>
-                                <input type="text" ng-model="newaccount.projectName" name="newProjectName" id="NewProjectName" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  Super Project">
+                                <label for="NewProjectName" style="float: left; font-size: 18px;">Every team has a project</label>
+                                <input type="text" ng-model="newaccount.projectName" name="newProjectName" id="NewProjectName" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  Super Project" required>
                                 <label for="NewProjectDescription"  style="float: left; font-size: 18px;">Description</label>
                                 <textarea type="text"  ng-model="newaccount.projectDescription" name="NewProjectDescription" id="NewProjectDescription" class="form-control" tabindex="0" placeholder="ex.,  A project for ..">
                                     </textarea>

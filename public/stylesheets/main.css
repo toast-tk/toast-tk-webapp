@@ -350,3 +350,12 @@ padding-top: 12px;
     margin-left: auto;
     margin-right: auto;
 }
+
+.fade {
+    transition: all linear 600ms;
+    opacity: 1;
+}
+
+.fade.ng-hide {
+    opacity: 0;
+}
