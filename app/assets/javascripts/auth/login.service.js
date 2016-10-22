@@ -29,9 +29,7 @@ define(["angular","jwtClient"], function (angular, JWT) {
                     } else {
                         logout();
                     }
-                }).then(function(response) {
-                    console.log("login unexpected problem ", response);
-                });
+                })
             }
 
             function logout() {
@@ -69,11 +67,14 @@ define(["angular","jwtClient"], function (angular, JWT) {
                     var userCopy = angular.copy(self.user);
                     userCopy.idProject = idProject;
                     var promise = playRoutes.controllers.UserController.saveUser().post(userCopy).then(function(response){
-                        var savedUser = response.data;
-                        var newSession = JWT.remember();
-                        newSession.claim.user = savedUser;
-                        JWT.keep(newSession);
-                        sync();
+                        var token = response.headers("Authorization");
+                        var session = JWT.read(token);
+                        if (JWT.validate(session)) {
+                            JWT.keep(token);
+                            sync();
+                        }else{
+                            console.log("error while trying to switch project !")
+                        }
                     });
                     return promise;
                 }

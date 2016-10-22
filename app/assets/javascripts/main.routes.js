@@ -50,8 +50,8 @@ define(["angular", "exports"], function (angular, exports) {
                     }
                 }
             }
-        }).state('project', {
-            url: "project",
+        }).state('default', {
+            url: "/default",
             cache: false,
             views: {
                 'main':{
@@ -59,7 +59,7 @@ define(["angular", "exports"], function (angular, exports) {
                     controller: "MainProjectCtrl",
                     resolve: {
                         user: ["LoginResolverService", function(resolver){
-                            return resolver.checkLoggedLoginResolve();
+                            return resolver.checkLoggedAndGetUserResolve();
                         }]
                     }
                 }
