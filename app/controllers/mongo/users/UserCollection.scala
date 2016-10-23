@@ -8,18 +8,16 @@ import scala.util.{Failure, Success}
 import play.api.Logger
 import java.util.concurrent.TimeUnit
 
-
 import scala.concurrent.duration._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Await
-
 import reactivemongo.api.collections.bson.BSONCollection
-import reactivemongo.bson.{BSONObjectID, BSONDocument, BSONArray}
+import reactivemongo.bson.{BSONArray, BSONDocument, BSONObjectID}
 import reactivemongo.api.commands.WriteResult
-
-
 import java.security.SecureRandom
+
+import com.typesafe.config.ConfigFactory
 
 case class UserCollection(collection: BSONCollection){
 
@@ -164,26 +162,24 @@ case class UserCollection(collection: BSONCollection){
     users
   }
 
+  def getAllUsersBy(query : BSONDocument) : Future[List[User]] ={
+    val users = collection.find(query).cursor[User]().collect[List]()
+    users
+  }
+
   def removeUser(id : String) : Future[WriteResult] = {
     val selector = BSONDocument("_id" -> BSONObjectID(id))
     collection.remove(selector)
   }
 
   private def persistDefaultSuperAdminUser(team: Team): Future[Boolean] = {
-    def sha256(s: String): String = {
-      val m = java.security.MessageDigest.getInstance("SHA-256").digest(s.getBytes("UTF-8"))
-      m.map("%02x".format(_)).mkString
-    }
-    val adminPwd = sha256("admin")
-
     saveUser(
       User(
-        login = "admin",
-        password = Some(adminPwd),
-        firstName = "Administrator",
-        lastName = "",
-        email = "admin@toast-tk.io",
-        isAdmin = Some(true),
+        login = ConfigFactory.load().getString("toast.user.login"),
+        password = Some(ConfigFactory.load().getString("toast.user.password")),
+        firstName = ConfigFactory.load().getString("toast.user.firstName"),
+        lastName = ConfigFactory.load().getString("toast.user.lastName"),
+        email = ConfigFactory.load().getString("toast.user.email"),
         teams = Some(List(team)),
         lastConnection = None
       )

@@ -84,6 +84,10 @@ case class MongoConnector(driver: MongoDriver, servers: List[String], database: 
     userCollection.getAllUsers()
   }
 
+  def getAllAdminUsers(): Future[List[User]] = {
+    userCollection.getAllUsersBy(BSONDocument("isAdmin" -> true))
+  }
+
   def editUser(id: String): Future[Option[User]] = {
     val collection = open_collection("users")
     val bsonId = BSONObjectID(id)
