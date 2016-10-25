@@ -36,4 +36,15 @@ libraryDependencies ++= Seq(
 //TODO: move to injected resources @Inject()
 //routesGenerator := StaticRoutesGenerator
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(SbtWeb).enablePlugins(PlayScala)
+
+unmanagedResourceDirectories in Assets += baseDirectory.value / "assets"
+
+lazy val npmBuildTask = TaskKey[Unit]("npm") 
+npmBuildTask := {
+  "npm install" #&& "node ./node_modules/bower/bin/bower install" #&& "node ./node_modules/gulp/bin/gulp" #&& "rm -rf ./app/assets/libs" #&& "mv -f ./libs ./app/assets"!
+}
+
+JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
+
+compile <<= (compile in Compile) dependsOn npmBuildTask
