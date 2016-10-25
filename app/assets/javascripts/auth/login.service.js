@@ -66,7 +66,7 @@ define(["angular","jwtClient"], function (angular, JWT) {
                 if(this.isAuthenticated()){
                     var userCopy = angular.copy(self.user);
                     userCopy.idProject = idProject;
-                    var promise = playRoutes.controllers.UserController.saveUser().post(userCopy).then(function(response){
+                    var promise = playRoutes.controllers.UserController.updateUserProject().post(userCopy).then(function(response){
                         var token = response.headers("Authorization");
                         var session = JWT.read(token);
                         if (JWT.validate(session)) {

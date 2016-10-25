@@ -14,6 +14,7 @@ GET           /jsroutes.js                                  controllers.JavaScri
 POST          /login                                        controllers.Application.login()
 GET           /users/:id                                    controllers.UserController.user(id: String)
 DELETE        /users/:id                                    controllers.UserController.deleteUser(id: String)
+POST          /user/project                                 controllers.UserController.updateUserProject()
 GET           /users                                        controllers.UserController.getAllUsers()
 POST          /user                                         controllers.UserController.saveUser()
 GET           /logout                                       controllers.Application.logout()
