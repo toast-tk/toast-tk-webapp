@@ -39,9 +39,9 @@ define(["angular"], function (angular) {
                 return deferred.promise;
             }
 
-            function checkSelectedTestPlanResolve(reportName){
+            function checkSelectedTestPlanResolve(reportName, idProject){
                 var deferred = $q.defer();
-                playRoutes.controllers.TestPlanController.loadProjectReport(reportName).get().then(function (response) {
+                playRoutes.controllers.TestPlanController.loadProjectReport(idProject, reportName).get().then(function (response) {
                     var report = response.data;
                     deferred.resolve(report);
                 }, function(error){

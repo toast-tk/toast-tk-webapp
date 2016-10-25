@@ -163,8 +163,8 @@ define(["angular", "exports"], function (angular, exports) {
                         defaultProject : ["LoginResolverService", "user", function (resolver, user){
                             return resolver.checkDefaultProjectResolve(user) ;
                         }],
-                        report: ["LoginResolverService", "$stateParams", function(resolver, $stateParams){
-                            return resolver.checkSelectedTestPlanResolve($stateParams.reportName) ;
+                        report: ["LoginResolverService", "$stateParams", "defaultProject", function(resolver, $stateParams, defaultProject){
+                            return resolver.checkSelectedTestPlanResolve($stateParams.reportName, defaultProject._id) ;
                         }]
                     }
                 }
@@ -183,8 +183,8 @@ define(["angular", "exports"], function (angular, exports) {
                         defaultProject : ["LoginResolverService", "user", function (resolver, user){
                             return resolver.checkDefaultProjectResolve(user) ;
                         }],
-                        report: ["LoginResolverService", "$stateParams", function(resolver, $stateParams){
-                            return resolver.checkSelectedTestPlanResolve($stateParams.reportName) ;
+                        report: ["LoginResolverService", "$stateParams", "defaultProject", function(resolver, $stateParams, defaultProject){
+                            return resolver.checkSelectedTestPlanResolve($stateParams.reportName, defaultProject._id) ;
                         }]
                     }
                 }

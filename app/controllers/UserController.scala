@@ -59,7 +59,7 @@ trait InnerUserController {
 							case true => { 
 								Ok.addingToJwtSession("user", (Json.toJson(user).as[JsObject] - "password"))
 							}
-							case false => { BadRequest("save err: couldn't updated user project")}
+							case false => { BadRequest("save err: couldn't update user project")}
 						}
 					}
 				}

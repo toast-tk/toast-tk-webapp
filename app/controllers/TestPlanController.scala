@@ -331,12 +331,11 @@ object TestPlanController  extends Controller {
     }
   }
 
-
   @JwtProtected
-  def loadProjectReport(name: String) = Action {
+  def loadProjectReport(idProject:String, name: String) = Action {
     implicit request => {
       val testPlanName = URLDecoder.decode(name, "UTF-8")
-      val testPlan:TestPlanImpl = DAOJavaWrapper.testPlanService.getLastByName(testPlanName);
+      val testPlan:TestPlanImpl = DAOJavaWrapper.testPlanService.getLastByName(testPlanName, idProject);
       val testPlanHistory:mutable.Buffer[TestPlanImpl] = DAOJavaWrapper.testPlanService.getProjectHistory(testPlan).asScala;
       Ok(Json.toJson(
         Json.obj("testPlan" -> Json.toJson(TestPlanMirror.from(testPlan)),
@@ -345,11 +344,11 @@ object TestPlanController  extends Controller {
   }
 
   @JwtProtected
-  def loadTestReport(pName: String, iter:String, tName: String) = Action {
+  def loadTestReport(pName: String, iter:String, tName: String, idProject:String) = Action {
     implicit request => {
       val testPlanName = URLDecoder.decode(pName, "UTF-8")
       val testName = URLDecoder.decode(tName, "UTF-8")
-      var p = testPlanService.getByNameAndIteration(testPlanName, iter);
+      var p = testPlanService.getByNameAndIteration(testPlanName, idProject, iter);
       val campaigns = p.getCampaigns().asScala
       val result = for (campaign <- campaigns;
            testPage <- campaign.getTestCases().asScala;
