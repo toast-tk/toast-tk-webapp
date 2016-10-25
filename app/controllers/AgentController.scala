@@ -50,7 +50,7 @@ object AgentController extends Controller{
    */
   Future {
     while (true) {
-      Thread.sleep(5 * 1000);
+      Thread.sleep(5 * 1000)
       if (agents.size > 0) {
         Logger.debug(s"Checking ${agents.size} agents status.." )
       }

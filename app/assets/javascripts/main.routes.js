@@ -50,8 +50,8 @@ define(["angular", "exports"], function (angular, exports) {
                     }
                 }
             }
-        }).state('project', {
-            url: "project",
+        }).state('default', {
+            url: "/default",
             cache: false,
             views: {
                 'main':{
@@ -59,7 +59,7 @@ define(["angular", "exports"], function (angular, exports) {
                     controller: "MainProjectCtrl",
                     resolve: {
                         user: ["LoginResolverService", function(resolver){
-                            return resolver.checkLoggedLoginResolve();
+                            return resolver.checkLoggedAndGetUserResolve();
                         }]
                     }
                 }
@@ -163,8 +163,8 @@ define(["angular", "exports"], function (angular, exports) {
                         defaultProject : ["LoginResolverService", "user", function (resolver, user){
                             return resolver.checkDefaultProjectResolve(user) ;
                         }],
-                        report: ["LoginResolverService", "$stateParams", function(resolver, $stateParams){
-                            return resolver.checkSelectedTestPlanResolve($stateParams.reportName) ;
+                        report: ["LoginResolverService", "$stateParams", "defaultProject", function(resolver, $stateParams, defaultProject){
+                            return resolver.checkSelectedTestPlanResolve($stateParams.reportName, defaultProject._id) ;
                         }]
                     }
                 }
@@ -183,8 +183,8 @@ define(["angular", "exports"], function (angular, exports) {
                         defaultProject : ["LoginResolverService", "user", function (resolver, user){
                             return resolver.checkDefaultProjectResolve(user) ;
                         }],
-                        report: ["LoginResolverService", "$stateParams", function(resolver, $stateParams){
-                            return resolver.checkSelectedTestPlanResolve($stateParams.reportName) ;
+                        report: ["LoginResolverService", "$stateParams", "defaultProject", function(resolver, $stateParams, defaultProject){
+                            return resolver.checkSelectedTestPlanResolve($stateParams.reportName, defaultProject._id) ;
                         }]
                     }
                 }

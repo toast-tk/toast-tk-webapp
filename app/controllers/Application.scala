@@ -30,9 +30,9 @@ object Application extends Controller {
       val token = authUser map {_.token} getOrElse("")
       Logger.info(s"Loging result {$authUser}")
       if(token != ""){  
-        Ok.addingToJwtSession("user", Json.toJson(authUser)) 
+        Ok.addingToJwtSession("user", (Json.toJson(authUser).as[JsObject] - "password")) 
       } else {
-        Unauthorized("Bad credentials")
+        Unauthorized("Bad credentials.")
       }
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toJson(e))
@@ -41,9 +41,7 @@ object Application extends Controller {
 
   @JwtProtected
   def logout() = Action {
-    Ok("").withNewSession.flashing(
-    "success" -> "You've been logged out"
-  )
+    Ok.withNewSession.flashing("success" -> "You've been logged out")
   }
   
   /**

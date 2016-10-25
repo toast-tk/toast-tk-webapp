@@ -5,15 +5,14 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="#/main">
+    <span class="navbar-brand">
         <img style="width: 90px;" src="assets/images/toast700w.png">
-    </a>
+    </span>
 </div>
-<!-- Top Menu Items -->
 <ul class="nav navbar-right top-nav">
     <li ng-if="project" style="margin-top: 4px;">
         <p class="navbar-text" ng-click="goToState('layout.scenario')">
-            <i class="fa fa-cube"></i> {{project.name}}
+            <i class="fa fa-cube"></i> {{project.name  | uppercase }}
         </p>
     </li>
     <li class="dropdown">
@@ -25,7 +24,7 @@
                 <a ng-click="editProfile()"><i class="fa fa-fw fa-user"></i> Profile</a>
             </li>
             <li>
-                <a ng-click="goToState('project')"><i class="fa fa-fw fa-cubes"></i> Change Project</a>
+                <a ng-click="goToState('default')"><i class="fa fa-fw fa-cubes"></i> Switch Project</a>
             </li>
             <li>
                 <a ng-click="logout()"><i class="fa fa-fw fa-power-off"></i> Log Out</a>

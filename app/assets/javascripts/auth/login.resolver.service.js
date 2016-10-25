@@ -16,13 +16,12 @@ define(["angular"], function (angular) {
                 var deferred = $q.defer();
                 if (LoginService.isAuthenticated()) {
                     if (LoginService.hasDefaultProject() === false) {
-                        $state.go("project");
+                        $state.go("default");
                         deferred.reject();
-                    }else{
-                        //$state.go("layout.scenario");
+                    } else {
                         deferred.resolve();
                     }
-                }else{
+                } else {
                     deferred.resolve();
                 }
                 return deferred.promise;
@@ -34,15 +33,15 @@ define(["angular"], function (angular) {
                 if (LoginService.isAuthenticated() === true) {
                     var user = LoginService.currentUser();
                     deferred.resolve(user);
-                }else{
+                } else {
                     deferred.reject();
                 }
                 return deferred.promise;
             }
 
-            function checkSelectedTestPlanResolve(reportName){
+            function checkSelectedTestPlanResolve(reportName, idProject){
                 var deferred = $q.defer();
-                playRoutes.controllers.TestPlanController.loadProjectReport(reportName).get().then(function (response) {
+                playRoutes.controllers.TestPlanController.loadProjectReport(idProject, reportName).get().then(function (response) {
                     var report = response.data;
                     deferred.resolve(report);
                 }, function(error){
@@ -59,16 +58,16 @@ define(["angular"], function (angular) {
                     deferred.reject();
                 }
                 else if (!LoginService.hasDefaultProject()) {
-                    $state.go("project");
+                    $state.go("default");
                     deferred.reject();
                 }else{
                     var idProject = LoginService.getDefaultProjectId();
                     playRoutes.controllers.ProjectController.getProject(idProject).get().then(function(response){
-                        var project = response.data;
-                        deferred.resolve(project);
+                        var selectedProject = response.data;
+                        deferred.resolve(selectedProject);
                     }, function(error){
                         console.log(error);
-                        $state.go("project");
+                        $state.go("default");
                         deferred.reject();
                     });
                 }

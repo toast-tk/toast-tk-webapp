@@ -67,7 +67,7 @@ define(["angular"], function (angular) {
             $scope.testPlan = report.testPlan;
             function __init__() {
                 playRoutes.controllers.TestPlanController.loadTestReport($stateParams.reportName, $stateParams.iteration,
-                    $stateParams.testName).get().then(function (response) {
+                    $stateParams.testName, defaultProject._id).get().then(function (response) {
                     $scope.report = response.data || {};
                 });
             }

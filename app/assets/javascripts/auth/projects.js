@@ -2,8 +2,8 @@ define(["angular"], function(angular) {
     "use strict";
 
     return {
-        MainProjectCtrl: function($rootScope, $scope, playRoutes, $state, LoginService, toastr) {
-            $scope.user = LoginService.currentUser();
+        MainProjectCtrl: function($scope, playRoutes, $state, LoginService, toastr, user) {
+            $scope.user = user;
             var promise = playRoutes.controllers.UserController.getUserProjects($scope.user._id).get();
             promise.then(function(response){
                 $scope.projectList = response.data || [];

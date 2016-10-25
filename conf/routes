@@ -14,6 +14,7 @@ GET           /jsroutes.js                                  controllers.JavaScri
 POST          /login                                        controllers.Application.login()
 GET           /users/:id                                    controllers.UserController.user(id: String)
 DELETE        /users/:id                                    controllers.UserController.deleteUser(id: String)
+POST          /user/project                                 controllers.UserController.updateUserProject()
 GET           /users                                        controllers.UserController.getAllUsers()
 POST          /user                                         controllers.UserController.saveUser()
 GET           /logout                                       controllers.Application.logout()
@@ -72,8 +73,9 @@ POST          /deleteScenarii                               controllers.Scenario
 POST          /saveProject                                  controllers.TestPlanController.saveProject()
 GET           /testplan/all/:idProject                      controllers.TestPlanController.loadProject(idProject: String)
 GET           /testplan/setup/:idTestPlan                   controllers.TestPlanController.loadTestPlanSetup(idTestPlan: String)
-GET           /testplan/report/*testPlanName                controllers.TestPlanController.loadProjectReport(testPlanName:String)
-GET           /testplan/test/:pName/:iter/:tName     controllers.TestPlanController.loadTestReport(pName: String, iter:String, tName: String)
+GET           /testplan/report/:idProject/*testPlanName     controllers.TestPlanController.loadProjectReport(idProject:String, testPlanName:String)
+DELETE        /testplan/delete/:idProject   			 	controllers.TestPlanController.detachTestPlanReport(idProject: String)
+GET           /testplan/test/:pName/:iter/:tName/:idProject controllers.TestPlanController.loadTestReport(pName: String, iter:String, tName: String, idProject:String)
 
 # Ajax routes: Project Controller
 POST          /project                                      controllers.ProjectController.saveProject()
