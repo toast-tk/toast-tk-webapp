@@ -10,7 +10,7 @@ import play.api.mvc.Results._
 import play.api.routing.Router
 
 import pdi.jwt._
-
+import reactivemongo.core.nodeset.Authenticate
 import toast.engine.DAOJavaWrapper
 import com.github.jmkgreen.morphia.logging.MorphiaLoggerFactory
 import com.github.jmkgreen.morphia.logging.slf4j.SLF4JLogrImplFactory
@@ -155,9 +155,11 @@ object AppBoot extends WithFilters(AuthorisationFilter) {
   override def beforeStart(app: play.api.Application): Unit = {
     Logger.info(s"[+] Preparing Toast Tk Web App environment..")
     val conf: play.api.Configuration = app.configuration
+
     val mongoUrl = conf.getString(KeyMongoDbUrl).getOrElse(throw new RuntimeException(s"$KeyMongoDbUrl is missing in your configuration"))
+    val mongoDb = conf.getString( "db.mongo.userDb").getOrElse(throw new RuntimeException(s"db.mongo.userDb is missing in your configuration"))
     Logger.info(s"[+] Connecting to mongoUrl: $mongoUrl")
-    db = MongoConnector(mongoUrl)
+    db = MongoConnector(mongoUrl, mongoDb)
 
     db match {
       case conn: MongoConnector => {

@@ -18,7 +18,7 @@ define(["angular","CryptoJS/sha256"], function(angular, SHA256) {
                     if(LoginService.hasDefaultProject()){
                         $state.go("layout.scenario");
                     }else{
-                        $state.go("project");
+                        $state.go("default");
                     }
                 }, function (error) {
                     toastr.error('Invalid username or password!');

@@ -23,16 +23,19 @@ import controllers.mongo.users._
 
 object MongoConnector extends App {
   def apply() = {
-    new MongoConnector(new MongoDriver(),List("localhost"), "play_db")
+    new MongoConnector(new MongoDriver(), "mongodb://localhost:27017/play_db", "play_db")
   }
-  def apply(url:String) = {
-    new MongoConnector(new MongoDriver(),List(url), "play_db")
+  def apply(uri:String, dbName:String) = {
+    new MongoConnector(new MongoDriver(), uri, dbName)
   }
 }
 
-case class MongoConnector(driver: MongoDriver, servers: List[String], database: String){
+case class MongoConnector(driver: MongoDriver, mongoUri: String, database: String){
 
-  val db = driver.connection(servers)(database)
+  val db = MongoConnection.parseURI(mongoUri).map { parsedUri =>
+    driver.connection(parsedUri)(database)
+  }.get
+
   val userCollection = UserCollection(open_collection("users"))
   val teamCollection = TeamCollection(open_collection("teams"))
   val repositoryCollection = RepositoryCollection(open_collection("repository"), open_collection("elements"))
