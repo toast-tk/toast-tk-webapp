@@ -5,10 +5,11 @@ define(["angular"], function (angular) {
                                 ngProgress, $window, $timeout,
                                 $stateParams,
                                 $state,$sideSplit, LayoutService,
-                                defaultProject, ChartUtils) {
+                                defaultProject, ChartUtils, toastr) {
 
             $scope.defaultProject = defaultProject
             $scope.projects = [];
+            $scope.selectedProject = undefined;
             $scope.stateParams = $state.params;
 
             /* begin : adjusting page content size */
@@ -25,11 +26,20 @@ define(["angular"], function (angular) {
                 $state.go("layout.campaign.report", {"idTestPlan": selectedProject.id, "reportName": selectedProject.name});
             }
 
-            function __init__() {
+            $scope.deleteTestPlan = function(){
+                if($scope.selectedProject){
+                    playRoutes.controllers.TestPlanController.detachTestPlanReport($scope.selectedProject.id).delete().then(function (response) {
+                        __init__()
+                    }, function(){
+                        toastr.error("Couldn't not delete selected report !");
+                    });
+                }
+            }
 
+            function __init__() {
                 playRoutes.controllers.TestPlanController.loadProject($scope.defaultProject._id).get().then(function (response) {
-                    var data = response.data || [];
-                    $scope.projects = data;
+                    $scope.projects = response.data || [];
+                    $scope.selectedProject = undefined;
                     if($scope.stateParams.idTestPlan){
                         for(var i=0; i<$scope.projects.length; i++){
                             if($scope.projects[i].id === $scope.stateParams.idTestPlan){

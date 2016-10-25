@@ -318,6 +318,21 @@ object TestPlanController  extends Controller {
   }
 
   @JwtProtected
+  def detachTestPlanReport(idTestPlan: String) = Action {
+    implicit request => {
+      val testPlan = DAOJavaWrapper.testPlanService.findTestPlanById(idTestPlan);
+      testPlan match {
+        case t:TestPlanImpl => {
+          DAOJavaWrapper.testPlanService.detachTemplate(t)
+          Ok
+        }
+        case _ => BadRequest("No test plan found for provided id: " + idTestPlan)
+      }
+    }
+  }
+
+
+  @JwtProtected
   def loadProjectReport(name: String) = Action {
     implicit request => {
       val testPlanName = URLDecoder.decode(name, "UTF-8")

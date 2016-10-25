@@ -1,4 +1,4 @@
-<div class="container-fluid" style="overflow: hidden;">
+<div id="testplan" class="container-fluid" style="overflow: hidden;">
     <div class="row" style="width:{{effectContentWidth}}px; height:94%; overflow: hidden;">
         <div webix-ui id="contentWebixLayout">
             <div height="51" >
@@ -39,12 +39,14 @@
                 <div view="resizer"></div>
                 <div view="cols">
                     <div ng-show="selectedProject != undefined">
+                        <button ng-click="deleteTestPlan()" class="float-button btn btn-xs btn-danger" style="position: absolute; right: 7px;"><i class="fa fa-trash"></i>Delete</button>
                         <uib-tabset active="activeForm">
                             <uib-tab index="0" heading="Setup" ng-click="displayTestPlanSetup(selectedProject)">
                             </uib-tab>
                             <uib-tab index="1" heading="Execution Report" ng-click="displayReport(selectedProject)">
                             </uib-tab>
                         </uib-tabset>
+                        <div class="shadow-container" style="opacity: 1;"></div>
                         <div ui-view="info"></div>
                     </div>
                 </div>

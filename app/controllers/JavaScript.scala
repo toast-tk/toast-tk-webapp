@@ -31,6 +31,7 @@ object JavaScript extends Controller {
           controllers.routes.javascript.TestPlanController.loadProjectReport,
           controllers.routes.javascript.TestPlanController.loadTestReport,
           controllers.routes.javascript.TestPlanController.loadTestPlanSetup,
+          controllers.routes.javascript.TestPlanController.detachTestPlanReport,
           controllers.routes.javascript.ProjectController.saveProject,
           controllers.routes.javascript.ProjectController.getProject,
           controllers.routes.javascript.ProjectController.getAllProjects,

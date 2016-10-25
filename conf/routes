@@ -73,7 +73,8 @@ POST          /saveProject                                  controllers.TestPlan
 GET           /testplan/all/:idProject                      controllers.TestPlanController.loadProject(idProject: String)
 GET           /testplan/setup/:idTestPlan                   controllers.TestPlanController.loadTestPlanSetup(idTestPlan: String)
 GET           /testplan/report/*testPlanName                controllers.TestPlanController.loadProjectReport(testPlanName:String)
-GET           /testplan/test/:pName/:iter/:tName     controllers.TestPlanController.loadTestReport(pName: String, iter:String, tName: String)
+DELETE        /testplan/delete/:idProject   			 	controllers.TestPlanController.detachTestPlanReport(idProject: String)
+GET           /testplan/test/:pName/:iter/:tName     		controllers.TestPlanController.loadTestReport(pName: String, iter:String, tName: String)
 
 # Ajax routes: Project Controller
 POST          /project                                      controllers.ProjectController.saveProject()
