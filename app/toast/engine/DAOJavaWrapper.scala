@@ -24,10 +24,14 @@ object DAOJavaWrapper {
   }
   val credential: MongoCredential = Play.maybeApplication match {
     case Some(app) => {
-      val userName:String = app.configuration.getString("db.mongo.user").get
-      val password:String = app.configuration.getString("db.mongo.pwd").get
-      val userDB:String = app.configuration.getString("db.mongo.userDb").get
-      MongoCredential.createMongoCRCredential(userName, userDB, password.toCharArray())
+      val userName:String = app.configuration.getString("db.mongo.user").getOrElse(null)
+      val password:String = app.configuration.getString("db.mongo.pwd").getOrElse(null)
+      val userDB:String = app.configuration.getString("db.mongo.userDb").getOrElse(null)
+      if(userName != null && password != null){
+        MongoCredential.createMongoCRCredential(userName, userDB, password.toCharArray())
+      } else {
+        null
+      }
     }
     case _ => null
   }
