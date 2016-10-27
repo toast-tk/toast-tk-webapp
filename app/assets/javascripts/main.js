@@ -76,7 +76,14 @@
             },
             'sidebarmenu':{
                 deps: ['angular']
+            },
+            'angularChart': {
+                deps: ['angular', 'chart']
+            },
+            'angular-ui-lightbox': {
+                deps: ['angular']
             }
+
         },
         paths: {
             'jquery': '../libs/jquery/dist/jquery',
@@ -95,12 +102,15 @@
             "angular-toastr": ['../libs/angular-toastr/dist/angular-toastr.tpls.min'],
             "angucomplete": ['../libs/angucomplete-alt/dist/angucomplete-alt.min'],
             "angular-ui-tree": ['../libs/angular-ui-tree/dist/angular-ui-tree.min'],
+            "angular-ui-lightbox": ['../libs/angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.min'],
             "ui.bootstrap": ['../libs/angular-bootstrap/ui-bootstrap-tpls.min'],
             "ngProgress" : "../libs/ngprogress/build/ngProgress.min",
             "xeditable": ['../libs/angular-xeditable/dist/js/xeditable.min'],
             "jwtClient" : ['../libs/jwt-client/jwt-client'],
             "ngTagsInput" : ["../libs/ng-tags-input/ng-tags-input.min"],
             "angularDropdown": "../libs/angularjs-dropdown-multiselect/src/angularjs-dropdown-multiselect",
+            "chart": "../libs/chart.js/dist/Chart.min",
+            "angularChart": "../libs/angular-chart.js/dist/angular-chart.min",
 
             "qTags": ['./libs/jquery-textntags'],
             "webix": ['libs/webix'],
@@ -121,12 +131,15 @@
             "sidebarmenu": ['features/layout/sidebar.menu.controller'],
             "layout": ['features/layout/layout.controller'],
             "layoutService" :  ['features/layout/layout.service'],
+            "chartUtils" :  ['services/chart-utils'],
             "treeLayoutService": ['./features/layout/tree.layout.service'],
             "SettingsCtrl" :  ['features/settings/settings.controller'],
             "newSettingsModalCtrl": ["./features/settings/newSettings.modal.controller"],
             "RepositoryCtrl": ["./features/repository/repository.controller"],
             "ScenarioCtrl": ["./features/scenario/scenario.controller"],
-            "CampaignCtrl": ["./features/campaign/campaign.controller"],
+            "TestPlanCtrl": ["./features/testplan/testplan.controller"],
+            "TestPlanReportCtrl": ["./features/testplan/testplan.report.controller"],
+            "TestPlanSetupCtrl": ["./features/testplan/testplan.setup.controller"],
             "utilsScenarioService" : ["./features/scenario/utils.scenario.service"],
             "newStepService": ["./features/scenario/newstep.service"],
             "newStepModalCtrl": ["./features/scenario/newstep.modal.controller"],
@@ -150,24 +163,25 @@
 
     require(["angular", "playRoutes",  "routerConfig", "configConfig", "treeLayoutService" , "AskForAccountCtrl",
             "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl",
-            "RepositoryCtrl", "ScenarioCtrl", "CampaignCtrl", "utilsScenarioService",
-            "homeCtrl",
+            "RepositoryCtrl", "ScenarioCtrl", "TestPlanCtrl",
+            "TestPlanReportCtrl","TestPlanSetupCtrl",
+            "utilsScenarioService", "homeCtrl",
             "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl",
             "json!config/icon.constants.config.json",
             "adminLayoutCtrl", "adminSidebarmenu",
             "addUserCtrl", "editUsersCtrl", "validatorDirective",
             "addTeamCtrl", "editTeamsCtrl", "editTeamCtrl", "editUserCtrl",
             "addProjectCtrl", "editProjectCtrl", "editProjectsCtrl", "MainProjectCtrl",
-            "clientService","jwtClient",
+            "clientService","jwtClient", "angularChart",
             "componentsDir", "sortable", "ngProgress",
-            "angular-ui-tree", "bootstrap", "ui.bootstrap",
+            "angular-ui-tree","angular-ui-lightbox", "bootstrap", "ui.bootstrap",
             "angularRoute", "angucomplete", "angularDropdown",
             "xeditable", "ui.router", "angular-animate", "sidesplit",
-            "angular-toastr", "webix",  "ngTagsInput"],
+            "angular-toastr", "webix",  "ngTagsInput", "chartUtils", 'angular'],
 
         function(a, b, routerConfig, configConfig, treeLayoutService, AskForAccountCtrl,
                  login, loginService, loginResolverService, settingsCtrl,
-                 newSettingsModalCtrl, repository, scenario, campaign,
+                 newSettingsModalCtrl, repository, scenario, tp, tpReport, tpSetup,
                  utilsScenarioService, home, sidebarmenu, layout, layoutService,
                  newObjectModalCtrl, newStepService, newStepModalCtrl, constantsFile,
                  adminLayoutCtrl, adminSidebarmenu,
@@ -179,10 +193,11 @@
 
             var app = angular.module("app",
                 ['ui.router', "play.routing", "ngAnimate",
-                    "tk.components", "tk.services",
+                    "tk.components", "tk.services", "tk.chart.utils",
                     "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap",
                     "xeditable", "sidesplit", "webix","angucomplete-alt",
-                    "toastr","ngTagsInput", "angularjs-dropdown-multiselect"]);
+                    "toastr","ngTagsInput", "angularjs-dropdown-multiselect",
+                    "chart.js", "bootstrapLightbox"]);
 
             app.controller("AskForAccountCtrl", AskForAccountCtrl.AskForAccountCtrl);
 
@@ -198,7 +213,10 @@
 
             app.controller("RepositoryCtrl", repository.RepositoryCtrl);
 
-            app.controller("CampaignCtrl", campaign.CampaignCtrl);
+            app.controller("TestPlanCtrl", tp.TestPlanCtrl);
+            app.controller("TestPlanSetupCtrl", tpSetup.TestPlanSetupCtrl);
+            app.controller("TestPlanReportCtrl", tpReport.TestPlanReportCtrl);
+            app.controller("TestPageReportCtrl", tpReport.TestPageReportCtrl);
 
             app.controller("SidebarMenuCtrl", sidebarmenu.SidebarMenuCtrl);
             app.controller("LayoutCtrl", layout.LayoutCtrl);
@@ -238,7 +256,9 @@
 
             app.config(routerConfig.RouterConfig);
             app.config(configConfig.ConfigConfig);
-
+            app.config(['LightboxProvider', function (LightboxProvider) {
+                LightboxProvider.fullScreenMode = true;
+            }]);
             app.config(['$httpProvider',
                 function($httpProvider) {
                     $httpProvider.interceptors.push(['$q',

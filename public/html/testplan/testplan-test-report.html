@@ -1,0 +1,86 @@
+<div id="test-report" style="overflow:scroll; height: 100%;">
+    <nav class="navbar navbar-default navbar-inverse" style="border-radius: 0;">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <h3>
+                    <span class="title">{{::testPlan.name}} : </span>
+                    <span style="color:white;">{{::report.name}}</span>
+                </h3>
+            </div>
+        </div>
+    </nav>
+    <div class="row-fluid">
+        <div ng-repeat="block in report.blocks">
+            <div class="panel-body">
+                <div class="panel-group" id="accordion" role="tablist"
+                     aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a role="button" data-toggle="collapse"
+                                   data-parent="#accordion" href="#collapseOne"
+                                   aria-expanded="true" aria-controls="collapseOne">
+                                    Test type: <span>{{::block.fixtureName}}</span>
+                                </a>
+                                <div style="float: right;">
+                                        <span class="badge" style="background-color: #5cb85c;">
+                                            <span>{{::block.testSuccessNumber}}</span> OK
+                                        </span>
+                                        <span class="badge" style="background-color: #d9534f;">
+                                            <span>{{::block.testFailureNumber}}</span> KO
+                                        </span>
+                                </div>
+                            </h4>
+                        </div>
+                        <div class="panel-collapse collapse in" role="tabpanel"
+                             aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>#</td>
+                                        <td>Step</td>
+                                        <td>Expected</td>
+                                        <td>Result</td>
+                                        <td>Comment</td>
+                                        <td>Time</td>
+                                    </tr>
+                                    <tr ng-repeat="line in block.blockLines">
+                                        <td class="{{::line.testResultKind}}">
+                                            <button ng-if='line.contextualSentence !== null' 
+                                                    popover-trigger="mouseenter" 
+                                                    popover-placement="right" 
+                                                    uib-popover="{{::line.contextualSentence}}"
+                                                    class="btn btn-xs btn-info">
+                                                    <i class="fa fa-fw fa-info"></i></button>
+                                        </td>
+                                        <td>
+                                            {{::line.test}}
+                                        </td>
+                                        <td>
+                                            {{::line.expected}}                                            
+                                        </td>
+                                        <td>
+                                            {{::line.testResult}}
+                                        </td>
+                                        <td>
+                                           <span class="btn btn-link btn-xs" 
+                                                ng-if="line.screenshot !== undefined" 
+                                                ng-click="displayImage(line)">
+                                               screen capture
+                                           </span>
+                                            </br>
+                                            {{::line.comment}}
+                                        </td>
+                                        <td>
+                                            {{::line.executionTime}} ms
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

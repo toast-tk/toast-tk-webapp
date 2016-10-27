@@ -1,0 +1,56 @@
+<div class="" style="border: #ccc solid 1px; border-top: none;">
+    <div class="panel panel-default" style="margin-bottom: 11px;">
+        <div class="panel-body">
+            <div>
+                Test Plan Name: <input ng-model="selectedProject.name" type="text" name="testPlanName"/>
+                <div class="input-group pull-right">
+                    <button class="btn btn-primary btn-xs" data-ng-click="addCampaignToProject(selectedProject)">
+                        + Add Campaign
+                    </button>
+                    <button class="btn btn-success btn-xs" data-ng-click="saveProject(selectedProject)">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-repeat="campaign in selectedProject.campaigns" class="campaign">
+        <div class="panel panel-default" style="margin-bottom: 11px;">
+            <div class="panel-heading" style="padding: 3px;" role="tab" id="headingOne">
+                Campaign name: <input type="text" ng-model="campaign.name">
+                <div class="input-group pull-right">
+                    <button class="btn btn-primary btn-xs"
+                            data-ng-click="addScenarioToCampaign(campaign)">
+                        + Add Scenario
+                    </button>
+                    <button class="btn btn-danger btn-xs"
+                            data-ng-click="deleteCampaign(campaign, selectedProject)">
+                        <i class="fa fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                    <div>
+                        <ul ui-sortable ng-model="campaign.scenarii">
+                            <li ng-repeat="scenario in campaign.scenarii">
+                                Scenario Name:
+                                <span ng-if="!knowScenario(scenario.name)">
+                                    {{scenario.name}}
+                                </span>
+                                <span ng-if="knowScenario(scenario.name)">
+                                    <select ng-model="scenario.name"
+                                            ng-options="reference.name as reference.name for reference in scenarii"/>
+                                    <button class="btn btn-xs"
+                                            data-ng-click="deleteScenario(scenario, campaign)">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

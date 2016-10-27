@@ -12,7 +12,7 @@ define(["angular"], function(angular) {
                     console.log("response", response.data);
                     $scope.isEmailSent = true;
                 },function(error){
-                    toastr.error(error.status +' : Arf, something goes wrong!');
+                    toastr.error(error.status +' : Arf, something went wrong!');
                 });
             }
         }

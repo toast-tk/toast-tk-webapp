@@ -6,6 +6,8 @@ scalaVersion := "2.11.8"
 
 resolvers += Resolver.mavenLocal
 
+resolvers += "Sonatype releases" at "https://oss.sonatype.org/content/repositories/releases"
+
 resolvers += "MavenSnapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
 resolvers += "Typesafe" at "http://repo.typesafe.com/typesafe/releases/"
@@ -28,10 +30,24 @@ libraryDependencies ++= Seq(
   "com.pauldijou" %% "jwt-play" % "0.5.1",
   "org.scalatestplus" % "play_2.11" % "1.4.0-M3"% "test",
   "com.github.simplyscala" %% "scalatest-embedmongo" % "0.2.2" % "test",
-  "com.typesafe.play" %% "play-mailer" % "4.0.0"
+  "com.typesafe.play" %% "play-mailer" % "4.0.0",
+  "io.megl" % "play-json-extra_2.11" % "2.4.3",
+  "com.github.simplyscala" %% "scalatest-embedmongo" % "0.2.2" % "test",
+  "com.sendgrid"%"sendgrid-java"%"3.0.9"
 )
 
 //TODO: move to injected resources @Inject()
 //routesGenerator := StaticRoutesGenerator
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(SbtWeb).enablePlugins(PlayScala)
+
+unmanagedResourceDirectories in Assets += baseDirectory.value / "assets"
+
+lazy val npmBuildTask = TaskKey[Unit]("npm") 
+npmBuildTask := {
+  "npm install" #&& "node ./node_modules/bower/bin/bower install" #&& "node ./node_modules/gulp/bin/gulp" #&& "rm -rf ./app/assets/libs" #&& "mv -f ./libs ./app/assets"!
+}
+
+JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
+
+compile <<= (compile in Compile) dependsOn npmBuildTask

@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "angular": "^1.5.3",
+    "angular-chart.js": "^1.0.3",
     "angular-mocks": "^1.5.3",
     "angular-ui-router": "^0.2.18",
     "jasmine-core": "^2.4.1",
@@ -18,6 +19,7 @@
   "devDependencies": {
     "angular-animate": "^1.5.3",
     "angular-route": "^1.5.3",
+    "bower": "^1.7.9",
     "del": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-filter": "^4.0.0",

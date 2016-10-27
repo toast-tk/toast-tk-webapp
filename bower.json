@@ -34,7 +34,8 @@
     "underscore": "~1.8.3",
     "angular-route": "~1.5.8",
     "angular-ui-router": "~0.3.1",
-    "angularjs-dropdown-multiselect": "~1.5.2"
+    "angularjs-dropdown-multiselect": "~1.5.2",
+    "angular-bootstrap-lightbox": "~0.12.0"
   },
   "resolutions": {
     "angular": ">=1.4.0"

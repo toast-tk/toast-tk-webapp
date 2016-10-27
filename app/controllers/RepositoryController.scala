@@ -29,7 +29,6 @@ object RepositoryController extends Controller {
       }
   }
 
-
   /**
    * load to init repository configuration
    */

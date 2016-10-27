@@ -59,8 +59,8 @@ define(["angular", "exports"], function (angular, exports) {
                     }
                 }
             }
-        }).state('project', {
-            url: "/project",
+        }).state('default', {
+            url: "/default",
             cache: false,
             views: {
                 'main':{
@@ -68,7 +68,7 @@ define(["angular", "exports"], function (angular, exports) {
                     controller: "MainProjectCtrl",
                     resolve: {
                         user: ["LoginResolverService", function(resolver){
-                            return resolver.checkLoggedLoginResolve();
+                            return resolver.checkLoggedAndGetUserResolve();
                         }]
                     }
                 }
@@ -125,18 +125,75 @@ define(["angular", "exports"], function (angular, exports) {
                 }
             }
         }).state('layout.campaign', {
-            url: "campaign",
+            url: "plan",
             cache: false,
             views: {
                 'content':{
-                    templateUrl: "assets/html/campaign/campaign.html",
-                    controller: "CampaignCtrl",
+                    templateUrl: "assets/html/testplan/testplan.html",
+                    controller: "TestPlanCtrl",
                     resolve:{
                         user : ["LoginResolverService", function (resolver){
                             return resolver.checkLoggedAndGetUserResolve() ;
                         }],
                         defaultProject : ["LoginResolverService", "user", function (resolver, user){
                             return resolver.checkDefaultProjectResolve(user) ;
+                        }]
+                    }
+                }
+            }
+        }).state('layout.campaign.setup', {
+                url: "/setup/:idTestPlan",
+                cache: false,
+                views: {
+                    'info':{
+                        templateUrl: "assets/html/testplan/testplan-setup.html",
+                        controller: "TestPlanSetupCtrl",
+                        resolve:{
+                            user : ["LoginResolverService", function (resolver){
+                                return resolver.checkLoggedAndGetUserResolve() ;
+                            }],
+                            defaultProject : ["LoginResolverService", "user", function (resolver, user){
+                                return resolver.checkDefaultProjectResolve(user) ;
+                            }]
+                        }
+                    }
+                }
+        }).state('layout.campaign.report', {
+            url: "/report/:idTestPlan/:reportName",
+            cache: false,
+            views: {
+                'info':{
+                    templateUrl: "assets/html/testplan/testplan-report.html",
+                    controller: "TestPlanReportCtrl",
+                    resolve:{
+                        user : ["LoginResolverService", function (resolver){
+                            return resolver.checkLoggedAndGetUserResolve() ;
+                        }],
+                        defaultProject : ["LoginResolverService", "user", function (resolver, user){
+                            return resolver.checkDefaultProjectResolve(user) ;
+                        }],
+                        report: ["LoginResolverService", "$stateParams", "defaultProject", function(resolver, $stateParams, defaultProject){
+                            return resolver.checkSelectedTestPlanResolve($stateParams.reportName, defaultProject._id) ;
+                        }]
+                    }
+                }
+            }
+        }).state('layout.campaign.test', {
+            url: "/test/:idTestPlan/:reportName/:iteration/:testName",
+            cache: false,
+            views: {
+                'info':{
+                    templateUrl: "assets/html/testplan/testplan-test-report.html",
+                    controller: "TestPageReportCtrl",
+                    resolve:{
+                        user : ["LoginResolverService", function (resolver){
+                            return resolver.checkLoggedAndGetUserResolve() ;
+                        }],
+                        defaultProject : ["LoginResolverService", "user", function (resolver, user){
+                            return resolver.checkDefaultProjectResolve(user) ;
+                        }],
+                        report: ["LoginResolverService", "$stateParams", "defaultProject", function(resolver, $stateParams, defaultProject){
+                            return resolver.checkSelectedTestPlanResolve($stateParams.reportName, defaultProject._id) ;
                         }]
                     }
                 }

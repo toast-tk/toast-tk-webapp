@@ -1,0 +1,82 @@
+.panel-toast {
+    border-color: #B4B4B4;
+    margin-top: -13px;
+    margin-bottom: 13px;
+}
+
+.panel-toast>.panel-heading {
+    border-color: #B4B4B4;
+    background-color: #D2D2D2;
+}
+
+.jumbotron {
+    background-color: #D2D2D2;
+    border: #B4B4B4 solid 1px;
+    padding-top: 23px;
+    padding-bottom: 23px;
+}
+
+.title {
+    font-weight: bold;
+    padding: 20px;
+    color: white;
+}
+
+.pie-container{
+    display: block;
+    height: 51px;
+    width: 313px;
+    margin-left: -40px;
+}
+
+.line-chart-container{
+    text-align: center;
+    display: block;
+    height: 101px;
+    width: 413px;
+    margin: auto;
+}
+
+#report .panel-toast .tab-summary {
+    border: 1px solid #ccc;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    margin-left: -18px;
+    height: 218px;
+}
+
+#report ul.nav-pills a{
+    font-size: 12px;
+}
+
+.badge-info-toast {
+    display: block;
+    border-radius: 0;
+    padding: 4px;
+    margin: 1px;
+    text-align: left;
+    background-color: rgba(0, 0, 0, .125);
+    color: black;
+    text-shadow: 1px 1px 1px rgba(255,255,255,.5);
+
+#report .table {
+    text-align: center;
+}
+
+#testplan .shadow-container {
+    -moz-box-shadow: inset 0 10px 20px -15px #20252a;
+    -webkit-box-shadow: inset 0 10px 20px -15px #20252a;
+    box-shadow: inset 0 10px 20px -15px #20252a;
+    position: absolute;
+    top: calc(100% + 1px);
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 10;
+    opacity: 0;
+}
+
+#testplan .float-button{
+    position: absolute;
+    right: 7px;
+}

@@ -1,7 +1,6 @@
 package controllers
 
 
-import play.api.Routes
 import play.api.mvc.{Action, Controller}
 import play.api.routing.JavaScriptReverseRouter
 
@@ -30,6 +29,9 @@ object JavaScript extends Controller {
           controllers.routes.javascript.TestPlanController.saveProject,
           controllers.routes.javascript.TestPlanController.loadProject,
           controllers.routes.javascript.TestPlanController.loadProjectReport,
+          controllers.routes.javascript.TestPlanController.loadTestReport,
+          controllers.routes.javascript.TestPlanController.loadTestPlanSetup,
+          controllers.routes.javascript.TestPlanController.detachTestPlanReport,
           controllers.routes.javascript.ProjectController.saveProject,
           controllers.routes.javascript.ProjectController.getProject,
           controllers.routes.javascript.ProjectController.getAllProjects,
@@ -40,6 +42,7 @@ object JavaScript extends Controller {
           controllers.routes.javascript.UserController.getAllUsers,
           controllers.routes.javascript.UserController.deleteUser,
           controllers.routes.javascript.UserController.getUserProjects,
+          controllers.routes.javascript.UserController.updateUserProject,
           controllers.routes.javascript.TeamController.saveTeam,
           controllers.routes.javascript.TeamController.getTeam,
           controllers.routes.javascript.TeamController.getAllTeams,

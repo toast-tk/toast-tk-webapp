@@ -16,7 +16,7 @@
         </a>
     </li>
 
-    <li ng-class="{'active' : currentState === 'layout.campaign'}">
+    <li ng-class="{'active' : currentState === 'layout.campaign' || currentState === 'layout.campaign.setup' || currentState === 'layout.campaign.report'}">
         <a ng-click="goToState('layout.campaign')">
             <i class="fa fa-fw fa-terminal fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
             <span  ng-if="isCollapsed===false">Reports</span>

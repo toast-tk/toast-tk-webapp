@@ -14,6 +14,7 @@ GET           /jsroutes.js                                  controllers.JavaScri
 POST          /login                                        controllers.Application.login()
 GET           /users/:id                                    controllers.UserController.user(id: String)
 DELETE        /users/:id                                    controllers.UserController.deleteUser(id: String)
+POST          /user/project                                 controllers.UserController.updateUserProject()
 GET           /users                                        controllers.UserController.getAllUsers()
 POST          /user                                         controllers.UserController.saveUser()
 GET           /logout                                       controllers.Application.logout()
@@ -64,7 +65,7 @@ POST          /deleteObject                                 controllers.Reposito
 # Ajax routes: Scenarii Controller
 GET           /loadScenariiList/:idProject                  controllers.ScenarioController.loadScenariiList(idProject: String)
 GET           /loadScenarii/:idProject                      controllers.ScenarioController.loadScenarii(idProject: String)
-GET           /scenario/wiki/:apiKey                         controllers.ScenarioController.loadWikifiedScenarii(apiKey: String)
+GET           /scenario/wiki/:apiKey                        controllers.ScenarioController.loadWikifiedScenarii(apiKey: String)
 GET           /loadScenarioSteps/:id                        controllers.ScenarioController.loadScenarioSteps(id: String)
 GET           /loadScenarioCtx/:scenarioType                controllers.ScenarioController.loadScenarioCtx(scenarioType: String)
 POST          /saveScenarii                                 controllers.ScenarioController.saveScenarii()
@@ -72,9 +73,11 @@ POST          /deleteScenarii                               controllers.Scenario
 
 # Ajax routes: Test Plan Controller
 POST          /saveProject                                  controllers.TestPlanController.saveProject()
-GET           /loadProject/v1/:idProject                    controllers.TestPlanController.loadProject(idProject: String)
-GET           /loadProjectReport/*projectName               controllers.TestPlanController.loadProjectReport(projectName:String)
-GET           /test                                         controllers.TestPlanController.loadTestReport()
+GET           /testplan/all/:idProject                      controllers.TestPlanController.loadProject(idProject: String)
+GET           /testplan/setup/:idTestPlan                   controllers.TestPlanController.loadTestPlanSetup(idTestPlan: String)
+GET           /testplan/report/:idProject/*testPlanName     controllers.TestPlanController.loadProjectReport(idProject:String, testPlanName:String)
+DELETE        /testplan/delete/:idProject   			 	controllers.TestPlanController.detachTestPlanReport(idProject: String)
+GET           /testplan/test/:pName/:iter/:tName/:idProject controllers.TestPlanController.loadTestReport(pName: String, iter:String, tName: String, idProject:String)
 
 # Ajax routes: Project Controller
 POST          /project                                      controllers.ProjectController.saveProject()

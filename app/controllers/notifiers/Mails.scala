@@ -5,73 +5,57 @@ package controllers.notifiers
 
 import java.util.concurrent.TimeUnit
 
+import play.api.Logger
 import boot.AppBoot
 import play.api.libs.json.JsValue
-import play.api.libs.mailer._
+import com.sendgrid._
 import play.api.mvc.{Action, Controller}
 import com.typesafe.config.ConfigFactory
 
+import java.io.IOException
 import scala.concurrent.{Await}
 import scala.concurrent.duration.Duration
 import scala.util.{Failure, Success}
 
-object MailNotifierController  extends Controller {
-  private val db = AppBoot.db
-  val timeout = Duration(5, TimeUnit.SECONDS)
+object MailNotifierController extends Controller {
 
-  def getDefaultAppMailer = {
-    val mailer = new SMTPMailer(
-      SMTPConfiguration(
-        ConfigFactory.load().getString("toast.mailer.host"),
-        ConfigFactory.load().getInt("toast.mailer.port"),
-        ConfigFactory.load().getBoolean("toast.mailer.ssl"),
-        ConfigFactory.load().getBoolean("toast.mailer.tls"),
-        Some(ConfigFactory.load().getString("toast.mailer.user")),
-        Some(ConfigFactory.load().getString("toast.mailer.password"))
-      )
-    )
-    mailer
+def sendAskForAccountEmail(newAccount: JsValue) = {
+    val login = (newAccount \ "login").as[String]
+    val emailaddress = (newAccount \ "email").as[String]
+    val teamName = (newAccount \ "teamName").as[String]
+    val teamSize = (newAccount \ "teamSize").as[Long] 
+    val projectName = (newAccount \ "projectName").as[String]
+    val projectDescription = (newAccount \ "projectDescription").as[String]
+    
+    val from:Email = new Email("bot@toast-tk.io")
+    val subject:String = login + " Asking for new account"
+    val to:Email = new Email(ConfigFactory.load().getString("toast.mailer.admin"))
+    val content:Content = new Content("text/html", s"""<html><body>
+      |<h3>New account request:</h3>
+      |<h5>Requester Login: $login </h5>
+      |<h5>Requester Email: $emailaddress </h5>
+      |<h5>Team Name : $teamName </h5>
+      |<h5>Team Size : $teamSize </h5>
+      |<h5>Project Name : $projectName </h5>
+      |<h5>Project Description : $projectDescription </h5>
+      |</body></html>""".stripMargin)
+    val mail:Mail = new Mail(from, subject, to, content)
+    val sg:SendGrid = new SendGrid(ConfigFactory.load().getString("toast.mailer.apiKey"))
+    val request:Request = new Request()
+    request.method = Method.POST
+    request.endpoint = "mail/send"
+    request.body = mail.build()
+    val response:Response = sg.api(request)
   }
 
- def sendAskForAccountEmail(newAccount: JsValue) = {
-   val mailer = getDefaultAppMailer
-   Await.ready(db.getAllAdminUsers(), timeout).value.get match {
-     case Failure(e) => throw e
-     case Success(admins) => {
-       val adminEmailSeq = admins.map(admin =>{admin.firstName +" <"+ admin.email +">"})
-       if(!adminEmailSeq.isEmpty){
-         val login = (newAccount \ "login").as[String]
-         val emailaddress = (newAccount \ "email").as[String]
-         val teamName = (newAccount \ "teamName").as[String]
-         val projectName = (newAccount \ "projectName").as[String]
-         val email = Email(
-           login + " Asking for new account",
-           "ToastTk Webapp <" + ConfigFactory.load().getString("toast.mailer.user") + ">",
-           adminEmailSeq,
-           bodyText = Some("Hi Toast admin,"),
-           bodyHtml = Some(
-             s"""<html><body>
-                 |<h3> $login($emailaddress) is asking for a new account for a team called $teamName in order to work on the project $projectName </h3>
-        </body></html>""".stripMargin)
-         )
-         val id = mailer.send(email)
-         id
-       } else {
-         throw new Exception("no admin found")
-       }
-     }
-   }
-  }
-
+  //TODO: add annotation (hostportected)
   def askForAccount = Action(parse.json) { implicit request =>
     val newAccount = request.body
-    println(newAccount.toString())
     try{
-      val id = sendAskForAccountEmail(newAccount)
-      Ok(s"Email $id sent!")
+      sendAskForAccountEmail(newAccount)
+      Ok(s"Email sent!")
     }finally {
-      Status(200)("A client error occurred: ")
+      Status(400)("A client error occurred: ")
     }
-
   }
 }

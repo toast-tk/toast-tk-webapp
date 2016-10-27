@@ -15,7 +15,6 @@ define(["angular"], function(angular) {
         $scope.logout = logout;
         $scope.goToState = goToState;
 
-
         $sideSplit.open({
             templateUrl: 'assets/html/admin/layout/sidebar.view.html',
             controller: 'AdminSidebarMenuCtrl',
@@ -24,6 +23,7 @@ define(["angular"], function(angular) {
             width : "225px",
             position : "left"
         });
+
         $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(isCollapsedRetour){
             $scope.isCollapsed = !$scope.isCollapsed ;
         });
