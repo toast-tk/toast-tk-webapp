@@ -24,7 +24,7 @@ define(["angular"], function (angular) {
             factory.regexMap = {};
 
             factory.opensocket = function(accessToken){
-                if(factory.accessToken === null || factory.socketIsActive === false){
+                if(factory.accessToken === null){
                     factory.accessToken = accessToken;
                     var location = window.location;
                     var port = location.port === "" ? "" : ":" + location.port;
@@ -50,6 +50,7 @@ define(["angular"], function (angular) {
 
                     var resetWS = function(){
                         factory.socketIsActive = false;
+                        factory.accessToken = null;
                     }
 
                     socket.onmessage = function (event) {
