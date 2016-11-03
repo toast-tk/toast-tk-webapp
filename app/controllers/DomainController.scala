@@ -23,7 +23,6 @@ trait InnerDomainController {
   type ActionCategory = ActionItem.ActionCategoryEnum
   type ActionType = ActionItem.ActionTypeEnum
 
-  @JwtProtected
   def typeDescriptor () = Action{
     val jsonDescriptor = Play.application.resourceAsStream("type_descriptor.json")
     val jsonString = IOUtils.toString(jsonDescriptor.get, "UTF-8")

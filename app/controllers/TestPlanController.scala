@@ -42,25 +42,25 @@ case class TestPageBlockMirror(fixtureName: String,
 case class TestPageMirror(id: Option[String],
                           name: Option[String],
                           idScenario: Option[String],
-                          executionTime: Long,
-                          technicalErrorNumber: Int,
-                          testFailureNumber: Int,
-                          testSuccessNumber: Int,
-                          isPreviousIsSuccess: Boolean,
-                          previousExecutionTime: Long,
-                          isSuccess: Boolean,
-                          isFatal: Boolean,
-                          blocks: List[TestPageBlockMirror])
+                          executionTime: Option[Long],
+                          technicalErrorNumber: Option[Int],
+                          testFailureNumber: Option[Int],
+                          testSuccessNumber: Option[Int],
+                          isPreviousIsSuccess: Option[Boolean],
+                          previousExecutionTime: Option[Long],
+                          isSuccess: Option[Boolean],
+                          isFatal: Option[Boolean],
+                          blocks: Option[List[TestPageBlockMirror]])
 
 case class CampaignMirror(id: Option[String],
                           name: String,
-                          scenarii: List[TestPageMirror])
+                          scenarii: Option[List[TestPageMirror]])
 
 case class TestPlanMirror(id: Option[String],
                           name: String,
                           iterations: Option[Short],
                           campaigns: List[CampaignMirror],
-                          creationDate: String,
+                          creationDate: Option[String],
                           project: Option[Project] = None)
 
 object TestLineMirror{
@@ -136,15 +136,15 @@ object TestPageMirror {
       Some(testPage.getIdAsString()),
       Some(testPage.getName()),
       maybeId,
-      testPage.getExecutionTime(),
-      testPage.getTechnicalErrorNumber(),
-      testPage.getTestFailureNumber(),
-      testPage.getTestSuccessNumber(),
-      testPage.isPreviousIsSuccess(),
-      testPage.getPreviousExecutionTime(),
-      testPage.isSuccess(),
-      testPage.isFatal(),
-      flattenedBlocks
+      Some(testPage.getExecutionTime()),
+      Some(testPage.getTechnicalErrorNumber()),
+      Some(testPage.getTestFailureNumber()),
+      Some(testPage.getTestSuccessNumber()),
+      Some(testPage.isPreviousIsSuccess()),
+      Some(testPage.getPreviousExecutionTime()),
+      Some(testPage.isSuccess()),
+      Some(testPage.isFatal()),
+      Some(flattenedBlocks)
     )
   }
 }
@@ -155,23 +155,23 @@ object CampaignMirror {
     for (testPage <- campaign.getTestCases.asScala) {
       scenarios = TestPageMirror.from(testPage) :: scenarios
     }
-    new CampaignMirror(Some(campaign.getIdAsString()), campaign.getName(), scenarios.reverse)
+    new CampaignMirror(Some(campaign.getIdAsString()), campaign.getName(), Some(scenarios.reverse))
   }
 }
 
 object TestPlanMirror{
   def from(testPlanImpl: TestPlanImpl):TestPlanMirror = {
-    var campaignsMirror = List[CampaignMirror]()
+    var campaignsMirrors = List[CampaignMirror]()
     val campaigns = testPlanImpl.getCampaigns().asScala
     for (campaign <- campaigns) {
-      campaignsMirror = CampaignMirror.from(campaign) :: campaignsMirror
+      campaignsMirrors = CampaignMirror.from(campaign) :: campaignsMirrors
     }
     val format = new SimpleDateFormat("dd/MM/yyyy hh:mm")
     new TestPlanMirror(Some(testPlanImpl.getId().toString()),
       testPlanImpl.getName(),
       Some(testPlanImpl.getIteration()),
-      campaignsMirror,
-      format.format(testPlanImpl.getCreationDate())
+      campaignsMirrors.reverse,
+      Some(format.format(testPlanImpl.getCreationDate()))
     )
   }
 }
@@ -229,7 +229,8 @@ object TestPlanController  extends Controller {
         val campaign = new Campaign()
         campaign.setName(cpgn.name)
         val testPageList = new java.util.ArrayList[ITestPage]()
-        val testPages:List[Option[ITestPage]] = for (wrapper <- cpgn.scenarii) yield {
+        val scenarios = cpgn.scenarii.getOrElse(List())
+        val testPages:List[Option[ITestPage]] = for (wrapper <- scenarios) yield {
             wrapper.idScenario match {
               case None => {
                 Await.result(db.findScenario(wrapper.name.get, project).map{
@@ -303,12 +304,14 @@ object TestPlanController  extends Controller {
       case testPlan: TestPlanMirror => {
         testPlan.id match {
           case None => {
-            testPlanService.saveTemplate(tranformTestPlan(testPlan))
-            Ok("Test Plan saved !")
+            val key = testPlanService.saveTemplate(tranformTestPlan(testPlan))
+            val savedTestPlan = DAOJavaWrapper.testPlanService.findTestPlanById(key.getId().toString())
+            Ok(Json.toJson(TestPlanMirror.from(savedTestPlan)))
           }
           case Some(id) => {
-            testPlanService.updateTemplateFromTestPlan(tranformTestPlan(testPlan))
-            Ok("Test Plan updated !")
+            val updatedTestPlan = testPlanService.updateTemplateFromTestPlan(tranformTestPlan(testPlan))
+            val savedTestPlan = testPlanService.updateTemplateFromTestPlan(tranformTestPlan(testPlan))
+            Ok(Json.toJson(TestPlanMirror.from(updatedTestPlan.asInstanceOf[TestPlanImpl])))
           }
         }
       }

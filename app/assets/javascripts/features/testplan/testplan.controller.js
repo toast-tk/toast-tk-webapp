@@ -26,6 +26,17 @@ define(["angular"], function (angular) {
                 $state.go("layout.campaign.report", {"idTestPlan": selectedProject.id, "reportName": selectedProject.name});
             }
 
+            $scope.addProjectBlock = function () {
+                var newTestPlan = {name: "new_test_plan", campaigns: []};
+                newTestPlan.project = $scope.defaultProject;
+                newTestPlan.creationDate = new Date();
+                playRoutes.controllers.TestPlanController.saveProject().post(newTestPlan).then(function (response) {
+                    if(angular.isObject(response.data)){
+                        $scope.projects.push(response.data);
+                    }
+                });
+            }
+
             $scope.deleteTestPlan = function(){
                 if($scope.selectedProject){
                     playRoutes.controllers.TestPlanController.detachTestPlanReport($scope.selectedProject.id).delete().then(function (response) {

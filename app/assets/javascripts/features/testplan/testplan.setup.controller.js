@@ -13,10 +13,6 @@ define(["angular"], function (angular) {
                 return !angular.isDefined(project.id);
             }
 
-            $scope.addProjectBlock = function () {
-                $scope.projects.push({name: "New Test Plan", campaigns: []});
-            }
-
             $scope.addCampaignToProject = function (project) {
                 project.campaigns.push({name: "New Campaign", scenarii: []});
             }
@@ -56,6 +52,11 @@ define(["angular"], function (angular) {
             }
 
             function __init__() {
+                playRoutes.controllers.ScenarioController.loadScenarii($scope.defaultProject._id).get().then(function (response) {
+                    var data = response.data || [];
+                    $scope.scenarii = data;
+                });
+
                 playRoutes.controllers.TestPlanController.loadTestPlanSetup($stateParams.idTestPlan).get().then(function (response) {
                     var data = response.data || [];
                     $scope.selectedProject = data;

@@ -39,11 +39,11 @@ object DAOJavaWrapper {
             val mongoDBHost = params.hosts(0)._1
             val mongoDBPort = params.hosts(0)._2
             val mongoUserDB = params.db.getOrElse("play_db")
-            val credential: MongoCredential = params.authenticate.get match {
-              case auth:Authenticate => {
+            val credential: MongoCredential = params.authenticate match {
+              case Some(auth) => {
                 MongoCredential.createMongoCRCredential(auth.user, mongoUserDB, auth.password.toCharArray())
               }
-              case _ => null
+              case None => null
             }
             DAOManager.init(mongoDBHost, mongoDBPort, mongoUserDB, credential) 
             new MongoModule(mongoDBHost, mongoDBPort, mongoUserDB, credential)
