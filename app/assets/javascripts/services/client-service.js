@@ -24,7 +24,7 @@ define(["angular"], function (angular) {
             factory.regexMap = {};
 
             factory.opensocket = function(accessToken){
-                if(factory.accessToken === null || factory.socketIsActive = false){
+                if(factory.accessToken === null || factory.socketIsActive === false){
                     factory.accessToken = accessToken;
                     var location = window.location;
                     var port = location.port === "" ? "" : ":" + location.port;
