@@ -76,7 +76,14 @@
     opacity: 0;
 }
 
-#testplan .float-button{
+#testplan .float-button {
     position: absolute;
     right: 7px;
+}
+
+#testplan .project-title {
+    cursor: pointer;
+    border: none;
+    color: #222;
+    padding: 6px 6px;
 }

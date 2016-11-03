@@ -7,19 +7,19 @@ define(["angular"], function (angular) {
             $scope.scenarioTypeDropdownLabel = "Select type ..";
             
             $scope.closeModal = function(){
-             $uibModalInstance.dismiss();
-         }
+                $uibModalInstance.dismiss();
+            }
 
-         $scope.createNewObject = function(){
-            newObject.name = $scope.newObjectName;
-            $uibModalInstance.close(newObject);
-        }
+            $scope.createNewObject = function(){
+                newObject.name = $scope.newObjectName;
+                $uibModalInstance.close(newObject);
+            }
 
-        $scope.swapToType = function(type){
-            $scope.scenarioTypeDropdownLabel = type;
-            newObject.type = type;
-            newObject.image = ICONS[type]; 
+            $scope.swapToType = function(type){
+                $scope.scenarioTypeDropdownLabel = type;
+                newObject.type = type;
+                newObject.image = ICONS[type]; 
+            }
         }
-    }
-};
+    };
 });

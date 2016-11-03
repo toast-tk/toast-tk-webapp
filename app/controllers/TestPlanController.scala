@@ -24,14 +24,14 @@ import scala.collection.JavaConverters._
 
 
 
-case class TestLineMirror(test:String,
-                          expected:String,
-                          testResultKind:String,
-                          testResult: String,
-                          contextualSentence: String,
-                          comment: String,
+case class TestLineMirror(test:Option[String],
+                          expected:Option[String],
+                          testResultKind:Option[String],
+                          testResult: Option[String],
+                          contextualSentence: Option[String],
+                          comment: Option[String],
                           screenshot: Option[String] = None,
-                          executionTime: Long)
+                          executionTime: Option[Long])
 
 case class TestPageBlockMirror(fixtureName: String,
                                technicalErrorNumber: Int,
@@ -68,15 +68,15 @@ object TestLineMirror{
     val testResultKind = if(line.getTestResult() == null) "None" else getResultKindAsString(line.getTestResult().getResultKind())
     val testResult = if(line.getTestResult() == null) "None" else line.getTestResult().getMessage()
     val sentence = if(line.getTestResult() == null) line.getTest() else line.getTestResult().getContextualTestSentence()
-    val screenshot = if(line.getTestResult == null) None else if (line.getTestResult().getScreenShot() == null) None else Some(line.getTestResult().getScreenShot())
-    new TestLineMirror(line.getTest(),
-      line.getExpected(),
-      testResultKind,
-      testResult,
-      sentence,
-      line.getComment(),
-      screenshot,
-      line.getExecutionTime())
+    val maybeScreenshot = if(line.getTestResult == null) None else if (line.getTestResult().getScreenShot() == null) None else Some(line.getTestResult().getScreenShot())
+    new TestLineMirror(Some(line.getTest()),
+                        Some(line.getExpected()),
+                        Some(testResultKind),
+                        Some(testResult),
+                        Some(sentence),
+                        Some(line.getComment()),
+                        maybeScreenshot,
+                        Some(line.getExecutionTime()))
   }
 
   private def getResultKindAsString(resultKind: ResultKind):String = {

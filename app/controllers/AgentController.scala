@@ -40,9 +40,6 @@ object AgentController extends Controller{
   implicit val recordSentenceFormat = Json.format[RecordedSentence]
   implicit val agentInfoFormat = Json.format[AgentInformation]
   implicit val wsAgentInfoFormatter = FrameFormatter.jsonFrame[AgentInformation]
-
-  val mongoCacheWrapper:MongoRepositoryCacheWrapper = new MongoRepositoryCacheWrapper(DAOJavaWrapper.repositoryDaoService)
-  val interpretationProvider:InterpretationProvider = new InterpretationProvider(mongoCacheWrapper)
   val db: MongoConnector = AppBoot.db
 
   /**
@@ -174,14 +171,14 @@ object AgentController extends Controller{
   @ApiKeyProtected
   def subscribe(): Action[JsValue] = Action(parse.json) {
     implicit request => {
+      Logger.info("Processing new subscription request from host: " + request.host)
       request.body.validate[AgentInformation].map {
         case agentInformation:AgentInformation => {
               agents += ((agentInformation.token, agentInformation))
-              val agentInformationToPublish = AgentInformation(agentInformation.token, agentInformation.host, Some(true))
+              val agentInformationToPublish = AgentInformation(agentInformation.token, request.host, Some(true))
               users(agentInformation.token)._2.push(agentInformationToPublish)
-              Logger.info(s"Agent registration accepted for token -> ${agentInformation.token}")
+              Logger.info(s"Agent registration accepted for token -> ${agentInformation.token} - @host(${request.host})")
               Ok("driver registered: " + agentInformation.host)
-
           }
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toJson(e))
@@ -251,6 +248,8 @@ object AgentController extends Controller{
   }
 
   private def buildFormat(mappedEventRecord:MappedWebEventRecord, project: Project): Option[RecordedSentence] = {
+    val mongoCacheWrapper:MongoRepositoryCacheWrapper = new MongoRepositoryCacheWrapper(DAOJavaWrapper.repositoryDaoService)
+    val interpretationProvider:InterpretationProvider = new InterpretationProvider(mongoCacheWrapper)
     val interpret:IActionInterpret  = interpretationProvider.getSentenceBuilder(mappedEventRecord.component.getOrElse(""));
     interpret match {
       case null => None

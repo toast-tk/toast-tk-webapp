@@ -75,7 +75,7 @@ define(["angular"], function (angular) {
                 for(var i=0; i < testPlan.campaigns.length; i++) {
                     var campaign = testPlan.campaigns[i];
                     for(var j=0; j < campaign.scenarii.length; j++) {
-                        total = total + campaign.scenarii[i].executionTime;
+                        total = total + campaign.scenarii[j].executionTime;
                     }
                 }
                 return total;
