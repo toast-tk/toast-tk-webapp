@@ -123,6 +123,7 @@
             "componentsDir" : './directives/components',
             "sortable": "./libs/sortable",
             "homeCtrl": ['./features/home'],
+            "AskForAccountCtrl" : ['auth/askforaccount.controller'],
             "loginCtrl" : ['auth/login'],
             "MainProjectCtrl": ['auth/projects'],
             "loginService" : ['auth/login.service'],
@@ -160,7 +161,7 @@
         }
     });
 
-    require(["angular", "playRoutes",  "routerConfig", "configConfig", "treeLayoutService" ,
+    require(["angular", "playRoutes",  "routerConfig", "configConfig", "treeLayoutService" , "AskForAccountCtrl",
             "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl",
             "RepositoryCtrl", "ScenarioCtrl", "TestPlanCtrl",
             "TestPlanReportCtrl","TestPlanSetupCtrl",
@@ -178,7 +179,7 @@
             "xeditable", "ui.router", "angular-animate", "sidesplit",
             "angular-toastr", "webix",  "ngTagsInput", "chartUtils", 'angular'],
 
-        function(a, b, routerConfig, configConfig, treeLayoutService,
+        function(a, b, routerConfig, configConfig, treeLayoutService, AskForAccountCtrl,
                  login, loginService, loginResolverService, settingsCtrl,
                  newSettingsModalCtrl, repository, scenario, tp, tpReport, tpSetup,
                  utilsScenarioService, home, sidebarmenu, layout, layoutService,
@@ -198,7 +199,10 @@
                     "toastr","ngTagsInput", "angularjs-dropdown-multiselect",
                     "chart.js", "bootstrapLightbox"]);
 
+            app.controller("AskForAccountCtrl", AskForAccountCtrl.AskForAccountCtrl);
+
             app.controller("LoginCtrl", login.LoginCtrl);
+
             app.controller("MainProjectCtrl", MainProjectCtrl.MainProjectCtrl);
             app.controller("MainCtrl", home.MainCtrl);
 

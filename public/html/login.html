@@ -1,5 +1,5 @@
     <div id="login" class="vertical-offset-100 login-page-div">
-    	<div class="login-box">
+    	<div class="login-box fade" ng-hide="isHiddenLoginForm===true">
             <div>
                  <img class="toast-logo" src="assets/images/toast700w.png">
             </div>
@@ -20,5 +20,9 @@
                     </div>
                 </div>
             </div>
+            <div  class="alert-success btn btn-lg btn-block" ng-click="isHiddenLoginForm=true" role="alert">
+                Ask for account and create your team
+        </div>
 	    </div>
+        <div ng-include="'assets/html/askforaccount.html'" ng-controller="AskForAccountCtrl" class="fade" ng-show="isHiddenLoginForm===true"></div>
 </div>

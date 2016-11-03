@@ -1,3 +1,4 @@
+var askForAccountCtrl = require("AskForAccountCtrl");
 var login = require("loginCtrl");
 var home = require("homeCtrl");
 var scenario = require("scenarioCtrl");
@@ -28,6 +29,7 @@ var app = angular.module("app",
   "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap",
       "xeditable", "sidesplit", "webix","angucomplete-alt","toastr"]);
 
+app.controller("askForAccountCtrl", askForAccountCtrl.AskForAccountCtrl);
 app.controller("LoginCtrl", login.LoginCtrl);
 app.controller("MainCtrl", home.MainCtrl);
 

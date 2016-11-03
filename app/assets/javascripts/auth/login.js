@@ -7,6 +7,7 @@ define(["angular","CryptoJS/sha256"], function(angular, SHA256) {
             $scope.user = {};
             $scope.loggedIn = true;
             $rootScope.user = {};
+            $scope.isHiddenLoginForm = false;
             $scope.login = function(credentials) {
 
                 var creds = {

@@ -23,17 +23,17 @@ import controllers.mongo.users._
 
 object MongoConnector extends App {
   def apply() = {
-    new MongoConnector(new MongoDriver(), "mongodb://localhost:27017/play_db", "play_db")
+    new MongoConnector(new MongoDriver(), "mongodb://localhost:27017/play_db")
   }
-  def apply(uri:String, dbName:String) = {
-    new MongoConnector(new MongoDriver(), uri, dbName)
+  def apply(uri:String) = {
+    new MongoConnector(new MongoDriver(), uri)
   }
 }
 
-case class MongoConnector(driver: MongoDriver, mongoUri: String, database: String){
+case class MongoConnector(driver: MongoDriver, mongoUri: String){
 
   val db = MongoConnection.parseURI(mongoUri).map { parsedUri =>
-    driver.connection(parsedUri)(database)
+    driver.connection(parsedUri)(parsedUri.db.get)
   }.get
 
   val userCollection = UserCollection(open_collection("users"))
@@ -85,6 +85,10 @@ case class MongoConnector(driver: MongoDriver, mongoUri: String, database: Strin
 
   def getAllUsers() : Future[List[User]] ={
     userCollection.getAllUsers()
+  }
+
+  def getAllAdminUsers(): Future[List[User]] = {
+    userCollection.getAllUsersBy(BSONDocument("isAdmin" -> true))
   }
 
   def editUser(id: String): Future[Option[User]] = {

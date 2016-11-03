@@ -157,9 +157,9 @@ object AppBoot extends WithFilters(AuthorisationFilter) {
     val conf: play.api.Configuration = app.configuration
 
     val mongoUrl = conf.getString(KeyMongoDbUrl).getOrElse(throw new RuntimeException(s"$KeyMongoDbUrl is missing in your configuration"))
-    val mongoDb = conf.getString( "db.mongo.userDb").getOrElse(throw new RuntimeException(s"db.mongo.userDb is missing in your configuration"))
     Logger.info(s"[+] Connecting to mongoUrl: $mongoUrl")
-    db = MongoConnector(mongoUrl, mongoDb)
+
+    db = MongoConnector(mongoUrl)
 
     db match {
       case conn: MongoConnector => {

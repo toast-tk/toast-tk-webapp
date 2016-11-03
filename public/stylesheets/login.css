@@ -24,3 +24,27 @@
 #login:has(> body){
     margin-top: -50px !important; 
 }
+
+
+#registration textarea,
+#registration input[type="text"],
+#registration input[type="email"],
+#registration input[type="password"],
+#registration input[type="number"]{
+    border: 1px solid #cdd2d4;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: .5em;
+    max-width: 400px;
+    width: 100%;
+}
+
+input.ng-dirty.ng-invalid-required,
+input.ng-dirty.ng-valid-required.ng-invalid.ng-touched {
+    border-color: #f04124;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+}
+.error-label{
+    color: #f04124;
+}
