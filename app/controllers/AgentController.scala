@@ -96,7 +96,6 @@ object AgentController extends Controller{
       //open websocket only for local host !
       //TODO: check request host !
 
-
       maybeToken match {
         case Some(userTokenValue) => {
           Logger.info(s"New incoming websocket connection <- token -> $userTokenValue")
@@ -175,8 +174,10 @@ object AgentController extends Controller{
       request.body.validate[AgentInformation].map {
         case agentInformation:AgentInformation => {
               agents += ((agentInformation.token, agentInformation))
-              val agentInformationToPublish = AgentInformation(agentInformation.token, request.host, Some(true))
-              users(agentInformation.token)._2.push(agentInformationToPublish)
+              if(users contains agentInformation.token) {
+                val agentInformationToPublish = AgentInformation(agentInformation.token, request.host, Some(true))
+                users(agentInformation.token)._2.push(agentInformationToPublish)
+              }
               Logger.info(s"Agent registration accepted for token -> ${agentInformation.token} - @host(${request.host})")
               Ok("driver registered: " + agentInformation.host)
           }
