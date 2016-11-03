@@ -44,7 +44,7 @@ object AgentController extends Controller{
 
   /**
    * 5 seconds agent checkAlive
-   */
+   
   Future {
     while (true) {
       Thread.sleep(5 * 1000)
@@ -77,7 +77,7 @@ object AgentController extends Controller{
         }
       }
     }
-  }
+  }*/
 
   private def unregisterAgent(token: String, host: String): Unit ={
     agents -= token
