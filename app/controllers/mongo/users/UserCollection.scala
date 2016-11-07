@@ -180,6 +180,7 @@ case class UserCollection(collection: BSONCollection){
         firstName = ConfigFactory.load().getString("toast.user.firstName"),
         lastName = ConfigFactory.load().getString("toast.user.lastName"),
         email = ConfigFactory.load().getString("toast.user.email"),
+        token = Some(BearerTokenGenerator.generateToken()),
         teams = Some(List(team)),
         lastConnection = None
       )

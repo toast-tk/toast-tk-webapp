@@ -53,8 +53,8 @@ class ProjectControllerSpec extends PlaySpec
       val future: Future[List[Project]] = AppBoot.db.projectCollection.list()
       whenReady(future) {
         result => {
-          result.length mustEqual 1
-          result.head.name mustEqual "Project"
+          result.length mustEqual 2
+          result.head.name mustEqual "default"
         }
       }
     }

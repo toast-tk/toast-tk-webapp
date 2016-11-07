@@ -40,7 +40,6 @@ class DriverControllerSpec extends PlaySpec
   "Driver Controller" should {
     "1: be able to find a user token project through db connector" in {
       val adminUser = Await.result(AppBoot.db.getAllUsers(), Duration.Inf)(0)
-      println("token -> " + adminUser.token)
       adminUser.token must not be None
     }
   }

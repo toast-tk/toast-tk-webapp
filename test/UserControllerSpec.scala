@@ -36,7 +36,7 @@ class UserControllerSpec extends PlaySpec
     mongoProps = mongoStart(27017, Version.V3_3_1)
     val connector: MongoConnector = MongoConnector()
     AppBoot.db = connector;
-    Await.ready(connector.init(), Duration.Inf).value.get
+    Await.result(Await.result(Await.result(connector.init(), Duration.Inf), Duration.Inf), Duration.Inf)
   }
 
   "UserController" should {

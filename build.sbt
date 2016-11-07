@@ -33,6 +33,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-mailer" % "4.0.0",
   "io.megl" % "play-json-extra_2.11" % "2.4.3",
   "com.github.simplyscala" %% "scalatest-embedmongo" % "0.2.2" % "test",
+  "org.seleniumhq.selenium" % "htmlunit-driver" % "2.23.1" % "test",
+  "org.seleniumhq.selenium" % "selenium-support" % "3.0.1" % "test",
   "com.sendgrid"%"sendgrid-java"%"3.0.9"
 )
 
