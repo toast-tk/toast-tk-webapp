@@ -37,6 +37,6 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default"  ng-click="closeModal()">Close</button>
-				<button type="button" class="btn btn-primary" ng-click="createNewNode()">Create</button>
+				<button type="button" class="btn btn-primary" ng-disable="scenarioTypeDropdownLabel != ('web' || 'service' || 'swing') '' " ng-click="createNewNode()">Create</button>
 			</div>
 		</div><!-- /.modal-content -->

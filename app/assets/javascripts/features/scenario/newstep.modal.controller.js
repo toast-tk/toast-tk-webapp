@@ -11,7 +11,7 @@ define(["angular"], function (angular) {
                 newNode.data = [];
             }
 
-            $scope.scenarioTypeDropdownLabel = "Select type ..";
+            $scope.scenarioTypeDropdownLabel = "web";
 
             $scope.closeModal = closeModal ;
             function closeModal(){
