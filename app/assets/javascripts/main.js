@@ -2,6 +2,7 @@
     "use strict";
 
     requirejs.config({
+        waitSeconds : 30,
         packages: [
             {
                 name: 'CryptoJS',
