@@ -1,6 +1,6 @@
 name := "toast-tk-webapp"
 
-version := "1.3-rc4"
+version := "0.1.4"
 
 scalaVersion := "2.11.8"
 
