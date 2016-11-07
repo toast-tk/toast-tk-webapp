@@ -21,9 +21,8 @@ object MailNotifierController extends Controller {
 
 def sendAskForAccountEmail(newAccount: JsValue) = {
     val emailaddress = (newAccount \ "email").as[String]
-    
     val from:Email = new Email("toast-request-bot@toast-tk.io")
-    val subject:String = login + " Asking for new account"
+    val subject:String = "New account request"
     val to:Email = new Email(ConfigFactory.load().getString("toast.mailer.admin"))
     val content:Content = new Content("text/html", s"""<html><body>
       |<h3>New account request:</h3>
