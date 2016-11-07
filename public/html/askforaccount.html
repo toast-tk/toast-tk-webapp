@@ -20,37 +20,14 @@
                         <fieldset>
                             <div class="form-group">
                                 <div>
-                                <label for="Newlogin" style="float: left; font-size: 18px;"
-                                       ng-class="{'error-label' :(newAccountForm.Newlogin.$error.required || newAccountForm.Newlogin.$invalid) && !newAccountForm.Newlogin.$pristine}">
-                                    Login*
-                                </label>
-                                <input type="text" ng-model="newaccount.login" name="Newlogin" id="Newlogin" class="form-control" ng-class="{'has-error': newAccountForm.Newlogin.$error.required}" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  SuperToaster" required>
+                                
                                 <label for="NewEmail" style="float: left; font-size: 18px;"
                                        ng-class="{'error-label' :(newAccountForm.NewEmail.$error.required || newAccountForm.NewEmail.$invalid) && newAccountForm.NewEmail.$touched}">
                                     Email*
                                 </label>
                                 <input type="email" ng-model="newaccount.email" name="NewEmail" id="NewEmail" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  email@toas-tk.io" required>
                             </div>
-                            <div class="form-group">
-                                <label for="newTeamName"  style="float: left; font-size: 18px;"
-                                       ng-class="{'error-label' :(newAccountForm.newTeamName.$error.required || newAccountForm.newTeamName.$invalid) && !newAccountForm.newTeamName.$pristine}">
-                                    What do you want to call your team?*
-                                </label>
-                                <input type="text" ng-model="newaccount.teamName" name="newTeamName" id="newTeamName" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  Super Team" required>
-                                <label for="newTeamSize"  style="float: left; font-size: 18px;">What size is your Team?</label>
-                                <input type="number"  min="1" max="1000" ng-model="newaccount.teamSize" name="newTeamSize" id="newTeamSize" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="NewProjectName" style="float: left; font-size: 18px;"
-                                       ng-class="{'error-label' :(newAccountForm.newProjectName.$error.required || newAccountForm.newProjectName.$invalid) && !newAccountForm.newProjectName.$pristine}">
-                                    Every team has a project*
-                                </label>
-                                <input type="text" ng-model="newaccount.projectName" name="newProjectName" id="NewProjectName" class="form-control" tabindex="0" autocorrect="off" spellcheck="false" autocapitalize="off" autofocus="" placeholder="ex.,  Super Project" required>
-                                <label for="NewProjectDescription"  style="float: left; font-size: 18px;">Description</label>
-                                <textarea type="text"  ng-model="newaccount.projectDescription" name="NewProjectDescription" id="NewProjectDescription" class="form-control" tabindex="0" placeholder="ex.,  A project for ..">
-                                    </textarea>
-                            </div>
-                            <input id="signup" tabindex="0" type="submit" class="btn btn-lg btn-primary btn-block" value="Go!">
+                            <input id="signup" tabindex="0" type="submit" class="btn btn-lg btn-primary btn-block" value="Ask for some Toasts!">
                         </fieldset>
                     </form>
                 </div>

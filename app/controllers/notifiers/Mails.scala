@@ -20,24 +20,14 @@ import scala.util.{Failure, Success}
 object MailNotifierController extends Controller {
 
 def sendAskForAccountEmail(newAccount: JsValue) = {
-    val login = (newAccount \ "login").as[String]
     val emailaddress = (newAccount \ "email").as[String]
-    val teamName = (newAccount \ "teamName").as[String]
-    val teamSize = (newAccount \ "teamSize").as[Long] 
-    val projectName = (newAccount \ "projectName").as[String]
-    val projectDescription = (newAccount \ "projectDescription").as[String]
     
-    val from:Email = new Email("bot@toast-tk.io")
+    val from:Email = new Email("toast-request-bot@toast-tk.io")
     val subject:String = login + " Asking for new account"
     val to:Email = new Email(ConfigFactory.load().getString("toast.mailer.admin"))
     val content:Content = new Content("text/html", s"""<html><body>
       |<h3>New account request:</h3>
-      |<h5>Requester Login: $login </h5>
       |<h5>Requester Email: $emailaddress </h5>
-      |<h5>Team Name : $teamName </h5>
-      |<h5>Team Size : $teamSize </h5>
-      |<h5>Project Name : $projectName </h5>
-      |<h5>Project Description : $projectDescription </h5>
       |</body></html>""".stripMargin)
     val mail:Mail = new Mail(from, subject, to, content)
     val sg:SendGrid = new SendGrid(ConfigFactory.load().getString("toast.mailer.apiKey"))
