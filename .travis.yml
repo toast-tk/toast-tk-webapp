@@ -11,6 +11,8 @@ install:
    - npm install
    - node ./node_modules/bower/bin/bower install
    - node ./node_modules/gulp/bin/gulp
+   - pwd
+   - ls -al ./libs
    - mv -f ./libs ./app/assets
 before_script:
    - node ./node_modules/karma/bin/karma start ./app/assets/karma.conf.js --log-level debug --single-run
