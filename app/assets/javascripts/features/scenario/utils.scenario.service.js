@@ -50,7 +50,9 @@ define(["angular"], function (angular) {
         console.log("debug: scenario -> " + scenario);
         console.log("debug: row -> " + row);
         console.log("debug: row.patterns -> " + row.patterns);
+        console.log("debug: is defined -> " + angular.isDefined(row.patterns));
         console.log("debug: angular -> " + angular);
+        console.log("debug: startswith -> " + row.patterns.startsWith);
         if(angular.isDefined(row.patterns) && row.patterns.startsWith("@service")){
           return "service";
         }
