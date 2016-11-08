@@ -107,10 +107,14 @@ _nS('controllers.ProjectController'); _root.controllers.ProjectController.loadPr
         function() {
           return _wA({method:"GET", url:"/" + "loadProject"})
         }
-      
-_nS('controllers.ProjectController'); _root.controllers.ProjectController.loadProjectReport = 
-        function(projectName) {
-          return _wA({method:"GET", url:"/" + "loadProjectReport/" + (function(k,v) {return v})("projectName", encodeURIComponent(projectName))})
+ _nS('controllers.ProjectController'); _root.controllers.ProjectController.loadProject = 
+        function() {
+          return _wA({method:"GET", url:"/" + "loadProject"})
+        }
+
+_nS('controllers.AgentController'); _root.controllers.AgentController.getAgents = 
+        function(userToken) {
+          return _wA({method:"GET", url:"/" + "agent/" + (function(k,v) {return v})("userToken", encodeURIComponent(userToken))})
         }
       
 _nS('controllers.Application'); _root.controllers.Application.loadEnvConfiguration = 

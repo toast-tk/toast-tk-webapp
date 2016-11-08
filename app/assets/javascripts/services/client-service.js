@@ -215,8 +215,6 @@ define(["angular"], function (angular) {
                 return null;
             }
 
-            factory.init();
-
             return factory;
         }]);
 });

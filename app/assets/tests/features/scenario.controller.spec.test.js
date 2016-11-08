@@ -1,19 +1,22 @@
-define(['angular','angular-mocks', 'scenarioCtrl','features','treeLayoutService'], function(angular,angularMocks, scenarioCtrl,features,treeLayoutService) {
+define(['angular','angular-mocks', 'scenarioCtrl','features','treeLayoutService'], 
+    function(angular,angularMocks, scenarioCtrl,features,treeLayoutService) {
     'use strict';
     describe('ScenarioCtrl', function() {
         console.log("---- Starting : ScenarioCtrl test ----");
-        var $controller,
-        $httpBackend,
-        displayParams,
-        scope,
-        sentSaveScenarioData;
+        var $controller, $httpBackend, displayParams, scope, sentSaveScenarioData;
 
-    jasmine.getJSONFixtures().fixturesPath='base/mocks';
-    var untemplatedScenario = getJSONFixture("untemplatedScenario.json");
-    var typeDescriptor = getJSONFixture("typeDescriptor.json");
-    var CtxSentences  = getJSONFixture("ctxSentences.json");
+        jasmine.getJSONFixtures().fixturesPath='base/mocks';
+        var untemplatedScenario = getJSONFixture("untemplatedScenario.json");
+        var typeDescriptor = getJSONFixture("typeDescriptor.json");
+        var CtxSentences  = getJSONFixture("ctxSentences.json");
 
-
+        beforeEach(module(function($provide) {
+            $provide.constant('defaultProject', {
+                name: 'default',
+                id: 'project-id',
+                description: 'project mock'
+            });
+        }));
         beforeEach(module('play.routing'));
         beforeEach(module('ui.bootstrap'));
         beforeEach(module('sidesplit'));
@@ -27,9 +30,11 @@ define(['angular','angular-mocks', 'scenarioCtrl','features','treeLayoutService'
             $httpBackend = _$httpBackend_;
 
             angular.forEach(["swing","service","web"],function(type){
-                        $httpBackend.when("GET", "/loadCtxSentences/"+ type).respond(CtxSentences[type]);   
+                $httpBackend.when("GET", "/loadCtxSentences/"+ type).respond(CtxSentences[type]);   
             })
+            $httpBackend.when("GET", "/agent/null").respond([{isAlive: true, host: "localhost", token:"api-token"}]);
             $httpBackend.when("GET", "/typeDescriptor").respond(typeDescriptor);
+            $httpBackend.when("GET", "assets/html/login.html").respond("<html></html>");
             $httpBackend.when("GET", "/loadScenarii").respond([untemplatedScenario]);
             $httpBackend.whenPOST('/saveScenarii').respond(function(method, url, data, headers) {
                 sentSaveScenarioData = JSON.parse(data) ;

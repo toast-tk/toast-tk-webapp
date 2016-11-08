@@ -1,12 +1,20 @@
-define(['angular','angular-mocks', 'addUserCtrl'], function(angular,angularMocks, AddUserCtrl) {
+define(['angular','angular-mocks', 'features', 'addUserCtrl'], function(angular,angularMocks,features, AddUserCtrl) {
     'use strict';
 describe('AddUserCtrl', function() {
     console.log("---- Starting : AddUserCtrl test ----");
-    var $controller,
-    displayParams,
-    scope,
-    DashListService;
+    var $controller, displayParams, scope, DashListService;
 
+    beforeEach(module(function($provide) {
+        $provide.constant('defaultProject', {
+            name: 'default',
+            id: 'project-id',
+            description: 'project mock'
+        });
+    }));
+
+
+    beforeEach(module('toastr'));
+    beforeEach(module('play.routing'));
     beforeEach(inject(function(_$controller_, $rootScope){
         $controller = _$controller_;
         scope = $rootScope.$new();
@@ -14,8 +22,9 @@ describe('AddUserCtrl', function() {
     }));
 
     describe('verify exact scope variable', function() {
-        it('says hello world!', function () {
-            expect(scope.greeting).toEqual("Hello World!");
+        it('initialise scope variables!', function () {
+            expect(scope.isNewUserFormSubmitted).toEqual(false);
+            expect(scope.newUser).toEqual({});
         });
     });
 

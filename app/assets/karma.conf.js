@@ -36,14 +36,18 @@ module.exports = function(config) {
         {pattern: 'javascripts/**/*.js', included: false},
         {pattern: 'javascripts/**/**/*.js', included: false},
         {pattern: 'javascripts/main.app.js', included: false},
-
-        //'../../public/html/**/*.html',
+        {pattern: 'assets/html/login.html', atched: false, included: false, served: true},
         'tests/test-main.js',
         {pattern: 'mocks/*.json', watched: true, served: true, included: false},
         {pattern: 'tests/*test.js', included: false},
         {pattern: 'tests/**/*test.js', included: false}
+
+  
     ],
 
+    proxies: {
+      'assets/html/login.html': '../../public/html/login.html'
+    },
 
     // list of files to exclude
     exclude: [

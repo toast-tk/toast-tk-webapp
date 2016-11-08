@@ -17,6 +17,13 @@ requirejs.config({
     // Karma serves files from '/base'
     baseUrl: '/base',
     waitSeconds: 200,
+    packages: [
+    {
+            name: 'CryptoJS',
+            location: '../base/libs/crypto-js',
+            main: 'index'
+        }
+    ],
     paths: {
         'jquery': '../base/libs/jquery/dist/jquery',
         "jquery-ui" : "../base/libs/jquery-ui/jquery-ui",
@@ -37,6 +44,7 @@ requirejs.config({
         "ui.bootstrap": ['../base/libs/angular-bootstrap/ui-bootstrap-tpls.min'],
         "ngProgress" : "../base/libs/ngprogress/build/ngProgress.min",
         "xeditable": ['../base/libs/angular-xeditable/dist/js/xeditable.min'],
+        "jwtClient" : ['../base/libs/jwt-client/jwt-client'],
         
         'angular-mocks': '../base/libs/angular-mocks/angular-mocks',
         'jasmine-jquery': '../base/libs/jasmine-jquery/lib/jasmine-jquery',
@@ -61,13 +69,17 @@ requirejs.config({
         "sidebarmenu": ['../base/javascripts/features/layout/sidebar.menu.controller'],
         "layout": ['../base/javascripts/features/layout/layout.controller'],
         "layoutService" :  ['../base/javascripts/features/layout/layout.service'],
+        "chartUtils" :  ['./javascripts/services/chart-utils'],
         "treeLayoutService": ['../base/javascripts/features/layout/tree.layout.service'],
         "homeCtrl": ['../base/javascripts/features/home'],
+        "AskForAccountCtrl" : ['../base/javascripts/auth/askforaccount.controller'],
         "SettingsCtrl" :  ['../base/javascripts/features/settings/settings.controller'],
         "newSettingsModalCtrl": ["../base/javascripts/features/settings/newSettings.modal.controller"],
         "RepositoryCtrl": ["../base/javascripts/features/repository/repository.controller"],
         "ScenarioCtrl": ["../base/javascripts/features/scenario/scenario.controller"],
-        "CampaignCtrl": ["../base/javascripts/features/campaign/campaign.controller"],
+        "TestPlanCtrl": ["../base/javascripts/features/testplan/testplan.controller"],
+        "TestPlanReportCtrl": ["../base/javascripts/features/testplan/testplan.report.controller"],
+        "TestPlanSetupCtrl": ["../base/javascripts/features/testplan/testplan.setup.controller"],
         "utilsScenarioService" : ["../base/javascripts/features/scenario/utils.scenario.service"],
         "newStepService": ["../base/javascripts/features/scenario/newstep.service"],
         "newStepModalCtrl": ["../base/javascripts/features/scenario/newstep.modal.controller"],
@@ -171,15 +183,16 @@ requirejs.config({
         deps: ['jquery']
       },
         'ui.bootstrap': { deps: ['angular','bootstrap'], exports: 'ui.bootstrap' },*/
-        'features': { deps: ["angular", "playRoutes",  "routerConfig", "configConfig", "treeLayoutService" ,
-            "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "CampaignCtrl", "utilsScenarioService", 
+        'features': { deps: ["angular", "playRoutes",  "routerConfig", "configConfig", "treeLayoutService" , "AskForAccountCtrl",
+            "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", 
+            "TestPlanCtrl", "TestPlanReportCtrl","TestPlanSetupCtrl", "utilsScenarioService", 
             "homeCtrl",
             "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!javascripts/config/icon.constants.config.json",
             "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl",
 
 
-            "clientService",
-            "componentsDir", "sortable", "ngProgress", 
+            "clientService", "chartUtils",
+            "componentsDir", "sortable", "ngProgress", "jwtClient",
             "angular-ui-tree", "bootstrap", "ui.bootstrap", "angularRoute", "angucomplete",
             "xeditable", "ui.router", "angular-animate", "sidesplit", "angular-toastr", "webix"], exports: 'features' },
 

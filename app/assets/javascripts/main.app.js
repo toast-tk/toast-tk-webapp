@@ -5,7 +5,9 @@ var scenario = require("scenarioCtrl");
 var settingsCtrl = require("SettingsCtrl");
 var newSettingsModalCtrl = require("newSettingsModalCtrl");
 var repository = require("RepositoryCtrl");
-var campaign = require("CampaignCtrl");
+var tp = require("TestPlanCtrl");
+var tpSetup = require("TestPlanSetupCtrl");
+var tpReport = require("TestPlanReportCtrl");
 var sidebarmenu = require("sidebarmenu");
 var layout = require("layout");
 var newObjectModalCtrl = require("newObjectModalCtrl");
@@ -40,7 +42,10 @@ app.controller("NewSettingsModalCtrl", newSettingsModalCtrl.NewSettingsModalCtrl
 
 app.controller("RepositoryCtrl", repository.RepositoryCtrl);
 
-app.controller("CampaignCtrl", campaign.CampaignCtrl);
+app.controller("TestPlanCtrl", tp.TestPlanCtrl);
+app.controller("TestPlanSetupCtrl", tpSetup.TestPlanSetupCtrl);
+app.controller("TestPlanReportCtrl", tpReport.TestPlanReportCtrl);
+app.controller("TestPageReportCtrl", tpReport.TestPageReportCtrl);
 
 app.controller("SidebarMenuCtrl", sidebarmenu.SidebarMenuCtrl);
 app.controller("LayoutCtrl", layout.LayoutCtrl);

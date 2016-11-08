@@ -26,6 +26,7 @@ define(["angular","jwtClient"], function (angular, JWT) {
                     if (JWT.validate(session)) {
                         JWT.keep(token);
                         sync();
+                        ClientService.init();
                     } else {
                         logout();
                     }

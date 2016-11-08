@@ -1,5 +1,6 @@
   require(["angular", "playRoutes",  "routerConfig", "configConfig", "treeLayoutService" ,
-            "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "ScenarioCtrl", "CampaignCtrl", "utilsScenarioService", 
+            "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "ScenarioCtrl", "TestPlanCtrl",
+            "TestPlanReportCtrl","TestPlanSetupCtrl", "utilsScenarioService", 
             "homeCtrl",
             "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!javascripts/config/icon.constants.config.json",
             "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl", "EditUserCtrl", "addTeamCtrl", 
@@ -27,7 +28,11 @@
               
               app.controller("RepositoryCtrl", repository.RepositoryCtrl);
 
-              app.controller("CampaignCtrl", campaign.CampaignCtrl);
+              
+              app.controller("TestPlanCtrl", tp.TestPlanCtrl);
+              app.controller("TestPlanSetupCtrl", tpSetup.TestPlanSetupCtrl);
+              app.controller("TestPlanReportCtrl", tpReport.TestPlanReportCtrl);
+              app.controller("TestPageReportCtrl", tpReport.TestPageReportCtrl);
               
               app.controller("SidebarMenuCtrl", sidebarmenu.SidebarMenuCtrl);
               app.controller("LayoutCtrl", layout.LayoutCtrl);
