@@ -36,7 +36,7 @@ module.exports = function(config) {
         {pattern: 'javascripts/**/*.js', included: false},
         {pattern: 'javascripts/**/**/*.js', included: false},
         {pattern: 'javascripts/main.app.js', included: false},
-        {pattern: 'assets/html/login.html', atched: false, included: false, served: true},
+        {pattern: 'assets/html/login.html', watched: false, included: false, served: true},
         'tests/test-main.js',
         {pattern: 'mocks/*.json', watched: true, served: true, included: false},
         {pattern: 'tests/*test.js', included: false},
