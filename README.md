@@ -3,6 +3,10 @@
 # Toast TK - Web Application
 Toast Tk Web App is the collaborative platform to support test automation and documentation for your Agile projet team.
 
+# Demo
+
+The webapp is currently deployed on hero for [DEMO](https://toast-tk.herokuapp.com).
+
 # Install
 
 ## Environment pre-requisites:
