@@ -47,6 +47,10 @@ define(["angular"], function (angular) {
 
       /* BEGIN : get action type or scenario type  */
       function getActionType(scenario, row){
+        console.log("debug: scenario -> " + scenario);
+        console.log("debug: row -> " + row);
+        console.log("debug: row.patterns -> " + row.patterns);
+        console.log("debug: angular -> " + angular;
         if(angular.isDefined(row.patterns) && row.patterns.startsWith("@service")){
           return "service";
         }

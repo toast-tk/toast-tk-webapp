@@ -22,7 +22,6 @@ define(['angular','angular-mocks', 'scenarioCtrl','features','treeLayoutService'
         beforeEach(module('sidesplit'));
         beforeEach(module('tk.services'));
         beforeEach(module('app'));
-        //beforeEach(module("../../public/html/scenario/scenario.html"));
 
         beforeEach(inject(function(_$controller_, _$httpBackend_ , $rootScope){
             $controller = _$controller_;
