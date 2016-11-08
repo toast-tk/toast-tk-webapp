@@ -1,27 +1,30 @@
 # Toast TK - Web Application
-Toast Tk Web App is the collaborative platform to support test automation and documentation for your projet team.
+Toast Tk Web App is the collaborative platform to support test automation and documentation for your Agile projet team.
 
 # Install
 
-0. Clone The project
-1. Install and Launch a local Mongo Database
-* in application.conf file, check the DB configuration. It should be :
-
-```
-mongo.db.url="mongodb://localhost:27017/play_db"
-```
-
-2. Run : 
-Toast Webapp can be run by calling:
-```
-sbt run
-```
-
-
 ## Environment pre-requisites:
 - Java 8
+- scala 2.11.8
 - sbt 0.13.8
-- Node lastest stable version
+- Mongodb 3.x
+- Node 6.9.1
+
+## Installation steps:
+* Clone The project
+* Install and Launch a local Mongo Database
+* Define the environment properties that are part of the application.conf
+```
+MONGOHQ_URL: mongodb db uri, for a local and default install -> "mongodb://localhost:27017/play_db"
+SENDGRID_RECIPIENTS: list of administrator emails separated by a comma ","
+SENDGRID_APIKEY: valid sendgrid api key if you are willing to use the registration functionality
+```
+* Launch the webapp
+```
+> sbt run
+
+* Default username/password: admin/admin
+```
 
 # Contribution
 
