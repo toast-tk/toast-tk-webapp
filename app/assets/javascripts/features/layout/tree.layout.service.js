@@ -1,5 +1,4 @@
 define(["angular"], function (angular) {
-    "use strict";
     return {
         TreeLayoutService: function ($q, $timeout, $sideSplit) {
           var self = this ;
