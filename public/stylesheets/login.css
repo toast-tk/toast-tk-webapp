@@ -1,6 +1,7 @@
 #login.login-page-div{
 	height: 100%;
-    background-color: rgb(2, 84, 132);
+    background-size: 100% 100%;
+    background-image: url("/assets/images/toast_bg.jpg");
 }
 
 #login .toast-logo{
