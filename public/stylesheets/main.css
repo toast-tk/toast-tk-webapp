@@ -2,6 +2,16 @@ body{
     overflow: auto !important;
 }
 
+.toast-loading {
+  text-align: center;
+}
+
+.toast-loading .toast-logo{
+  width: 300px;
+  height: 100px;
+  margin-top: -100px;
+}
+
 footer {
     position: fixed;
     background-color: #D2D2D2;

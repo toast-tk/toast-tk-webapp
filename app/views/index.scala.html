@@ -31,7 +31,17 @@
     </script>
   </head>
   <body>
-     <div ui-view="main"></div>
+     <div ng-if="loaded" ui-view="main"></div>
+     <div class="toast-loading" ng-if="!loaded"> 
+        <div>
+             <img src="@routes.Assets.at("images/toast-loading.gif")" loop=infinite/>
+        </div>
+       
+        <div>
+            <img class="toast-logo" src="@routes.Assets.at("images/toast_600x200.png")"/>
+        </div>
+        
+     </div>
   </body>
     <footer id="footer">
         <small>Better Toast, Better Test</small>

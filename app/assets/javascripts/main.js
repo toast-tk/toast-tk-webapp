@@ -281,10 +281,13 @@
                         }]);
             }]);
 
-            app.run(function(editableOptions) {
+            app.run(['editableOptions', '$rootScope', function(editableOptions, $rootScope) {
                 editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
                 editableOptions.mode = 'popup';
-            });
+                $rootScope.loaded = true;
+            }]);
+
+
 
             angular.bootstrap(document, ["app"]);
         });

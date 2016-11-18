@@ -87,3 +87,19 @@ div#summary
 	font-weight: bold;
 }
 
+/*<span class="dropcap">T</span>*/
+.page-article .main-article .page-content .dropcap {
+    font: 700 90px/68px "freight-sans-pro", Helvetica, Arial, Sans-Serif;
+    float: left;
+    text-align: center;
+    margin: 0;
+    position: relative;
+    top: 9px;
+    margin-right: 15px;
+    color: #ffb618;
+    border: 2px solid black;
+    background: rgba(255, 255, 255, 0.75);
+    min-width: 80px;
+    height: 80px;
+    text-transform: uppercase;
+}
