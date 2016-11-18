@@ -1,4 +1,4 @@
-define(["angular", "qTags"], function (angular, qTags) {
+(function() {
   	"use strict";
 
   	// The module - will be referenced by other modules
@@ -302,4 +302,4 @@ define(["angular", "qTags"], function (angular, qTags) {
 	
 	
   	return module;
-});
+})();

@@ -1,7 +1,8 @@
-define(["angular"], function (angular) {
+(function() {
     "use strict";
-    return {
-        newObjectModalCtrl: function ($scope,  $uibModalInstance, ICONS) {
+    angular.module("app").controller("newObjectModalCtrl", newObjectModalCtrl);
+
+    function newObjectModalCtrl($scope,  $uibModalInstance, ICONS) {
             $scope.ICONS = ICONS;
             var newObject = {};
             $scope.scenarioTypeDropdownLabel = "Select type ..";
@@ -21,5 +22,4 @@ define(["angular"], function (angular) {
                 newObject.image = ICONS[type]; 
             }
         }
-    };
-});
+})();

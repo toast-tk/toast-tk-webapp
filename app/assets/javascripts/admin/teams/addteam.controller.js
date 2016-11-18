@@ -1,7 +1,9 @@
-define(["angular"], function (angular) {
+(function() {
     "use strict";
-    return {
-        AddTeamCtrl: function ($scope, playRoutes, LoginService, toastr) {
+
+    angular.module("app").controller("AddTeamCtrl", AddTeamCtrl);
+
+    function AddTeamCtrl($scope, playRoutes, toastr) {
             $scope.isNewUserFormSubmitted = false;
             $scope.newTeam = {};
 
@@ -31,5 +33,5 @@ define(["angular"], function (angular) {
             }
 
         }
-    };
-});
+
+})();

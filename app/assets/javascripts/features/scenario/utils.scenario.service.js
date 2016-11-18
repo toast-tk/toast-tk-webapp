@@ -1,7 +1,9 @@
-define(["angular"], function (angular) {
+(function() {
   "use strict";
-  return {
-    UtilsScenarioService: function ($q, ClientService) {
+
+  angular.module("app").service("UtilsScenarioService", UtilsScenarioService);
+
+  function UtilsScenarioService($q, ClientService) {
       var self = this ;
       self.regexMap = [];
       return {
@@ -209,5 +211,4 @@ define(["angular"], function (angular) {
 
    }
 
- }
-});
+})();

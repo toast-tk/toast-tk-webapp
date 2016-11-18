@@ -32,7 +32,7 @@ module.exports = function(config) {
 
         {pattern: 'javascripts/main.config.js', included: false},
         {pattern: 'javascripts/main.routes.js', included: false},
-        {pattern: 'javascripts/config/icon.constants.config.json', watched: true, included: false, served: true},
+        {pattern: 'javascripts/config/icon.constants.config.js', watched: true, included: false, served: true},
         {pattern: 'javascripts/**/*.js', included: false},
         {pattern: 'javascripts/**/**/*.js', included: false},
         {pattern: 'javascripts/main.app.js', included: false},

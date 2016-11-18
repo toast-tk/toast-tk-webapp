@@ -1,7 +1,9 @@
-define(["angular"], function (angular) {
+(function() {
     "use strict";
-    return {
-        ScenarioCtrl: function ($rootScope, $scope, $q, playRoutes,
+
+    angular.module("app").controller("ScenarioCtrl", ScenarioCtrl);
+
+    function ScenarioCtrl($rootScope, $scope, $q, playRoutes,
                                 ngProgress, ClientService, $sideSplit, $timeout,
                                 $uibModal, TreeLayoutService, ICONS, LayoutService,
                                 NewStepService, UtilsScenarioService, toastr,
@@ -42,13 +44,13 @@ define(["angular"], function (angular) {
                 showCheckAll: false,
                 showUncheckAll: false,
                 buttonClasses: 'btn btn-xs btn-success'
-            }
+            };
 
             $scope.translationTexts = {
                 uncheckAll: 'Stop recording',
                 buttonDefaultText: 'No Agent Selected',
                 dynamicButtonTextSuffix: ' - Recording is Active'
-            }
+            };
 
             ClientService.registerAgentListener(function(order, info){
                 if(order === 'set'){
@@ -133,7 +135,7 @@ define(["angular"], function (angular) {
                             add(newScenario);
                         });
                     });
-                }
+                };
 
                 $scope.$watch('scenario.name',function(newValue){
                     if(angular.isDefined(newValue)){
@@ -143,7 +145,7 @@ define(["angular"], function (angular) {
                             TreeLayoutService.editSelectedNodeName(newValue);
                         });
                     }
-                })
+                });
                 $scope.$watch('folder.name',function(newValue){
                     if(angular.isDefined(newValue)){
                         TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
@@ -181,7 +183,7 @@ define(["angular"], function (angular) {
                     $scope.stepType = newScenario.type;
                 }
                 toastr.success('Scenario created !');
-            };
+            }
 
             /* BEGIN : autocomplete step manipulation */
             var newStepPromise = $q.defer();
@@ -197,7 +199,7 @@ define(["angular"], function (angular) {
                 console.log("newStep", customTypedStep);
                 newCostomStep = customTypedStep ;
 
-            }
+            };
 
             function newCustomStepSelected(newCustomStep){
                 var step = { kind : $scope.scenario.type ,
@@ -259,13 +261,13 @@ define(["angular"], function (angular) {
 
             function addRowBefore(scenario, newRow, currentRow) {
 
-            };
+            }
 
             function deleteRow(scenario, row) {
                 //ajax call directly, if not new !
                 scenario.rows.splice(scenario.rows.indexOf(row), 1);
                 setDropListPositionClass();
-            };
+            }
 
             function saveScenarii(scenarii){
                 var scenarioCopy = angular.copy(scenarii);
@@ -314,7 +316,7 @@ define(["angular"], function (angular) {
                 }
                 delete scenario.imp;
                 delete scenario.selectedImportMode;
-            };
+            }
 
             function convertToTemplate(scenario){
                 UtilsScenarioService.convertToTemplate(scenario).then(function(newScenarioTemplate){
@@ -376,7 +378,7 @@ define(["angular"], function (angular) {
                         if(dataRow.type!="folder"){
                             $scope.scenarii.push(dataRow);
                         }
-                    })
+                    });
                     if(angular.isDefined(data) && data.length != 0){
                         $scope.senariiTree = UtilsScenarioService.toTreeDataList(data);
                     } else {
@@ -441,5 +443,4 @@ define(["angular"], function (angular) {
                 });
             }
         }
-    };
-});
+})();

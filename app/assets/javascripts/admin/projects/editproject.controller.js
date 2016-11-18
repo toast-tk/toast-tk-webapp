@@ -1,7 +1,8 @@
-define(["angular"], function (angular) {
+(function() {
     "use strict";
-    return {
-        EditProjectCtrl: function ($scope, playRoutes, LoginService, toastr, $stateParams) {
+    angular.module("app").controller("EditProjectCtrl", EditProjectCtrl);
+
+    function EditProjectCtrl($scope, playRoutes, LoginService, toastr, $stateParams) {
             $scope.isNewUserFormSubmitted = false;
             $scope.newProject = {};
 
@@ -28,5 +29,5 @@ define(["angular"], function (angular) {
 
 
         }
-    };
-});
+
+})();

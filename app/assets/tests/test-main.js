@@ -89,7 +89,7 @@ requirejs.config({
         "adminLayoutCtrl" :  ["../base/javascripts/admin/layout/layout.controller"],
         "adminSidebarmenu": ['../base/javascripts/admin/layout/sidebar.menu.controller'],
         "addUserCtrl" : ["../base/javascripts/admin/accounts/adduser.controller"],
-        "IconsJsonFile" :"json!javascripts/config/icon.constants.config.json"
+        "IconsJsonFile" :"json!javascripts/config/icon.constants.config.js"
 
     },
 
@@ -187,7 +187,7 @@ requirejs.config({
             "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", 
             "TestPlanCtrl", "TestPlanReportCtrl","TestPlanSetupCtrl", "utilsScenarioService", 
             "homeCtrl",
-            "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!javascripts/config/icon.constants.config.json",
+            "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!javascripts/config/icon.constants.config.js",
             "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl",
 
 

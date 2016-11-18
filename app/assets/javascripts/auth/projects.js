@@ -1,8 +1,9 @@
-define(["angular"], function(angular) {
+(function() {
     "use strict";
+    
+    angular.module("app").controller("MainProjectCtrl", MainProjectCtrl);
 
-    return {
-        MainProjectCtrl: function($scope, playRoutes, $state, LoginService, toastr, user) {
+    function MainProjectCtrl($scope, playRoutes, $state, LoginService, toastr, user) {
             $scope.user = user;
             var promise = playRoutes.controllers.UserController.getUserProjects($scope.user._id).get();
             promise.then(function(response){
@@ -28,6 +29,5 @@ define(["angular"], function(angular) {
                 $state.go(stateName);
             }
         }
-    };
 
-});
+})();

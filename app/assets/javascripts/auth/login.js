@@ -1,24 +1,24 @@
-define(["angular","CryptoJS/sha256"], function(angular, SHA256) {
+(function() {
     "use strict";
+    angular.module('app').controller("LoginCtrl", LoginCtrl);
 
-    return {
-        LoginCtrl: function($rootScope, $scope, playRoutes, $state, LoginService, toastr) {
+        function LoginCtrl($rootScope, $scope, playRoutes, $state, LoginService, toastr) {
             $scope.credentials = {};
             $scope.user = {};
             $scope.loggedIn = true;
             $rootScope.user = {};
             $scope.isHiddenLoginForm = false;
-            $scope.login = function(credentials) {
+            $scope.login = function (credentials) {
 
                 var creds = {
-                    login :  credentials.login,
-                    password : SHA256(credentials.password).toString()
+                    login: credentials.login,
+                    password: CryptoJS.SHA256(credentials.password).toString()
                 };
 
                 LoginService.login(creds).then(function (user) {
-                    if(LoginService.hasDefaultProject()){
+                    if (LoginService.hasDefaultProject()) {
                         $state.go("layout.scenario");
-                    }else{
+                    } else {
                         $state.go("default");
                     }
                 }, function (error) {
@@ -27,6 +27,5 @@ define(["angular","CryptoJS/sha256"], function(angular, SHA256) {
 
             };
         }
-    };
 
-});
+})();

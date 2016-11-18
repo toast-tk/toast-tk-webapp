@@ -1,7 +1,8 @@
-define(["angular"], function (angular) {
+(function() {
     "use strict";
-    return {
-        newStepModalCtrl: function ($scope,  $uibModalInstance, TreeLayoutService,ICONS, playRoutes, toastr) {
+    angular.module("app").controller("newStepModalCtrl", newStepModalCtrl);
+
+    function  newStepModalCtrl($scope,  $uibModalInstance, TreeLayoutService,ICONS, playRoutes, toastr) {
             $scope.ICONS = ICONS;
             var newNode = {};
 
@@ -59,7 +60,7 @@ define(["angular"], function (angular) {
                     toastr.error('Could Not save new node: Error 11 !');
                     //TODO; #fix should remove added node here
                 });
-            };
+            }
         }
-    };
-});
+
+})();

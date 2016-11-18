@@ -1,12 +1,13 @@
-define(["angular"], function (angular) {
+(function() {
   "use strict";
-  return {
-    LayoutService: function ($timeout) {
+
+    angular.module("app").service("LayoutService", LayoutService);
+  function LayoutService($timeout) {
       var self = this ;
 
       return {
-        reAdjustContentSize : reAdjustContentSize,
-      }
+        reAdjustContentSize : reAdjustContentSize
+      };
 
       /* BEGIN  : reAdjustContentSize */
       function reAdjustContentSize(){
@@ -23,5 +24,5 @@ define(["angular"], function (angular) {
 
     }
     /* END : LayoutService function */
-  }
-});
+
+})();

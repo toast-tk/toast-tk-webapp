@@ -1,8 +1,8 @@
 /* not used file */
-define(["angular"], function (angular) {
+(function() {
     "use strict";
-    return {
-        LayoutService: function ($timeout) {
+
+    function LayoutService($timeout) {
             var self = this ;
 
             return {
@@ -24,5 +24,5 @@ define(["angular"], function (angular) {
 
         }
         /* END : LayoutService function */
-    }
-});
+
+})();

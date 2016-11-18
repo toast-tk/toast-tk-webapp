@@ -1,9 +1,7 @@
-define(["angular"], function(angular) {
+(function() {
 	'use strict';
-	 return {
-        SidebarMenuCtrl: SidebarMenuCtrl
-    	}
 
+	angular.module("app").controller("SidebarMenuCtrl", SidebarMenuCtrl);
 
 	SidebarMenuCtrl.$inject = ['$scope', '$state','$sideSplit'];
 
@@ -23,4 +21,4 @@ define(["angular"], function(angular) {
 		}
 	}
 
-});
+})();

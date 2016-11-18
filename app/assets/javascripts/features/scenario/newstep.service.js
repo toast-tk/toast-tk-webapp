@@ -1,7 +1,9 @@
-define(["angular"], function (angular) {
+(function() {
   "use strict";
-  return {
-    NewStepService: function ($q) {
+
+    angular.module("app").service("NewStepService", NewStepService);
+
+    function NewStepService($q) {
       var self = this ;
 
       return {
@@ -36,5 +38,5 @@ define(["angular"], function (angular) {
 
     }
     /* END : NewStepService function */
-  }
-});
+
+})();

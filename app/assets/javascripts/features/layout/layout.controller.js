@@ -1,9 +1,7 @@
-define(["angular"], function(angular) {
+(function() {
 	'use strict';
-	 return {
-        LayoutCtrl: LayoutCtrl
-    	}
 
+	angular.module("app").controller("LayoutCtrl", LayoutCtrl);
 
 	LayoutCtrl.$inject = ['$scope','$sideSplit','$state', 'LoginService', 'user', 'defaultProject'];
 
@@ -27,16 +25,16 @@ define(["angular"], function(angular) {
 
         $scope.editProfile = function(){
             $state.go("adminLayout.editUser", {idUser: $scope.user._id});
-        }
+        };
 
 		$scope.logout = function(){
 			LoginService.logout();
 			$state.go('login');
-		}
+		};
 
         $scope.goToState = function(stateName){
             $state.go(stateName);
         }
 	}
 
-});
+})();

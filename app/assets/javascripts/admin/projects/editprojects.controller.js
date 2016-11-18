@@ -1,7 +1,8 @@
-define(["angular"], function (angular) {
+(function() {
     "use strict";
-    return {
-        EditProjectsCtrl: function ($scope, playRoutes, toastr, $state) {
+    angular.module("app").controller("EditProjectsCtrl", EditProjectsCtrl);
+
+    function EditProjectsCtrl($scope, playRoutes, $state) {
         	playRoutes.controllers.ProjectController.getAllProjects().get().then(function (response) {
 				$scope.projectList = response.data;
 			});
@@ -10,5 +11,5 @@ define(["angular"], function (angular) {
                 $state.go("adminLayout.editProject", {idProject: id});
             }
         }
-    };
-});
+
+})();

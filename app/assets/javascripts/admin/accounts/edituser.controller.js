@@ -1,7 +1,9 @@
-define(["angular"], function (angular) {
+(function() {
     "use strict";
-    return {
-        EditUserCtrl: function ($scope, playRoutes, LoginService, toastr, $stateParams) {
+
+    angular.module("app").controller("EditUserCtrl", EditUserCtrl);
+
+    function EditUserCtrl($scope, playRoutes, toastr, $stateParams) {
             $scope.isNewUserFormSubmitted = false;
             $scope.user = {};
 
@@ -24,7 +26,7 @@ define(["angular"], function (angular) {
                         $scope.isNewUserFormSubmitted = false;
                     });
                 }
-            }
+            };
 
             $scope.loadTeams = function(){
                 var teamNameList =  [];
@@ -32,5 +34,4 @@ define(["angular"], function (angular) {
             }
 
         }
-    };
-});
+})();

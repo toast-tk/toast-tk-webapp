@@ -1,4 +1,4 @@
-define(["angular"], function (angular) {
+(function() {
     "use strict";
 
     // The module - will be referenced by other modules
@@ -217,4 +217,4 @@ define(["angular"], function (angular) {
 
             return factory;
         }]);
-});
+})();

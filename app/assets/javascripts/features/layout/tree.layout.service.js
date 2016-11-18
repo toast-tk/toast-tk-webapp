@@ -1,6 +1,7 @@
-define(["angular"], function (angular) {
-    return {
-        TreeLayoutService: function ($q, $timeout, $sideSplit) {
+(function() {
+    angular.module("app").service("TreeLayoutService", TreeLayoutService);
+
+    function TreeLayoutService($q, $timeout, $sideSplit) {
           var self = this ;
           self.concernedTreeNodePromise = $q.defer() ;
           self.selectedNodeCallback = []; 
@@ -18,7 +19,7 @@ define(["angular"], function (angular) {
               adjustTreeSize : adjustTreeSize,
               getAllChildNodes: getAllChildNodes,
               selectNode: selectNode
-            }
+            };
 
             function clearSelection(){
               self.selectedNode = 0 ;
@@ -93,7 +94,7 @@ define(["angular"], function (angular) {
 
                  $$("filterField").attachEvent("onTimedKeyPress",function(){
                   $$("tree1").filter("#value#",this.getValue());
-                })
+                });
                  webix.event(window, "resize", function(){ treeExplorer.adjust(); })
                  treeExplorerPromise.resolve(treeExplorer);
                });
@@ -219,6 +220,5 @@ define(["angular"], function (angular) {
            function selectNode(id){
             $$("tree1").select(id);
            }
-}
-}
-});
+    }
+})();

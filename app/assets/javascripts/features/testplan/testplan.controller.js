@@ -1,13 +1,12 @@
-define(["angular"], function (angular) {
+(function() {
     "use strict";
-    return {
-        TestPlanCtrl: function ($rootScope, $scope, playRoutes,
-                                ngProgress, $window, $timeout,
-                                $stateParams,
-                                $state,$sideSplit, LayoutService,
-                                defaultProject, ChartUtils, toastr) {
+    angular.module("app").controller("TestPlanCtrl", TestPlanCtrl);
 
-            $scope.defaultProject = defaultProject
+    function TestPlanCtrl($scope, playRoutes,
+                                $state,$sideSplit, LayoutService,
+                                defaultProject, toastr) {
+
+            $scope.defaultProject = defaultProject;
             $scope.projects = [];
             $scope.selectedProject = undefined;
             $scope.stateParams = $state.params;
@@ -20,11 +19,11 @@ define(["angular"], function (angular) {
             $scope.displayTestPlanSetup = function(project){
                 $scope.selectedProject = project;
                 $state.go("layout.campaign.setup", {"idTestPlan": project.id});
-            }
+            };
 
             $scope.displayReport = function (selectedProject) {
                 $state.go("layout.campaign.report", {"idTestPlan": selectedProject.id, "reportName": selectedProject.name});
-            }
+            };
 
             $scope.addProjectBlock = function () {
                 var newTestPlan = {name: "new_test_plan", campaigns: []};
@@ -35,7 +34,7 @@ define(["angular"], function (angular) {
                         $scope.projects.push(response.data);
                     }
                 });
-            }
+            };
 
             $scope.deleteTestPlan = function(){
                 if($scope.selectedProject){
@@ -45,7 +44,7 @@ define(["angular"], function (angular) {
                         toastr.error("Couldn't not delete selected report !");
                     });
                 }
-            }
+            };
 
             function __init__() {
                 playRoutes.controllers.TestPlanController.loadProject($scope.defaultProject._id).get().then(function (response) {
@@ -64,5 +63,5 @@ define(["angular"], function (angular) {
 
             __init__();
         }
-    };
-});
+
+})();

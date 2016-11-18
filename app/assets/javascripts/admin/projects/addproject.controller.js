@@ -1,7 +1,8 @@
-define(["angular"], function (angular, SHA256) {
+(function() {
     "use strict";
-    return {
-        AddProjectCtrl: function ($scope, $q, playRoutes, toastr) {
+    angular.module("app").controller("AddProjectCtrl", AddProjectCtrl);
+
+    function AddProjectCtrl($scope, playRoutes, toastr) {
             $scope.createNewProject = function(){
                 $scope.isNewProjectFormSubmitted = true;
                 if($scope.projectForm.$valid){
@@ -18,5 +19,5 @@ define(["angular"], function (angular, SHA256) {
                 }
             }
         }
-    };
-});
+
+})();

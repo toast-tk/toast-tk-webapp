@@ -12,7 +12,7 @@
  * }}}
  * @author Marius Soutier, 2013
  */
-define(["angular", "jsRoutes", "ngProgress"], function (angular, jsRoutes) {
+(function(){
   "use strict";
 
   // The module - will be referenced by other modules
@@ -96,5 +96,4 @@ define(["angular", "jsRoutes", "ngProgress"], function (angular, jsRoutes) {
     return playRoutes;
   }]);
 
-  return module;
-});
+})();

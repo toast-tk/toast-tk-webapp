@@ -1,8 +1,9 @@
-define(["angular"], function (angular) {
+(function() {
     "use strict";
-    return {
-        RepositoryCtrl: function ($rootScope, $scope, playRoutes,
-                                  ngProgress, $timeout, $uibModal,
+
+    angular.module("app").controller("RepositoryCtrl", RepositoryCtrl);
+
+    function RepositoryCtrl($scope, playRoutes, $uibModal,
                                   $sideSplit, LayoutService, toastr, ICONS,
                                   defaultProject) {
             $scope.defaultProject = defaultProject;
@@ -42,7 +43,7 @@ define(["angular"], function (angular) {
                         addAutoSetupConfig(newObject);
                         toastr.success('Object List created !');
                     });   
-            }
+            };
             
             function addAutoSetupConfig(newObject) {
                 playRoutes.controllers.Application.loadAutoSetupCtx(newObject.type).get().then(function (response) {
@@ -56,12 +57,12 @@ define(["angular"], function (angular) {
                     $scope.autosetups.push(newSetupBlock);
                     $scope.autosetup = newSetupBlock;
                 });
-            };
+            }
              /* END : open & add object modal */
 
             $scope.isArray = function (arr) {
                 return angular.isArray(arr) ? "array" : "";
-            }
+            };
 
             function editRepositoryObject(autosetup){
                 $scope.autosetup = autosetup;
@@ -72,7 +73,7 @@ define(["angular"], function (angular) {
                 playRoutes.controllers.RepositoryController.deleteObject().post(angular.toJson(autosetup.id)).then(function () {
                     __init__();
                 });
-           }
+           };
 
             $scope.saveAutoConfigBlock = function (autosetup) {
                 var deepCopy = angular.copy(autosetup);
@@ -86,7 +87,7 @@ define(["angular"], function (angular) {
 
             $scope.deleteRow = function (row, autosetup) {
                 autosetup.rows.splice(autosetup.rows.indexOf(row), 1);
-            }
+            };
 
             $scope.addAutoSetupRow = function (autosetup, newRow) {
                 autosetup.rows.push(newRow);
@@ -113,5 +114,5 @@ define(["angular"], function (angular) {
 
             __init__();
         }
-    };
-});
+
+})();

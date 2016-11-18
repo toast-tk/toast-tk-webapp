@@ -1,7 +1,9 @@
-define(["angular","CryptoJS/sha256"], function (angular, SHA256) {
+(function() {
     "use strict";
-    return {
-        AddUserCtrl: function ($scope, $q, playRoutes, toastr) {
+
+    angular.module("app").controller("AddUserCtrl", AddUserCtrl);
+
+    function AddUserCtrl($scope, $q, playRoutes, toastr) {
             $scope.isNewUserFormSubmitted = false;
             $scope.newUser = {};
     
@@ -40,5 +42,5 @@ define(["angular","CryptoJS/sha256"], function (angular, SHA256) {
                 }
             }
         }
-    };
-});
+
+})();

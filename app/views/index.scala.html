@@ -26,21 +26,94 @@
 
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
 
-    <script data-main="@routes.Assets.at("javascripts/main.js")"
-    type="text/javascript" src="@routes.Assets.at("lib/requirejs/require.js")">
-    </script>
+
+    <script type="text/javascript" src="@routes.Assets.at("libs/jquery/dist/jquery.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/jquery-ui/jquery-ui.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/underscore/underscore-min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/crypto-js/crypto-js.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/bootstrap/dist/js/bootstrap.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angular/angular.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angular-route/angular-route.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angular-ui-router/release/angular-ui-router.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angular-animate/angular-animate.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angular-ui-sortable/sortable.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angular-toastr/dist/angular-toastr.tpls.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angucomplete-alt/dist/angucomplete-alt.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angular-ui-tree/dist/angular-ui-tree.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angular-bootstrap-lightbox/dist/angular-bootstrap-lightbox.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angular-bootstrap/ui-bootstrap-tpls.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/ngprogress/build/ngProgress.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angular-xeditable/dist/js/xeditable.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/jwt-client/jwt-client.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/ng-tags-input/ng-tags-input.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angularjs-dropdown-multiselect/src/angularjs-dropdown-multiselect.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/chart.js/dist/Chart.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angular-chart.js/dist/angular-chart.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angular-chart.js/dist/angular-chart.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/libs/jquery-textntags.js")"></script>
+
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/libs/webix.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/libs/angular-sidesplit.provider.js")"></script>
+    <script type="text/javascript" src="/jsroutes.js"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/libs/sortable.js")"></script>
+
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/services/playRoutes.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/services/client-service.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/directives/components.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/services/chart-utils.js")"></script>
+
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/main.js")"></script>
+
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/home.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/auth/askforaccount.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/auth/login.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/auth/projects.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/auth/login.service.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/auth/login.resolver.service.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/layout/sidebar.menu.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/layout/layout.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/layout/layout.service.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/layout/tree.layout.service.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/settings/settings.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/settings/newSettings.modal.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/repository/repository.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/scenario/scenario.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/testplan/testplan.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/testplan/testplan.report.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/testplan/testplan.setup.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/scenario/utils.scenario.service.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/scenario/newstep.service.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/scenario/newstep.modal.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/features/repository/newobject.modal.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/main.routes.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/main.config.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/layout/layout.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/layout/sidebar.menu.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/accounts/adduser.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/accounts/edituser.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/accounts/editusers.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/accounts/login.validator.directive.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/accounts/email.validator.directive.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/teams/addteam.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/teams/editteams.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/teams/editteam.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/projects/addproject.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/projects/editproject.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/projects/editprojects.controller.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/config/icon.constants.config.js")"></script>
+
   </head>
-  <body>
+  <body ng-app="app">
      <div ng-if="loaded" ui-view="main"></div>
-     <div class="toast-loading" ng-if="!loaded"> 
+     <div class="toast-loading" ng-if="!loaded">
         <div>
              <img src="@routes.Assets.at("images/toast-loading.gif")" loop=infinite/>
         </div>
-       
+
         <div>
             <img class="toast-logo" src="@routes.Assets.at("images/toast_600x200.png")"/>
         </div>
-        
+
      </div>
   </body>
     <footer id="footer">

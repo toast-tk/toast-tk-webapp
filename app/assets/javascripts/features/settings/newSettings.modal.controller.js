@@ -1,7 +1,9 @@
-define(["angular"], function (angular) {
+(function() {
     "use strict";
-    return {
-        NewSettingsModalCtrl: function ($scope,  $uibModalInstance, TreeLayoutService,ICONS, $timeout) {
+
+    angular.module("app").controller("NewSettingsModalCtrl", NewSettingsModalCtrl);
+
+    function NewSettingsModalCtrl($scope,  $uibModalInstance, TreeLayoutService,ICONS) {
             $scope.ICONS = ICONS;
             var newScenario = {};
             if($scope.newNodeType === "settings set"){
@@ -22,7 +24,7 @@ define(["angular"], function (angular) {
             console.log($.extend({}, newScenario));          
             TreeLayoutService.add(newScenario);
             $uibModalInstance.close(newScenario);
-        }
+        };
 
         $scope.swapToType = function(type){
             $scope.scenarioTypeDropdownLabel = type;
@@ -30,5 +32,5 @@ define(["angular"], function (angular) {
             newScenario.image = ICONS[type]; 
         }
     }
-};
-});
+
+})();

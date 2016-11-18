@@ -1,7 +1,9 @@
-define(["angular"], function (angular) {
+(function(){
     "use strict";
-    return {
-        ResolversService : function (LoginService, $state, $q, playRoutes) {
+
+    angular.module("app").service("LoginResolverService", ResolversService);
+
+    function ResolversService(LoginService, $state, $q, playRoutes) {
 
             return {
                 checkLoggedLoginResolve : checkLoggedLoginResolve,
@@ -12,7 +14,7 @@ define(["angular"], function (angular) {
 
             // --------------------- Resolvers ----------------------
             function checkLoggedLoginResolve() {
-                LoginService.sync()
+                LoginService.sync();
                 var deferred = $q.defer();
                 if (LoginService.isAuthenticated()) {
                     if (LoginService.hasDefaultProject() === false) {
@@ -29,7 +31,7 @@ define(["angular"], function (angular) {
 
             function checkLoggedAndGetUserResolve(){
                 var deferred = $q.defer();
-                LoginService.sync()
+                LoginService.sync();
                 if (LoginService.isAuthenticated() === true) {
                     var user = LoginService.currentUser();
                     deferred.resolve(user);
@@ -52,7 +54,7 @@ define(["angular"], function (angular) {
 
             function checkDefaultProjectResolve(user){
                 var deferred = $q.defer();
-                LoginService.sync()
+                LoginService.sync();
                 if (!LoginService.isAuthenticated()) {
                     $state.go("login");
                     deferred.reject();
@@ -74,5 +76,4 @@ define(["angular"], function (angular) {
                 return deferred.promise;
             }
         }
-    }
-});
+})();

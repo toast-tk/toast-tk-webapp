@@ -2,7 +2,7 @@
             "loginCtrl", "loginService", "loginResolverService", "SettingsCtrl", "newSettingsModalCtrl", "RepositoryCtrl", "ScenarioCtrl", "TestPlanCtrl",
             "TestPlanReportCtrl","TestPlanSetupCtrl", "utilsScenarioService", 
             "homeCtrl",
-            "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!javascripts/config/icon.constants.config.json",
+            "sidebarmenu", "layout", "layoutService", "newObjectModalCtrl", "newStepService", "newStepModalCtrl", "json!javascripts/config/icon.constants.config.js",
             "adminLayoutCtrl", "adminSidebarmenu", "addUserCtrl", "EditUserCtrl", "addTeamCtrl", 
 
 
