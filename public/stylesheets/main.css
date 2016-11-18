@@ -14,7 +14,7 @@ body{
 
 footer {
     position: fixed;
-    background-color: #D2D2D2;
+    background-color: rgba(210, 210, 210, 0.35);
     padding: 1em 0;
     padding-left: 31px;
     padding-right: 31px;

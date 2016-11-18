@@ -10,6 +10,8 @@ _Toast Tk Web App is the collaborative platform to support test automation and d
 ---
 
 ## Features
+- **scenario:** default scenario to web
+  ([00c7055a](https://github.com/toast-tk/toast-tk-webapp/commit/00c7055a753e77657d4c17941cadb6451c63b7e5))
 - include npm in sbt compile
   ([56d032a0](https://github.com/toast-tk/toast-tk-webapp/commit/56d032a0823e1df057b6a7aab78076e3a89e6271))
 - include required dependencies
@@ -109,7 +111,10 @@ _Toast Tk Web App is the collaborative platform to support test automation and d
 
 
 ## Bug Fixes
-
+- dynamix websocket uri
+  ([4294bc4f](https://github.com/toast-tk/toast-tk-webapp/commit/4294bc4f1cc9354f95cbb8ebd6c1587f0f8f15da))
+- mongdb.userDb
+  ([e2a2a9dd](https://github.com/toast-tk/toast-tk-webapp/commit/e2a2a9ddda6ffaf45d21aed48c638eeab65c70e9))
 - fixing backward compatibilty for editable mapping val field
   ([b54b1a04](https://github.com/toast-tk/toast-tk-webapp/commit/b54b1a04fb4d4fc09a24a1d9a616095cbb585fd1))
 - fix pattern matching & user token
@@ -178,6 +183,14 @@ _Toast Tk Web App is the collaborative platform to support test automation and d
 - refactor
   ([d50b39ad](https://github.com/toast-tk/toast-tk-webapp/commit/d50b39adb91b5f1ab213027d81eda5ca03024dea))
 
+## Documentation
+
+- **changelog:** changelog generated for 0.1.4
+  ([cbbfd8a9](https://github.com/toast-tk/toast-tk-webapp/commit/cbbfd8a9e5d33a075eb3d553f5dc2f8ab4eb656f))
+- **license:** add apache license
+  ([8d6af2e0](https://github.com/toast-tk/toast-tk-webapp/commit/8d6af2e080b0a8c742ae0744e50cdcf02ee6b6e5))
+- **readme:** add contribution reference to md
+  ([2473b6a3](https://github.com/toast-tk/toast-tk-webapp/commit/2473b6a3d2db2b1af365572e862a80ae3b038b96))
 
 ---
 <sub><sup>The Toast Team **Thanks** </sub></sup>
