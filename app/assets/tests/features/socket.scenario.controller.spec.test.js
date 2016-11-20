@@ -1,4 +1,4 @@
-define(['angular','angular-mocks', 'scenarioCtrl','features','treeLayoutService', 'jasmine-jquery'], function(angular,angularMocks, scenarioCtrl,features,treeLayoutService, jasmineJquery) {
+(function() {
     'use strict';
     describe('ScenarioCtrl', function() {
         console.log("---- Starting : socket ScenarioCtrl test ----");
@@ -89,4 +89,4 @@ define(['angular','angular-mocks', 'scenarioCtrl','features','treeLayoutService'
         });
       });
 
-});
+})();

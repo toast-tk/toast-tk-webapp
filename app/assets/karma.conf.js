@@ -10,7 +10,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'requirejs'],
+    frameworks: ['jasmine','requirejs'],
     
     plugins: [
       "karma-chrome-launcher",
@@ -21,13 +21,13 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        {pattern:  'libs/jquery/dist/jquery.js', watch: false, included: false},
-        {pattern: 'libs/angular/angular.js',  watch: false, included: false},
-        {pattern: 'libs/angular-mocks/angular-mocks.js',  watch: false, included: false},
-        {pattern: 'libs/underscore/underscore-min.js',  watch: false, included: false},
-        {pattern: 'libs/jquery-ui/jquery-ui.js',  watch: false, included: false},
-        {pattern: 'libs/angular-route/angular-route.min.js',  watch: false, included: false},
-        {pattern: 'libs/jasmine-jquery/lib/jasmine-jquery.js',  watch: false, included: false},
+        {pattern: 'libs/jquery/dist/jquery.js', watch: false},
+        {pattern: 'libs/angular/angular.js',  watch: false},
+        {pattern: 'libs/angular-mocks/angular-mocks.js',  watch: true},
+        {pattern: 'libs/underscore/underscore-min.js',  watch: false},
+        {pattern: 'libs/jquery-ui/jquery-ui.js',  watch: false},
+        {pattern: 'libs/angular-route/angular-route.min.js',  watch: false},
+        {pattern: 'libs/jasmine-jquery/lib/jasmine-jquery.js',  watch: false},
         {pattern: 'libs/**/**.js',  watch: false, included: false},
 
         {pattern: 'javascripts/main.config.js', included: false},
@@ -37,11 +37,9 @@ module.exports = function(config) {
         {pattern: 'javascripts/**/**/*.js', included: false},
         {pattern: 'javascripts/main.app.js', included: false},
         {pattern: 'assets/html/login.html', watched: false, included: false, served: true},
-        'tests/test-main.js',
         {pattern: 'mocks/*.json', watched: true, served: true, included: false},
-        {pattern: 'tests/*test.js', included: false},
-        {pattern: 'tests/**/*test.js', included: false}
-
+        'tests/*test.js',
+        'tests/**/*test.js'
   
     ],
 
@@ -51,7 +49,7 @@ module.exports = function(config) {
 
     // list of files to exclude
     exclude: [
-        'javascripts/main.js'
+        //'javascripts/main.js'
     ],
 
     customLaunchers: {

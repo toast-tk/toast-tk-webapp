@@ -1,4 +1,4 @@
-define(['angular','angular-mocks', 'features', 'addUserCtrl'], function(angular,angularMocks,features, AddUserCtrl) {
+(function() {
     'use strict';
 describe('AddUserCtrl', function() {
     console.log("---- Starting : AddUserCtrl test ----");
@@ -29,5 +29,4 @@ describe('AddUserCtrl', function() {
     });
 
 });
-
-});
+})();

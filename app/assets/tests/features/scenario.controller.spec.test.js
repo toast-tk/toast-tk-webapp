@@ -1,5 +1,4 @@
-define(['angular','angular-mocks', 'scenarioCtrl','features','treeLayoutService'], 
-    function(angular,angularMocks, scenarioCtrl,features,treeLayoutService) {
+(function(angular,angularMocks, scenarioCtrl,features,treeLayoutService) {
     'use strict';
     describe('ScenarioCtrl', function() {
         console.log("---- Starting : ScenarioCtrl test ----");
@@ -66,4 +65,4 @@ define(['angular','angular-mocks', 'scenarioCtrl','features','treeLayoutService'
 
     });
 
-});
+})();
