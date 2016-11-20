@@ -1,4 +1,4 @@
-(function(angular,angularMocks, scenarioCtrl,features,treeLayoutService) {
+(function() {
     'use strict';
     describe('ScenarioCtrl', function() {
         console.log("---- Starting : ScenarioCtrl test ----");
@@ -38,7 +38,7 @@
                 sentSaveScenarioData = JSON.parse(data) ;
                 return [200, "ok"];
             });
-            $controller(scenarioCtrl.ScenarioCtrl, {$scope: scope});
+            $controller('ScenarioCtrl', {$scope: scope});
         }));
 
         describe('Exact template function templatisation', function() {
