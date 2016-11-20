@@ -1,7 +1,9 @@
-define(["angular"], function (angular) {
+(function() {
     "use strict";
-    return {
-        EditTeamCtrl: function ($scope, playRoutes, $stateParams, toastr) {
+
+    angular.module("app").controller("EditTeamCtrl", EditTeamCtrl);
+
+    function EditTeamCtrl($scope, playRoutes, $stateParams, toastr) {
             $scope.isNewUserFormSubmitted = false;
             $scope.newTeam = {};
 
@@ -29,12 +31,11 @@ define(["angular"], function (angular) {
                         }
                     });
                 }
-            }
+            };
 
             $scope.loadProjects = function(){
                 return playRoutes.controllers.ProjectController.getAllProjects().get();
             }
 
         }
-    };
-});
+})();

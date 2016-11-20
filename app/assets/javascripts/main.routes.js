@@ -1,5 +1,7 @@
-define(["angular", "exports"], function (angular, exports) {
+(function() {
     'use strict';
+
+    angular.module("app").config(RouterConfig);
 
     RouterConfig.$inject = ["$stateProvider", "$urlRouterProvider"];
 
@@ -348,5 +350,4 @@ define(["angular", "exports"], function (angular, exports) {
     }
     /* END : router config function */
 
-    exports.RouterConfig = RouterConfig
-});
+})();

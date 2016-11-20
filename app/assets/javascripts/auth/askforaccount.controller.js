@@ -1,10 +1,10 @@
 /**
  * Created by akram.tabka on 19/10/2016.
  */
-define(["angular"], function(angular) {
+(function(){
     "use strict";
-    return {
-        AskForAccountCtrl: function($scope, playRoutes, toastr) {
+    angular.module('app').controller("AskForAccountCtrl", AskForAccountCtrl);
+    function AskForAccountCtrl($scope, playRoutes, toastr) {
             $scope.isEmailSent = false;
             $scope.newaccount = {};
             $scope.askForAccount = function(newaccount){
@@ -15,7 +15,6 @@ define(["angular"], function(angular) {
                     toastr.error(error.status +' : Arf, something went wrong!');
                 });
             }
-        }
     };
 
-});
+})();

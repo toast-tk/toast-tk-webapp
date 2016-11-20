@@ -1,7 +1,9 @@
-define(["angular"], function (angular) {
+(function() {
     "use strict";
-    return {
-        SettingsCtrl: function ($rootScope, $scope, playRoutes, ngProgress, $sideSplit, LayoutService, TreeLayoutService, $uibModal, ICONS, toastr) {
+
+    angular.module("app").controller("SettingsCtrl", SettingsCtrl);
+
+    function SettingsCtrl($rootScope, $scope, playRoutes, ngProgress, $sideSplit, LayoutService, TreeLayoutService, $uibModal, ICONS, toastr) {
             var vm = $scope;
             $scope.ICONS = ICONS;
             
@@ -28,30 +30,30 @@ define(["angular"], function (angular) {
 
             function addNewSentence(newSentence, sentenceWithTypes) {
                 $scope.selectedConfig.syntax.push({sentence: newSentence, typed_sentence: sentenceWithTypes});
-            };
+            }
 
             function deleteSentenceLine(newSentence) {
                 $scope.selectedConfig.syntax.splice($scope.selectedConfig.syntax.indexOf(newSentence), 1);
-            };
+            }
 
             function saveConfig() {
                 playRoutes.controllers.ConfigurationController.saveConfiguration().post($scope.configurations).then(function (response) {
                     toastr.success("saved settings !")
                     load();
                 });
-            };
+            }
 
             function addConfigBlock() {
                 $scope.configurations.push({type: "service", rows: []});
-            };
+            }
 
             function deleteConfigLine(config, item) {
                 config.rows.splice(config.rows.indexOf(item), 1);
-            };
+            }
 
             function addConfigLine(config, configName, configType) {
                 config.rows.push({type: configType, name: configName, syntax: []});
-            };
+            }
 
             function __init__() {
                 playRoutes.controllers.ConfigurationController.loadConfiguration().get().then(function (response) {
@@ -109,7 +111,6 @@ define(["angular"], function (angular) {
                     });
                 });
             }
-
         }
-    };
-});
+
+})();

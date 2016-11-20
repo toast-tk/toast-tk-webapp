@@ -10,38 +10,39 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'requirejs'],
+    frameworks: ['jasmine'],
     
     plugins: [
       "karma-chrome-launcher",
       "karma-jasmine",
-      "karma-requirejs",
       'karma-ng-html2js-preprocessor'
     ],
 
     // list of files / patterns to load in the browser
     files: [
-        {pattern:  'libs/jquery/dist/jquery.js', watch: false, included: false},
-        {pattern: 'libs/angular/angular.js',  watch: false, included: false},
-        {pattern: 'libs/angular-mocks/angular-mocks.js',  watch: false, included: false},
-        {pattern: 'libs/underscore/underscore-min.js',  watch: false, included: false},
-        {pattern: 'libs/jquery-ui/jquery-ui.js',  watch: false, included: false},
-        {pattern: 'libs/angular-route/angular-route.min.js',  watch: false, included: false},
-        {pattern: 'libs/jasmine-jquery/lib/jasmine-jquery.js',  watch: false, included: false},
-        {pattern: 'libs/**/**.js',  watch: false, included: false},
+        {pattern: 'libs/jquery/dist/jquery.js', watch: false},
+        {pattern: 'libs/jwt-client/jwt-client.js', watch: false},
+        {pattern: 'libs/angular/angular.js',  watch: false, included: true},
+        {pattern: 'libs/angular-ui-router/release/angular-ui-router.min.js',  watch: false},
+        {pattern: 'libs/angular-mocks/angular-mocks.js',  watch: true},
+        {pattern: 'libs/underscore/underscore-min.js',  watch: false},
+        {pattern: 'libs/jquery-ui/jquery-ui.js',  watch: false},
+        {pattern: 'libs/chart.js/dist/Chart.min.js',  watch: false},
+        {pattern: 'libs/angular-route/angular-route.min.js',  watch: false},
+        {pattern: 'libs/jasmine-jquery/lib/jasmine-jquery.js',  watch: false},
+        {pattern: 'libs/**/**.min.js',  watch: false},
+        {pattern: 'libs/**/**/**.min.js',  watch: false},
 
-        {pattern: 'javascripts/main.config.js', included: false},
-        {pattern: 'javascripts/main.routes.js', included: false},
-        {pattern: 'javascripts/config/icon.constants.config.json', watched: true, included: false, served: true},
-        {pattern: 'javascripts/**/*.js', included: false},
-        {pattern: 'javascripts/**/**/*.js', included: false},
-        {pattern: 'javascripts/main.app.js', included: false},
-        {pattern: 'assets/html/login.html', watched: false, included: false, served: true},
-        'tests/test-main.js',
+        {pattern: 'javascripts/main.js', included: true},
+        {pattern: 'javascripts/main.config.js', included: true},
+        {pattern: 'javascripts/main.routes.js', included: true},
+        {pattern: 'javascripts/config/icon.constants.config.js', watched: true, included: false, served: true},
+        {pattern: 'javascripts/**/*.js', included: true},
+        {pattern: 'javascripts/**/**/*.js', included: true},
+        {pattern: 'assets/html/login.html', watched: false, included: true, served: true},
         {pattern: 'mocks/*.json', watched: true, served: true, included: false},
-        {pattern: 'tests/*test.js', included: false},
-        {pattern: 'tests/**/*test.js', included: false}
-
+        'tests/*test.js',
+        'tests/**/*test.js'
   
     ],
 
@@ -51,7 +52,7 @@ module.exports = function(config) {
 
     // list of files to exclude
     exclude: [
-        'javascripts/main.js'
+        //'javascripts/main.js'
     ],
 
     customLaunchers: {

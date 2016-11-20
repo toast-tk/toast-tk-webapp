@@ -1,11 +1,9 @@
-define(["angular"], function(angular) {
+(function() {
 	'use strict';
-	 return {
-        AdminLayoutCtrl: AdminLayoutCtrl
-    	}
 
+    angular.module("app").controller("AdminLayoutCtrl", AdminLayoutCtrl);
 
-	AdminLayoutCtrl.$inject = ['$scope','$sideSplit','$state', 'user', 'defaultProject', 'LoginService'];
+    AdminLayoutCtrl.$inject = ['$scope','$sideSplit','$state', 'user', 'defaultProject', 'LoginService'];
 
 	function AdminLayoutCtrl($scope, $sideSplit, $state, user, defaultProject, LoginService) {
 		$scope.isCollapsed = false;
@@ -43,4 +41,4 @@ define(["angular"], function(angular) {
         }
 	}
 
-});
+})();

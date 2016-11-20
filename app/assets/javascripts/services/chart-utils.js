@@ -1,4 +1,4 @@
-define(["angular"], function (angular) {
+(function() {
     "use strict";
 
     var module = angular.module('tk.chart.utils', []);
@@ -150,4 +150,4 @@ define(["angular"], function (angular) {
 
             return factory;
         }]);
-})
+})();

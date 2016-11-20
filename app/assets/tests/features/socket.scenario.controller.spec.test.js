@@ -1,4 +1,4 @@
-define(['angular','angular-mocks', 'scenarioCtrl','features','treeLayoutService', 'jasmine-jquery'], function(angular,angularMocks, scenarioCtrl,features,treeLayoutService, jasmineJquery) {
+(function() {
     'use strict';
     describe('ScenarioCtrl', function() {
         console.log("---- Starting : socket ScenarioCtrl test ----");
@@ -22,9 +22,9 @@ define(['angular','angular-mocks', 'scenarioCtrl','features','treeLayoutService'
             });
         }));
 
-        beforeEach(module('play.routing'));
-        beforeEach(module('ui.bootstrap'));
-        beforeEach(module('sidesplit'));
+       // beforeEach(module('play.routing'));
+        //beforeEach(module('ui.bootstrap'));
+        //beforeEach(module('sidesplit'));
         beforeEach(module('app'));
         
         beforeEach(function(){
@@ -48,7 +48,7 @@ define(['angular','angular-mocks', 'scenarioCtrl','features','treeLayoutService'
             $httpBackend.when("GET", "assets/html/login.html").respond("<html></html>");
             $httpBackend.when("GET", "/agent/null").respond([{isAlive: true, host: "localhost", token:"api-token"}]);
             scope = $rootScope.$new();
-            $controller(scenarioCtrl.ScenarioCtrl, {$scope: scope});
+            $controller('ScenarioCtrl', {$scope: scope});
             clientService.opensocket("api-token");
         }));
 
@@ -89,4 +89,4 @@ define(['angular','angular-mocks', 'scenarioCtrl','features','treeLayoutService'
         });
       });
 
-});
+})();

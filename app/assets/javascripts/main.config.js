@@ -1,5 +1,7 @@
-define(["angular", "exports"], function (angular, exports) {
+(function() {
   'use strict';
+
+  angular.module("app").config(ConfigConfig);
 
   ConfigConfig.$inject = ["toastrConfig"];
 
@@ -18,6 +20,4 @@ define(["angular", "exports"], function (angular, exports) {
       });
     }
 
-    /* require export */
-    exports.ConfigConfig = ConfigConfig
-});
+})();

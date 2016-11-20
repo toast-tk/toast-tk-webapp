@@ -1,9 +1,7 @@
-define(["angular"], function(angular) {
+(function() {
     'use strict';
-    return {
-        AdminSidebarMenuCtrl: AdminSidebarMenuCtrl
-    }
-
+    
+    angular.module("app").controller("AdminSidebarMenuCtrl", AdminSidebarMenuCtrl);
 
     AdminSidebarMenuCtrl.$inject = ['$scope', '$state','$sideSplit'];
 
@@ -24,4 +22,4 @@ define(["angular"], function(angular) {
         }
     }
 
-});
+})();
