@@ -21,3 +21,7 @@ install:
    - mv -f ./libs ./app/assets
 before_script:
    - node ./node_modules/karma/bin/karma start ./app/assets/karma.conf.js --log-level debug --single-run
+
+script:
+- "sbt clean coverage test coverageReport"
+- cat ./app/assets/build/reports/coverage/report-lcov/lcov.info |  node ./node_modules/codacy-coverage/bin/codacy-coverage.js

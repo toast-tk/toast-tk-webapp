@@ -21,6 +21,7 @@ bin/*
 /bin/
 toast-logs.log
 /app/assets/libs/*
+/app/assets/build/
 /app/assets/node_modules/*
 /app/assets/bower_components/*
 /bower_components/*
