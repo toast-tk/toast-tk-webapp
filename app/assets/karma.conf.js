@@ -15,7 +15,8 @@ module.exports = function(config) {
     plugins: [
       "karma-chrome-launcher",
       "karma-jasmine",
-      'karma-ng-html2js-preprocessor'
+      "karma-coverage",
+      "karma-ng-html2js-preprocessor"
     ],
 
     // list of files / patterns to load in the browser
@@ -65,7 +66,8 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        '../../public/html/**/*.html': ['ng-html2js']
+        "../../public/html/**/*.html": ["ng-html2js"],
+        "javascripts/**/*.js": ["coverage"]
     },
 
     ngHtml2JsPreprocessor: {
@@ -75,8 +77,14 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
-
+      reporters: ["progress", "coverage"],
+      coverageReporter: {
+          dir: "build/reports/coverage",
+          reporters: [
+              // reporters not supporting the `file` property
+              { type: "lcov", subdir: "report-lcov" }
+          ]
+      },
 
     // web server port
     port: 9876,

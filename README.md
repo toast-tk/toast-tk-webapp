@@ -1,4 +1,7 @@
-[![Build Status](https://travis-ci.org/toast-tk/toast-tk-webapp.svg?branch=master)](https://travis-ci.org/toast-tk/toast-tk-webapp) 
+[![Build Status](https://travis-ci.org/toast-tk/toast-tk-webapp.svg?branch=master)](https://travis-ci.org/toast-tk/toast-tk-webapp)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f6b89c98a6a84e95a6a90f5bcba80eda)](https://www.codacy.com/app/toast-tk/toast-tk-webapp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=toast-tk/toast-tk-webapp&amp;utm_campaign=Badge_Grade) 
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/f6b89c98a6a84e95a6a90f5bcba80eda)](https://www.codacy.com/app/toast-tk/toast-tk-webapp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=toast-tk/toast-tk-webapp&amp;utm_campaign=Badge_Coverage)
+
 # Toast TK - Web Application
 Toast Tk Web App is the collaborative platform to support test automation and documentation for your Agile projet team.
 
@@ -40,4 +43,4 @@ For contribution rules and guidelines, See [CONTRIBUTING.md](https://github.com/
 If you'd like to help, [get in touch](https://gitter.im/toast-tk/toast-tk-engine) and let us know how you'd like to help. We love contributors!! 
 
 # Licence
-See [Toast-tk Apache License 2.0](https://github.com/toast-tk/toast-tk-engine/blob/snapshot/LICENSE.md)
+[![License](http://img.shields.io/:license-Apache%202-red.svg)](https://github.com/toast-tk/toast-tk-engine/blob/snapshot/LICENSE.md)
