@@ -38,7 +38,7 @@
                 playRoutes.controllers.ProjectController.getAllProjects().get().then(function(response){
                     var res = response.data || [];
                     res = res.filter(function (el) {
-                      return el.name.contains($query);
+                      return el.name.toLowerCase().search($query.toLowerCase()) > -1;
                     });
                     defered.resolve(res);
                 });
