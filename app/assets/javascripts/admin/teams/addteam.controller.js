@@ -28,8 +28,17 @@
                 }
             }
 
-            $scope.loadProjects = function(){
-                return playRoutes.controllers.ProjectController.getAllProjects().get();
+
+            $scope.loadProjects = function($query){
+                var defered = $q.defer();
+                playRoutes.controllers.ProjectController.getAllProjects().get().then(function(response){
+                    var res = response.data || [];
+                    res = res.filter(function (el) {
+                      return el.name.contains($query);
+                    });
+                    defered.resolve(res);
+                });
+                return defered.promise;
             }
 
         }

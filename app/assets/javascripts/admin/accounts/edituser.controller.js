@@ -28,9 +28,16 @@
                 }
             };
 
-            $scope.loadTeams = function(){
-                var teamNameList =  [];
-                return playRoutes.controllers.TeamController.getAllTeams().get();
+            $scope.loadTeams = function(query){
+                var defered = $q.defer();
+                playRoutes.controllers.TeamController.getAllTeams().get().then(function(response){
+                    var res = response.data || [];
+                    res = res.filter(function (el) {
+                      return el.name.contains($query);
+                    });
+                    defered.resolve(res);
+                });
+                return defered.promise;
             }
 
         }

@@ -87,7 +87,7 @@
 
                                 </span>
                                 <tags-input ng-if="user.isAdmin === true" ng-model="user.teams" style="height:15px;" display-property="name" add-from-autocomplete-only="true">
-                                    <auto-complete source="loadTeams()" load-on-down-arrow="true"></auto-complete>
+                                    <auto-complete source="loadTeams($query)" load-on-down-arrow="true"></auto-complete>
                                 </tags-input>
                             </div>
                         </div>

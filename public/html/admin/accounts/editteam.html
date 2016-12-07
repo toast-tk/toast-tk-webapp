@@ -40,7 +40,7 @@
                             <label for="projects" class="col-sm-2 control-label">Projects</label>
                             <div class="col-sm-10">
                                 <tags-input ng-model="newTeam.projects" style="height:15px;" display-property="name" add-from-autocomplete-only="true">
-                                    <auto-complete source="loadProjects()" load-on-down-arrow="true"></auto-complete>
+                                    <auto-complete source="loadProjects($query)" load-on-down-arrow="true"></auto-complete>
                                 </tags-input>
                             </div>
                         </div>

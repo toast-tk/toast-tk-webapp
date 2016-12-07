@@ -7,7 +7,6 @@
             $scope.isNewUserFormSubmitted = false;
             $scope.newUser = {};
     
-         	console.log("printing entry");
         	$scope.generatePassword = function(){
         		$scope.newUser.password = Math.random().toString(36).substring(18);
         		$scope.newUser.password1 = $scope.newUser.password;
@@ -32,8 +31,16 @@
                 }
             }
 
-            $scope.loadTeams = function(){
-                return playRoutes.controllers.TeamController.getAllTeams().get();
+            $scope.loadTeams = function(query){
+                var defered = $q.defer();
+                playRoutes.controllers.TeamController.getAllTeams().get().then(function(response){
+                    var res = response.data || [];
+                    res = res.filter(function (el) {
+                      return el.name.contains($query);
+                    });
+                    defered.resolve(res);
+                });
+                return defered.promise;
             }
 
             $scope.validatePassword = function(){
