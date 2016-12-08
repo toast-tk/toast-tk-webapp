@@ -3,7 +3,7 @@
 
     angular.module("app").controller("AddTeamCtrl", AddTeamCtrl);
 
-    function AddTeamCtrl($scope, playRoutes, toastr) {
+    function AddTeamCtrl($scope, playRoutes, toastr, $q) {
             $scope.isNewUserFormSubmitted = false;
             $scope.newTeam = {};
 

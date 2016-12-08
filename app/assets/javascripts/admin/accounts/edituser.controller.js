@@ -3,7 +3,7 @@
 
     angular.module("app").controller("EditUserCtrl", EditUserCtrl);
 
-    function EditUserCtrl($scope, playRoutes, toastr, $stateParams) {
+    function EditUserCtrl($scope, playRoutes, toastr, $stateParams, $q) {
             $scope.isNewUserFormSubmitted = false;
             $scope.user = {};
 
