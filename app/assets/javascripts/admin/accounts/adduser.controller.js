@@ -20,7 +20,7 @@
                         selectedTeamList.push(team); //TODO add object here !
                     });
                     $scope.newUser.teams = selectedTeamList ;
-                    $scope.newUser.password = SHA256($scope.newUser.password).toString();
+                    $scope.newUser.password = CryptoJS.SHA256($scope.newUser.password).toString();
                     console.log("envoyer l'utilisateur , formulaire valide");
                     playRoutes.controllers.UserController.saveUser().post($scope.newUser).then(function () {
                         toastr.success('Saved !');
