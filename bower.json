@@ -39,7 +39,7 @@
     "angular-resizable": "^1.2.0"
   },
   "resolutions": {
-    "angular": "1.5.8"
+    "angular": ">=1.4.0"
   },
   "devDependencies": {
     "jwt-client": "~0.2.1"
