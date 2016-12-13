@@ -2,7 +2,7 @@
     "use strict";
     angular.module("app").controller("newStepModalCtrl", newStepModalCtrl);
 
-    function  newStepModalCtrl($scope,  $uibModalInstance, TreeLayoutService,ICONS, playRoutes, toastr) {
+    function  newStepModalCtrl($scope,  $uibModalInstance, ICONS, playRoutes, toastr) {
             $scope.ICONS = ICONS;
             var newNode = {};
 
@@ -29,7 +29,7 @@
                     newNode.driver =  newNode.type;
                     newNode.columns = scenarioCtxDescriptor;
                     newNode.rows = [];
-                    newNode.parent = TreeLayoutService.getConcernedNode() || "0" ;
+                    newNode.parent = $scope.newNodeparent || "0" ;
                     save(newNode);
                 });
             }
@@ -47,15 +47,14 @@
                 scenarioCopy.project = $scope.project;
                 scenarioCopy.parent = scenarioCopy.parent.toString();
                 playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function (savedScenario) {
-                    TreeLayoutService.add(savedScenario.data).then(function(newId){
-                        savedScenario.data.id = newId;
+                        savedScenario.data.id = Math.floor(Math.random() * 10000000) + 1000000000;
                         playRoutes.controllers.ScenarioController.saveScenarii().post(savedScenario.data).then(function (response) {
                             console.log("scenario saved ", savedScenario.data);
                             $uibModalInstance.close(response.data);
                         },function(){
                             toastr.error('Could Not save new node: Error 10 !');
                         });
-                    });
+
                 },function(){
                     toastr.error('Could Not save new node: Error 11 !');
                     //TODO; #fix should remove added node here

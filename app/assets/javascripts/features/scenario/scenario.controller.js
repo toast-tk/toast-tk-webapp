@@ -5,7 +5,7 @@
 
     function ScenarioCtrl($rootScope, $scope, $q, playRoutes,
                                 ngProgress, ClientService, $sideSplit, $timeout,
-                                $uibModal, TreeLayoutService, ICONS, LayoutService,
+                                $uibModal, ICONS, LayoutService,
                                 NewStepService, UtilsScenarioService, toastr,
                                 defaultProject) {
 
@@ -13,7 +13,7 @@
             $scope.isEditScenarioName = false;
             $scope.isCollapsed = false;
             $scope.ICONS = ICONS ;
-
+            $scope.senariiTree =[];
             //plain json data, based on objects
             $scope.newRow = {};
             $scope.scenario_types = ["swing", "service", "web"];
@@ -52,7 +52,59 @@
                 dynamicButtonTextSuffix: ' - Recording is Active'
             };
 
-            ClientService.registerAgentListener(function(order, info){
+        /* FS EXPLORER */
+        $scope.addNodeToParent = function(nodeType){
+                var modalScope = $scope.$new(true);
+                modalScope.newNodeType = nodeType;
+                if($scope.currentPath[$scope.currentPath.length - 1]){
+                    modalScope.newNodeparent =  $scope.currentPath[$scope.currentPath.length - 1]._id ;
+                }
+                modalScope.project = $scope.defaultProject;
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'assets/html/scenario/newstep.modal.scenario.html',
+                    controller:'newStepModalCtrl',
+                    scope : modalScope
+                });
+
+                modalInstance.result.then(function(newScenario){
+                    newScenario.rows = angular.isObject(newScenario.rows) ? newScenario.rows : JSON.parse(newScenario.rows);
+                    add(newScenario);
+                });
+        };
+
+        $scope.fsExplorerOptions = {
+            nodeId: "_id",
+            sortBy: 'type',
+            isAccessibleNode: function(node){
+                return (node.type === 'folder');
+            }
+        };
+
+        $scope.currentPath = [];
+        $scope.changedPath = function(path){
+            $scope.currentPath = path; //TODO: show in ui
+        };
+
+        $scope.clickedNode = function(selectedNode){
+            if(selectedNode.type!="folder"){
+                $scope.editableStepIndex = null;
+                $scope.scenario = selectedNode ;
+                $scope.folder = null;
+                setDropListPositionClass();
+                $timeout(function(){
+                    $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
+                },500);
+            } else {
+                $scope.scenario = null ;
+                $scope.folder = selectedNode;
+                //$scope.folderContents = TreeLayoutService.getAllChildNodes(selectedNode._id);
+            }
+        };
+
+        /* FS EXPLORER */
+
+        ClientService.registerAgentListener(function(order, info){
                 if(order === 'set'){
                     if(!$scope.$$phase) {
                       $scope.$apply(function() {
@@ -112,51 +164,6 @@
                 TreeLayoutService.selectNode(id);
             }
 
-            /* tree build promise */
-            var treeExplorerPromise = $q.defer();
-            treeExplorerPromise.promise.then(function(treeExplorer){
-                TreeLayoutService.adjustTreeSize(treeExplorer);
-                $scope.addNodeToParent = function(nodeType){
-                    TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
-                        return (!angular.isDefined(selectedItem.data) && selectedItem.type != "folder");
-                    }).then(function(){
-                        var modalScope = $scope.$new(true);
-                        modalScope.newNodeType = nodeType;
-                        modalScope.project = $scope.defaultProject;
-                        var modalInstance = $uibModal.open({
-                            animation: $scope.animationsEnabled,
-                            templateUrl: 'assets/html/scenario/newstep.modal.scenario.html',
-                            controller:'newStepModalCtrl',
-                            scope : modalScope
-                        });
-
-                        modalInstance.result.then(function(newScenario){
-                            newScenario.rows = angular.isObject(newScenario.rows) ? newScenario.rows : JSON.parse(newScenario.rows);
-                            add(newScenario);
-                        });
-                    });
-                };
-
-                $scope.$watch('scenario.name',function(newValue){
-                    if(angular.isDefined(newValue)){
-                        TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
-                            return (!angular.isDefined(selectedItem.data) && selectedItem.type !="folder");
-                        }).then(function(){
-                            TreeLayoutService.editSelectedNodeName(newValue);
-                        });
-                    }
-                });
-                $scope.$watch('folder.name',function(newValue){
-                    if(angular.isDefined(newValue)){
-                        TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
-                            return (!angular.isDefined(selectedItem.data) && selectedItem.type =="folder");
-                        }).then(function(){
-                            TreeLayoutService.editSelectedNodeName(newValue);
-                        });
-                    }
-                })
-            });
-
             __init__(true);
 
             function setDropListPositionClass(){
@@ -178,6 +185,7 @@
                 if(!angular.isDefined(newScenario.data) && newScenario.type !="folder"){
                     $scope.scenarii.push(newScenario);
                     /*delete newScenario.id ;*/
+                    $scope.folder = null;
                     $scope.scenario = newScenario;
                     setDropListPositionClass();
                     $scope.stepType = newScenario.type;
@@ -286,17 +294,10 @@
             function deleteScenarii(scenario){
                 playRoutes.controllers.ScenarioController.deleteScenarii().post(angular.toJson(scenario._id)).then(function () {
                     __init__(false);
-                    treeExplorerPromise.promise.then(function(treeExplorer){
-                        TreeLayoutService.saveConcernedNode(treeExplorer, function(selectedItem){
-                            return (!angular.isDefined(selectedItem.data));
-                        }).then(function(){
-                            TreeLayoutService.removeSelectedNode();
-                            var node =$scope.scenario || $scope.folder;
-                            toastr.success("deleted: \'"+ node.name + "\' !");
-                            $scope.scenario = null;
-                            $scope.folder = null;
-                        })
-                    });
+                    var node =$scope.scenario || $scope.folder;
+                    toastr.success("deleted: \'"+ node.name + "\' !");
+                    $scope.scenario = null;
+                    $scope.folder = null;
                 }, function(){
                     toastr.error("Error: has child node!");
                 });
@@ -380,67 +381,23 @@
                         }
                     });
                     if(angular.isDefined(data) && data.length != 0){
-                        $scope.senariiTree = UtilsScenarioService.toTreeDataList(data);
+                        $scope.senariiTree = data ;
                     } else {
                         console.warn("no data nodes");
                     }
 
-
-                    /* begin : adjusting page content size */
-                    $scope.effectContentWidth = LayoutService.reAdjustContentSize();
-                    webix.event(window, "resize", function(){LayoutService.reAdjustContentSize()});
-                    $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(){LayoutService.reAdjustContentSize()});
-                    /* end : adjusting page content size */
-
                     /* begin : generation de la tree */
                     // FIX TODO : l'initiatisation crée une boucle infinie
-                    if(doBuildTree === true){
+/*                    if(doBuildTree === true){
                         $scope.scenarii.map(function (scenario) {
                             if(scenario.template === true ){
                                 convertToTemplate(scenario);
                             }
                         });
-                        TreeLayoutService.build("toastScenariosTreeExplorer", $scope.senariiTree,
-                            function(obj, common){
-                                if(!angular.isDefined(obj.image) || obj.image == null){
-                                    obj.image = ICONS[obj.type];
-                                }
-                                return common.icon(obj,common)+ "<i class='"+ obj.image +"' style='float:left; margin:3px 4px 0px 1px;'> </i>" + obj.name;
-                            }).then(function(treeExplorer){
-                                treeExplorerPromise.resolve(treeExplorer);
-                            });
-
-                        /* end : generation de la tree */
-
-                        TreeLayoutService.addSelectedNodeCallback("toastScenariosTreeExplorer", function(selectedScenario){
-                            $scope.editableStepIndex = null;
-                            $scope.scenario = selectedScenario ;
-                            $scope.folder = null;
-                            setDropListPositionClass();
-                            $timeout(function(){
-                                $("#importActionsPanel").animate({ scrollTop: document.getElementById("importActionsPanel").scrollHeight }, "slow");
-                            },500);
-                            if(!$scope.$$phase) {
-                                $scope.$apply();
-                            }
-                        }, function(selectedElementId,selectedItem){
-                            return selectedElementId && selectedItem.type!="folder";
-                        });
-
-                        TreeLayoutService.addSelectedNodeCallback("toastScenariosTreeExplorer", function(selectedFolder){
-                            $scope.scenario = null ;
-                            $scope.folder = selectedFolder;
-                            $scope.folderContents = TreeLayoutService.getAllChildNodes(selectedFolder._id);
-                            if(!$scope.$$phase) {
-                                $scope.$apply();
-                            }
-                        }, function(selectedElementId,selectedItem){
-                            return selectedElementId && selectedItem.type=="folder";
-                        });
-
-                    }
+                    }*/
                     /* end: doBuildTree */
                 });
             }
+
         }
 })();
