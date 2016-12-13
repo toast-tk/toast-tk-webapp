@@ -14,7 +14,7 @@
           $timeout(function(){
               var effectContentWidth = window.innerWidth - angular.element('#side-nav').width();
               $timeout(function(){
-                  $$("contentWebixLayout").adjust();
+                  //$$("contentWebixLayout").adjust();
               },0);
               return effectContentWidth ;
           },0);

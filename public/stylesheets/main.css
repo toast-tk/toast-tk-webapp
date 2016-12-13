@@ -271,7 +271,7 @@ footer {
 
 /* BEGIN : bootstrap overriding */
 .panel-default {
-    border: none !important;
+    /*border: none !important;*/
 }
 .panel-body {
     padding: 8px !important;
