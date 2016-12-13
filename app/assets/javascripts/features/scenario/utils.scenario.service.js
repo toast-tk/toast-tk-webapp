@@ -7,37 +7,11 @@
       var self = this ;
       self.regexMap = [];
       return {
-        toTreeDataList : toTreeDataList,
         getActionType: getActionType,
         setRegexList: setRegexList,
         convertToTemplate : convertToTemplate,
         templatizeRow: templatizeRow,
         onPatternValueChange : onPatternValueChange
-      }
-
-      function toTreeDataList(flat){
-        var nodes = [];
-        var toplevelNodes = [];
-        var lookupList = {};
-
-        for (var i = 0; i < flat.length; i++) {
-          flat[i].data = []
-          lookupList[flat[i].id] = flat[i];
-          nodes.push(flat[i]);
-          if (flat[i].parent == null || flat[i].parent == 0) {
-            toplevelNodes.push(flat[i]);
-          }
-        }
-
-        for (var i = 0; i < nodes.length; i++) {
-          var n = nodes[i];
-          if (!(n.parent == 0 || n.parent == null)) {
-            if(angular.isDefined(lookupList[n.parent])){
-              lookupList[n.parent].data = lookupList[n.parent].data.concat([n]);
-            }
-          }
-        }
-        return toplevelNodes;
       }
 
       /* BEGIN : setRegexList */
