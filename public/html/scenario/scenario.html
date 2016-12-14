@@ -111,12 +111,12 @@
                                         <button class="btn btn-xs btn-success" ng-show="scenario.template" ng-click="convertToTemplate(scenario)">T</button>
                                         <select ng-model="scenario.selectedImportMode" ng-options="mode for mode in importModes"></select>
                                         from <select ng-model="scenario.imp" ng-options="reference as reference.name for reference in scenarii" ></select>
-                                        <button class="btn btn-xs btn-primary" data-ng-click="importScenario(scenario)">Import</button>
+                                        <button class="btn btn-xs btn-primary" data-ng-click="importScenario(scenario)"><i class="fa fa-download" aria-hidden="true"></i> Import</button>
                                     </div>
                                 </div>
                             </div>
-                            <div id="importActionsPanel" class="panel panel-default" style="height: 86%; overflow-y: scroll;">
-                                <ul class="list-group list-striped" ui-sortable ng-model="scenario.rows">
+                            <div id="importActionsPanel" style="height: 86%; overflow-y: auto;">
+                                <ul class="list-group list-striped" style="margin: 0 16px;" ui-sortable ng-model="scenario.rows">
                                     <li class="list-group-item row" ng-repeat="r in scenario.rows">
                                     <span ng-if="editableStepIndex !== $index" class="col-md-1"  style="width: 5%; padding-left: 6px; padding-right: 6px;">
                                         <i
@@ -161,7 +161,7 @@
                                 </button>
                               </span>
                                     </li>
-                                    <li ng-model="newRow" class="list-group-item row">
+                                    <li ng-model="newRow" class="list-group-item row" style="padding: 20px;">
                                         <!-- {{regexMap}} {{regexList}} -->
                                         <div angucomplete-alt id="newStepAutocomplete"
                                              ng-keyup="$event.keyCode == 13 && addNewStep()"
