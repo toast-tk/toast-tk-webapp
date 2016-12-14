@@ -3,16 +3,9 @@
 
     angular.module("app").controller("SettingsCtrl", SettingsCtrl);
 
-    function SettingsCtrl($rootScope, $scope, playRoutes, ngProgress, $sideSplit, LayoutService, TreeLayoutService, $uibModal, ICONS, toastr) {
+    function SettingsCtrl($rootScope, $scope, playRoutes, ngProgress, $sideSplit, TreeLayoutService, $uibModal, ICONS, toastr) {
             var vm = $scope;
             $scope.ICONS = ICONS;
-            
-            $scope.effectContentWidth = LayoutService.reAdjustContentSize();
-            webix.event(window, "resize", function(){LayoutService.reAdjustContentSize()});
-            $sideSplit.addCollapseCallBack(
-                angular.element('#sidebarmenu'), 
-                function(){LayoutService.reAdjustContentSize()});
-
 
             $scope.service_config_types = ["web", "swing", "service"];
             $scope.selectedConfig = undefined;

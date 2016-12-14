@@ -3,19 +3,13 @@
     angular.module("app").controller("TestPlanCtrl", TestPlanCtrl);
 
     function TestPlanCtrl($scope, playRoutes,
-                                $state,$sideSplit, LayoutService,
+                                $state,$sideSplit,
                                 defaultProject, toastr) {
 
             $scope.defaultProject = defaultProject;
             $scope.projects = [];
             $scope.selectedProject = undefined;
             $scope.stateParams = $state.params;
-
-            /* begin : adjusting page content size */
-            $scope.effectContentWidth = LayoutService.reAdjustContentSize();
-            webix.event(window, "resize", function(){LayoutService.reAdjustContentSize()});
-            $sideSplit.addCollapseCallBack(angular.element('#sidebarmenu'), function(){LayoutService.reAdjustContentSize()});
-
             $scope.displayTestPlanSetup = function(project){
                 $scope.selectedProject = project;
                 $state.go("layout.campaign.setup", {"idTestPlan": project.id});
