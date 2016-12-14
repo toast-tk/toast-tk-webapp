@@ -12,7 +12,7 @@
                 newNode.data = [];
             }
 
-            $scope.scenarioTypeDropdownLabel = "web";
+            $scope.scenarioType = "web";
 
             $scope.closeModal = closeModal ;
             function closeModal(){
@@ -26,20 +26,15 @@
                     var scenarioCtxDescriptor = response.data;
                     newNode.name = $scope.scenarioName;
                     newNode.value = $scope.scenarioName;
+                    newNode.type =  $scope.scenarioType;
                     newNode.driver =  newNode.type;
                     newNode.columns = scenarioCtxDescriptor;
                     newNode.rows = [];
                     newNode.parent = $scope.newNodeparent || "0" ;
                     save(newNode);
                 });
-            }
+            };
 
-            $scope.swapToType = function(type){
-                $scope.scenarioTypeDropdownLabel = type;
-                newNode.type = type;
-            }
-
-            /**/
             function save(scenario) {
                 var scenarioCopy = angular.copy(scenario);
                 scenarioCopy.rows = JSON.stringify(scenarioCopy.rows);
@@ -52,11 +47,11 @@
                             console.log("scenario saved ", savedScenario.data);
                             $uibModalInstance.close(response.data);
                         },function(){
-                            toastr.error('Could Not save new node: Error 10 !');
+                            toastr.error("Could Not save new node: Error 10 !");
                         });
 
                 },function(){
-                    toastr.error('Could Not save new node: Error 11 !');
+                    toastr.error("Could Not save new node: Error 11 !");
                     //TODO; #fix should remove added node here
                 });
             }
