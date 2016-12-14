@@ -87,3 +87,9 @@
     color: #222;
     padding: 6px 6px;
 }
+
+#testplan #pie {
+    width: 150px !important;
+    height: 150px !important;
+    text-align: center;
+}
