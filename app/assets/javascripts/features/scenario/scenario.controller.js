@@ -5,7 +5,7 @@
 
     function ScenarioCtrl($rootScope, $scope, $q, playRoutes,
                                 ngProgress, ClientService, $sideSplit, $timeout,
-                                $uibModal, ICONS, LayoutService,
+                                $uibModal, ICONS,
                                 NewStepService, UtilsScenarioService, toastr,
                                 defaultProject) {
 

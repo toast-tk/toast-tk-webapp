@@ -1,54 +1,54 @@
 <div class="container-fluid" id="repository" style="overflow: hidden;">
-    <div class="row" style="width:{{effectContentWidth}}px; height:94%; overflow: hidden;">
-        <div webix-ui id="contentWebixLayout"> <!--layout rows with type "space" are created-->
+    <div  id="resizable-content" class="row" style="width:{{effectContentWidth}}px; height:94%; overflow: hidden;">
             <div height="51" >
                 <h3 class="page-header" >
                     <i class="fa fa-fw fa-archive"></i> Component Repository <small> Manage your UI components</small>
                 </h3>
             </div>
-            <div view="cols"> <!--Webix layout cols are initialized-->
-                <div width="280">
-                    <div class="panel panel-default" style="margin-bottom: 4px;">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">
-                                <h3 class="panel-title"><i class="fa fa-files-o fa-fw"></i> Component List
-                                    <div class="input-group pull-right">
-                                        <div class="btn btn-primary btn-xs" ng-click="addNewObject()"><i class="fa fa-plus"></i> </div>
+            <main>
+                <section id="one" resizable r-directions="['right']" r-flex="true">
+                    <div width="280">
+                        <div class="panel panel-default" style="margin-bottom: 4px;">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <h3 class="panel-title"><i class="fa fa-files-o fa-fw"></i> Component List
+                                        <div class="input-group pull-right">
+                                            <div class="btn btn-primary btn-xs" ng-click="addNewObject()"><i class="fa fa-plus"></i> </div>
+                                        </div>
+
+                                    </h3>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"><i class="fa fa-filter"></i> </span>
+                                        <select class="form-control btn" ng-model="autoSetupConfigFilter" data-ng-options="type for type in run_config_types"></select>
                                     </div>
 
-                                </h3>
-                        </div>
-                    </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <div class="panel-title">
-                                <div class="input-group">
-                                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-filter"></i> </span>
-                                    <select class="form-control btn" ng-model="autoSetupConfigFilter" data-ng-options="type for type in run_config_types"></select>
                                 </div>
-
                             </div>
-                        </div>
-                        <div class="panel-body" style="height: 85%; overflow: auto;">
-                            <div ui-tree data-drag-enabled="false">
-                                <ol ui-tree-nodes="" class="list-group" ng-model="autosetups">
-                                    <li class="list-group-item" ng-class="{'active' : autoset === autosetup}" ng-repeat="autoset in autosetups | filter:autoSetupConfigFilter" ui-tree-node>
-                                        <div class="title row" style="margin-left: 0; margin-right: 0;" ng-click="editRepositoryObject(autoset)">
-                                            <div class="col-md-9 wrap-word">
-                                                {{autoset.name}}
+                            <div class="panel-body" style="height: 85%; overflow: auto;">
+                                <div ui-tree data-drag-enabled="false">
+                                    <ol ui-tree-nodes="" class="list-group" ng-model="autosetups">
+                                        <li class="list-group-item" ng-class="{'active' : autoset === autosetup}" ng-repeat="autoset in autosetups | filter:autoSetupConfigFilter" ui-tree-node>
+                                            <div class="title row" style="margin-left: 0; margin-right: 0;" ng-click="editRepositoryObject(autoset)">
+                                                <div class="col-md-9 wrap-word">
+                                                    {{autoset.name}}
+                                                </div>
+                                                <a class="pull-right btn btn-danger1 btn-xs" data-nodrag="" ng-click="deleteObject(autoset)">
+                                                    <span class="fa fa-trash"></span>
+                                                </a>
                                             </div>
-                                            <a class="pull-right btn btn-danger1 btn-xs" data-nodrag="" ng-click="deleteObject(autoset)">
-                                                <span class="fa fa-trash"></span>
-                                            </a>
-                                        </div>
-                                    </li>
-                                </ol>
+                                        </li>
+                                    </ol>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div view="resizer"></div>
-                <div view="cols">
+                </section>
+                <section id="two">
                     <div class="panel panel-default"  ng-show="autosetup != undefined">
                         <div class="panel-heading">
                             <h3 class="panel-title" >
@@ -109,9 +109,8 @@
                         </div>
                     </div>
                     <!-- /.panel -->
-                </div>
-            </div>
-        </div>
+                </section>
+            </main>
     </div>
 </div>
 <!-- /.container-fluid -->

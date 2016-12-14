@@ -1,57 +1,54 @@
 <div id="testplan" class="container-fluid" style="overflow: hidden;">
-    <div class="row" style="width:{{effectContentWidth}}px; height:94%; overflow: hidden;">
-        <div webix-ui id="contentWebixLayout">
+    <div id="resizable-content" class="row" style="width:{{effectContentWidth}}px; height:94%; overflow: hidden;">
             <div height="51" >
                 <h3 class="page-header" >
                     <i class="fa fa-fw fa-terminal "></i> Test Plan <small> - configure and consult reports</small>
                 </h3>
             </div>
-            <div view="cols">
-                <div width="280">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <div class="panel-title">
-                                <h3 class="panel-title">
-                                    <i class="fa fa-folder-open"></i>
-                                    Reports
-                                    <div class="input-group pull-right">
-                                        <div class="btn btn-primary btn-xs" style="margin: -5px;" data-ng-click="addProjectBlock()">+</div>
-                                    </div>
+        <main>
+            <section id="one" resizable r-directions="['right']" r-flex="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <h3 class="panel-title">
+                                <i class="fa fa-folder-open"></i>
+                                Reports
+                                <div class="input-group pull-right">
+                                    <div class="btn btn-primary btn-xs" style="margin: -5px;" data-ng-click="addProjectBlock()">+</div>
+                                </div>
 
-                                </h3>
-                            </div>
+                            </h3>
                         </div>
-                        <div class="panel-body" style="height: 85%; overflow: auto;">
-                            <div ui-tree data-drag-enabled="false">
-                                <ol ui-tree-nodes="" class="list-group" ng-model="projects">
-                                    <li class="list-group-item" ng-class="{'active' : selectedProject === project}" ng-repeat="project in projects" ui-tree-node>
-                                        <div ng-click="displayTestPlanSetup(project)">
+                    </div>
+                    <div class="panel-body" style="height: 85%; overflow: auto;">
+                        <div ui-tree data-drag-enabled="false">
+                            <ol ui-tree-nodes="" class="list-group" ng-model="projects">
+                                <li class="list-group-item" ng-class="{'active' : selectedProject === project}" ng-repeat="project in projects" ui-tree-node>
+                                    <div ng-click="displayTestPlanSetup(project)">
 	 											<span class="project-title">
 	 												{{project.name}}
 	 											</span>
-                                        </div>
-                                    </li>
-                                </ol>
-                            </div>
+                                    </div>
+                                </li>
+                            </ol>
                         </div>
                     </div>
                 </div>
-                <div view="resizer"></div>
-                <div view="cols">
-                    <div ng-show="selectedProject != undefined">
-                        <button ng-click="deleteTestPlan()" class="float-button btn btn-xs btn-danger" style="position: absolute; right: 7px;"><i class="fa fa-trash"></i>Delete</button>
-                        <uib-tabset active="activeForm">
-                            <uib-tab index="0" heading="Setup" ng-click="displayTestPlanSetup(selectedProject)">
-                            </uib-tab>
-                            <uib-tab index="1" heading="Execution Report" ng-click="displayReport(selectedProject)">
-                            </uib-tab>
-                        </uib-tabset>
-                        <div class="shadow-container" style="opacity: 1;"></div>
-                        <div ui-view="info"></div>
-                    </div>
+            </section>
+            <section>
+                <div ng-show="selectedProject != undefined">
+                    <button ng-click="deleteTestPlan()" class="float-button btn btn-xs btn-danger" style="position: absolute; right: 7px;"><i class="fa fa-trash"></i>Delete</button>
+                    <uib-tabset active="activeForm">
+                        <uib-tab index="0" heading="Setup" ng-click="displayTestPlanSetup(selectedProject)">
+                        </uib-tab>
+                        <uib-tab index="1" heading="Execution Report" ng-click="displayReport(selectedProject)">
+                        </uib-tab>
+                    </uib-tabset>
+                    <div class="shadow-container" style="opacity: 1;"></div>
+                    <div ui-view="info"></div>
                 </div>
-            </div>
-        </div>
+            </section>
+        </main>
     </div>
 </div>
 <!-- /.container-fluid -->
