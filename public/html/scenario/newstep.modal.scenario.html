@@ -8,23 +8,23 @@
 				<div class="content-fluid row">
 					<div ng-if="newNodeType === 'scenario'" class="col-md-3">
 						<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
-							<i class="{{ICONS[scenarioTypeDropdownLabel]}} fa-fw"></i>
-							{{scenarioTypeDropdownLabel}}
+							<i class="{{ICONS[scenarioType]}} fa-fw"></i>
+							{{scenarioType}}
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 							<li>
-							<a ng-click="swapToType('swing')">
+							<a ng-click="$parent.scenarioType='swing'">
 									<i class="{{ICONS['swing']}} fa-fw"></i> swing
 								</a>
 							</li>
 							<li>
-								<a ng-click="swapToType('web')">
+								<a ng-click="$parent.scenarioType='web'">
 									<i class="{{ICONS['web']}} fa-fw"></i> web
 								</a>
 							</li>
 							<li>
-								<a ng-click="swapToType('service')">
+								<a ng-click="$parent.scenarioType='service'">
 									<i class="{{ICONS['service']}}  fa-fw"></i> service
 								</a>
 							</li>
@@ -37,6 +37,6 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default"  ng-click="closeModal()">Close</button>
-				<button type="button" class="btn btn-primary" ng-disable="scenarioTypeDropdownLabel != ('web' || 'service' || 'swing') '' " ng-click="createNewNode()">Create</button>
+				<button type="button" class="btn btn-primary" ng-disable="scenarioType != ('web' || 'service' || 'swing') '' " ng-click="createNewNode()">Create</button>
 			</div>
 		</div><!-- /.modal-content -->
