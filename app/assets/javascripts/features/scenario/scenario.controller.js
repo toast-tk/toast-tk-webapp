@@ -388,13 +388,13 @@
 
                     /* begin : generation de la tree */
                     // FIX TODO : l'initiatisation crée une boucle infinie
-/*                    if(doBuildTree === true){
+                    if(doBuildTree === true){
                         $scope.scenarii.map(function (scenario) {
                             if(scenario.template === true ){
                                 convertToTemplate(scenario);
                             }
                         });
-                    }*/
+                    }
                     /* end: doBuildTree */
                 });
             }
