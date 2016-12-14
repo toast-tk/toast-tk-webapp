@@ -7,12 +7,12 @@
             var newNode = {};
 
             if($scope.newNodeType === "folder"){
-                newNode.type = "folder";
+                $scope.scenarioType = "folder";
                 newNode.image = ICONS["folder"];
                 newNode.data = [];
+            } else {
+                $scope.scenarioType = "web";
             }
-
-            $scope.scenarioType = "web";
 
             $scope.closeModal = closeModal ;
             function closeModal(){
