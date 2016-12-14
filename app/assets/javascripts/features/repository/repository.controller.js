@@ -4,7 +4,7 @@
     angular.module("app").controller("RepositoryCtrl", RepositoryCtrl);
 
     function RepositoryCtrl($scope, playRoutes, $uibModal,
-                                  $sideSplit, LayoutService, toastr, ICONS,
+                                  $sideSplit, toastr, ICONS,
                                   defaultProject) {
             $scope.defaultProject = defaultProject;
             $scope.run_config_types = [ "swing page", "web page"];
@@ -21,14 +21,6 @@
             $scope.$watch("autoSetupConfigFilter", function(oldValue, newValue){
                 __init__();
             });
-
-            /* begin : adjusting page content size */
-            $scope.effectContentWidth = LayoutService.reAdjustContentSize();
-            webix.event(window, "resize", function(){LayoutService.reAdjustContentSize()});
-            $sideSplit.addCollapseCallBack(
-                angular.element('#sidebarmenu'), 
-                function(){LayoutService.reAdjustContentSize()});
-
 
             /* BEGIN : open & add object modal */
             $scope.addNewObject = function(){
