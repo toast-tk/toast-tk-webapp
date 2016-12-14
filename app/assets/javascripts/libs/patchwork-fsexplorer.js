@@ -49,6 +49,7 @@ angular.module('pw-fsexplorer', ["template/explorerTpl.html"])
                 controller: function($scope){
                     var context = {
                         selectedNode: null,
+                        clickedNode: null,
                         currentPath:[]
                     };
                     if($scope.explorerOptions) {
@@ -78,9 +79,16 @@ angular.module('pw-fsexplorer', ["template/explorerTpl.html"])
                         } else {
                             log.error("error: it should have at least pwdPointer");
                         }
-                    } 
+                    };
+
+                    $scope.nodeClass = function(node){
+                            if(context.clickedNode && context.clickedNode[fsConfig.options.nodeId] === node[fsConfig.options.nodeId]){
+                                return "clicked-node";
+                            }
+                    };
 
                     $scope.selectNodeLabel = function(node){
+                        context.clickedNode = node;
                         if(angular.isUndefined($scope.isClickable)|| (angular.isDefined($scope.isClickable) && $scope.isClickable(node) === true)){
                             if(!node.__isFakeNode__ && fsConfig.options.isAccessibleNode(node)===true){
                                 $scope.nodeList = $filter('orderBy')(fsExplorerService.getChildrenNodeList(explorerModel,node), fsConfig.options.sortBy);

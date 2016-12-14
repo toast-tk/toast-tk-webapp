@@ -23,3 +23,7 @@ html, body {  overflow: hidden; }
 #resizable-content section.resizable {
     flex: 0 0 300px;
 }
+
+#resizable-content .clicked-node{
+    background-color: #ffefc7;
+}
