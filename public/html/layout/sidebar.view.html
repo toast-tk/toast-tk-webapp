@@ -28,10 +28,10 @@
         <i  ng-if="isCollapsed===true" class="fa fa-lg fa-chevron-circle-right" ng-class="{'fa-2x': isCollapsed === true}"></i>
         </a>
     </li>
-    <li ng-class="{'active' : currentState === 'ladminLayout'}" ng-if="user.isAdmin === true">
+    <li ng-class="{'active' : currentState === 'ladminLayout'}" style="position: fixed; bottom: 50px;" ng-if="user.isAdmin === true">
         <a ng-click="goToState('adminLayout')">
-            <i class="fa fa-fw fa-users fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
-            <span ng-if="isCollapsed===false">Users</span>
+            <i class="fa fa-fw fa-gear fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
+            <span ng-if="isCollapsed===false">Administration</span>
         </a>
     </li>
 </ul>
