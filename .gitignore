@@ -26,3 +26,4 @@ toast-logs.log
 /app/assets/bower_components/*
 /bower_components/*
 /node_modules/*
+app/assets/libs/**
