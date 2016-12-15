@@ -28,9 +28,8 @@
                     factory.accessToken = accessToken;
                     var location = window.location;
                     var port = location.port === "" ? "" : ":" + location.port;
-                    var path = location.pathname;
                     var protocol = location.protocol === "https:" ? "wss" : "ws";
-                    var socket = new webSocket(protocol + '://' + location.host + path + 'socket/stream?token=' + accessToken);
+                    var socket = new webSocket(protocol + "://" + location.host + "/api/socket/stream?token=" + accessToken);
 
                     // When the connection is open, send some data to the server
                     socket.onopen = function (event) {

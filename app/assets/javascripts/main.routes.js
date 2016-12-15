@@ -3,9 +3,9 @@
 
     angular.module("app").config(RouterConfig);
 
-    RouterConfig.$inject = ["$stateProvider", "$urlRouterProvider"];
+    RouterConfig.$inject = ["$stateProvider", "$urlRouterProvider","$locationProvider"];
 
-    function RouterConfig($stateProvider, $urlRouterProvider){
+    function RouterConfig($stateProvider, $urlRouterProvider, $locationProvider){
 
         $stateProvider.state('askForAccount', {
             url: "/account/ask",
@@ -347,6 +347,7 @@
 
         $urlRouterProvider.when('','/');
         $urlRouterProvider.otherwise('/');
+        $locationProvider.html5Mode(true);
     }
     /* END : router config function */
 
