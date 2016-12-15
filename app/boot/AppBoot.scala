@@ -93,7 +93,7 @@ object AuthorisationFilter extends Filter {
 
   protected def handlerForRoute(request: RequestHeader): ru.MethodSymbol = {
     if(!request.tags.keySet.contains(Router.Tags.RouteController)){
-      Future.successful(NotFound(views.html.notfound()))
+      Future.successful(NotFound(views.html.index()))
     }
     val clazz = Class.forName(request.tags(Router.Tags.RouteController))
     val classSymbolType = mirror.classSymbol(clazz).toType
@@ -208,10 +208,15 @@ object AppBoot extends WithFilters(AuthorisationFilter) {
 
   override def onError(request: RequestHeader, throwable: Throwable) = {
     Logger.error(throwable.getMessage(), throwable)
-    Future.successful(InternalServerError(
-        views.html.error(new UsefulException(throwable.getMessage, throwable){
-      })
-    ))
+    request.path match {
+      case s if s.startsWith("/api/") => {
+        Future.successful(InternalServerError(
+          views.html.error(new UsefulException(throwable.getMessage, throwable){
+          })
+        ))
+      }
+      case _ => Future.successful(Ok(views.html.index()))
+    }
   }
 
   override def onHandlerNotFound(request: RequestHeader) = {
