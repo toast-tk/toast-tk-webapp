@@ -98,10 +98,12 @@
             } else {
                 $scope.scenario = null ;
                 $scope.folder = selectedNode;
-                //$scope.folderContents = TreeLayoutService.getAllChildNodes(selectedNode._id);
             }
         };
 
+        $scope.selectNode = function(node){
+            $scope.fsExplorerOptions.selectedNode = node;
+        };
         /* FS EXPLORER */
 
         ClientService.registerAgentListener(function(order, info){
@@ -138,7 +140,7 @@
                             if(!angular.isObject(data.sentence)){
                                 data.row = {
                                     "patterns" : data.sentence
-                                }
+                                };
                                 UtilsScenarioService.templatizeRow(data.row, "web", data.ids);
                                 console.log("data.row : ", JSON.stringify(data.row));
                                 $scope.scenario.rows.push(angular.copy(data.row));
@@ -158,11 +160,6 @@
                 }
                 $scope.agentIsActive = ClientService.socketIsActive && $scope.agents.length > 0;
             });
-
-            $scope.selectNode = selectNode;
-            function selectNode(id){
-                TreeLayoutService.selectNode(id);
-            }
 
             __init__(true);
 

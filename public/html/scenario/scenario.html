@@ -4,7 +4,7 @@
         <h3 class="page-header" >
             <i class="fa fa-fw fa-pencil-square-o"></i>  Scenario Edition -
             <small>
-                <span ng-repeat="pathstep in currentPath">/{{pathstep.name}}</span>
+                <span ng-repeat="pathstep in currentPath">/ <a ng-click="selectNode(pathstep)">{{pathstep.name}}</a></span>
             </small>
         </h3>
     </div>
