@@ -1,5 +1,5 @@
 <div class="list-group">
-    <a  ng-disabled="nodeList[0].parent === '0'" ng-click="backToParent()" class="list-group-item">
+    <a  ng-if="isSearchActive === false" ng-disabled="nodeList[0].parent === '0'" ng-click="backToParent()" class="list-group-item">
         <i class="glyphicon glyphicon-arrow-left"/> Back
     </a>
     <a ng-repeat="node in nodeList"  ng-if="!node.__isFakeNode__" ng-click="selectNodeLabel(node)" ng-class="nodeClass(node)" class="list-group-item" style="cursor: pointer;">

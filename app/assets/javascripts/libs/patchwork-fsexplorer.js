@@ -8,6 +8,8 @@
                 nodeId: "id",
                 parentNodeRef: "parent",
                 sortBy: 'name',
+                searchBy: {},
+                isGlobalSearch : true,
                 selectedNode: null,
                 isAccessibleNode: function(node){
                     return true;
@@ -59,14 +61,22 @@
                         }
                     }
 
-                    var explorerModel = $scope.explorerModel;
-                    $scope.$watch("explorerModel",function(newModel){
-                        explorerModel = newModel ;
+                    function refreshExplorer(){
                         if(context.currentPath.length>0){
                             $scope.nodeList = $filter('orderBy')(fsExplorerService.getChildrenNodeList(explorerModel,context.currentPath[context.currentPath.length - 1]), fsConfig.options.sortBy);
                         } else {
                             $scope.nodeList = $filter('orderBy')(fsExplorerService.getRootNodeList(explorerModel), fsConfig.options.sortBy);
                         }
+                    }
+
+                    function refreshFlatExplorer(){
+                        $scope.nodeList = $filter('orderBy')(explorerModel, fsConfig.options.sortBy);
+                    }
+
+                    var explorerModel = $scope.explorerModel;
+                    $scope.$watch("explorerModel",function(newModel){
+                        explorerModel = newModel ;
+                        refreshExplorer();
                     },true);
 
                     $scope.nodeList = $filter('orderBy')(fsExplorerService.getRootNodeList(explorerModel), fsConfig.options.sortBy);
@@ -77,6 +87,47 @@
                             $scope.selectNodeLabel(fsConfig.options.selectedNode);
                         }
                     },true);
+
+                    $scope.$watch(function(){
+                            return {
+                                by: $scope.explorerOptions.searchBy,
+                                isGlobal : $scope.explorerOptions.isGlobalSearch
+                            }
+                        },
+                        function(newSearchConf){
+                            $scope.isSearchActive = (newSearchConf.by && (Object.keys(newSearchConf.by).length != 0) && (function(){
+                                for (var prop in newSearchConf.by){
+                                    if(newSearchConf.by[prop] != ""){
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            })());
+                            
+                            if(Object.keys(newSearchConf.by).length != 0){
+                                explorerModel = [];
+                                var isEmpty = true;
+                                $scope.explorerModel.forEach(function(node){
+                                    var isMatching = true;
+                                    for (var prop in newSearchConf.by) {
+                                        if(!node[prop] || !node[prop].toString().includes(newSearchConf.by[prop])){
+                                            isMatching = false;
+                                        }
+                                        if (newSearchConf.by[prop].toString() != ""){
+                                            isEmpty = false;
+                                        }
+                                    }
+                                    if(isMatching === true){
+                                        explorerModel.push(node)
+                                    }
+                                });
+                                if (newSearchConf.isGlobal === true && !isEmpty){
+                                    refreshFlatExplorer();
+                                } else {
+                                    refreshExplorer();
+                                }
+                            }
+                        },true);
 
                     $scope.$watch(function(){
                         return context.currentPath;

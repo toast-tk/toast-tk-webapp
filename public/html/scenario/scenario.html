@@ -31,7 +31,12 @@
 
                     </div>
                     <div class="panel-body">
-                        {{fsExplorerOptions.isAccessibleNode}}
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-addon"><i class="fa fa-filter" aria-hidden="true"></i></div>
+                                <input type="text" class="form-control input-group input-sm" id="exampleInputAmount" placeholder="search" ng-model="fsExplorerOptions.searchBy.name">
+                            </div>
+                        </div>
                         <pw-fsexplorer explorer-model="senariiTree"
                                        explorer-options="fsExplorerOptions"
                                        template-url="'assets/html/scenario/fsexplorer.template.html'"
