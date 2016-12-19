@@ -76,6 +76,8 @@
         $scope.fsExplorerOptions = {
             nodeId: "_id",
             sortBy: 'type',
+            searchBy: {},
+            isGlobalSearch:true,
             isAccessibleNode: function(node){
                 return (node.type === 'folder');
             }
@@ -103,6 +105,7 @@
 
         $scope.selectNode = function(node){
             $scope.fsExplorerOptions.selectedNode = node;
+            $scope.fsExplorerOptions.searchBy.name = "";
         };
         /* FS EXPLORER */
 
