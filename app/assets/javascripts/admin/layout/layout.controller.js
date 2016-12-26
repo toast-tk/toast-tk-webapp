@@ -26,7 +26,14 @@
             $scope.isCollapsed = !$scope.isCollapsed ;
         });
 
-
+        $scope.getUserInitials = function(){
+            if(user.isAdmin === true){
+                return user.firstName;
+            } else {
+                return user.firstName.substring(0, 1) + user.lastName.substring(0, 1);
+            }
+        };
+        
         function editProfile(){
             $state.go("adminLayout.editUser", {idUser: $scope.user._id});
         }
