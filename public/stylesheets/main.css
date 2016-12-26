@@ -387,3 +387,16 @@ padding-top: 12px;
 .fade.ng-hide {
     opacity: 0;
 }
+
+.user-avatar{
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8px !important;
+    margin: 7px;
+    width: 39px;
+    background-color: #f5d064;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    font-weight: 900;
+}
