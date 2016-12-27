@@ -1,0 +1,109 @@
+<div class="panel panel-default">
+    <div id="scenario-panel-heading" class="panel-heading" style="min-height: 40px">
+        <h3 class="panel-title" >
+            <i class="{{ICONS[scenario.type]}} fa-fw"></i>
+                            <span ng-if="isEditScenarioName===false">
+                                 {{scenario.name}}
+                            </span>
+            <input type="text" ng-if="isEditScenarioName===true" ng-model="scenario.name"/>
+            <div class="pull-right" style="margin: -5px;">
+                <span ng-if="agents.length > 0" ng-dropdown-multiselect="" options="agents" selected-model="agent" extra-settings="agentDropdownSettings" translation-texts="translationTexts"></span>
+                <button class="btn btn-default btn-warning btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
+                <button class="btn btn-default btn-primary btn-xs" data-ng-click="saveScenarii(scenario)"> <i class="fa fa-floppy-o"></i> Save</button>
+                <button class="btn btn-default btn-danger btn-xs" data-ng-click="deleteScenarii(scenario)"><i class="fa fa-trash"></i> Delete</button>
+            </div>
+        </h3>
+    </div>
+    <div class="panel-body">
+        <div id="scenariiActionContent" class="effectContent scenario">
+
+            <div id="import-panel" class="panel panel-default" style="margin-bottom: 11px;">
+                <div class="panel-heading" style="padding: 3px;" role="tab" id="headingOne">
+                    <h4 class="panel-title" style="font-size:14px;">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Import :
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <button class="btn btn-xs btn-success" ng-show="scenario.template" ng-click="convertToTemplate(scenario)">T</button>
+                        <select ng-model="scenario.selectedImportMode" ng-options="mode for mode in importModes"></select>
+                        from <select ng-model="scenario.imp" ng-options="reference as reference.name for reference in scenarii" ></select>
+                        <button class="btn btn-xs btn-primary" data-ng-click="importScenario(scenario)"><i class="fa fa-download" aria-hidden="true"></i> Import</button>
+                    </div>
+                </div>
+            </div>
+            <div id="importActionsPanel" style="height: {{scenarioStepListHeight}}px; overflow-y: auto;">
+                <ul class="list-group list-striped" style="margin: 0 16px;" ui-sortable ng-model="scenario.rows">
+                    <li class="list-group-item row" ng-repeat="r in scenario.rows">
+                                    <span ng-if="editableStepIndex !== $index" class="col-md-1"  style="width: 5%; padding-left: 6px; padding-right: 6px;">
+                                        <i
+                                                class="{{ICONS[r.kind]}} fa-2x"
+                                                tooltip="{{r.kind}}" tooltip-trigger="mouseenter" tooltip-placement="right"/>
+                                    </span>
+
+                                <span ng-if="editableStepIndex !== $index" class="col-md-10" ng-if="scenario.columns[0].name === 'patterns'"
+                                      pattern style="width: 85%; padding-left: 6px; padding-right: 6px;"
+                                      pattern-value="{{r[scenario.columns[0].name]}}"
+                                      pattern-post="{{scenario.columns[0].post}}"
+                                      pattern-model="r"
+                                      pattern-column="{{scenario.columns[0].name}}"
+                                      pattern-context="{{scenario.type}}"
+                                      project="{{defaultProject._id}}"
+                                      on-pattern-change="onPatternValueChange(row, position, identifier, value)">
+                              </span>
+                        <div ng-if="editableStepIndex == $index"  class="col-md-11"
+                             angucomplete-alt id="newStepAutocomplete"
+                             ng-keyup="$event.keyCode == 13 && changeEditedStep()"
+                             ng-model="newStepModel"
+                             selected-object="newStepSelected"
+                             input-changed="newStepChanged"
+                             initial-value="r['patterns']"
+                             template-url="/assets/html/scenario/editstep.angucomplete.template.html"
+                             placeholder="Type here.."
+                             maxlength="50"
+                             pause="100"
+                             local-data="regexFullList"
+                             search-fields="sentence"
+                             description-field="kind"
+                             title-field="sentence"
+                             minlength="1"
+                             input-class="form-control form-control-small"
+                             match-class="highlight"></div>
+                              <span class="pull-right col-md-1" style="padding: 0px; width: 8%;">
+                                <button  ng-if="editableStepIndex !== $index"  class="btn btn-default btn-xs btn-edit1" ng-click="setEditableStep($index, r)">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button class="pull-right btn btn-default btn-xs btn-danger1" data-ng-click="deleteRow(scenario, r)">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                              </span>
+                    </li>
+                    <li ng-model="newRow" class="list-group-item row" style="padding: 20px;">
+                        <!-- {{regexMap}} {{regexList}} -->
+                        <div angucomplete-alt id="newStepAutocomplete"
+                             ng-keyup="$event.keyCode == 13 && addNewStep()"
+                             ng-model="newStepModel"
+                             selected-object="newStepSelected"
+                             input-changed="newStepChanged"
+                             template-url="/assets/html/scenario/action.angucomplete.template.html"
+                             placeholder="Type here.."
+                             maxlength="50"
+                             pause="100"
+                             local-data="regexFullList"
+                             search-fields="sentence"
+                             description-field="kind"
+                             input-class-item="{{dropListPosition}}"
+                             title-field="sentence"
+                             minlength="1"
+                             input-class="form-control form-control-small"
+                             match-class="highlight"></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- /. effect content -->
+    </div>
+</div>
+<!-- /.panel -->

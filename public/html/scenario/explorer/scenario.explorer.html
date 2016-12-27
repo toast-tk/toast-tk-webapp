@@ -1,0 +1,40 @@
+<div>
+    <div class="panel panel-default">
+        <div id="explorer-panel-heading" class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-files-o fa-fw"></i> Explorateur
+                                  <span class="dropdown pull-right">
+                                    <button class="btn btn-primary btn-xs dropdown-toggle" style="margin: -5px;" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        <i class="fa fa-plus"></i>
+                                        <span class="caret"></span>
+                                    </button>
+                                   <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                       <li><a ng-click="addNodeToParent('folder')">
+                                           <i class="{{ICONS['folder']}} fa-fw"></i> Folder</a></li>
+                                       <li><a ng-click="addNodeToParent('scenario')"><i class="{{ICONS['scenario']}} fa-fw"></i> Scenario</a></li>
+                                   </ul>
+                                  </span>
+            </h3>
+
+        </div>
+        <div class="panel-body" style="overflow: auto; height: {{explorerHeight}}px;">
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-filter" aria-hidden="true"></i></div>
+                    <input type="text" class="form-control input-group input-sm" id="exampleInputAmount" placeholder="search" ng-model="fsExplorerOptions.searchBy.name">
+                </div>
+            </div>
+            <pw-fsexplorer explorer-model="senariiTree"
+                           explorer-options="fsExplorerOptions"
+                           template-url="'assets/html/scenario/explorer/fsexplorer.template.html'"
+                           on-path-change="changedPath"
+                           on-node-click="clickedNode"
+                           is-clickable="isClickable">
+                <span ng-show="node.type=='folder'" class="fa fa-folder"></span>
+                <span ng-show="node.type==='web'" class="fa fa-globe"></span>
+                <span ng-show="node.type==='swing'" class="fa fa-laptop"></span>
+                <span ng-show="node.type==='service'" class="fa fa-bolt"></span>
+                <span>{{node.name}}</span>
+                </pwFsexplorer>
+        </div>
+    </div>
+</div>

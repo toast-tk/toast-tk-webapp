@@ -1,0 +1,30 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title" >
+            <i class="fa fa-folder-open fa-fw"></i>
+                            <span ng-if="isEditScenarioName===false">
+                                 {{folder.name}}
+                            </span>
+            <input type="text" ng-if="isEditScenarioName===true" ng-model="folder.name"/>
+            <div class="pull-right" style="margin: -5px;">
+                <button class="btn btn-default btn-edit btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
+                <button class="btn btn-default btn-primary btn-xs" data-ng-click="saveScenarii(folder)"> <i class="fa fa-floppy-o"></i> Save</button>
+                <button class="btn btn-default btn-danger btn-xs" data-ng-click="deleteScenarii(folder)"><i class="fa fa-trash"></i> Delete</button>
+            </div>
+        </h3>
+    </div>
+    <div class="panel-body">
+        <!-- /. effect content -->
+        <div class="row-fluid">
+            <i class="col-md-2 fa fa-folder-open fa-5x"></i>
+            <div class="col-md-9" style="border-left: 1px solid #ccc; margin-left: 6px;">
+                <div ng-repeat="content in folderContents">
+                    <div class="btn btn-sm" ng-click="selectNode(content._id)">
+                        <i class="{{ICONS[content.type]}} fa-fw"></i> {{content.name}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
