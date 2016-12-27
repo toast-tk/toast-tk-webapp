@@ -28,9 +28,9 @@
                 <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                     <div class="panel-body">
                         <button class="btn btn-xs btn-success" ng-show="scenario.template" ng-click="convertToTemplate(scenario)">T</button>
-                        <select ng-model="scenario.selectedImportMode" ng-options="mode for mode in importModes"></select>
-                        from <select ng-model="scenario.imp" ng-options="reference as reference.name for reference in scenarii" ></select>
-                        <button class="btn btn-xs btn-primary" data-ng-click="importScenario(scenario)"><i class="fa fa-download" aria-hidden="true"></i> Import</button>
+                        <select ng-model="imported.mode" ng-options="mode for mode in importModes"></select>
+                        from <select ng-model="imported.scenario" ng-options="reference as reference.name for reference in scenarii" ></select>
+                        <button class="btn btn-xs btn-primary" data-ng-click="importScenario(scenario,imported)"><i class="fa fa-download" aria-hidden="true"></i> Import</button>
                     </div>
                 </div>
             </div>

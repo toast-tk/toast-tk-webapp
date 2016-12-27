@@ -314,9 +314,9 @@
                 });
             }
 
-            function importScenario(scenario) {
-                var mode = scenario.selectedImportMode;
-                var toImport = scenario.imp;
+            function importScenario(scenario, imported) {
+                var mode = imported.mode;
+                var toImport = imported.scenario;
                 if (mode == "prepend") {
                     scenario.rows = angular.copy(toImport.rows).concat(scenario.rows);
                     toastr.success(" Scenario imported (prepend) !");
@@ -326,8 +326,8 @@
                 } else {
                     toastr.error("Could not import Scenario !");
                 }
-                delete scenario.imp;
-                delete scenario.selectedImportMode;
+                delete imported.scenario;
+                delete imported.mode;
             }
 
             function convertToTemplate(scenario){
