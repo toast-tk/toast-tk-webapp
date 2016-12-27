@@ -6,7 +6,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                     <div class="panel-body">
-                        <form accept-charset="UTF-8" role="form">
+                        <form accept-charset="UTF-8" role="form" ng-submit="login(credentials)">
                         <fieldset>
                             <div class="form-group">
                                 <div class="input-group">
@@ -20,7 +20,7 @@
                                     <input id="password"  class="form-control" ng-model="credentials.password" placeholder="Password" name="password" type="password" value="">
                                 </div>
                             </div>
-                            <input id="login_input" ng-click="login(credentials)" class="btn btn-lg btn-primary btn-block" type="button" value="Log In">
+                            <input id="login_input" type="submit" class="btn btn-lg btn-primary btn-block" value="Log In">
                         </fieldset>
                         </form>
                     </div>
@@ -36,4 +36,8 @@
             </div>
 	    </div>
         <div ng-include="'assets/html/askforaccount.html'" ng-controller="AskForAccountCtrl" class="fade" ng-show="isHiddenLoginForm===true"></div>
-</div>
+        <footer id="footer">
+            <small>Better Toast, Better Test</small>
+            <img alt="Brand" src="assets/images/ToastLogo.png" style="width: 24px; float: right; margin-top: -13px" />
+        </footer>
+    </div>
