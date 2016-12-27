@@ -1,199 +1,22 @@
 <div id="resizable-content" style="width:{{effectContentWidth}}px; height:94%; overflow: hidden;">
     <div>
-    <div height="51" >
+    <div id="page-header" height="51" >
         <h3 class="page-header" >
             <i class="fa fa-fw fa-pencil-square-o"></i>  Scenario Edition -
-            <small>
-                <span ng-repeat="pathstep in currentPath">/ <a ng-click="selectNode(pathstep)">{{pathstep.name}}</a></span>
+            <small> Test scripts
+                <span ng-if="currentPath.length>0" style="background-color: #ccc; padding: 2px;">
+                    <span ng-repeat="pathstep in currentPath">/<a ng-click="selectNode(pathstep)">{{pathstep.name}}</a></span>
+                </span>
             </small>
         </h3>
     </div>
     <main>
         <section id="one" resizable r-directions="['right']" r-flex="true">
-            <div width="240" id="treeTemplateContainer">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title"><i class="fa fa-files-o fa-fw"></i> Explorateur
-
-
-                                  <span class="dropdown pull-right">
-                                    <button class="btn btn-primary btn-xs dropdown-toggle" style="margin: -5px;" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                        <i class="fa fa-plus"></i>
-                                        <span class="caret"></span>
-                                    </button>
-                                   <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                       <li><a ng-click="addNodeToParent('folder')">
-                                           <i class="{{ICONS['folder']}} fa-fw"></i> Folder</a></li>
-                                       <li><a ng-click="addNodeToParent('scenario')"><i class="{{ICONS['scenario']}} fa-fw"></i> Scenario</a></li>
-                                   </ul>
-                                  </span>
-                        </h3>
-
-                    </div>
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <div class="input-group-addon"><i class="fa fa-filter" aria-hidden="true"></i></div>
-                                <input type="text" class="form-control input-group input-sm" id="exampleInputAmount" placeholder="search" ng-model="fsExplorerOptions.searchBy.name">
-                            </div>
-                        </div>
-                        <pw-fsexplorer explorer-model="senariiTree"
-                                       explorer-options="fsExplorerOptions"
-                                       template-url="'assets/html/scenario/fsexplorer.template.html'"
-                                       on-path-change="changedPath"
-                                       on-node-click="clickedNode"
-                                       is-clickable="isClickable">
-                            <span ng-show="node.type=='folder'" class="fa fa-folder"></span>
-                            <span ng-show="node.type==='web'" class="fa fa-globe"></span>
-                            <span ng-show="node.type==='swing'" class="fa fa-laptop"></span>
-                            <span ng-show="node.type==='service'" class="fa fa-bolt"></span>
-                            <span>{{node.name}}</span>
-                            </pwFsexplorer>
-                    </div>
-                </div>
-            </div>
+            <div ng-include="'assets/html/scenario/explorer/scenario.explorer.html'"></div>
         </section>
         <section id="two">
-            <div>
-                <!-- folder selection -->
-                <div class="panel panel-default" ng-show="folder != undefined">
-                    <div class="panel-heading">
-                        <h3 class="panel-title" >
-                            <i class="fa fa-folder-open fa-fw"></i>
-                            <span ng-if="isEditScenarioName===false">{{folder.name}}</span>
-                            <input type="text" ng-if="isEditScenarioName===true" ng-model="folder.name"/>
-                            <div class="pull-right" style="margin: -5px;">
-                                <button class="btn btn-default btn-edit btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
-                                <button class="btn btn-default btn-primary btn-xs" data-ng-click="saveScenarii(folder)"> <i class="fa fa-floppy-o"></i> Save</button>
-                                <button class="btn btn-default btn-danger btn-xs" data-ng-click="deleteScenarii(folder)"><i class="fa fa-trash"></i> Delete</button>
-                            </div>
-                        </h3>
-                    </div>
-                    <div class="panel-body">
-                        <!-- /. effect content -->
-                        <div class="row-fluid">
-                            <i class="col-md-2 fa fa-folder-open fa-5x"></i>
-                            <div class="col-md-9" style="border-left: 1px solid #ccc; margin-left: 6px;">
-                                <div ng-repeat="content in folderContents">
-                                    <div class="btn btn-sm" ng-click="selectNode(content._id)">
-                                        <i class="{{ICONS[content.type]}} fa-fw"></i> {{content.name}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                <!-- /. folder selection -->
-
-                <div class="panel panel-default"  ng-show="scenario != undefined">
-                    <div class="panel-heading">
-                        <h3 class="panel-title" >
-                            <i class="{{ICONS[scenario.type]}} fa-fw"></i>
-                            <span ng-if="isEditScenarioName===false">{{scenario.name}}</span>
-                            <input type="text" ng-if="isEditScenarioName===true" ng-model="scenario.name"/>
-                            <div class="pull-right" style="margin: -5px;">
-                                <span ng-if="agents.length > 0" ng-dropdown-multiselect="" options="agents" selected-model="agent" extra-settings="agentDropdownSettings" translation-texts="translationTexts"></span>
-                                <button class="btn btn-default btn-warning btn-xs" ng-click="isEditScenarioName = !isEditScenarioName"> <i class="fa fa-edit"></i> Edit</button>
-                                <button class="btn btn-default btn-primary btn-xs" data-ng-click="saveScenarii(scenario)"> <i class="fa fa-floppy-o"></i> Save</button>
-                                <button class="btn btn-default btn-danger btn-xs" data-ng-click="deleteScenarii(scenario)"><i class="fa fa-trash"></i> Delete</button>
-                            </div>
-                        </h3>
-                    </div>
-                    <div class="panel-body">
-                        <div id="scenariiActionContent" class="effectContent scenario" style="height: 98%;overflow: auto;">
-
-                            <div class="panel panel-default" style="margin-bottom: 11px;">
-                                <div class="panel-heading" style="padding: 3px;" role="tab" id="headingOne">
-                                    <h4 class="panel-title" style="font-size:14px;">
-                                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Import :
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                    <div class="panel-body">
-                                        <button class="btn btn-xs btn-success" ng-show="scenario.template" ng-click="convertToTemplate(scenario)">T</button>
-                                        <select ng-model="scenario.selectedImportMode" ng-options="mode for mode in importModes"></select>
-                                        from <select ng-model="scenario.imp" ng-options="reference as reference.name for reference in scenarii" ></select>
-                                        <button class="btn btn-xs btn-primary" data-ng-click="importScenario(scenario)"><i class="fa fa-download" aria-hidden="true"></i> Import</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="importActionsPanel" style="height: 86%; overflow-y: auto;">
-                                <ul class="list-group list-striped" style="margin: 0 16px;" ui-sortable ng-model="scenario.rows">
-                                    <li class="list-group-item row" ng-repeat="r in scenario.rows">
-                                    <span ng-if="editableStepIndex !== $index" class="col-md-1"  style="width: 5%; padding-left: 6px; padding-right: 6px;">
-                                        <i
-                                                class="{{ICONS[r.kind]}} fa-2x"
-                                                tooltip="{{r.kind}}" tooltip-trigger="mouseenter" tooltip-placement="right"/>
-                                    </span>
-
-                                <span ng-if="editableStepIndex !== $index" class="col-md-10" ng-if="scenario.columns[0].name === 'patterns'"
-                                      pattern style="width: 85%; padding-left: 6px; padding-right: 6px;"
-                                      pattern-value="{{r[scenario.columns[0].name]}}"
-                                      pattern-post="{{scenario.columns[0].post}}"
-                                      pattern-model="r"
-                                      pattern-column="{{scenario.columns[0].name}}"
-                                      pattern-context="{{scenario.type}}"
-                                      project="{{defaultProject._id}}"
-                                      on-pattern-change="onPatternValueChange(row, position, identifier, value)">
-                              </span>
-                                        <div ng-if="editableStepIndex == $index"  class="col-md-11"
-                                             angucomplete-alt id="newStepAutocomplete"
-                                             ng-keyup="$event.keyCode == 13 && changeEditedStep()"
-                                             ng-model="newStepModel"
-                                             selected-object="newStepSelected"
-                                             input-changed="newStepChanged"
-                                             initial-value="r['patterns']"
-                                             template-url="/assets/html/scenario/editstep.angucomplete.template.html"
-                                             placeholder="Type here.."
-                                             maxlength="50"
-                                             pause="100"
-                                             local-data="regexFullList"
-                                             search-fields="sentence"
-                                             description-field="kind"
-                                             title-field="sentence"
-                                             minlength="1"
-                                             input-class="form-control form-control-small"
-                                             match-class="highlight"></div>
-                              <span class="pull-right col-md-1" style="padding: 0px; width: 8%;">
-                                <button  ng-if="editableStepIndex !== $index"  class="btn btn-default btn-xs btn-edit1" ng-click="setEditableStep($index, r)">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                                <button class="pull-right btn btn-default btn-xs btn-danger1" data-ng-click="deleteRow(scenario, r)">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                              </span>
-                                    </li>
-                                    <li ng-model="newRow" class="list-group-item row" style="padding: 20px;">
-                                        <!-- {{regexMap}} {{regexList}} -->
-                                        <div angucomplete-alt id="newStepAutocomplete"
-                                             ng-keyup="$event.keyCode == 13 && addNewStep()"
-                                             ng-model="newStepModel"
-                                             selected-object="newStepSelected"
-                                             input-changed="newStepChanged"
-                                             template-url="/assets/html/scenario/action.angucomplete.template.html"
-                                             placeholder="Type here.."
-                                             maxlength="50"
-                                             pause="100"
-                                             local-data="regexFullList"
-                                             search-fields="sentence"
-                                             description-field="kind"
-                                             input-class-item="{{dropListPosition}}"
-                                             title-field="sentence"
-                                             minlength="1"
-                                             input-class="form-control form-control-small"
-                                             match-class="highlight"></div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- /. effect content -->
-                    </div>
-                </div>
-                <!-- /.panel -->
-            </div>
+            <div ng-show="folder != undefined" ng-include="'assets/html/scenario/content/folder.content.html'"></div>
+            <div ng-show="scenario != undefined" ng-include="'assets/html/scenario/content/scenario.content.html'"></div>
         </section>
     </main>
 

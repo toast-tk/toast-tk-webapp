@@ -4,7 +4,7 @@
     angular.module("app").controller("ScenarioCtrl", ScenarioCtrl);
 
     function ScenarioCtrl($rootScope, $scope, $q, playRoutes,
-                                ngProgress, ClientService, $sideSplit, $timeout,
+                                ngProgress, ClientService, $sideSplit, $timeout, $window,
                                 $uibModal, ICONS,
                                 NewStepService, UtilsScenarioService, toastr,
                                 defaultProject) {
@@ -35,6 +35,17 @@
             $scope.agentIsActive = true;
             $scope.agents = [];
             $scope.agent = [];
+
+            $timeout(function() {
+                $scope.scenarioStepListHeight = $window.innerHeight - 110 - $("#page-header").outerHeight(true) - $("#scenario-panel-heading").outerHeight(true) - $("#import-panel").outerHeight(true);
+                $scope.explorerHeight = window.innerHeight - 90 - $("#page-header").outerHeight(true) - $("#explorer-panel-heading").outerHeight(true);
+                angular.element($window).bind('resize', function(){
+                    $timeout(function(){
+                        $scope.scenarioStepListHeight = $window.innerHeight - 110 - $("#page-header").outerHeight(true)  - $("#scenario-panel-heading").outerHeight(true) - $("#import-panel").outerHeight(true);
+                        $scope.explorerHeight = window.innerHeight - 90 - $("#page-header").outerHeight(true) - $("#explorer-panel-heading").outerHeight(true);
+                    },0);
+                });
+            },0);
 
             $scope.agentDropdownSettings = {
                 selectionLimit: 1,
