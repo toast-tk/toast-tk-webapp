@@ -3,7 +3,7 @@
 
     angular.module("app").controller("ScenarioCtrl", ScenarioCtrl);
 
-    function ScenarioCtrl($rootScope, $scope, $q, playRoutes,
+    function ScenarioCtrl($rootScope, $scope, $q, ScenarioService,
                                 ngProgress, ClientService, $sideSplit, $timeout, $window,
                                 $uibModal, ICONS,
                                 NewStepService, UtilsScenarioService, toastr,
@@ -45,7 +45,7 @@
                         $scope.explorerHeight = window.innerHeight - 90 - $("#page-header").outerHeight(true) - $("#explorer-panel-heading").outerHeight(true);
                     },0);
                 });
-            },0);
+            },2000);
 
             $scope.agentDropdownSettings = {
                 selectionLimit: 1,
@@ -293,8 +293,8 @@
                 scenarioCopy.rows = JSON.stringify(scenarioCopy.rows);
                 delete scenarioCopy.columns;
                 scenarioCopy.project = $scope.defaultProject;
-                playRoutes.controllers.ScenarioController.saveScenarii().post(scenarioCopy).then(function () {
-                    __init__(false);
+                ScenarioService.saveScenarii(scenarioCopy).then(function () {
+                    __init__(false,scenarii);
                     toastr.success('Saved !');
                 }, function(){
                     toastr.error('Could Not save changed details !');
@@ -303,7 +303,7 @@
             }
 
             function deleteScenarii(scenario){
-                playRoutes.controllers.ScenarioController.deleteScenarii().post(angular.toJson(scenario._id)).then(function () {
+                ScenarioService.deleteScenarii(scenario._id).then(function () {
                     __init__(false);
                     var node =$scope.scenario || $scope.folder;
                     toastr.success("deleted: \'"+ node.name + "\' !");
@@ -354,37 +354,7 @@
                     });
                 }
 
-                playRoutes.controllers.ScenarioController.loadScenarii($scope.defaultProject._id).get().then(function (response) {
-                    var data = response.data || [];
-                    data.map(function (scenario) {
-                        scenario.value = scenario.name;
-                        try{
-                            scenario.rows = angular.isObject(scenario.rows) ? scenario.rows : JSON.parse(scenario.rows);
-                            scenario.template  = true;
-                            if(scenario.rows>0){
-                                for(var i = 0 ; i < scenario.rows.length ; i++){
-                                    if(angular.isDefined(scenario.rows[i].mappings) && scenario.rows[i].mappings.length > 0){
-                                        scenario.template  = false;
-                                        break;
-                                    }
-                                }
-                            } else {
-                                scenario.template  = false;
-                            }
-                        }catch(e){
-                            if(!angular.isObject(scenario.rows)){
-                                /*convert it into rows*/
-                                var lines = scenario.rows.split( "\n" );
-                                scenario.template = true;
-                                scenario.rows = [];
-                                for(var i = 0; i< lines.length; i++){
-                                    scenario.rows.push({"patterns" : lines[i]});
-                                }
-                            }
-                        }
-                        return scenario;
-                    });
-                    /*    console.log("all scenarii", $scope.scenarii, data);*/
+                ScenarioService.loadScenarii($scope.defaultProject._id).then(function (data) {
                     $scope.scenarii= [];
                     angular.forEach(data, function(dataRow){
                         if(dataRow.type!="folder"){
