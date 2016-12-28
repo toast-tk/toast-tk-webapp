@@ -159,18 +159,23 @@ object ScenarioController extends Controller {
   def saveScenarii() = Action(parse.json) { implicit request =>
     request.body.validate[Scenario].map {
       case scenario: Scenario => {
-        val persistenceTuple: (Future[UpdateWriteResult], Scenario) = db.upsertScenario(scenario)
-        val persistedScenario: Scenario = persistenceTuple._2
-        val result: UpdateWriteResult = Await.result(persistenceTuple._1, Duration.Inf)
-        if (result.ok) {
+        val persistenceTuple: Option[(Future[UpdateWriteResult], Scenario)] = db.upsertScenario(scenario)
+        if(!persistenceTuple.isEmpty){
+          val persistedScenario: Scenario = persistenceTuple.get._2
+          val result: UpdateWriteResult = Await.result(persistenceTuple.get._1, Duration.Inf)
+          if (result.ok) {
             def extendedObject(obj: JsObject) = {
               obj + ("columns" -> DomainController.scenarioDescriptorProvider((obj \ "type").as[String]))
             }
             val flatResponse = extendedObject(Json.toJson(persistedScenario).as[JsObject])
             Ok(Json.toJson(flatResponse))
-        } else {
-          BadRequest("Node already exists")
+          } else {
+            BadRequest("Node already exists")
+          }
+        }else {
+          BadRequest("Node Cound not be created!")
         }
+
       }
   }.recoverTotal {
     e => BadRequest("Detected error:" + JsError.toJson(e))

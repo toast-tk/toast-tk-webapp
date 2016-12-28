@@ -205,9 +205,16 @@ case class MongoConnector(driver: MongoDriver, mongoUri: String){
     configurations
   }
 
-  def upsertScenario(scenario: Scenario): (Future[UpdateWriteResult], Scenario) =  {
-    val result: (Future[UpdateWriteResult], Scenario) = scenarioCollection.upsertScenario(scenario)
-    result
+  def upsertScenario(scenario: Scenario): Option[(Future[UpdateWriteResult], Scenario)] =  {
+    if("0".equalsIgnoreCase(scenario.parent.get) ||
+      "folder".equalsIgnoreCase(
+        Await.result(scenarioCollection.findOneScenarioBy(BSONDocument("_id" -> BSONObjectID(scenario.parent.get))),Duration.Inf).get.`type`)
+    ){
+      val result: (Future[UpdateWriteResult], Scenario) = scenarioCollection.upsertScenario(scenario)
+      Some(result)
+    } else {
+      None
+    }
   }
 
   def refactorScenarii(impl: Repository) = {
