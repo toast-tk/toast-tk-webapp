@@ -32,11 +32,7 @@
             $scope.logout = function(){
                 LoginService.logout();
                 $state.go('login');
-            }
-
-            $scope.goToState = function(stateName){
-                $state.go(stateName);
-            }
+            };
         }
 
 })();

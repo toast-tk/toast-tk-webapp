@@ -11,7 +11,7 @@
 </div>
 <ul class="nav navbar-right top-nav">
     <li ng-if="project" style="margin-top: 4px;">
-        <p class="navbar-text" ng-click="goToState('layout.scenario')">
+        <p class="navbar-text" ui-sref="layout.scenario">
             <i class="fa fa-cube"></i> {{project.name  | uppercase }}
         </p>
     </li>
@@ -25,7 +25,7 @@
                 <a ng-click="editProfile()"><i class="fa fa-fw fa-user"></i> Profile</a>
             </li>
             <li>
-                <a ng-click="goToState('default')"><i class="fa fa-fw fa-cubes"></i> Switch Project</a>
+                <a ui-sref="default"><i class="fa fa-fw fa-cubes"></i> Switch Project</a>
             </li>
             <li>
                 <a ng-click="logout()"><i class="fa fa-fw fa-power-off"></i> Log Out</a>

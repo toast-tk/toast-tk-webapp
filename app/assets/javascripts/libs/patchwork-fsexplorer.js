@@ -1,13 +1,13 @@
 (function() {
-    'use strict';
+    "use strict";
 
-    angular.module('pw-fsexplorer', ["template/explorerTpl.html"])
+    angular.module("pw-fsexplorer", ["template/explorerTpl.html"])
         .constant('fsConfig', {
             templateUrl: null,
             options : {
                 nodeId: "id",
                 parentNodeRef: "parent",
-                sortBy: 'name',
+                sortBy: "name",
                 searchBy: {},
                 isGlobalSearch : true,
                 selectedNode: null,

@@ -3,21 +3,21 @@
     <!-- <li>
         <a href="#/main"><i class="fa fa-fw fa-home fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> <span  ng-if="isCollapsed===false">Home</span></a>
     </li> -->
-     <li ng-class="{'active' : currentState === 'layout.scenario'}">
-        <a  ng-click="goToState('layout.scenario')">
+     <li ui-sref-active="active">
+        <a ui-sref="layout.scenario">
             <i class="fa fa-fw fa-pencil-square-o fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
             <span  ng-if="isCollapsed===false">Scenarios</span>
         </a>
     </li>
-    <li ng-class="{'active' : currentState === 'layout.repository'}">
-        <a ng-click="goToState('layout.repository')">
+    <li ui-sref-active="active">
+        <a ui-sref="layout.repository">
             <i class="fa fa-fw fa-archive fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
             <span  ng-if="isCollapsed===false">Repository</span>
         </a>
     </li>
 
-    <li ng-class="{'active' : currentState === 'layout.campaign' || currentState === 'layout.campaign.setup' || currentState === 'layout.campaign.report'}">
-        <a ng-click="goToState('layout.campaign')">
+    <li ui-sref-active="active">
+        <a ui-sref="layout.campaign">
             <i class="fa fa-fw fa-terminal fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
             <span  ng-if="isCollapsed===false">Reports</span>
         </a>
@@ -28,8 +28,8 @@
         <i  ng-if="isCollapsed===true" class="fa fa-lg fa-chevron-circle-right" ng-class="{'fa-2x': isCollapsed === true}"></i>
         </a>
     </li>
-    <li ng-class="{'active' : currentState === 'ladminLayout'}" style="position: fixed; bottom: 50px;" ng-if="user.isAdmin === true">
-        <a ng-click="goToState('adminLayout')">
+    <li ui-sref-active="active" style="position: fixed; bottom: 50px;" ng-if="user.isAdmin === true">
+        <a ui-sref="adminLayout">
             <i class="fa fa-fw fa-gear fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
             <span ng-if="isCollapsed===false">Administration</span>
         </a>

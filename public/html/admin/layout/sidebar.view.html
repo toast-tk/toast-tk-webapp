@@ -10,14 +10,14 @@
                             <i class="fa fa-fw fa-caret-down"></i>
                         </a>
                         <ul id="demo" class="collapse">
-                            <li ng-class="{'active' : currentState === 'adminLayout.addUser'}">
-                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.addUser')">
+                            <li ui-sref-active="active">
+                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ui-sref="adminLayout.addUser">
                                     <i class="fa fa-user-plus fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
                                     <span  ng-if="isCollapsed===false">Add account</span>
                                 </a>
                             </li>
-                            <li ng-class="{'active' : currentState === 'adminLayout.editUsers'}">
-                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.editUsers')">
+                            <li ui-sref-active="active">
+                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ui-sref="adminLayout.editUsers">
                                     <i class="fa fa-user-plus fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
                                     <span  ng-if="isCollapsed===false">Edit accounts</span>
                                 </a>
@@ -31,14 +31,14 @@
                             <i class="fa fa-fw fa-caret-down"></i>
                         </a>
                         <ul id="TeamCollapse" class="collapse">
-                            <li ng-class="{'active' : currentState === 'adminLayout.addTeam'}">
-                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.addTeam')">
+                            <li ui-sref-active="active">
+                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ui-sref="adminLayout.addTeam">
                                     <i class="fa fa-user-plus fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
                                     <span  ng-if="isCollapsed===false">Add team</span>
                                 </a>
                             </li>
-                            <li ng-class="{'active' : currentState === 'adminLayout.editTeams'}">
-                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.editTeams')">
+                            <li ui-sref-active="active">
+                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ui-sref="adminLayout.editTeams">
                                     <i class="fa fa-user-plus fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i> 
                                     <span  ng-if="isCollapsed===false">Edit teams</span>
                                 </a>
@@ -52,14 +52,14 @@
                             <i class="fa fa-fw fa-caret-down"></i>
                         </a>
                         <ul id="projectCollapse" class="collapse">
-                            <li ng-class="{'active' : currentState === 'adminLayout.addProject'}">
-                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.addProject')">
+                            <li ui-sref-active="active">
+                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}"  ui-sref="adminLayout.addProject">
                                     <i class="fa fa-cube fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
                                     <span  ng-if="isCollapsed===false">Add project</span>
                                 </a>
                             </li>
-                            <li ng-class="{'active' : currentState === 'adminLayout.editProjects'}">
-                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ng-click="goToState('adminLayout.editProjects')">
+                            <li ui-sref-active="active">
+                                <a ng-class="{'collapsedSubmenu' : isCollapsed == true}" ui-sref="adminLayout.editProjects">
                                     <i class="fa fa-cube fa-lg" ng-class="{'fa-2x': isCollapsed === true}"></i>
                                     <span  ng-if="isCollapsed===false">Edit projects</span>
                                 </a>

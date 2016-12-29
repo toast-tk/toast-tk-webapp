@@ -1,24 +1,18 @@
 (function() {
-	'use strict';
+	"use strict";
 
 	angular.module("app").controller("SidebarMenuCtrl", SidebarMenuCtrl);
 
-	SidebarMenuCtrl.$inject = ['$scope', '$state','$sideSplit'];
+	SidebarMenuCtrl.$inject = ["$scope", "$sideSplit"];
 
-	function SidebarMenuCtrl($scope, $state, $sideSplit) {
-		$scope.currentState = $state.current.name ;
+	function SidebarMenuCtrl($scope, $sideSplit) {
 		$scope.collapse = function(){
 			$scope.isCollapsed = !$scope.isCollapsed ;
 			 $sideSplit.collapse({ 
-                             id: angular.element('#sidebarmenu'),
+                             id: angular.element("#sidebarmenu"),
                              message :"collapsed!"
                       });
 		};
-
-		$scope.goToState = function(stateName){
-			$state.go(stateName);
-			$scope.currentState = stateName ;
-		}
 	}
 
 })();

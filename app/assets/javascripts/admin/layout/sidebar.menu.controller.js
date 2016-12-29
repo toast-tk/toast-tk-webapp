@@ -7,7 +7,6 @@
 
     function AdminSidebarMenuCtrl($scope, $state, $sideSplit) {
         $scope.isCollapsed = false;
-        $scope.currentState = $state.current.name ;
         $scope.collapse = function(){
             $scope.isCollapsed = !$scope.isCollapsed ;
             $sideSplit.collapse({
@@ -15,11 +14,6 @@
                 message :"collapsed!"
             });
         };
-
-        $scope.goToState = function(stateName){
-            $state.go(stateName);
-            $scope.currentState = stateName ;
-        }
     }
 
 })();
