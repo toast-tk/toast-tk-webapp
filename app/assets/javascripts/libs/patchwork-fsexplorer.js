@@ -165,7 +165,8 @@
                             }
                             if ($scope.onNodeClick) {
                                 $scope.onNodeClick(node);
-                                context.currentPath = fsExplorerService.getNodePath($scope.explorerModel, node);
+                                //context.selectedNode = node;
+                                //context.currentPath = fsExplorerService.getNodePath($scope.explorerModel, node);
                             }
                         }
                     }
