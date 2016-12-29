@@ -90,11 +90,11 @@
 
         $scope.fsExplorerOptions = {
             nodeId: "_id",
-            sortBy: 'type',
+            sortBy: "type",
             searchBy: {},
             isGlobalSearch:true,
             isAccessibleNode: function(node){
-                return (node.type === 'folder');
+                return (node.type === "folder");
             }
         };
 
@@ -125,7 +125,7 @@
         /* FS EXPLORER */
 
         ClientService.registerAgentListener(function(order, info){
-                if(order === 'set'){
+                if(order === "set"){
                     if(!$scope.$$phase) {
                       $scope.$apply(function() {
                         $scope.agents = info || [];
@@ -135,7 +135,7 @@
                     }
                     
                 }
-                if(order === 'unset'){
+                if(order === "unset"){
                     if(!$scope.$$phase) {
                       $scope.$apply(function() {
                         if($scope.agent && info.token === $scope.agent.token){
@@ -149,7 +149,7 @@
                     }
                     
                 }
-                if(order === 'sentence'){
+                if(order === "sentence"){
                     //received sentence comes from selected agent
                     if($scope.agent && info.token === $scope.agent.token){
                         var data = info.sentence;
@@ -205,7 +205,7 @@
                     setDropListPositionClass();
                     $scope.stepType = newScenario.type;
                 }
-                toastr.success('Scenario created !');
+                toastr.success("Scenario created !");
             }
 
             /* BEGIN : autocomplete step manipulation */
@@ -299,7 +299,7 @@
                 scenarioCopy.project = $scope.defaultProject;
                 ScenarioService.saveScenarii(scenarioCopy).then(function () {
                     __init__(false);
-                    toastr.success('Saved !');
+                    toastr.success("Saved !");
                 }, function(){
                     toastr.error('Could Not save changed details !');
                 });

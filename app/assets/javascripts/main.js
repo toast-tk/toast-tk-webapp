@@ -9,9 +9,9 @@
             "toastr","ngTagsInput", "angularjs-dropdown-multiselect",
             "chart.js", "bootstrapLightbox"]);
 
-    app.run(['editableOptions', '$rootScope','$timeout', function(editableOptions, $rootScope, $timeout) {
-        editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
-        editableOptions.mode = 'popup';
+    app.run(["editableOptions", "$rootScope","$timeout", function(editableOptions, $rootScope, $timeout) {
+        editableOptions.theme = "bs3"; // bootstrap3 theme. Can be also 'bs2', 'default'
+        editableOptions.mode = "popup";
         $timeout(function(){
             $rootScope.loaded = true;
         },2000);
