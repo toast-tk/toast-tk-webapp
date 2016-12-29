@@ -2,6 +2,10 @@
     <a  ng-if="isSearchActive === false" ng-disabled="nodeList[0].parent === '0'" ng-click="backToParent()" class="list-group-item">
         <i class="glyphicon glyphicon-arrow-left"/> Back
     </a>
+    <div ng-if="nodeList.length === 0 || (nodeList.length === 1 && nodeList[0].__isFakeNode__)" class="list-group-item" style="color: #ccc;">
+        <i class="fa fa-files-o fa-4x" style="display: block; text-align-last: center;margin: auto;"/>
+        Empty Folder: Start creating your first node!
+    </div>
     <a ng-repeat="node in nodeList"  ng-if="!node.__isFakeNode__" ng-click="selectNodeLabel(node)" ng-class="nodeClass(node)" class="list-group-item" style="cursor: pointer;">
         <i class="tree-branch-head" ng-class="iBranchClass()"></i>
         <div class="tree-label {{options.labelClass}}">

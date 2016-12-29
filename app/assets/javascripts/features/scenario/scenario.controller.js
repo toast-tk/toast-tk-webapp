@@ -68,7 +68,11 @@
                 var modalScope = $scope.$new(true);
                 modalScope.newNodeType = nodeType;
                 if($scope.currentPath[$scope.currentPath.length - 1]){
-                    modalScope.newNodeparent =  $scope.currentPath[$scope.currentPath.length - 1]._id ;
+                    if($scope.currentPath[$scope.currentPath.length - 1].type === "folder"){
+                        modalScope.newNodeparent =  $scope.currentPath[$scope.currentPath.length - 1]._id ;
+                    }else {
+                        modalScope.newNodeparent =  $scope.currentPath[$scope.currentPath.length - 1].parent || "0" ;
+                    }
                 }
                 modalScope.project = $scope.defaultProject;
                 var modalInstance = $uibModal.open({
@@ -294,7 +298,7 @@
                 delete scenarioCopy.columns;
                 scenarioCopy.project = $scope.defaultProject;
                 ScenarioService.saveScenarii(scenarioCopy).then(function () {
-                    __init__(false,scenarii);
+                    __init__(false);
                     toastr.success('Saved !');
                 }, function(){
                     toastr.error('Could Not save changed details !');
@@ -363,6 +367,7 @@
                     });
                     if(angular.isDefined(data) && data.length != 0){
                         $scope.senariiTree = data ;
+                        $scope.fsExplorerOptions.selectedNode = $scope.scenario;
                     } else {
                         console.warn("no data nodes");
                     }
