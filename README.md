@@ -2,9 +2,11 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f6b89c98a6a84e95a6a90f5bcba80eda)](https://www.codacy.com/app/toast-tk/toast-tk-webapp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=toast-tk/toast-tk-webapp&amp;utm_campaign=Badge_Grade) 
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/f6b89c98a6a84e95a6a90f5bcba80eda)](https://www.codacy.com/app/toast-tk/toast-tk-webapp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=toast-tk/toast-tk-webapp&amp;utm_campaign=Badge_Coverage)
 
-# Toast TK - Web Application
-Toast Tk Web App is the collaborative platform to support test automation and documentation for your Agile projet team.
+<a href="http://toast-tk.io"><img src="https://github.com/toast-tk/toast-tk-webapp/blob/master/public/images/ToastLogo.png?raw=true" align="left" height="50"></a>
+**Toast-tk-webapp** is the collaborative platform of Toast-Tk framework that enables you to support test automation and documentation for your Agile projet team.
 
+
+_Toast TK regroups multiple open source projects licensed under the Apache Software License 2._
 # Demo
 
 The webapp is currently deployed on hero for [DEMO](https://toast-tk.herokuapp.com).
