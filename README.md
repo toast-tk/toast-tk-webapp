@@ -8,30 +8,20 @@
 
 The webapp is currently deployed on hero for [DEMO](https://toast-tk.herokuapp.com).
 
-# Install
-
-## Environment pre-requisites:
+### Environment pre-requisites:
 - Java 8
 - scala 2.11.8
 - sbt 0.13.8
 - Mongodb 3.x
 - Node 6.9.1
 
-## Installation steps:
+### Installation steps:
 * Clone The project
 * Install and Launch a local Mongo Database
-* Define the environment properties that are part of the application.conf
-```
-MONGOHQ_URL: mongodb db uri, for a local and default install -> "mongodb://localhost:27017/play_db"
-SENDGRID_RECIPIENTS: list of administrator emails separated by a comma ","
-SENDGRID_APIKEY: valid sendgrid api key if you are willing to use the registration functionality
-```
-* Launch the webapp
-```
-> sbt run
+* Update the environment properties `MONGOHQ_URL` `SENDGRID_RECIPIENTS` & `SENDGRID_APIKEY` in the `conf/application.conf` file with your own parameters
+* Compile and start the webapp : `sbt compile` and `sbt run`
 
-* Default username/password: admin/admin
-```
+_NB: The full documentation of the webapp config and install is available in the [Wiki](https://github.com/toast-tk/toast-tk-webapp/wiki)._
 
 # Contribution
 
