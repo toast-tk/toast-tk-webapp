@@ -34,6 +34,11 @@ SENDGRID_APIKEY: valid sendgrid api key if you are willing to use the registrati
 * Default username/password: admin/admin
 ```
 
+* Go to your favorite browser
+```
+http://localhost:9000/
+```
+
 # Contribution
 
 Toast TK is a young ![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.svg?v=103) project.  
