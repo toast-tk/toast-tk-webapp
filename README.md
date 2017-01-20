@@ -23,7 +23,7 @@ The webapp is currently deployed on hero for [DEMO](https://toast-tk.herokuapp.c
 * Update the environment properties `MONGOHQ_URL` `SENDGRID_RECIPIENTS` & `SENDGRID_APIKEY` in the `conf/application.conf` file with your own parameters
 * Compile and start the webapp : `sbt compile` and `sbt run`
 
-_NB: The full documentation of the webapp config and install is available in the [Wiki](https://github.com/toast-tk/toast-tk-webapp/wiki)._
+_NB: The full documentation of the webapp config and install is available in the [Wiki ](https://github.com/toast-tk/toast-tk-webapp/wiki)_📖.
 
 # Contribution
 
