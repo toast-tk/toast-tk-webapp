@@ -1,42 +1,44 @@
 		<div class="modal-content">
+			<form ng-submit="createNewObject()">
 			<div class="modal-header">
 				<button type="button" class="close" ng-click="closeModal()"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">
-				<i class="{{ICONS['object']}} fa-fw"></i> New object</h4>
+				<i class="{{ICONS['object']}} fa-fw"></i> New object </h4>
 			</div>
 			<div class="modal-body">
 				<div class="content-fluid row">
-					<div  class="col-md-3">
+					<div  class="col-md-4">
 						<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
-							<i class="{{ICONS[scenarioTypeDropdownLabel]}} fa-fw"></i>
-							{{scenarioTypeDropdownLabel}}
+							<i class="{{ICONS[repositoryType]}} fa-fw"></i>
+							{{repositoryType}}
 							<span class="caret"></span>
 						</button>
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 								<li>
-								<a ng-click="swapToType('swing page')">
+								<a ng-click="repositoryType='swing page'">
 										<i class="{{ICONS['swing']}} fa-fw"></i> swing page 
 									</a>
 								</li>
 								<li>
-									<a ng-click="swapToType('web page')">
+									<a ng-click="repositoryType='web page'">
 										<i class="{{ICONS['web']}} fa-fw"></i> web page
 									</a>
 								</li>
 								<li>
-									<a ng-click="swapToType('service')">
+									<a ng-click="repositoryType='service'">
 										<i class="{{ICONS['service']}}  fa-fw"></i> service page
 									</a>
 								</li>
 							</ul>
 					</div>
-					<div class="Col-md-9">
-						<input type="text" class="form-control" ng-model="newObjectName" id="ScenarioName" placeholder="Type object name here ..">
+					<div class="col-md-8">
+						<input type="text" class="form-control" ng-model="newObjectName" id="RepositoryName" placeholder="Type {{newObjectName}} object name here ..">
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default"  ng-click="closeModal()">Close</button>
-				<button type="button" class="btn btn-primary" ng-click="createNewObject()">Create</button>
+				<button type="submit" class="btn btn-primary" ng-disable="repositoryType != ('web page' || 'service' || 'swing page') '' ">Create</button>
 			</div>
+		</form>
 		</div><!-- /.modal-content -->
