@@ -4,22 +4,19 @@
 
     function newObjectModalCtrl($scope,  $uibModalInstance, ICONS) {
             $scope.ICONS = ICONS;
-            var newObject = {};
-            $scope.scenarioTypeDropdownLabel = "Select type ..";
-            
+
+            $scope.repositoryType="web page";
             $scope.closeModal = function(){
                 $uibModalInstance.dismiss();
-            }
+            };
 
             $scope.createNewObject = function(){
-                newObject.name = $scope.newObjectName;
-                $uibModalInstance.close(newObject);
-            }
+                $uibModalInstance.close({
+                    name : $scope.newObjectName,
+                    type :  $scope.repositoryType,
+                    image : ICONS[$scope.repositoryType]
+                });
+            };
 
-            $scope.swapToType = function(type){
-                $scope.scenarioTypeDropdownLabel = type;
-                newObject.type = type;
-                newObject.image = ICONS[type]; 
-            }
         }
 })();
