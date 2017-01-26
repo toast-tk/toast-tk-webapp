@@ -174,6 +174,8 @@
                                 $scope.scenario.rows.push(angular.copy(data.row));
                             }
                         }
+                    } else {
+                        toastr.warning('Select agent to receive records!');
                     }
                 }
                 $scope.agentIsActive = ClientService.socketIsActive && $scope.agents.length > 0;
