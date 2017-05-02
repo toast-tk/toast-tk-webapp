@@ -46,6 +46,7 @@ POST          /api/saveNewInspectedScenario                     controllers.Appl
 # Ajax routes: Agent API Controller
 POST          /api/susbcribe                                    controllers.AgentController.subscribe()
 GET           /api/socket/stream                                controllers.AgentController.registerFrontWebsocketService(token: Option[String])
+GET           /api/agent/stream/:token                          controllers.AgentController.agentStreamWebsocketService(token: String)
 POST          /api/record                                       controllers.AgentController.publishRecordedAction()
 GET           /api/agent/:userToken                             controllers.AgentController.getAgents(userToken: String)
 

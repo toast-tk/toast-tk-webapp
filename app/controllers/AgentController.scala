@@ -36,6 +36,7 @@ object AgentController extends Controller{
    */
   val users = Map[String, (Enumerator[AgentInformation], Concurrent.Channel[AgentInformation])]()
   val agents = Map[String, AgentInformation]()
+  val agentSockets = Map[String, (Enumerator[AgentInformation], Concurrent.Channel[AgentInformation])]()
 
   implicit val recordSentenceFormat = Json.format[RecordedSentence]
   implicit val agentInfoFormat = Json.format[AgentInformation]
@@ -81,8 +82,47 @@ object AgentController extends Controller{
 
   private def unregisterAgent(token: String, host: String): Unit ={
     agents -= token
+    agentSockets -= token
     val agentInformation = AgentInformation(token, host, Some(false))
     users(token)._2.push(agentInformation)
+  }
+
+
+  /**
+    * register a stream to validate
+    * incoming sentences to.
+    * @return
+    */
+  def agentStreamWebsocketService (agentToken: String) =  WebSocket.using[AgentInformation] {
+    request => {
+      Logger.info(s"-> Agent: New incoming websocket connection -> ${agentToken}" )
+
+      val (enumerator, channel): (Enumerator[AgentInformation], Concurrent.Channel[AgentInformation]) = Concurrent.broadcast[AgentInformation]
+
+      hasUserAndProject(agentToken) match {
+        case true => {
+          if(agentSockets contains agentToken) {
+            Logger.info(s"Ignoring new request, agent already registred <- token -> $agentToken")
+            (Iteratee.ignore[AgentInformation], agentSockets(agentToken)._1)
+          }
+          else {
+            agentSockets += ((agentToken, (enumerator, channel)))
+            val iteratee = Iteratee.foreach[AgentInformation](msg => {
+              //exisiting
+            }).map{ _ => {
+              Logger.info(s"agent disconnected with <- token -> $agentToken")
+              agentSockets(agentToken)._2.eofAndEnd()
+              agentSockets -= agentToken
+              agents -= agentToken
+            }}
+            (iteratee, enumerator)
+          }
+        }
+        case false => {
+          (Iteratee.ignore[AgentInformation], Enumerator.empty[AgentInformation].andThen(Enumerator.eof))
+        }
+      }
+    }
   }
 
   /**
@@ -92,7 +132,7 @@ object AgentController extends Controller{
    */
   def registerFrontWebsocketService (maybeToken: Option[String]) =  WebSocket.using[AgentInformation] {
     request => {
-      Logger.info(s"New incoming websocket connection -> ${request.headers}" )
+      Logger.info(s"-> Browser: New incoming websocket connection -> ${request.headers}" )
       //open websocket only for local host !
       //TODO: check request host !
 
@@ -102,9 +142,6 @@ object AgentController extends Controller{
           hasUserAndProject(userTokenValue) match {
             case true => {
               if(users contains userTokenValue) {
-                /**
-                 * existing user
-                 */
                 Logger.info(s"Ignoring new request, user already connected <- token -> $userTokenValue")
                 (Iteratee.ignore[AgentInformation], users(userTokenValue)._1)
               }
@@ -114,9 +151,6 @@ object AgentController extends Controller{
                 val iteratee = Iteratee.foreach[AgentInformation](msg => {
                   //do something with the message
                 }).map{ _ => {
-                  /**
-                   * user closed his websocket client, so remove the user
-                   */
                   users(userTokenValue)._2.eofAndEnd()
                   users -= userTokenValue
                 }}
@@ -149,6 +183,7 @@ object AgentController extends Controller{
 
  /**
    * List of agents registered with provided token
+   * Limited to 1 for the time being
    * @param token
    * @return
    */
@@ -164,7 +199,7 @@ object AgentController extends Controller{
   /**
    * Any agent that may push sentences, will be registered here
    *
-   * @param AgentInformation (host and user token)
+   * @param AggientInformation (host and user token)
    * @return
    */
   @ApiKeyProtected
