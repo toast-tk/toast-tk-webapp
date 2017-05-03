@@ -110,7 +110,7 @@ object AgentController extends Controller{
             val iteratee = Iteratee.foreach[AgentInformation](msg => {
               //exisiting
             }).map{ _ => {
-              Logger.info(s"agent disconnected with <- token -> $agentToken")
+              Logger.info(s"agent disconnected <- token -> $agentToken")
               agentSockets(agentToken)._2.eofAndEnd()
               agentSockets -= agentToken
               agents -= agentToken
@@ -199,7 +199,7 @@ object AgentController extends Controller{
   /**
    * Any agent that may push sentences, will be registered here
    *
-   * @param AggientInformation (host and user token)
+   * @param AgentInformation (host and user token)
    * @return
    */
   @ApiKeyProtected
