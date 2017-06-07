@@ -1,8 +1,14 @@
 name := "toast-tk-webapp"
 
-version := "0.1.4"
+version := "0.1.5-SNAPSHOT"
+
+val toastVersion = "0.1.5-SNAPSHOT"
+
+val toastVersionStable = "0.1.5-SNAPSHOT"
 
 scalaVersion := "2.11.8"
+
+resolvers += "JBoss" at "https://repository.jboss.org/"
 
 resolvers += Resolver.mavenLocal
 
@@ -21,11 +27,11 @@ libraryDependencies ++= Seq(
   "org.webjars" % "requirejs" % "2.1.1",
   "org.webjars" % "webjars-play" % "2.1.0-1",
   "org.webjars" % "bootstrap" % "3.2.0-1",
-  "io.toast-tk" % "toast-tk-runtime" % "0.1.4",
-  "io.toast-tk" % "toast-tk-dao-api" % "0.1.4",
-  "io.toast-tk" % "toast-tk-selenium-plugin" % "0.1.4-SNAPSHOT",
+  "io.toast-tk" % "toast-tk-runtime" % toastVersionStable,
+  "io.toast-tk" % "toast-tk-dao-api" % toastVersionStable,
+  "io.toast-tk" % "toast-tk-interpret" % toastVersionStable,
+  "io.toast-tk" % "toast-tk-selenium-plugin" % toastVersion,
   "org.seleniumhq.selenium" % "selenium-java" % "2.53.0",
-  "io.toast-tk" % "toast-tk-interpret" % "0.1.4",
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0",
   "com.pauldijou" %% "jwt-play" % "0.5.1",
   "org.scalatestplus" % "play_2.11" % "1.4.0-M3"% "test",
@@ -35,10 +41,10 @@ libraryDependencies ++= Seq(
   "com.github.simplyscala" %% "scalatest-embedmongo" % "0.2.2" % "test",
   "org.seleniumhq.selenium" % "htmlunit-driver" % "2.23.1" % "test",
   "org.seleniumhq.selenium" % "selenium-support" % "3.0.1" % "test",
-  "com.sendgrid"%"sendgrid-java"%"3.0.9"
+  "com.sendgrid" % "sendgrid-java" % "3.0.9"
 )
 
-//TODO: move to injected resources @Inject()
+//TODO: move to injected resources - @Inject()
 //routesGenerator := StaticRoutesGenerator
 
 lazy val root = (project in file(".")).enablePlugins(SbtWeb).enablePlugins(PlayScala)
