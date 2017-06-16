@@ -1,5 +1,6 @@
 package controllers.mongo
 
+import controllers.mongo.ScenarioRowMapping
 import controllers.mongo.project.Project
 import controllers.mongo.scenario.Scenario
 import controllers.parsers.EntityField
@@ -67,7 +68,9 @@ case class InspectedScenario(name: String, steps: String)
 case class TestScript(id: Option[String], name: String, scenarii: List[Scenario])
 
 case class ScenarioRows(patterns: String, kind: Option[String], mappings: Option[List[ScenarioRowMapping]])
+case class ScenarioOldRows(patterns: String, kind: Option[String], mappings: Option[List[ScenarioOldRowMapping]])
 case class ScenarioRowMapping(id: String, value: String, pos: Int)
+case class ScenarioOldRowMapping(id: String, `val`: String, pos: Int)
 
 case class DBRef(collection: String, id: BSONObjectID, db: Option[String] = None)
 
@@ -116,14 +119,35 @@ object MojoFixtureDescriptor {
   implicit val format = Json.format[MojoFixtureDescriptor]
 }
 
-
-
 object ScenarioRowMapping{
   implicit val format = Json.format[ScenarioRowMapping]
+  def from(oldMapping: ScenarioOldRowMapping): ScenarioRowMapping ={
+    new ScenarioRowMapping(
+      id = oldMapping.id,
+      value = oldMapping.`val`,
+      pos = oldMapping.pos
+    )
+  }
 }
 
 object ScenarioRows{
   implicit val format = Json.format[ScenarioRows]
+
+  def from(oldScenario: ScenarioOldRows): ScenarioRows ={
+    new ScenarioRows(
+      patterns = oldScenario.patterns,
+      kind = oldScenario.kind,
+      mappings = Some(oldScenario.mappings.getOrElse(List()).map( old => ScenarioRowMapping.from(old)) )
+    )
+  }
+}
+
+object ScenarioOldRowMapping{
+  implicit val format = Json.format[ScenarioOldRowMapping]
+}
+
+object ScenarioOldRows{
+  implicit val format = Json.format[ScenarioOldRows]
 }
 
 object InspectedScenario{

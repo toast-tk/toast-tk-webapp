@@ -38,7 +38,12 @@ object ScenarioController extends Controller {
             var replacementWord = "";
             for (jsonMapping <- mapping) {
               val pos = (jsonMapping \ "pos").as[Int]
-              if (pos.equals(mappingPosition)) replacementWord = (jsonMapping \ "val").as[String]
+              if (pos.equals(mappingPosition)){
+                replacementWord = (jsonMapping \ "value").asOpt[String] match {
+                  case Some(word) => word
+                  case None => (jsonMapping \ "val").asOpt[String].getOrElse("")
+                }
+              }
             }
             outputArray = ("*" + replacementWord + "*") :: outputArray
             mappingPosition = mappingPosition + 1
@@ -62,7 +67,13 @@ object ScenarioController extends Controller {
    */
   def wikifiedScenario(scenario: Scenario): JsValue = {
     try { 
-      val scenarioRows: List[ScenarioRows] = Json.parse(scenario.rows.getOrElse("[]")).as[List[ScenarioRows]]
+      val scenarioRows: List[ScenarioRows] = Json.parse(scenario.rows.getOrElse("[]")).asOpt[List[ScenarioRows]] match {
+        case Some(scenarioRows) => scenarioRows
+        case None => {
+          val oldRows: List[ScenarioOldRows] = Json.parse(scenario.rows.getOrElse("[]")).asOpt[List[ScenarioOldRows]].getOrElse(List())
+          oldRows.map( o => ScenarioRows.from(o) )
+        }
+      }
       val scenarioKinds: List[String] = scenarioRows.map{row => row.kind.getOrElse("")}
       val lines = if (scenarioRows.length > 0){
         populatePatterns(scenario.rows.getOrElse(""))
@@ -108,14 +119,13 @@ object ScenarioController extends Controller {
    * || scenario || web ||
    * |Type *toto* in *LoginDialog.loginTextField*|
    */
-  @ApiKeyProtected
   def loadWikifiedScenarii(apiKey: String) = Action.async {
     val pair: (Option[User], Option[Project]) = db.userProjectPair(apiKey)
     pair match {
       case (Some(user), Some(project)) => {
         db.loadScenarii(project._id.get.stringify).map {
           scenarii => {
-            val response = for (scenario <- scenarii) yield wikifiedScenario(scenario)
+            val response = for (scenario <- scenarii; if(!scenario.`type`.equals("folder"))) yield  wikifiedScenario(scenario)
             Ok(Json.toJson(response))
           }
         }

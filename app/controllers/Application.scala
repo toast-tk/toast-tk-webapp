@@ -88,6 +88,33 @@ object Application extends Controller {
     }
   }
 
+  def loadAllAsWikifiedRepository(apiKey: String)  = Action.async {
+    val pair: (Option[User], Option[Project]) = db.userProjectPair(apiKey)
+    pair match {
+      case (Some(user), Some(project)) => {
+        db.loadRepository(project._id.get.stringify).map {
+          repository => {
+            def wikifiedObject(page: Repository): JsValue = {
+              var res = "page id:" + page.id.get + "\n"
+              res = res + "|| setup || " +  page.`type` + " || " + page.name + " ||\n"
+              res = res + "| name | type | locator |\n"
+              for (row <- page.rows.getOrElse(List())) {
+                res = res + "|" + row.name + "|" + row.`type` + "|" + row.locator + "|\n"
+              }
+              res = res + "\n"
+              JsString(res)
+            }
+            val response = for (page <- repository) yield wikifiedObject(page)
+            Ok(Json.toJson(response))
+          }
+        }
+      }
+      case _ => Future{
+        BadRequest(s"Detected error: no project available @apiKey(${apiKey})")
+      }
+    }
+  }
+
 
   /**
    * load to wiki repository configuration

@@ -240,6 +240,16 @@ case class MongoConnector(driver: MongoDriver, mongoUri: String){
     future
   }
 
+def loadRepository(idProject: String): Future[List[Repository]] = {
+    val future = for{
+      project <- projectCollection.one(idProject)
+      result <-  repositoryCollection.findProjectRepositories(project.get)
+      if(project.isDefined)
+    } yield (result)
+    future
+
+  }
+
   def loadSwingPageRepository(idProject: String): Future[List[Repository]] = {
     val future = for{
       project <- projectCollection.one(idProject)
