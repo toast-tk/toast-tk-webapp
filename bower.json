@@ -5,7 +5,7 @@
     "Sallah Kokaina <sallah.kokaina@gmail.com>"
   ],
   "contributors": [
-    "Akram Tabka <akram.tabka@talanlabs.com>"
+    "Akram Tabka <akram.tabka@talan.com>"
   ],
   "description": "Toast TK Webapp",
   "license": "Apache 2.0",
@@ -36,6 +36,7 @@
     "angularjs-dropdown-multiselect": "~1.5.2",
     "angular-bootstrap-lightbox": "~0.12.0",
     "chart.js": "^2.3.0",
+    "angular-messages": "~1.6.4",
     "angular-resizable": "^1.2.0"
   },
   "resolutions": {

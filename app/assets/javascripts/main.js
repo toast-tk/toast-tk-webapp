@@ -5,6 +5,7 @@
         ['ui.router', "play.routing", "ngAnimate",
             "tk.components", "tk.services", "tk.chart.utils",
             "ui.sortable", "ngProgress", "ui.tree", "ui.bootstrap",
+            "ngMessages",
             "xeditable", "sidesplit", "angucomplete-alt", "angularResizable", "pw-fsexplorer",
             "toastr","ngTagsInput", "angularjs-dropdown-multiselect",
             "chart.js", "bootstrapLightbox"]);

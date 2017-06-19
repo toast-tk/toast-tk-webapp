@@ -11,7 +11,7 @@ module.exports = function(config) {
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
-    
+
     plugins: [
       "karma-chrome-launcher",
       "karma-jasmine",
@@ -33,6 +33,7 @@ module.exports = function(config) {
         {pattern: 'libs/angular-ui-router/release/angular-ui-router.js',  watch: false},
         {pattern: 'libs/angular-animate/angular-animate.min.js',  watch: false},
         {pattern: 'libs/angular-ui-sortable/sortable.min.js',  watch: false},
+        {pattern: 'libs/angular-messages/angular-messages.min.js',  watch: false},
         {pattern: 'libs/angular-toastr/dist/angular-toastr.tpls.min.js',  watch: false},
         {pattern: 'libs/angucomplete-alt/dist/angucomplete-alt.min.js',  watch: false},
         {pattern: 'libs/angular-ui-tree/dist/angular-ui-tree.min.js',  watch: false},
@@ -58,7 +59,7 @@ module.exports = function(config) {
         {pattern: 'mocks/*.json', watched: true, served: true, included: false},
         'tests/*test.js',
         'tests/**/*test.js'
-  
+
     ],
 
     proxies: {
@@ -131,7 +132,7 @@ module.exports = function(config) {
     // how many browser should be started simultaneous
     concurrency: Infinity
   }
-  
+
   if (process.env.TRAVIS) {
     configuration.browsers = ['Chrome_travis_ci'];
   }
