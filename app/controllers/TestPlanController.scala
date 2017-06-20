@@ -294,9 +294,8 @@ object TestPlanController  extends Controller {
       testPlan.setName(tp.name)
       tp.id match {
         case Some(id) => testPlan.setId(id)
-        case None => _
       }
-      
+
       if(tp.project.isDefined){
         testPlan.setProject(projectService.findProject(tp.project.get._id.get.stringify))
       }
