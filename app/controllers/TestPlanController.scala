@@ -292,7 +292,11 @@ object TestPlanController  extends Controller {
     def tranformTestPlan(tp: TestPlanMirror): TestPlanImpl = {
       val testPlan = new TestPlanImpl()
       testPlan.setName(tp.name)
-      testPlan.setId(tp.id.get)
+      tp.id match {
+        case Some(id) => testPlan.setId(id)
+        case None => _
+      }
+      
       if(tp.project.isDefined){
         testPlan.setProject(projectService.findProject(tp.project.get._id.get.stringify))
       }
