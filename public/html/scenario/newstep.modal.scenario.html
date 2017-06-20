@@ -1,5 +1,5 @@
 		<div class="modal-content">
-			<form name="myForm" ng-submit="createNewNode()">
+			<form name="scenarioForm" ng-submit="createNewNode()">
 				<div class="modal-header">
 					<button type="button" class="close" ng-click="closeModal()"><span aria-hidden="true">&times;</span></button>
 					<h4 class="modal-title">
@@ -36,6 +36,9 @@
 								name= "scenarioNameField" ng-model="scenarioName"
 								id="ScenarioName" required minlength="3"
 								placeholder="Type {{newNodeType}} name here ..">
+								<div ng-messages="scenarioForm.scenarioNameField.$error">
+								 <div ng-messages-include="error-messages"></div>
+							 </div>
 						</div>
 					</div>
 				</div>

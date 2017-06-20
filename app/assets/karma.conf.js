@@ -33,7 +33,7 @@ module.exports = function(config) {
         {pattern: 'libs/angular-ui-router/release/angular-ui-router.js',  watch: false},
         {pattern: 'libs/angular-animate/angular-animate.min.js',  watch: false},
         {pattern: 'libs/angular-ui-sortable/sortable.min.js',  watch: false},
-        {pattern: 'libs/angular-messages/angular-messages.min.js',  watch: false},
+        {pattern: 'libs/angular-messages/angular-messages.js',  watch: false},
         {pattern: 'libs/angular-toastr/dist/angular-toastr.tpls.min.js',  watch: false},
         {pattern: 'libs/angucomplete-alt/dist/angucomplete-alt.min.js',  watch: false},
         {pattern: 'libs/angular-ui-tree/dist/angular-ui-tree.min.js',  watch: false},
@@ -55,7 +55,7 @@ module.exports = function(config) {
         {pattern: 'javascripts/config/icon.constants.config.js', watched: true, included: false, served: true},
         {pattern: 'javascripts/**/*.js', included: true},
         {pattern: 'javascripts/**/**/*.js', included: true},
-        {pattern: 'assets/html/login.html', watched: false, included: true, served: true},
+        {pattern: 'html/login.html', watched: false, included: true, served: true},
         {pattern: 'mocks/*.json', watched: true, served: true, included: false},
         'tests/*test.js',
         'tests/**/*test.js'
@@ -63,7 +63,7 @@ module.exports = function(config) {
     ],
 
     proxies: {
-      'assets/html/login.html': '../../public/html/login.html'
+      'html/login.html': '../../public/html/login.html'
     },
 
     // list of files to exclude

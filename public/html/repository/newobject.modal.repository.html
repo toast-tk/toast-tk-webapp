@@ -1,9 +1,11 @@
+
+
 		<div class="modal-content">
-			<form ng-submit="createNewObject()">
+			<form name="objectForm" ng-submit="createNewObject()">
 			<div class="modal-header">
 				<button type="button" class="close" ng-click="closeModal()"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">
-				<i class="{{ICONS['object']}} fa-fw"></i> New object </h4>
+				<i class="{{ICONS['object']}} fa-fw"></i> New Object </h4>
 			</div>
 			<div class="modal-body">
 				<div class="content-fluid row">
@@ -16,7 +18,7 @@
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 								<li>
 								<a ng-click="repositoryType='swing page'">
-										<i class="{{ICONS['swing']}} fa-fw"></i> swing page 
+										<i class="{{ICONS['swing']}} fa-fw"></i> swing page
 									</a>
 								</li>
 								<li>
@@ -32,7 +34,13 @@
 							</ul>
 					</div>
 					<div class="col-md-8">
-						<input type="text" class="form-control" ng-model="newObjectName" id="RepositoryName" placeholder="Type {{newObjectName}} object name here ..">
+						<input type="text" class="form-control" ng-model="newObjectName"
+										name="objectNameField" id="RepositoryName"
+										required minlength="3"
+										placeholder="Type {{newObjectName}} object name here ..">
+						<div ng-messages="objectForm.objectNameField.$error">
+							 <div ng-messages-include="error-messages"></div>
+						 </div>
 					</div>
 				</div>
 			</div>

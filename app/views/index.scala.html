@@ -1,3 +1,4 @@
+
 <!-- .@()
 <!DOCTYPE html> -->
 <html>
@@ -106,7 +107,6 @@
     <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/projects/editproject.controller.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/projects/editprojects.controller.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/config/icon.constants.config.js")"></script>
-
   </head>
   <body ng-app="app">
      <div class="toast-loading" ng-if="!loaded">
@@ -119,4 +119,14 @@
      </div>
      <div ng-if="loaded" ui-view="main"></div>
   </body>
+  <script type="text/ng-template" id="error-messages">
+    <div ng-message="required" class="alert alert-danger field-error-alert">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      <span class="sr-only">Error:</span> This field is required
+    </div>
+    <div ng-message="minlength"  class="alert alert-danger field-error-alert">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      <span class="sr-only">Error:</span> This field is too short
+    </div>
+  </script>
   </html>
