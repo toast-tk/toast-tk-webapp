@@ -26,7 +26,7 @@ libraryDependencies ++= Seq(
   "io.toast-tk" % "toast-tk-runtime" % toastVersion,
   "io.toast-tk" % "toast-tk-dao-api" % toastVersion,
   "io.toast-tk" % "toast-tk-interpret" % toastVersion,
-  "io.toast-tk" % "toast-tk-selenium-plugin" % toastVersion,
+  "io.toast-tk" % "toast-tk-selenium-plugin" % "0.1.5-snapshot",
   "org.seleniumhq.selenium" % "selenium-java" % "2.53.0",
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0",
   "com.pauldijou" %% "jwt-play" % "0.5.1",
