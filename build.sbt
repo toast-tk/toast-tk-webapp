@@ -1,10 +1,6 @@
 name := "toast-tk-webapp"
 
-version := "0.1.5-SNAPSHOT"
-
-val toastVersion = "0.1.5-SNAPSHOT"
-
-val toastVersionStable = "0.1.5-SNAPSHOT"
+version := "0.1.5"
 
 scalaVersion := "2.11.8"
 
@@ -27,10 +23,10 @@ libraryDependencies ++= Seq(
   "org.webjars" % "requirejs" % "2.1.1",
   "org.webjars" % "webjars-play" % "2.1.0-1",
   "org.webjars" % "bootstrap" % "3.2.0-1",
-  "io.toast-tk" % "toast-tk-runtime" % toastVersionStable,
-  "io.toast-tk" % "toast-tk-dao-api" % toastVersionStable,
-  "io.toast-tk" % "toast-tk-interpret" % toastVersionStable,
-  "io.toast-tk" % "toast-tk-selenium-plugin" % toastVersion,
+  "io.toast-tk" % "toast-tk-runtime" % version,
+  "io.toast-tk" % "toast-tk-dao-api" % version,
+  "io.toast-tk" % "toast-tk-interpret" % version,
+  "io.toast-tk" % "toast-tk-selenium-plugin" % version,
   "org.seleniumhq.selenium" % "selenium-java" % "2.53.0",
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0",
   "com.pauldijou" %% "jwt-play" % "0.5.1",
@@ -51,7 +47,7 @@ lazy val root = (project in file(".")).enablePlugins(SbtWeb).enablePlugins(PlayS
 
 unmanagedResourceDirectories in Assets += baseDirectory.value / "assets"
 
-lazy val npmBuildTask = TaskKey[Unit]("npm") 
+lazy val npmBuildTask = TaskKey[Unit]("npm")
 npmBuildTask := {
   "npm install" #&& "node ./node_modules/bower/bin/bower install" #&& "node ./node_modules/gulp/bin/gulp" #&& "rm -rf ./app/assets/libs" #&& "mv -f ./libs ./app/assets"!
 }
