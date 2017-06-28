@@ -1,6 +1,6 @@
 name := "toast-tk-webapp"
 
-ToastVersion := "0.1.5"
+toastVersion := "0.1.5"
 
 scalaVersion := "2.11.8"
 
@@ -23,10 +23,10 @@ libraryDependencies ++= Seq(
   "org.webjars" % "requirejs" % "2.1.1",
   "org.webjars" % "webjars-play" % "2.1.0-1",
   "org.webjars" % "bootstrap" % "3.2.0-1",
-  "io.toast-tk" % "toast-tk-runtime" % ToastVersion,
-  "io.toast-tk" % "toast-tk-dao-api" % ToastVersion,
-  "io.toast-tk" % "toast-tk-interpret" % ToastVersion,
-  "io.toast-tk" % "toast-tk-selenium-plugin" % ToastVersion,
+  "io.toast-tk" % "toast-tk-runtime" % toastVersion,
+  "io.toast-tk" % "toast-tk-dao-api" % toastVersion,
+  "io.toast-tk" % "toast-tk-interpret" % toastVersion,
+  "io.toast-tk" % "toast-tk-selenium-plugin" % toastVersion,
   "org.seleniumhq.selenium" % "selenium-java" % "2.53.0",
   "de.flapdoodle.embed" % "de.flapdoodle.embed.mongo" % "1.50.0",
   "com.pauldijou" %% "jwt-play" % "0.5.1",
