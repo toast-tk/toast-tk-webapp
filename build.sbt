@@ -1,7 +1,5 @@
 name := "toast-tk-webapp"
 
-val toastVersion := "0.1.5"
-
 scalaVersion := "2.11.8"
 
 resolvers += "JBoss" at "https://repository.jboss.org/"
@@ -13,6 +11,8 @@ resolvers += "Sonatype releases" at "https://oss.sonatype.org/content/repositori
 resolvers += "MavenSnapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
 resolvers += "Typesafe" at "http://repo.typesafe.com/typesafe/releases/"
+
+val toastVersion = "0.1.5"
 
 libraryDependencies ++= Seq(
   ws,
