@@ -126,10 +126,7 @@ object ScenarioController extends Controller {
    * || scenario || web ||
    * |Type *toto* in *LoginDialog.loginTextField*|
    */
-<<<<<<< HEAD
   //@ApiKeyProtected
-=======
->>>>>>> 09649e6a25937df5d8499690bf5cf6f94aca0d3f
   def loadWikifiedScenarii(apiKey: String) = Action.async {
     val pair: (Option[User], Option[Project]) = db.userProjectPair(apiKey)
     pair match {
