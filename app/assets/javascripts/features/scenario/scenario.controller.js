@@ -344,6 +344,7 @@
                 UtilsScenarioService.onPatternValueChange(scenarioRow, position, identifier, value);
             }
 
+            /*TODO use remote api to do auto-complete - remote-api-handler or */
             $scope.regexFullList=[];
 
             function __init__(doBuildTree) {

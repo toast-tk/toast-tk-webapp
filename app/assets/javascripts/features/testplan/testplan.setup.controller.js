@@ -4,7 +4,7 @@
     angular.module("app").controller("TestPlanSetupCtrl", TestPlanSetupCtrl);
 
     function TestPlanSetupCtrl($scope, playRoutes, $stateParams,
-                                defaultProject) {
+                                defaultProject, $state) {
 
             $scope.defaultProject = defaultProject;
             $scope.selectedProject = undefined;
@@ -34,7 +34,8 @@
                 var testPlanToSave = testPlan;
                 testPlanToSave.project = $scope.defaultProject;
                 playRoutes.controllers.TestPlanController.saveProject().post(testPlanToSave).then(function (response) {
-                    __init__();
+                    $state.reload();
+                    __init__();  
                 });
             };
 
@@ -62,6 +63,8 @@
                     var data = response.data || [];
                     $scope.selectedProject = data;
                 });
+
+
             }
 
             __init__();

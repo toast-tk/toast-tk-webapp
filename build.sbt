@@ -51,7 +51,7 @@ lazy val root = (project in file(".")).enablePlugins(SbtWeb).enablePlugins(PlayS
 
 unmanagedResourceDirectories in Assets += baseDirectory.value / "assets"
 
-lazy val npmBuildTask = TaskKey[Unit]("npm") 
+lazy val npmBuildTask = TaskKey[Unit]("npm")
 npmBuildTask := {
   "npm install" #&& "node ./node_modules/bower/bin/bower install" #&& "node ./node_modules/gulp/bin/gulp" #&& "rm -rf ./app/assets/libs" #&& "mv -f ./libs ./app/assets"!
 }

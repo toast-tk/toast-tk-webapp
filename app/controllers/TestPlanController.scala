@@ -64,7 +64,7 @@ case class TestPlanMirror(id: Option[String],
                           project: Option[Project] = None)
 
 object TestLineMirror{
-  def from(line: TestLine): TestLineMirror = {   
+  def from(line: TestLine): TestLineMirror = {
     val testResultKind = if(line.getTestResult() == null) "None" else getResultKindAsString(line.getTestResult().getResultKind())
     val testResult = if(line.getTestResult() == null) "None" else line.getTestResult().getMessage()
     val sentence = if(line.getTestResult() == null) line.getTest() else line.getTestResult().getContextualTestSentence()
@@ -292,6 +292,8 @@ object TestPlanController  extends Controller {
     def tranformTestPlan(tp: TestPlanMirror): TestPlanImpl = {
       val testPlan = new TestPlanImpl()
       testPlan.setName(tp.name)
+      testPlan.setId(tp.id.getOrElse(null))
+      
       if(tp.project.isDefined){
         testPlan.setProject(projectService.findProject(tp.project.get._id.get.stringify))
       }

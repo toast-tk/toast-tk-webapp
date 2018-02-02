@@ -281,7 +281,7 @@ footer {
   background-color: #DDDDDD;
 }
 
-.list-striped>li:nth-child(odd), 
+.list-striped>li:nth-child(odd),
 .list-striped>li:nth-child(odd) {
     background-color: #DDDDDD;
 }
@@ -301,7 +301,7 @@ footer {
 .btn-danger1 {
     color: #FA3414;
     background-color: #F5E9E7;
-    border-color: #F36E58;  
+    border-color: #F36E58;
 }
 
 .btn-edit{
@@ -334,7 +334,7 @@ footer {
     width: 100% !important;
   }
 .angucomplete-selected-row {
-     color: #000 !important; 
+     color: #000 !important;
 }
 
 /* angular toastr */
@@ -354,7 +354,7 @@ footer {
 .side-nav>li>ul>li>a.collapsedSubmenu{
 padding-top: 12px;
     padding-bottom: 12px;
-    padding: 10px 15px;  
+    padding: 10px 15px;
 }
 
 .side-nav>li>ul>li>a {
@@ -400,3 +400,8 @@ padding-top: 12px;
     border-radius: 50%;
     font-weight: 900;
 }
+
+.field-error-alert {
+    padding: 2px;
+    margin-bottom: 0px;
+ }

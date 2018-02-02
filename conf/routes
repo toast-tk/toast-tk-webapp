@@ -37,6 +37,7 @@ GET           /api/typeDescriptor                               controllers.Doma
 # Ajax for API controller
 POST          /api/actionadapter                                controllers.Application.onConnectorReceived()
 POST          /api/saveNewInspectedPage                         controllers.Application.saveNewInspectedPage()
+GET           /api/repository/all/:apiKey                       controllers.Application.loadAllAsWikifiedRepository(apiKey: String)
 GET           /api/repository/swing/:apiKey                     controllers.Application.loadWikifiedRepository(apiKey: String)
 GET           /api/repository/web/:apiKey                       controllers.Application.loadWebWikifiedRepository(apiKey: String)
 GET           /api/loadServiceDescriptors/:sType/:driver        controllers.Application.loadServiceDescriptors(sType:String, driver: String)

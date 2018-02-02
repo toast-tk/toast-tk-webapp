@@ -1,44 +1,50 @@
 		<div class="modal-content">
-			<form ng-submit="createNewNode()">
-			<div class="modal-header">
-				<button type="button" class="close" ng-click="closeModal()"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">
-				<i class="{{ICONS[newNodeType]}} fa-fw"></i> New {{newNodeType}}</h4>
-			</div>
-			<div class="modal-body">
-				<div class="content-fluid row">
-					<div ng-if="newNodeType === 'scenario'" class="col-md-3">
-						<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
-							<i class="{{ICONS[scenarioType]}} fa-fw"></i>
-							{{scenarioType}}
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-							<li>
-							<a ng-click="$parent.scenarioType='swing'">
-									<i class="{{ICONS['swing']}} fa-fw"></i> swing
-								</a>
-							</li>
-							<li>
-								<a ng-click="$parent.scenarioType='web'">
-									<i class="{{ICONS['web']}} fa-fw"></i> web
-								</a>
-							</li>
-							<li>
-								<a ng-click="$parent.scenarioType='service'">
-									<i class="{{ICONS['service']}}  fa-fw"></i> service
-								</a>
-							</li>
-						</ul>
-					</div>
-					<div ng-class="{'Col-md-9' : newNodeType === 'scenario', 'Col-md-12' : newNodeType === 'folder'}">
-						<input type="text" class="form-control" ng-model="scenarioName" id="ScenarioName" placeholder="Type {{newNodeType}} name here ..">
+			<form name="scenarioForm" ng-submit="createNewNode()">
+				<div class="modal-header">
+					<button type="button" class="close" ng-click="closeModal()"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">
+					<i class="{{ICONS[newNodeType]}} fa-fw"></i> New {{newNodeType}}</h4>
+				</div>
+				<div class="modal-body">
+					<div class="content-fluid row">
+						<div ng-if="newNodeType === 'scenario'" class="col-md-3">
+							<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
+								<i class="{{ICONS[scenarioType]}} fa-fw"></i>
+								{{scenarioType}}
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+								<li>
+								<a ng-click="$parent.scenarioType='swing'">
+										<i class="{{ICONS['swing']}} fa-fw"></i> swing
+									</a>
+								</li>
+								<li>
+									<a ng-click="$parent.scenarioType='web'">
+										<i class="{{ICONS['web']}} fa-fw"></i> web
+									</a>
+								</li>
+								<li>
+									<a ng-click="$parent.scenarioType='service'">
+										<i class="{{ICONS['service']}}  fa-fw"></i> service
+									</a>
+								</li>
+							</ul>
+						</div>
+						<div ng-class="{'Col-md-9' : newNodeType === 'scenario', 'Col-md-12' : newNodeType === 'folder'}">
+							<input type="text" class="form-control"
+								name= "scenarioNameField" ng-model="scenarioName"
+								id="ScenarioName" required minlength="3"
+								placeholder="Type {{newNodeType}} name here ..">
+								<div ng-messages="scenarioForm.scenarioNameField.$error">
+								 <div ng-messages-include="error-messages"></div>
+							 </div>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default"  ng-click="closeModal()">Close</button>
-				<button type="submit" class="btn btn-primary" ng-disable="scenarioType != ('web' || 'service' || 'swing') '' ">Create</button>
-			</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default"  ng-click="closeModal()">Close</button>
+					<button type="submit" class="btn btn-primary" ng-disable="scenarioType != ('web' || 'service' || 'swing') '' ">Create</button>
+				</div>
 			</form>
-		</div><!-- /.modal-content -->
+	</div><!-- /.modal-content -->

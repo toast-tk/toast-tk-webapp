@@ -1,3 +1,4 @@
+
 <!-- .@()
 <!DOCTYPE html> -->
 <html>
@@ -15,7 +16,7 @@
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/angular-toastr.min.css")">
 
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/angucomplete-alt/angucomplete-alt.css")">
-    
+
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/repository.css")">
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/login.css")">
@@ -40,6 +41,7 @@
     <script type="text/javascript" src="@routes.Assets.at("libs/angular-ui-router/release/angular-ui-router.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("libs/angular-animate/angular-animate.min.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("libs/angular-ui-sortable/sortable.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("libs/angular-messages/angular-messages.min.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("libs/angular-toastr/dist/angular-toastr.tpls.min.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("libs/angucomplete-alt/dist/angucomplete-alt.min.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("libs/angular-ui-tree/dist/angular-ui-tree.min.js")"></script>
@@ -105,7 +107,6 @@
     <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/projects/editproject.controller.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/admin/projects/editprojects.controller.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("javascripts/config/icon.constants.config.js")"></script>
-
   </head>
   <body ng-app="app">
      <div class="toast-loading" ng-if="!loaded">
@@ -118,4 +119,14 @@
      </div>
      <div ng-if="loaded" ui-view="main"></div>
   </body>
+  <script type="text/ng-template" id="error-messages">
+    <div ng-message="required" class="alert alert-danger field-error-alert">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      <span class="sr-only">Error:</span> This field is required
+    </div>
+    <div ng-message="minlength"  class="alert alert-danger field-error-alert">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      <span class="sr-only">Error:</span> This field is too short
+    </div>
+  </script>
   </html>
