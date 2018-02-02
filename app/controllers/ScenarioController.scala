@@ -27,6 +27,10 @@ object ScenarioController extends Controller {
   private val db = AppBoot.db
   private lazy val regex = """\{\{[\w:]+\}\}""".r
 
+  /**
+   * Warning: old version of the recorded did persists mapping with "val" instead of "value"
+   *
+  */
   private def populatePatterns(rows: String): List[String] = {
     def replacePatterns(pattern: String, mapping: List[JsValue]): String = {
       var outputArray = List[String]()
@@ -34,15 +38,18 @@ object ScenarioController extends Controller {
       val splittedPattern = pattern.split("\\s+")
       splittedPattern.foreach { word =>
         word match {
-          case regex() =>
+          case regex() => {
             var replacementWord = "";
             for (jsonMapping <- mapping) {
               val pos = (jsonMapping \ "pos").as[Int]
-              if (pos.equals(mappingPosition)) replacementWord = (jsonMapping \ "val").as[String]
+              if (pos.equals(mappingPosition)) replacementWord = (jsonMapping \ "value").as[String]
             }
             outputArray = ("*" + replacementWord + "*") :: outputArray
             mappingPosition = mappingPosition + 1
-          case x => outputArray = x :: outputArray
+          }
+          case x => {
+            outputArray = x :: outputArray
+          }
         }
       }
       outputArray.reverse.mkString(" ")
@@ -108,7 +115,7 @@ object ScenarioController extends Controller {
    * || scenario || web ||
    * |Type *toto* in *LoginDialog.loginTextField*|
    */
-  @ApiKeyProtected
+  //@ApiKeyProtected
   def loadWikifiedScenarii(apiKey: String) = Action.async {
     val pair: (Option[User], Option[Project]) = db.userProjectPair(apiKey)
     pair match {
